@@ -1,0 +1,56 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# åxçê: Ç±ÇÃ‹∞∏ΩÕﬂ∞Ω Ãß≤Ÿ Çï“èWÇ‹ÇΩÇÕçÌèúÇµÇ»Ç¢Ç≈Ç≠ÇæÇ≥Ç¢!
+
+###############################################################################
+
+Project: "xkeymacs"=.\xkeymacs.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/xkeymacs", WBAAAAAA
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name xkeymacsdll
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "xkeymacsdll"=..\xkeymacsdll\xkeymacsdll.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/xkeymacsdll", KDAAAAAA
+    ..\xkeymacsdll
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+    begin source code control
+    "$/xkeymacs", WBAAAAAA
+    .
+    end source code control
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+
