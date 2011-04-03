@@ -14,13 +14,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-#pragma data_seg(".xkmcs")
-	int	CPropertiesAdvanced::m_nApplicationID = 0;
-#pragma data_seg()
-
 /////////////////////////////////////////////////////////////////////////////
 // CPropertiesAdvanced property page
-
+int	CPropertiesAdvanced::m_nApplicationID = 0;
 int CPropertiesAdvanced::m_nCommandID = 0;
 CEdit * CPropertiesAdvanced::m_pNewKey = NULL;
 CButton * CPropertiesAdvanced::m_pAssign = NULL;

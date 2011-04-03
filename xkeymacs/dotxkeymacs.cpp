@@ -14,11 +14,9 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-#pragma data_seg(".xkmcs")
-	CObList		CDotXkeymacs::m_oFunctionDefinition;
-	int			CDotXkeymacs::m_nIndex[MAX_APP][MAX_COMMAND_TYPE][MAX_KEY] = {'\0'};
-	const TCHAR	CDotXkeymacs::m_szExt[] = _T("xkeymacs");
-#pragma data_seg()
+CObList		CDotXkeymacs::m_oFunctionDefinition;
+int			CDotXkeymacs::m_nIndex[MAX_APP][MAX_COMMAND_TYPE][MAX_KEY] = {'\0'};
+const TCHAR	CDotXkeymacs::m_szExt[] = _T("xkeymacs");
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

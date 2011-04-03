@@ -17,13 +17,12 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-#pragma data_seg(".xkmcs")
-	CXkeymacsData CProfile::m_XkeymacsData[MAX_APP];
-	TASK_LIST CProfile::m_TaskList[MAX_TASKS];
-	DWORD CProfile::m_dwTasks;
-	ScanCode_t CProfile::m_CurrentScanCodeMap[MAX_HKEY_TYPE][4][256];
-	ScanCode_t CProfile::m_ScanCodeMap[MAX_HKEY_TYPE][4][256];
-#pragma data_seg()
+
+CXkeymacsData CProfile::m_XkeymacsData[MAX_APP];
+TASK_LIST CProfile::m_TaskList[MAX_TASKS];
+DWORD CProfile::m_dwTasks;
+ScanCode_t CProfile::m_CurrentScanCodeMap[MAX_HKEY_TYPE][4][256];
+ScanCode_t CProfile::m_ScanCodeMap[MAX_HKEY_TYPE][4][256];
 
 enum { INITIAL_SIZE	= 51200 };
 enum { EXTEND_SIZE	= 25600 };
