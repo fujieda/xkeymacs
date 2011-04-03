@@ -1,7 +1,6 @@
 ; xkeymacsdll.def : Declares the module parameters for the DLL.
 
 LIBRARY      "xkeymacs"
-DESCRIPTION  'xkeymacs Windows Dynamic Link Library'
 
 EXPORTS
     ; Explicit exports can go here

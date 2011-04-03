@@ -1261,7 +1261,7 @@ void CProfile::DeleteAllRegistryData()
 			DWORD dwName = sizeof(szName);
 			FILETIME filetime;
 
-			while (RegEnumKeyEx(hkey, dwIndex, szName, &dwName, NULL, NULL, NULL, &filetime) == ERROR_SUCCESS) {
+			while (RegEnumKeyEx(hkey, dwIndex++, szName, &dwName, NULL, NULL, NULL, &filetime) == ERROR_SUCCESS) {
 //				RegDeleteKey(hkey, szName);
 				SHDeleteKey(hkey, szName);
 				ZeroMemory(szName, sizeof(szName));

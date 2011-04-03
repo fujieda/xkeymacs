@@ -73,8 +73,6 @@ BOOL CXkeymacsApp::InitInstance()
 	// such as the name of your company or organization.
 //	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 	SetRegistryKey(IDS_REGISTRY_KEY);
-	free((void*)m_pszProfileName);
-	m_pszProfileName=_tcsdup(_T("XKeymacs2"));
 //
 //	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
 

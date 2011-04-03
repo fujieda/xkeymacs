@@ -3342,7 +3342,7 @@ int CCommands::SystemMenuEdit(const CONSOLE_MENU_EDIT nDown)
 		return GetLastError();
 	}
 
-	const y = GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYMENU) * 6 + 20;	// y = A + B * 6 + 20
+	const int y = GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYMENU) * 6 + 20;	// y = A + B * 6 + 20
 	const POINT clickPoint = {consoleWindowRect.left + 50, consoleWindowRect.top + y};	// 146 <= y <= 161 on W2K	(146 + 161 + 1) / 2 = 154 = 19 + 19 x 6 + 21
 	int rc = Click(&clickPoint);														// 157 <= y <= 172 on WXP	(157 + 172 + 1) / 2 = 165 = 26 + 20 x 6 + 19
 	if (rc != ERROR_SUCCESS) {
