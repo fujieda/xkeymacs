@@ -650,6 +650,7 @@ BOOL CUtils::IsConsole()
 //	Log(_T("_%s_"), m_szApplicationName);
 	return !m_szApplicationName[0]
 		|| !_tcsicmp(m_szApplicationName, _T("xkeymacs.exe"))
+		|| !_tcsicmp(m_szApplicationName, _T("conhost.exe"))
 		|| !_tcsicmp(m_szApplicationName, _T("conime.exe"))
 		|| !_tcsicmp(m_szApplicationName, _T("csh.exe"))
 		|| !_tcsicmp(m_szApplicationName, _T("WINOA386.MOD"))
