@@ -2,11 +2,8 @@
 //
 
 #include "stdafx.h"
-#include "xkeymacs.h"
 #include "Key.h"
-#include "Profile.h"
-#include "104Keyboard.h"
-#include "109Keyboard.h"
+#include "keyboardlayout.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -46,7 +43,6 @@ END_MESSAGE_MAP()
 
 void CKey::DrawItem(const LPDRAWITEMSTRUCT lpDrawItemStruct) 
 {
-	// TODO: Add your code to draw the specified item
 	static const COLORREF BLACK = RGB(0, 0, 0);
 	static const COLORREF RED = RGB(255, 0, 0);
 	static const COLORREF BLUE = RGB(0, 0, 255);
@@ -133,7 +129,7 @@ void CKey::OnLButtonDown(const UINT nFlags, const CPoint point)
 	switch (m_nKeyType) {
 	case NORMAL_KEY:
 		SetKeyType(PUSHED_KEY);
-		CProfile::SetDraggingCursor();
+		SetDraggingCursor();
 		break;
 	case REMAPPED_KEY:
 		SetKeyType(REMAPPED_PUSHED_KEY);
@@ -143,28 +139,26 @@ void CKey::OnLButtonDown(const UINT nFlags, const CPoint point)
 	CButton::OnLButtonDown(nFlags, point);
 }
 
-void CKey::OnLButtonUp(const UINT nFlags, const CPoint point) 
+void CKey::OnLButtonUp(const UINT nFlags, CPoint point) 
 {
 	if (m_nKeyType == PUSHED_KEY) {
 		SetKeyType(NORMAL_KEY);
 	}
 
+	CKeyboardLayout *parent = reinterpret_cast<CKeyboardLayout *>(GetParent());
+	ClientToScreen(&point);
 	if (m_nKeyType == REMAPPED_PUSHED_KEY) {
-		if (m_nKey == GetPointedKey(point)) {
-			KeyboardLayout *pKeyboardLayout = CProfile::GetKeyboardLayouts(m_nKey);
+		if (m_nKey == parent->GetPointedKey(point)) {
+			KeyboardLayout *pKeyboardLayout = parent->GetKeyboardLayout(m_nKey);
 			if (pKeyboardLayout) {
 				CString szWindowText;
-				GetParent()->GetDlgItem(pKeyboardLayout->nBaseControlID)->GetWindowText(szWindowText);
+				parent->GetDlgItem(pKeyboardLayout->nBaseControlID)->GetWindowText(szWindowText);
 				SetWindowText(szWindowText);
 
-				if (CProfile::Is106Keyboard()) {
-					((C109Keyboard*)GetParent())->m_ToolTip.UpdateTipText(CProfile::GetToolTipID(pKeyboardLayout->nToolTipID), this);
-				} else {
-					((C104Keyboard*)GetParent())->m_ToolTip.UpdateTipText(CProfile::GetToolTipID(pKeyboardLayout->nToolTipID), this);
-				}
+				parent->ToolTip()->UpdateTipText(parent->GetToolTipID(pKeyboardLayout->nToolTipID), this);
 
-				ScanCodeMapping mapping = {{0, 0}, {pKeyboardLayout->scancode.nScanCode, pKeyboardLayout->scancode.nPrefixedScanCode}};
-				CProfile::SetScanCodeMap(m_HkeyType, mapping);
+				ScanCodeMapping mapping = {{0, 0}, {pKeyboardLayout->scancode.nScanCode, pKeyboardLayout->scancode.nPrefix}};
+				parent->SetScanCodeMap(m_HkeyType, mapping);
 			}
 			SetKeyType(ORIGINAL_KEY);
 		} else {
@@ -172,10 +166,10 @@ void CKey::OnLButtonUp(const UINT nFlags, const CPoint point)
 		}
 	}
 
-	int nPointedKey = GetPointedKey(point);
+	int nPointedKey = parent->GetPointedKey(point);
 	if (m_nDroppableKey && nPointedKey) {
 		if (m_nDroppableKey != nPointedKey) {
-			((CKey*)GetParent()->GetDlgItem(m_nDroppableKey))->SetKeyType(m_nDroppableKeyType);
+			reinterpret_cast<CKey*>(parent->GetDlgItem(m_nDroppableKey))->SetKeyType(m_nDroppableKeyType);
 			if (IsDroppableKey(nPointedKey)) {
 				m_nDroppableKey = nPointedKey;
 			} else {
@@ -184,25 +178,19 @@ void CKey::OnLButtonUp(const UINT nFlags, const CPoint point)
 		}
 
 		if (m_nDroppableKey) {
-			KeyboardLayout *pKeyboardLayout = CProfile::GetKeyboardLayouts(m_nDroppableKey);
-			KeyboardLayout *pBaseKeyboardLayout = CProfile::GetKeyboardLayouts(m_nKey);
+			KeyboardLayout *pKeyboardLayout = parent->GetKeyboardLayout(m_nDroppableKey);
+			KeyboardLayout *pBaseKeyboardLayout = parent->GetKeyboardLayout(m_nKey);
 			if (pKeyboardLayout && pBaseKeyboardLayout) {
 				CString szWindowText;
 				GetWindowText(szWindowText);
-				GetParent()->GetDlgItem(pKeyboardLayout->nCurrentControlID)->SetWindowText(szWindowText);
+				parent->GetDlgItem(pKeyboardLayout->nCurrentControlID)->SetWindowText(szWindowText);
+				parent->ToolTip()->UpdateTipText(parent->GetToolTipID(pBaseKeyboardLayout->nToolTipID), parent->GetDlgItem(pKeyboardLayout->nCurrentControlID));
+				reinterpret_cast<CKey *>(parent->GetDlgItem(pKeyboardLayout->nBaseControlID))->SetKeyType(NORMAL_KEY);
+				reinterpret_cast<CKey*>(parent->GetDlgItem(pKeyboardLayout->nCurrentControlID))->SetKeyType(REMAPPED_KEY);
 
-				if (CProfile::Is106Keyboard()) {
-					((C109Keyboard*)GetParent())->m_ToolTip.UpdateTipText(CProfile::GetToolTipID(pBaseKeyboardLayout->nToolTipID), GetParent()->GetDlgItem(pKeyboardLayout->nCurrentControlID));
-				} else {
-					((C104Keyboard*)GetParent())->m_ToolTip.UpdateTipText(CProfile::GetToolTipID(pBaseKeyboardLayout->nToolTipID), GetParent()->GetDlgItem(pKeyboardLayout->nCurrentControlID));
-				}
-
-				((CKey*)GetParent()->GetDlgItem(pKeyboardLayout->nBaseControlID))->SetKeyType(NORMAL_KEY);
-				((CKey*)GetParent()->GetDlgItem(pKeyboardLayout->nCurrentControlID))->SetKeyType(REMAPPED_KEY);
-
-				ScanCodeMapping mapping = {{pBaseKeyboardLayout->scancode.nScanCode, pBaseKeyboardLayout->scancode.nPrefixedScanCode}, 
-											{pKeyboardLayout->scancode.nScanCode, pKeyboardLayout->scancode.nPrefixedScanCode}};
-				CProfile::SetScanCodeMap(m_HkeyType, mapping);
+				ScanCodeMapping mapping = {{pBaseKeyboardLayout->scancode.nScanCode, pBaseKeyboardLayout->scancode.nPrefix}, 
+											{pKeyboardLayout->scancode.nScanCode, pKeyboardLayout->scancode.nPrefix}};
+				parent->SetScanCodeMap(m_HkeyType, mapping);
 			}
 		}
 	}
@@ -210,69 +198,48 @@ void CKey::OnLButtonUp(const UINT nFlags, const CPoint point)
 	m_nDroppableKey = 0;
 	m_nDroppableKeyType = NORMAL_KEY;
 
-	CProfile::SetNormalCursor();
+	SetNormalCursor();
 
 	CButton::OnLButtonUp(nFlags, point);
 }
 
-int CKey::GetPointedKey(const CPoint point)
-{
-	for (int i = 0; i < sizeof(KeyboardLayouts) / sizeof(KeyboardLayouts[0]); ++i) {
-		if (!GetParent()->GetDlgItem(KeyboardLayouts[i].nBaseControlID)
-		 || !GetParent()->GetDlgItem(KeyboardLayouts[i].nCurrentControlID)) {
-			continue;
-		}
-
-		CRect rButton;
-		GetParent()->GetDlgItem(KeyboardLayouts[i].nBaseControlID)->GetWindowRect(&rButton);
-		ScreenToClient(&rButton);
-		if (rButton.PtInRect(point)) {
-			return KeyboardLayouts[i].nBaseControlID;
-		}
-		GetParent()->GetDlgItem(KeyboardLayouts[i].nCurrentControlID)->GetWindowRect(&rButton);
-		ScreenToClient(&rButton);
-		if (rButton.PtInRect(point)) {
-			return KeyboardLayouts[i].nCurrentControlID;
-		}
-	}
-	return 0;
-}
-
-void CKey::OnMouseMove(const UINT nFlags, const CPoint point) 
+void CKey::OnMouseMove(const UINT nFlags, CPoint point) 
 {
 	if (nFlags & MK_LBUTTON) {
+		ClientToScreen(&point);
+		CKeyboardLayout *parent = (CKeyboardLayout *)GetParent();
 		if (m_nKeyType == PUSHED_KEY) {
-			int nPointedKey = GetPointedKey(point);
+			int nPointedKey = parent->GetPointedKey(point);
 			if (nPointedKey) {
 				if (nPointedKey != m_nDroppableKey) {
 					if (m_nDroppableKey) {
-						((CKey*)GetParent()->GetDlgItem(m_nDroppableKey))->SetKeyType(m_nDroppableKeyType);
-						CProfile::SetNoCursor();
+						reinterpret_cast<CKey*>(parent->GetDlgItem(m_nDroppableKey))->SetKeyType(m_nDroppableKeyType);
+						SetNoCursor();
 					}
 					if (IsDroppableKey(nPointedKey)) {
 						m_nDroppableKey = nPointedKey;
-						m_nDroppableKeyType = ((CKey*)GetParent()->GetDlgItem(m_nDroppableKey))->GetKeyType();
-						((CKey*)GetParent()->GetDlgItem(m_nDroppableKey))->SetKeyType(DROPPABLE_KEY);
-						CProfile::SetDraggingCursor();
+						m_nDroppableKeyType = ((CKey*)parent->GetDlgItem(m_nDroppableKey))->GetKeyType();
+						reinterpret_cast<CKey*>(parent->GetDlgItem(m_nDroppableKey))->SetKeyType(DROPPABLE_KEY);
+						SetDraggingCursor();
 					}
 				}
 			} else {
 				if (m_nDroppableKey) {
-					((CKey*)GetParent()->GetDlgItem(m_nDroppableKey))->SetKeyType(m_nDroppableKeyType);
+					reinterpret_cast<CKey*>(parent->GetDlgItem(m_nDroppableKey))->SetKeyType(m_nDroppableKeyType);
 					m_nDroppableKey = 0;
 					m_nDroppableKeyType = NORMAL_KEY;
-					CProfile::SetNoCursor();
+					SetNoCursor();
 				}
 			}
 		}
 
 		if (m_nKeyType == REMAPPED_PUSHED_KEY) {
-			if (m_nKey != GetPointedKey(point)) {
+			if (m_nKey != parent->GetPointedKey(point)) {
 				SetKeyType(REMAPPED_KEY);
 			}
 		}
 		if (m_nKeyType == REMAPPED_KEY) {
-			if (m_nKey == GetPointedKey(point)) {
+			if (m_nKey == parent->GetPointedKey(point)) {
 				SetKeyType(REMAPPED_PUSHED_KEY);
 			}
 		}
@@ -288,16 +255,32 @@ BOOL CKey::IsDroppableKey(const int nKey)
 		return FALSE;
 	}
 
-	for (int i = 0; i < sizeof(KeyboardLayouts) / sizeof(KeyboardLayouts[0]); ++i) {
-		if (KeyboardLayouts[i].nBaseControlID != m_nKey) {
-			continue;
-		}
-
-		if (KeyboardLayouts[i].nBaseControlID == nKey
-		 || KeyboardLayouts[i].nCurrentControlID == nKey) {
-			return FALSE;
-		}
-		return TRUE;
+	KeyboardLayout *pKeyboardLayout = reinterpret_cast<CKeyboardLayout *>(GetParent())->GetKeyboardLayout(m_nKey, TRUE);
+	if (!pKeyboardLayout
+	 || pKeyboardLayout->nBaseControlID == nKey
+	 || pKeyboardLayout->nCurrentControlID == nKey) {
+		return FALSE;
 	}
-	return FALSE;
+	return TRUE;
+}
+
+void CKey::SetDraggingCursor()
+{
+	HCURSOR hCursor = (HCURSOR)LoadImage(AfxGetApp()->m_hInstance, MAKEINTRESOURCE(IDC_DRAG_CURSOR),
+										 IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
+	::SetCursor(hCursor);
+}
+
+void CKey::SetNormalCursor()
+{
+	HCURSOR hCursor = (HCURSOR)LoadImage(NULL, MAKEINTRESOURCE(IDC_ARROW),
+										 IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
+	::SetCursor(hCursor);
+}
+
+void CKey::SetNoCursor()
+{
+	HCURSOR hCursor = (HCURSOR)LoadImage(NULL, MAKEINTRESOURCE(IDC_NO),
+										 IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
+	::SetCursor(hCursor);
 }

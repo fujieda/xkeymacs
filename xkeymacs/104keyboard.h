@@ -5,7 +5,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "Key.h"
+#include "keyboardlayout.h"
 
 // 104Keyboard.h : header file
 //
@@ -13,7 +13,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // C104Keyboard dialog
 
-class C104Keyboard : public CDialog
+class C104Keyboard : public CKeyboardLayout
 {
 // Construction
 public:
@@ -45,8 +45,6 @@ protected:
 	afx_msg void OnDestroy();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-private:
-	HKEY_TYPE m_HkeyType;
 };
 
 //{{AFX_INSERT_LOCATION}}

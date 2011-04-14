@@ -177,6 +177,7 @@
     <ClCompile Include="109keyboard.cpp" />
     <ClCompile Include="dotxkeymacs.cpp" />
     <ClCompile Include="key.cpp" />
+    <ClCompile Include="keyboardlayout.cpp" />
     <ClCompile Include="mainfrm.cpp" />
     <ClCompile Include="optionsdlg.cpp" />
     <ClCompile Include="profile.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="109keyboard.h" />
     <ClInclude Include="dotxkeymacs.h" />
     <ClInclude Include="key.h" />
+    <ClInclude Include="keyboardlayout.h" />
     <ClInclude Include="mainfrm.h" />
     <ClInclude Include="optionsdlg.h" />
     <ClInclude Include="profile.h" />

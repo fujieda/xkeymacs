@@ -17,14 +17,12 @@ static char THIS_FILE[] = __FILE__;
 
 
 C104Keyboard::C104Keyboard(const HKEY_TYPE hkey_type, CWnd *const pParent /*=NULL*/)
-	: CDialog(C104Keyboard::IDD, pParent)
+	: CKeyboardLayout(hkey_type, C104Keyboard::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(C104Keyboard)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-	m_HkeyType = hkey_type;
 }
-
 
 void C104Keyboard::DoDataExchange(CDataExchange *const pDX)
 {
@@ -74,35 +72,7 @@ BOOL C104Keyboard::OnInitDialog()
 	m_ToolTip.Create(this, TTS_ALWAYSTIP | TTS_NOPREFIX);
 	m_ToolTip.SetMaxTipWidth(0x100);	// Enable multiline
 
-	CProfile::LoadScanCodeMap(m_HkeyType);
-	for (int i = 0; i < sizeof(KeyboardLayouts) / sizeof(KeyboardLayouts[0]); ++i) {
-		if (!GetDlgItem(KeyboardLayouts[i].nBaseControlID)
-		 || !GetDlgItem(KeyboardLayouts[i].nCurrentControlID)) {
-			continue;
-		}
-
-		KeyboardLayouts[i].pBaseKey = new CKey(KeyboardLayouts[i].nBaseControlID, NORMAL_KEY, m_HkeyType);
-		KeyboardLayouts[i].pBaseKey->SubclassDlgItem(KeyboardLayouts[i].nBaseControlID, this);
-		m_ToolTip.AddTool(GetDlgItem(KeyboardLayouts[i].nBaseControlID), CProfile::GetToolTipID(KeyboardLayouts[i].nToolTipID));
-
-		KeyboardLayouts[i].pCurrentKey = new CKey(KeyboardLayouts[i].nCurrentControlID, ORIGINAL_KEY, m_HkeyType);
-		KeyboardLayouts[i].pCurrentKey->SubclassDlgItem(KeyboardLayouts[i].nCurrentControlID, this);
-		m_ToolTip.AddTool(GetDlgItem(KeyboardLayouts[i].nCurrentControlID), CProfile::GetToolTipID(KeyboardLayouts[i].nToolTipID));
-
-		ScanCode current = {'\0'};
-		if (CProfile::GetScanCodeMap(m_HkeyType, KeyboardLayouts[i].scancode, &current)) {
-			KeyboardLayouts[i].pCurrentKey->SetKeyType(REMAPPED_KEY);
-
-			CString szWindowText;
-			GetDlgItem(CProfile::GetBaseControlID(current))->GetWindowText(szWindowText);
-			GetDlgItem(KeyboardLayouts[i].nCurrentControlID)->SetWindowText(szWindowText);
-
-			KeyboardLayout *pKeyboardLayout = CProfile::GetKeyboardLayouts(CProfile::GetBaseControlID(current));
-			if (pKeyboardLayout) {
-				m_ToolTip.UpdateTipText(CProfile::GetToolTipID(pKeyboardLayout->nToolTipID), GetDlgItem(KeyboardLayouts[i].nCurrentControlID));
-			}
-		}
-	}
+	InitKeyboardLayout();
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
@@ -110,8 +80,8 @@ BOOL C104Keyboard::OnInitDialog()
 
 void C104Keyboard::OnOK() 
 {
-	if (CProfile::LostKeyWarning(m_HkeyType) != IDCANCEL) {
-		CProfile::SaveScanCodeMap(m_HkeyType);
+	if (LostKeyWarning(m_HkeyType) != IDCANCEL) {
+		SaveScanCodeMap(m_HkeyType);
 
 		CDialog::OnOK();
 	}
@@ -121,21 +91,7 @@ void C104Keyboard::OnDestroy()
 {
 	CDialog::OnDestroy();
 
-	for (int i = 0; i < sizeof(KeyboardLayouts) / sizeof(KeyboardLayouts[0]); ++i) {
-		if (!GetDlgItem(KeyboardLayouts[i].nBaseControlID)
-		 || !GetDlgItem(KeyboardLayouts[i].nCurrentControlID)) {
-			continue;
-		}
-
-		if (KeyboardLayouts[i].pBaseKey) {
-			delete KeyboardLayouts[i].pBaseKey;
-			KeyboardLayouts[i].pBaseKey = NULL;
-		}
-		if (KeyboardLayouts[i].pCurrentKey) {
-			delete KeyboardLayouts[i].pCurrentKey;
-			KeyboardLayouts[i].pCurrentKey = NULL;
-		}
-	}
+	DestroyKeyboardLayout();
 }
 
 BOOL C104Keyboard::PreTranslateMessage(MSG *const pMsg) 

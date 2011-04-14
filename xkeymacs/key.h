@@ -11,6 +11,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // CKey window
 
+enum KEY_TYPE { NORMAL_KEY, PUSHED_KEY, DROPPABLE_KEY, ORIGINAL_KEY, REMAPPED_KEY, REMAPPED_PUSHED_KEY };
+
 class CKey : public CButton
 {
 // Construction
@@ -50,9 +52,11 @@ private:
 	int m_nDroppableKeyType;
 	int m_nDroppableKey;
 	int m_nKey;
-	int GetPointedKey(CPoint point);
 	int m_nKeyType;
 	HKEY_TYPE m_HkeyType;
+	void SetDraggingCursor();
+	void SetNormalCursor();
+	void SetNoCursor();
 };
 
 /////////////////////////////////////////////////////////////////////////////

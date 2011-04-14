@@ -308,8 +308,6 @@ static const KeyName KeyNames[] = {
 CXkeymacsData CProfile::m_XkeymacsData[MAX_APP];
 TASK_LIST CProfile::m_TaskList[MAX_TASKS];
 DWORD CProfile::m_dwTasks;
-ScanCode CProfile::m_CurrentScanCodeMap[MAX_HKEY_TYPE][4][256];
-ScanCode CProfile::m_ScanCodeMap[MAX_HKEY_TYPE][4][256];
 
 enum { INITIAL_SIZE	= 51200 };
 enum { EXTEND_SIZE	= 25600 };
@@ -1238,6 +1236,38 @@ int CProfile::GetApplicationIndex(const CString szApplicationName, const BOOL bS
 	return nApplicationID;
 }
 
+BOOL CProfile::Is106Keyboard()
+{
+	static KEYBOARD_TYPE keyboard = UNKNOWN_KEYBOARD;
+
+	if (keyboard == UNKNOWN_KEYBOARD) {
+		OSVERSIONINFO verInfo = {0};
+		verInfo.dwOSVersionInfoSize = sizeof (verInfo);
+		GetVersionEx(&verInfo);
+
+		DWORD subtype = 0;
+		DWORD cbData = sizeof(subtype);
+
+		if (verInfo.dwPlatformId == VER_PLATFORM_WIN32_NT) {
+			HKEY hKey = NULL;
+			CString szSubKey(_T("SYSTEM\\CurrentControlSet\\Services\\i8042prt\\Parameters"));
+			if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, szSubKey, 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS) {
+				static const CString szValueName(_T("OverrideKeyboardSubtype"));
+				if (RegQueryValueEx(hKey, szValueName, NULL, NULL, (LPBYTE)&subtype, &cbData) != ERROR_SUCCESS) {
+					subtype = 0;
+				}
+				RegCloseKey(hKey);
+			}
+		} else if (verInfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
+			subtype = GetPrivateProfileInt(_T("keyboard"), _T("subtype"), 0, _T("system.ini"));
+		}
+
+		keyboard = (subtype & 0x02) ? JAPANESE_KEYBOARD : ENGLISH_KEYBOARD;
+	}
+
+	return keyboard == JAPANESE_KEYBOARD;
+}
+
 BOOL CProfile::IsTheString(const CString sz, const UINT nID)
 {
 	return sz == CString(MAKEINTRESOURCE(nID));
@@ -1420,206 +1450,6 @@ int CProfile::GetApplicationIndex(const CString szApplicationName)
 	return nApplicationID;
 }
 
-BOOL CProfile::Is106Keyboard()
-{
-	static KEYBOARD_TYPE keyboard = UNKNOWN_KEYBOARD;
-
-	if (keyboard == UNKNOWN_KEYBOARD) {
-		OSVERSIONINFO verInfo = {0};
-		verInfo.dwOSVersionInfoSize = sizeof (verInfo);
-		GetVersionEx(&verInfo);
-
-		DWORD subtype = 0;
-		DWORD cbData = sizeof(subtype);
-
-		if (verInfo.dwPlatformId == VER_PLATFORM_WIN32_NT) {
-			HKEY hKey = NULL;
-			CString szSubKey(_T("SYSTEM\\CurrentControlSet\\Services\\i8042prt\\Parameters"));
-			if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, szSubKey, 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS) {
-				static const CString szValueName(_T("OverrideKeyboardSubtype"));
-				if (RegQueryValueEx(hKey, szValueName, NULL, NULL, (LPBYTE)&subtype, &cbData) != ERROR_SUCCESS) {
-					subtype = 0;
-				}
-				RegCloseKey(hKey);
-			}
-		} else if (verInfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
-			subtype = GetPrivateProfileInt(_T("keyboard"), _T("subtype"), 0, _T("system.ini"));
-		}
-
-		keyboard = (subtype & 0x02) ? JAPANESE_KEYBOARD : ENGLISH_KEYBOARD;
-	}
-
-	return keyboard == JAPANESE_KEYBOARD;
-}
-
-void CProfile::LoadScanCodeMap(const HKEY_TYPE hkeyType)
-{
-	memset(m_ScanCodeMap[hkeyType], 0, sizeof(m_ScanCodeMap[hkeyType]));
-	memset(m_CurrentScanCodeMap[hkeyType], 0, sizeof(m_CurrentScanCodeMap[hkeyType]));
-
-	CString szSubKey;
-	CString szValueName;
-	HKEY hKey = HKEY_LOCAL_MACHINE;
-	switch (hkeyType) {
-	case CURRENT_USER:
-		hKey = HKEY_CURRENT_USER;
-		szSubKey.LoadString(IDS_REGSUBKEY_KEYBOARD_LAYOUT);
-		break;
-	case LOCAL_MACHINE:
-		szSubKey.LoadString(IDS_REGSUBKEY_KEYBOARD_LAYOUT_ANY_USER);
-		break;
-	default:
-		return;
-	}
-	szValueName.LoadString(IDS_SCANCODE_MAP);
-
-	HKEY hkResult = NULL;
-	if (RegOpenKeyEx(hKey, szSubKey, 0, KEY_QUERY_VALUE, &hkResult) == ERROR_SUCCESS) {
-		// get data size
-		DWORD dwType = REG_BINARY;
-		DWORD dwData = 0;
-		RegQueryValueEx(hkResult, szValueName, NULL, &dwType, NULL, &dwData);
-
-		// get data
-		LPBYTE lpData = new BYTE[dwData];
-		if (lpData) {
-			RegQueryValueEx(hkResult, szValueName, NULL, &dwType, lpData, &dwData);
-		}
-		RegCloseKey(hkResult);
-
-		if (lpData && dwData) {
-			DWORD offset = 0;
-			offset += 8;	// skip Version Information and Flags
-			DWORD *pdwMappings = (DWORD *)(lpData + offset);
-			offset += 4;	// skip Number of Mappings
-			DWORD *pdwNullTerminator = (DWORD *)(lpData + dwData - 4);
-
-			if (4 * *pdwMappings + 12 != dwData) {
-				// illegal data
-			} else if (*pdwNullTerminator != 0) {
-				// illegal data
-			} else {
-				while (offset < dwData - 4) {
-					ScanCodeMapping *pMapping = (ScanCodeMapping *)(lpData + offset);
-					offset += 4;	// go to next data
-					m_CurrentScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nPrefixedScanCode = pMapping->current.nPrefixedScanCode;
-					m_CurrentScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nScanCode = pMapping->current.nScanCode;
-					m_ScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nPrefixedScanCode = pMapping->current.nPrefixedScanCode;
-					m_ScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nScanCode = pMapping->current.nScanCode;
-				}
-			}
-		}
-		delete[] lpData;
-		lpData = NULL;
-	}
-}
-
-int CProfile::LostKeyWarning(const HKEY_TYPE hkeyType)
-{
-	if (!ChangedKeyboardLayout(hkeyType)) {
-		return IDOK;
-	}
-
-	CString szLostKeysList;
-
-	for (int nPrefixedScanCodeID = 0; nPrefixedScanCodeID < 3; ++nPrefixedScanCodeID) {
-		for (int nScanCode = 0; nScanCode < 256; ++nScanCode) {
-			if (m_ScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nScanCode) {
-				BOOL lostKey = TRUE;
-
-				for (int i = 0; i < 3 && lostKey; ++i) {
-					for (int j = 0; j < 256 && lostKey; ++j) {
-						if (m_ScanCodeMap[hkeyType][i][j].nPrefixedScanCode == nPrefixedScanCodeID
-						 && m_ScanCodeMap[hkeyType][i][j].nScanCode == nScanCode) {
-							lostKey = FALSE;
-						}
-					}
-				}
-
-				if (lostKey) {
-					for (int i = 0; i < sizeof(KeyboardLayouts)/sizeof(KeyboardLayouts[0]); ++i) {
-						if (KeyboardLayouts[i].scancode.nScanCode == nScanCode
-							&& KeyboardLayouts[i].scancode.nPrefixedScanCode == nPrefixedScanCodeID) {
-							CString szLostKey;
-							szLostKey.Format(IDS_ERR_LOST_KEY, CString(MAKEINTRESOURCE(GetToolTipID(KeyboardLayouts[i].nToolTipID))));
-							szLostKeysList += szLostKey;
-							break;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	if (szLostKeysList.IsEmpty()) {
-		return IDOK;
-	}
-
-	return AfxMessageBox(szLostKeysList, MB_OKCANCEL | MB_ICONEXCLAMATION);
-}
-
-void CProfile::SaveScanCodeMap(const HKEY_TYPE hkeyType)
-{
-	CString szSubKey;
-	CString szValueName;
-	HKEY hKey = HKEY_LOCAL_MACHINE;
-	switch (hkeyType) {
-	case CURRENT_USER:
-		hKey = HKEY_CURRENT_USER;
-		szSubKey.LoadString(IDS_REGSUBKEY_KEYBOARD_LAYOUT);
-		break;
-	case LOCAL_MACHINE:
-		szSubKey.LoadString(IDS_REGSUBKEY_KEYBOARD_LAYOUT_ANY_USER);
-		break;
-	default:
-		return;
-	}
-	szValueName.LoadString(IDS_SCANCODE_MAP);
-
-	HKEY hkResult = NULL;
-	if (RegCreateKeyEx(hKey, szSubKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL, &hkResult, NULL) == ERROR_SUCCESS) {
-		DWORD cbData = GetScanCodeLength(hkeyType);
-		if (cbData <= 16) {
-			RegDeleteValue(hkResult, szValueName);
-		} else {
-			LPBYTE lpData = new BYTE[cbData];
-			memset(lpData, 0, sizeof(BYTE) * cbData);
-
-			{
-				DWORD dwMappings = (cbData - 12) / 4;
-				memmove(lpData + 8, &dwMappings, 4);
-			}
-
-			int offset = 12;
-			for (int nPrefixedScanCodeID = 0; nPrefixedScanCodeID < 3; ++nPrefixedScanCodeID) {
-				for (int nScanCode = 0; nScanCode < 256; ++nScanCode) {
-					if (m_ScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nScanCode) {
-						ScanCodeMapping sScanCodeMapping = {'\0'};
-						sScanCodeMapping.original.nPrefixedScanCode = PrefixedScanCodeID2Code(nPrefixedScanCodeID);
-						sScanCodeMapping.original.nScanCode = (BYTE)nScanCode;
-						sScanCodeMapping.current.nPrefixedScanCode = m_ScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nPrefixedScanCode;
-						sScanCodeMapping.current.nScanCode = m_ScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nScanCode;
-						memcpy(lpData + offset, &sScanCodeMapping, sizeof(sScanCodeMapping));
-						offset += sizeof(sScanCodeMapping);
-					}
-				}
-			}
-			RegSetValueEx(hkResult, szValueName, 0, REG_BINARY, lpData, cbData);
-
-			delete[] lpData;
-			lpData = NULL;
-		}
-		RegCloseKey(hkResult);
-	}
-
-	// Do you want to restart computer?
-	if (ChangedKeyboardLayout(hkeyType)) {
-		if (AfxMessageBox(CString(MAKEINTRESOURCE(IDS_RESTART_OR_NOT)), MB_YESNO | MB_ICONQUESTION) == IDYES) {
-			RestartComputer();
-		}
-	}
-}
-
 // Return True if Windows Vista or later.
 BOOL CProfile::IsVistaOrLater()
 {
@@ -1639,181 +1469,6 @@ void CProfile::RestartComputer()
 	}
 
 	ExitWindowsEx(EWX_REBOOT, 0);
-}
-
-int CProfile::GetControlID(const ScanCode scancode, const BOOL bBase)
-{
-	for (int i = 0; ; ++i) {
-		if (KeyboardLayouts[i].scancode.nPrefixedScanCode == scancode.nPrefixedScanCode
-		 && KeyboardLayouts[i].scancode.nScanCode == scancode.nScanCode) {
-			if (bBase) {
-				return KeyboardLayouts[i].nBaseControlID;
-			} else {
-				return KeyboardLayouts[i].nCurrentControlID;
-			}
-		}
-	}
-	return 0;
-}
-
-int CProfile::GetBaseControlID(const ScanCode scancode)
-{
-	return GetControlID(scancode, TRUE);
-}
-
-int CProfile::GetCurrentControlID(const ScanCode scancode)
-{
-	return GetControlID(scancode, FALSE);
-}
-
-BOOL CProfile::GetScanCodeMap(const HKEY_TYPE hkeyType, const ScanCode original, ScanCode *const current)
-{
-	if (!current) {
-		return FALSE;
-	}
-	*current = m_ScanCodeMap[hkeyType][PrefixedScanCode2ID(original.nPrefixedScanCode)][original.nScanCode];
-	return 0 < current->nScanCode;
-}
-
-void CProfile::SetScanCodeMap(const HKEY_TYPE hkeyType, const ScanCodeMapping ScanCodeMappeing)
-{
-	m_ScanCodeMap[hkeyType][PrefixedScanCode2ID(ScanCodeMappeing.original.nPrefixedScanCode)][ScanCodeMappeing.original.nScanCode] = ScanCodeMappeing.current;
-}
-
-int CProfile::PrefixedScanCode2ID(const BYTE nPrefixedScanCode)
-{
-	int nID = 0;
-
-	switch (nPrefixedScanCode) {
-	case 0x00:
-		nID = 0;
-		break;
-	case 0xe0:
-		nID = 1;
-		break;
-	case 0xe1:
-		nID = 2;
-		break;
-	default:
-		// invalid scan code
-		nID = 3;
-		break;
-	}
-
-	return nID;
-}
-
-BYTE CProfile::PrefixedScanCodeID2Code(const int nPrefixedScanCodeID)
-{
-	BYTE nCode = 0;
-
-	switch (nPrefixedScanCodeID) {
-	case 0:
-		nCode = 0x00;
-		break;
-	case 1:
-		nCode = 0xe0;
-		break;
-	case 2:
-		nCode = 0xe1;
-		break;
-	default:
-		ASSERT(0);
-		break;
-	}
-
-	return nCode;
-}
-
-DWORD CProfile::GetScanCodeLength(const HKEY_TYPE hkeyType)
-{
-	DWORD dwScanCodeLength = 0;
-	dwScanCodeLength += 4;	// Header: Version Information
-	dwScanCodeLength += 4;	// Header: Flags
-	dwScanCodeLength += 4;	// Header: Number of Mappings
-	for (int nPrefixedScanCodeID = 0; nPrefixedScanCodeID < 3; ++nPrefixedScanCodeID) {
-		for (int nScanCode = 0; nScanCode < 256; ++nScanCode) {
-			if (m_ScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nScanCode) {
-				dwScanCodeLength += 4;	// Individual Mappings
-			}
-		}
-	}
-	dwScanCodeLength += 4;	// Null Terminator (0x00000000)
-	return dwScanCodeLength;
-}
-
-BOOL CProfile::ChangedKeyboardLayout(const HKEY_TYPE hkeyType)
-{
-	for (int nPrefixedScanCodeID = 0; nPrefixedScanCodeID < 3; ++nPrefixedScanCodeID) {
-		for (int nScanCode = 0; nScanCode < 256; ++nScanCode) {
-			if (m_ScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nPrefixedScanCode	!= m_CurrentScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nPrefixedScanCode
-			 || m_ScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nScanCode			!= m_CurrentScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nScanCode) {
-				return TRUE;
-			}
-		}
-	}
-
-	return FALSE;
-}
-
-void CProfile::SetDraggingCursor()
-{
-	HCURSOR hCursor = (HCURSOR)LoadImage(AfxGetApp()->m_hInstance, MAKEINTRESOURCE(IDC_DRAG_CURSOR),
-										 IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
-	SetCursor(hCursor);
-}
-
-void CProfile::SetNormalCursor()
-{
-	HCURSOR hCursor = (HCURSOR)LoadImage(NULL, MAKEINTRESOURCE(IDC_ARROW),
-										 IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
-	SetCursor(hCursor);
-}
-
-void CProfile::SetNoCursor()
-{
-	HCURSOR hCursor = (HCURSOR)LoadImage(NULL, MAKEINTRESOURCE(IDC_NO),
-										 IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
-	SetCursor(hCursor);
-}
-
-int CProfile::GetToolTipID(int nToolTipID)
-{
-	if (Is106Keyboard()) {
-		switch (nToolTipID) {
-		case IDS_EQUAL:			// ^
-			nToolTipID = IDS_CARET;
-			break;
-		case IDS_SQUARE_BRA:	// @
-			nToolTipID = IDS_AT_MARK;
-			break;
-		case IDS_SQUARE_CKET:	// [
-			nToolTipID = IDS_SQUARE_BRA;
-			break;
-		case IDS_QUOTE:			// :
-			nToolTipID = IDS_COLON;
-			break;
-		case IDS_BACK_QUOTE:	// Hankaku/Zenkaku
-			nToolTipID = IDS_HANKAKU;
-			break;
-		case IDS_BACKSLASH:		// ]
-			nToolTipID = IDS_SQUARE_CKET;
-			break;
-		}
-	}
-
-	return nToolTipID;
-}
-
-KeyboardLayout* CProfile::GetKeyboardLayouts(const int nKey)
-{
-	for (int i = 0; i < sizeof(KeyboardLayouts) / sizeof(KeyboardLayouts[0]); ++i) {
-		if (KeyboardLayouts[i].nBaseControlID == nKey
-		 || KeyboardLayouts[i].nCurrentControlID == nKey) {
-			return &KeyboardLayouts[i];
-		}
-	}
-	return NULL;
 }
 
 BOOL CProfile::AdjustTokenPrivileges(LPCTSTR lpName)
