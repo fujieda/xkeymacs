@@ -87,6 +87,24 @@ private:
 	int	m_nResultAboutDlg;
 	int m_nResultPropertiesDlg;
 	CProperties *m_pPropertiesDlg;
+	// notify icons
+	BOOL m_bIcon[MAX_ICON_TYPE];
+	HICON m_hIcon[MAX_ICON_TYPE][MAX_STATUS];
+	DWORD m_dwOldMessage[MAX_ICON_TYPE];
+	NOTIFYICONDATA m_stNtfyIcon[MAX_ICON_TYPE];
+	NOTIFYICONDATA m_stOldNtfyIcon[MAX_ICON_TYPE];
+	void AddShell_NotifyIcon(ICON_TYPE icon);
+	void DeleteShell_NotifyIcon(ICON_TYPE icon);
+	BOOL DoShell_NotifyIcon(ICON_TYPE icon, DWORD dwMessage);
+	void DeleteAllShell_NotifyIcon();
+	void AddAllShell_NotifyIcon();
+	BOOL m_bPollIconMessage;
+	HANDLE m_hThread;
+	void StartPollThread();
+	void TerminatePollThread();
+	static DWORD WINAPI PollIconMessage(LPVOID lpParam);
+public:
+	void EnableShell_NotifyIcon(ICON_TYPE icon, BOOL bEnable);
 };
 
 /////////////////////////////////////////////////////////////////////////////

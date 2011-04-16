@@ -152,7 +152,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	switch (dwReason) {
 	case DLL_PROCESS_ATTACH:
 		TRACE0("XKEYMACSDLL.DLL Initializing!\n");
-		
+
 		// Extension DLL one-time initialization
 		if (!AfxInitExtensionModule(XkeymacsdllDLL, hInstance)) {
 			return 0;
@@ -211,11 +211,6 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	BOOL	CXkeymacsDll::m_bRightShift		= FALSE;
 	BOOL	CXkeymacsDll::m_bHook			= TRUE;
 	BOOL	CXkeymacsDll::m_bDefiningMacro	= FALSE;
-	DWORD	CXkeymacsDll::m_dwOldMessage[MAX_ICON_TYPE] = {'\0'};
-	NOTIFYICONDATA CXkeymacsDll::m_stNtfyIcon[MAX_ICON_TYPE] = {'\0'};
-	NOTIFYICONDATA CXkeymacsDll::m_stOldNtfyIcon[MAX_ICON_TYPE] = {'\0'};
-	HICON	CXkeymacsDll::m_hIcon[MAX_ICON_TYPE][MAX_STATUS] = {'\0'};
-	BOOL	CXkeymacsDll::m_bIcon[MAX_ICON_TYPE] = {'\0'};
 	int		CXkeymacsDll::m_nKillRingMax[MAX_APP] = {'\0'};
 	BOOL	CXkeymacsDll::m_bUseDialogSetting[MAX_APP] = {'\0'};
 	CList<CClipboardSnap *, CClipboardSnap *> CXkeymacsDll::m_oKillRing;
@@ -238,6 +233,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	BOOL	CXkeymacsDll::m_bCursor = FALSE;
 	BOOL	CXkeymacsDll::m_b326Compatible[MAX_APP] = {'\0'};
 	BOOL	CXkeymacsDll::m_b106Keyboard = FALSE;
+	TCHAR	CXkeymacsDll::m_M_xTip[128] = "";
 #pragma data_seg()
 
 //////////////////////////////////////////////////////////////////////
@@ -252,81 +248,6 @@ CXkeymacsDll::CXkeymacsDll()
 CXkeymacsDll::~CXkeymacsDll()
 {
 
-}
-
-int CXkeymacsDll::ModifyShell_NotifyIcon(ICON_TYPE icon, BOOL bNewStatus, BOOL bForce)
-{
-	if (m_stNtfyIcon[icon].hIcon == (bNewStatus ? m_hIcon[icon][ON_ICON] : m_hIcon[icon][OFF_ICON])) {
-		if (!bForce) {
-			return TRUE;
-		}
-	} else {
-		m_stNtfyIcon[icon].hIcon = (bNewStatus ? m_hIcon[icon][ON_ICON] : m_hIcon[icon][OFF_ICON]);
-	}
-	return DoShell_NotifyIcon(icon, NIM_MODIFY);
-}
-
-void CXkeymacsDll::SetNotifyIconData(ICON_TYPE icon, NOTIFYICONDATA stNtfyIcon, HICON hEnable, HICON hDisableTMP, HICON hDisableWOCQ, HICON hDisable, BOOL bEnable)
-{
-	m_hIcon[icon][STATUS_ENABLE] = hEnable;
-	m_hIcon[icon][STATUS_DISABLE_TMP] = hDisableTMP;
-	m_hIcon[icon][STATUS_DISABLE_WOCQ] = hDisableWOCQ;
-	m_hIcon[icon][STATUS_DISABLE] = hDisable;
-	m_bIcon[icon] = bEnable;
-	m_stNtfyIcon[icon] = stNtfyIcon;
-	AddShell_NotifyIcon(icon);
-}
-
-void CXkeymacsDll::SetNotifyIconData(ICON_TYPE icon, NOTIFYICONDATA stNtfyIcon, HICON hOn, HICON hOff, BOOL bEnable)
-{
-	m_hIcon[icon][ON_ICON] = hOn;
-	m_hIcon[icon][OFF_ICON] = hOff;
-	m_bIcon[icon] = bEnable;
-	m_stNtfyIcon[icon] = stNtfyIcon;
-	AddShell_NotifyIcon(icon);
-}
-
-void CXkeymacsDll::EnableShell_NotifyIcon(ICON_TYPE icon, BOOL bEnable)
-{
-	DeleteShell_NotifyIcon(icon);
-	m_bIcon[icon] = bEnable;
-	AddShell_NotifyIcon(icon);
-}
-
-
-BOOL CXkeymacsDll::DoShell_NotifyIcon(ICON_TYPE icon, DWORD dwMessage)
-{
-	if (m_bIcon[icon]
-	 &&	(m_dwOldMessage[icon] != dwMessage
-	  || memcmp(&m_stOldNtfyIcon[icon], &m_stNtfyIcon[icon], sizeof(m_stNtfyIcon[icon])))) {
-		m_dwOldMessage[icon] = dwMessage;
-		m_stOldNtfyIcon[icon] = m_stNtfyIcon[icon];
-
-		BOOL rc = FALSE;
-		for (int retry_count = 0; retry_count < 20; ++retry_count) { // retry for timeout
-			rc = Shell_NotifyIcon(dwMessage, &m_stNtfyIcon[icon]);
-			if (dwMessage != NIM_ADD || rc || (GetLastError() != ERROR_TIMEOUT && 5 < retry_count)) {
-				break;
-			}
-			Sleep(1000); // 1sec
-			if ((rc = Shell_NotifyIcon(NIM_MODIFY, &m_stNtfyIcon[icon])) != FALSE) {
-				break; // ERROR_TIMEOUT was returned but the icon was also added.
-			}
-		}
-		return rc;
-	} else {
-		return TRUE;
-	}
-}
-
-void CXkeymacsDll::AddShell_NotifyIcon(ICON_TYPE icon)
-{
-	DoShell_NotifyIcon(icon, NIM_ADD);
-}
-
-void CXkeymacsDll::DeleteShell_NotifyIcon(ICON_TYPE icon)
-{
-	DoShell_NotifyIcon(icon, NIM_DELETE);
 }
 
 // set hooks
@@ -373,26 +294,25 @@ void CXkeymacsDll::ReleaseKeyboardHook()
 void CXkeymacsDll::SetKeyboardHookFlag(BOOL bFlag)
 {
 	m_bHook = bFlag;
-
+	ICONMSG msg = {MAIN_ICON,};
 	if (m_bHook) {
 		if (CCommands::IsTemporarilyDisableXKeymacs()) {
-			m_stNtfyIcon[MAIN_ICON].hIcon = m_hIcon[MAIN_ICON][STATUS_DISABLE_TMP];
+			msg.nState = STATUS_DISABLE_TMP;
 			m_hCurrentCursor = m_hCursor[STATUS_DISABLE_TMP];
 		} else {
-			m_stNtfyIcon[MAIN_ICON].hIcon = m_hIcon[MAIN_ICON][STATUS_ENABLE];
+			msg.nState = STATUS_ENABLE;
 			m_hCurrentCursor = m_hCursor[STATUS_ENABLE];
 		}
 	} else {
-		m_stNtfyIcon[MAIN_ICON].hIcon = m_hIcon[MAIN_ICON][STATUS_DISABLE_WOCQ];
-		m_hCurrentCursor = m_hCursor[STATUS_DISABLE_WOCQ];
+		msg.nState = STATUS_DISABLE_WOCQ;
 	}
 	if (m_nSettingStyle[m_nApplicationID] == SETTING_DISABLE
 	 || (!_tcsicmp(m_szSpecialApp[m_nApplicationID], _T("Default"))
 	  && CUtils::IsDefaultIgnoreApplication())) {
-		m_stNtfyIcon[MAIN_ICON].hIcon = m_hIcon[MAIN_ICON][STATUS_DISABLE];
+		msg.nState = STATUS_DISABLE;
 		m_hCurrentCursor = m_hCursor[STATUS_DISABLE];
 	}
-	DoShell_NotifyIcon(MAIN_ICON, NIM_MODIFY);
+	SendIconMessage(&msg, 1);
 	DoSetCursor();
 }
 
@@ -792,9 +712,12 @@ void CXkeymacsDll::InitKeyboardProc(BOOL bImeComposition)
 		}
 	}
 
-	ModifyShell_NotifyIcon(CX_ICON, FALSE);
-	ModifyShell_NotifyIcon(MX_ICON, FALSE);
-	ModifyShell_NotifyIcon(META_ICON, FALSE);
+	ICONMSG msg[3] = {
+		{CX_ICON, OFF_ICON, ""},
+		{MX_ICON, OFF_ICON, ""},
+		{META_ICON, OFF_ICON, ""}
+	};
+	SendIconMessage(msg, 3);
 	CCommands::SetMark(FALSE);
 	CCommands::SetTemporarilyDisableXKeymacs(FALSE);
 	CCommands::Reset();
@@ -1025,13 +948,13 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 			if (index) {
 				--index;
 				memmove(&szPath[index], &szPath[index + 1], _tcslen(szPath) - index);
-				ModifyM_xTip(szPath);
+				SetM_xTip(szPath);
 			}
 			goto HOOKX;
 		} else if (Commands[m_nCommandID[m_nApplicationID][nCommandType][nKey]].fCommand == CCommands::DeleteChar) {
 			if (index < _tcslen(szPath)) {
 				memmove(&szPath[index], &szPath[index + 1], _tcslen(szPath) - index);
-				ModifyM_xTip(szPath);
+				SetM_xTip(szPath);
 			}
 			goto HOOKX;
 		} else if (Commands[m_nCommandID[m_nApplicationID][nCommandType][nKey]].fCommand == CCommands::EndOfLine) {
@@ -1065,7 +988,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 					}
 					szPath[index++] = nAscii;
 //					CUtils::Log("M-x: %c(%#04x)", nAscii, nAscii);
-					ModifyM_xTip(szPath);
+					SetM_xTip(szPath);
 					goto HOOKX;
 				}
 			}
@@ -1225,10 +1148,7 @@ RECURSIVE_COMMAND:
 	}
 
 DO_NOTHING:
-	ModifyShell_NotifyIcon(SHIFT_ICON, IsDown(VK_SHIFT));
-	ModifyShell_NotifyIcon(CTRL_ICON, IsControl());
-	ModifyShell_NotifyIcon(ALT_ICON, IsDown(VK_MENU));
-
+	SetModifierIcons();
 	{
 		static BOOL bDefiningMacro = FALSE;
 		if (m_bDefiningMacro) {
@@ -1271,20 +1191,29 @@ DO_NOTHING:
 
 RECURSIVE:
 	Kdu(RECURSIVE_KEY, 1, FALSE);
-	ModifyShell_NotifyIcon(SHIFT_ICON, IsDown(VK_SHIFT));
-	ModifyShell_NotifyIcon(CTRL_ICON, IsControl());
-	ModifyShell_NotifyIcon(ALT_ICON, IsDown(VK_MENU));
-	return TRUE;
-
+	goto HOOKX;
 HOOK:
 	CCommands::SetLastCommand(fCommand);
 HOOK0_9:
 HOOKX:
-	ModifyShell_NotifyIcon(SHIFT_ICON, IsDown(VK_SHIFT));
-	ModifyShell_NotifyIcon(CTRL_ICON, IsControl());
-	ModifyShell_NotifyIcon(ALT_ICON, IsDown(VK_MENU));
+	SetModifierIcons();
 HOOK_RECURSIVE_KEY:
 	return TRUE;
+}
+
+void CXkeymacsDll::SetModifierIcons()
+{
+#define IconState(x) ((x) ? ON_ICON : OFF_ICON)
+	ICONMSG msg[6] = {
+		{MX_ICON, IconState(CCommands::bM_x()), ""},
+		{CX_ICON, IconState(CCommands::bC_x()), ""},
+		{META_ICON, IconState(CCommands::bM_()), ""},
+		{SHIFT_ICON, IconState(IsDown(VK_SHIFT)), ""},
+		{CTRL_ICON, IconState(IsControl()), ""},
+		{ALT_ICON, IconState(IsDown(VK_MENU)), ""}
+	};
+	_tcscpy_s(msg[0].szTip, m_M_xTip);
+	SendIconMessage(msg, 6);
 }
 
 void CXkeymacsDll::SetApplicationName(int nApplicationID, CString szApplicationName)
@@ -2088,20 +2017,6 @@ BYTE CXkeymacsDll::a2v(TCHAR nAscii)
 	}
 }
 
-void CXkeymacsDll::DeleteAllShell_NotifyIcon()
-{
-	for (int icon = 0; icon < MAX_ICON_TYPE; ++icon) {
-		DeleteShell_NotifyIcon((ICON_TYPE)icon);
-	}
-}
-
-void CXkeymacsDll::AddAllShell_NotifyIcon()
-{
-	for (int icon = 0; icon < MAX_ICON_TYPE; ++icon) {
-		AddShell_NotifyIcon((ICON_TYPE)icon);
-	}
-}
-
 BOOL CXkeymacsDll::IsMatchWindowText(CString szWindowText)
 {
 	BOOL bIsMatchWindowText = TRUE;
@@ -2210,17 +2125,15 @@ void CXkeymacsDll::InvokeM_x(const TCHAR *const szPath)
 	}
 }
 
-void CXkeymacsDll::ModifyM_xTip(const TCHAR *const szPath)
+void CXkeymacsDll::SetM_xTip(const TCHAR *const szPath)
 {
-	if (szPath) {
-		if (_tcslen(szPath) < sizeof(m_stNtfyIcon[MX_ICON].szTip) / sizeof(m_stNtfyIcon[MX_ICON].szTip[0]) - 5) {
-			memset(m_stNtfyIcon[MX_ICON].szTip, 0, sizeof(m_stNtfyIcon[MX_ICON].szTip));
-			_stprintf(m_stNtfyIcon[MX_ICON].szTip, "M-x %s", szPath);
-		}
-	} else {
-		memset(m_stNtfyIcon[MX_ICON].szTip, 0, sizeof(m_stNtfyIcon[MX_ICON].szTip));
-		_stprintf(m_stNtfyIcon[MX_ICON].szTip, "M-x LED");
-	}
+	_tcscpy_s(m_M_xTip, "M-x LED");
+	if (szPath && _tcslen(szPath) < 128 - 5)
+		_stprintf_s(m_M_xTip, "M-x %s", szPath);
+}
 
-	ModifyShell_NotifyIcon(MX_ICON, CCommands::bM_x(), TRUE);
+BOOL CXkeymacsDll::SendIconMessage(ICONMSG *pMsg, DWORD num)
+{
+	DWORD ack, read;
+	return CallNamedPipe(ICON_PIPE, pMsg, sizeof(ICONMSG) * num, &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT);
 }

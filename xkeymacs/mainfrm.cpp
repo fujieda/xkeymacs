@@ -5,7 +5,6 @@
 #include <Lmcons.h>
 #include "xkeymacs.h"
 #include "Profile.h"
-
 #include "MainFrm.h"
 
 #ifdef _DEBUG
@@ -60,6 +59,8 @@ CMainFrame::CMainFrame()
 	}
 	memset(m_nResultKeyboardDlg, -1, sizeof(m_nResultKeyboardDlg));
 	memset(m_bKeyboardDlgExist, 0, sizeof(m_bKeyboardDlgExist));
+	memset(m_stOldNtfyIcon, 0, sizeof(m_stOldNtfyIcon));
+	memset(m_dwOldMessage, 0, sizeof(m_dwOldMessage));
 
 	// register window class
 	WNDCLASS	stWndClass;
@@ -145,43 +146,56 @@ int CMainFrame::OnCreate(const LPCREATESTRUCT lpCreateStruct)
 			   sizeof(notifyIconData[ALT_ICON].szTip));
 
 	// set notify icon data
-	CXkeymacsDll::SetNotifyIconData(MAIN_ICON, notifyIconData[MAIN_ICON],
-		(HICON)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME), IMAGE_ICON, 16, 16, LR_SHARED),
-		(HICON)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAIN_DISABLE_TMP), IMAGE_ICON, 16, 16, LR_SHARED),
-		(HICON)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAIN_DISABLE_WOCQ), IMAGE_ICON, 16, 16, LR_SHARED),		// disable without C-q
-		(HICON)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAIN_DISABLE), IMAGE_ICON, 16, 16, LR_SHARED),
-		AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_MAIN)), 1));
+	m_hIcon[MAIN_ICON][STATUS_ENABLE] = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME), IMAGE_ICON, 16, 16, LR_SHARED),
+	m_hIcon[MAIN_ICON][STATUS_DISABLE_TMP] = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAIN_DISABLE_TMP), IMAGE_ICON, 16, 16, LR_SHARED);
+	m_hIcon[MAIN_ICON][STATUS_DISABLE_WOCQ] = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAIN_DISABLE_WOCQ), IMAGE_ICON, 16, 16, LR_SHARED);
+	m_hIcon[MAIN_ICON][STATUS_DISABLE] = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAIN_DISABLE), IMAGE_ICON, 16, 16, LR_SHARED);
+	m_bIcon[MAIN_ICON] = AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_MAIN)), 1);
+	m_stNtfyIcon[MAIN_ICON] = notifyIconData[MAIN_ICON];
+	AddShell_NotifyIcon(MAIN_ICON);
 
 	// set notify ^X icon data
-	CXkeymacsDll::SetNotifyIconData(CX_ICON, notifyIconData[CX_ICON], AfxGetApp()->LoadIcon(IDI_CX_ON),
-									  AfxGetApp()->LoadIcon(IDI_CX_OFF),
-									  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_CX)), 0));
+	m_hIcon[CX_ICON][ON_ICON] = AfxGetApp()->LoadIcon(IDI_CX_ON);
+	m_hIcon[CX_ICON][OFF_ICON] = AfxGetApp()->LoadIcon(IDI_CX_OFF);
+	m_bIcon[CX_ICON] = AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_CX)), 0);
+	m_stNtfyIcon[CX_ICON] = notifyIconData[CX_ICON];
+	AddShell_NotifyIcon(CX_ICON);
 
 	// set notify M-x icon data
-	CXkeymacsDll::SetNotifyIconData(MX_ICON, notifyIconData[MX_ICON], AfxGetApp()->LoadIcon(IDI_MX_ON),
-									  AfxGetApp()->LoadIcon(IDI_MX_OFF),
-									  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_MX)), 0));
+	m_hIcon[MX_ICON][ON_ICON] = AfxGetApp()->LoadIcon(IDI_MX_ON);
+	m_hIcon[MX_ICON][OFF_ICON] = AfxGetApp()->LoadIcon(IDI_MX_OFF);
+	m_bIcon[MX_ICON] = AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_MX)), 0);
+	m_stNtfyIcon[MX_ICON] = notifyIconData[MX_ICON];
+	AddShell_NotifyIcon(MX_ICON);
 
 	// set notify Meta icon data
-	CXkeymacsDll::SetNotifyIconData(META_ICON, notifyIconData[META_ICON], AfxGetApp()->LoadIcon(IDI_META_ON),
-									  AfxGetApp()->LoadIcon(IDI_META_OFF),
-									  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_META)), 0));
+	m_hIcon[META_ICON][ON_ICON] = AfxGetApp()->LoadIcon(IDI_META_ON);
+	m_hIcon[META_ICON][OFF_ICON] = AfxGetApp()->LoadIcon(IDI_META_OFF);
+	m_bIcon[META_ICON] = AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_META)), 0);
+	m_stNtfyIcon[META_ICON] = notifyIconData[META_ICON];
+	AddShell_NotifyIcon(META_ICON);
 
 	// set notify Shift icon data
-	CXkeymacsDll::SetNotifyIconData(SHIFT_ICON, notifyIconData[SHIFT_ICON], AfxGetApp()->LoadIcon(IDI_SHIFT_ON),
-									  AfxGetApp()->LoadIcon(IDI_SHIFT_OFF),
-									  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_SHIFT)), 0));
+	m_hIcon[SHIFT_ICON][ON_ICON] = AfxGetApp()->LoadIcon(IDI_SHIFT_ON);
+	m_hIcon[SHIFT_ICON][OFF_ICON] = AfxGetApp()->LoadIcon(IDI_SHIFT_OFF);
+	m_bIcon[SHIFT_ICON] = AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_SHIFT)), 0);
+	m_stNtfyIcon[SHIFT_ICON] = notifyIconData[SHIFT_ICON];
+	AddShell_NotifyIcon(SHIFT_ICON);
 
 	// set notify Ctrl icon data
-	CXkeymacsDll::SetNotifyIconData(CTRL_ICON, notifyIconData[CTRL_ICON], AfxGetApp()->LoadIcon(IDI_CTRL_ON),
-									  AfxGetApp()->LoadIcon(IDI_CTRL_OFF),
-									  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_CTRL)), 0));
+	m_hIcon[CTRL_ICON][ON_ICON] = AfxGetApp()->LoadIcon(IDI_CTRL_ON);
+	m_hIcon[CTRL_ICON][OFF_ICON] = AfxGetApp()->LoadIcon(IDI_CTRL_OFF);
+	m_bIcon[CTRL_ICON] = AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_CTRL)), 0);
+	m_stNtfyIcon[CTRL_ICON] = notifyIconData[CTRL_ICON];
+	AddShell_NotifyIcon(CTRL_ICON);
 
 	// set notify Alt icon data
-	CXkeymacsDll::SetNotifyIconData(ALT_ICON, notifyIconData[ALT_ICON], AfxGetApp()->LoadIcon(IDI_ALT_ON),
-									  AfxGetApp()->LoadIcon(IDI_ALT_OFF),
-									  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_ALT)), 0));
-
+	m_hIcon[ALT_ICON][ON_ICON] = AfxGetApp()->LoadIcon(IDI_ALT_ON);
+	m_hIcon[ALT_ICON][OFF_ICON] = AfxGetApp()->LoadIcon(IDI_ALT_OFF);
+	m_bIcon[ALT_ICON] = AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_ALT)), 0);
+	m_stNtfyIcon[ALT_ICON] = notifyIconData[ALT_ICON];
+	AddShell_NotifyIcon(ALT_ICON);
+	
 	CXkeymacsDll::SetKeyboardSpeed(CProfile::GetKeyboardSpeed());
 	CXkeymacsDll::SetAccelerate(AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_ACCELERATE)), 1));
 
@@ -192,8 +206,112 @@ int CMainFrame::OnCreate(const LPCREATESTRUCT lpCreateStruct)
 								  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_CHANGE_CURSOR)), 0));
 
 	CXkeymacsDll::SetHooks();
+	StartPollThread();
 
 	return 0;
+}
+
+void CMainFrame::StartPollThread()
+{
+	m_bPollIconMessage = TRUE;
+	m_hThread = CreateThread(NULL, 0, PollIconMessage, this, 0, NULL);
+}
+
+void CMainFrame::TerminatePollThread()
+{
+	m_bPollIconMessage = FALSE;
+	ICONMSG nul = {MAIN_ICON,};
+	if (CXkeymacsDll::SendIconMessage(&nul, 1))
+		WaitForSingleObject(m_hThread, 5000);
+	CloseHandle(m_hThread);
+}
+
+DWORD WINAPI CMainFrame::PollIconMessage(LPVOID lpParam)
+{
+	CMainFrame *pThis = reinterpret_cast<CMainFrame *>(lpParam);
+	HANDLE hPipe = CreateNamedPipe(ICON_PIPE, PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1,
+									sizeof(DWORD), sizeof(ICONMSG) * MAX_ICON_TYPE, 0, NULL);
+	if (hPipe == INVALID_HANDLE_VALUE)
+		return 1;
+	for (; ;) {
+		if (ConnectNamedPipe(hPipe, NULL) ? FALSE : (GetLastError() != ERROR_PIPE_CONNECTED))
+			break;
+		ICONMSG msg[MAX_ICON_TYPE];
+		DWORD read;
+		if (!ReadFile(hPipe, msg, sizeof(msg), &read, NULL))
+			break;
+		DWORD written, ack = 0;
+		// return ack ASAP to release hooks from blocking state.
+		if (!WriteFile(hPipe, &ack, sizeof(DWORD), &written, NULL) || written != sizeof(DWORD) ||
+				!FlushFileBuffers(hPipe) || !DisconnectNamedPipe(hPipe))
+			break;
+		if (!pThis->m_bPollIconMessage)
+			break;
+		for (DWORD i = 0; i < read / sizeof(ICONMSG); i++) {
+			pThis->m_stNtfyIcon[msg[i].nType].hIcon = pThis->m_hIcon[msg[i].nType][msg[i].nState];
+			if (msg[i].nType == MX_ICON && msg[i].szTip[0] != 0)
+				memcpy(pThis->m_stNtfyIcon[MX_ICON].szTip, msg[i].szTip, 128);
+			pThis->DoShell_NotifyIcon(msg[i].nType, NIM_MODIFY);
+		}
+	}
+	CloseHandle(hPipe);
+	return 0;
+}
+
+BOOL CMainFrame::DoShell_NotifyIcon(ICON_TYPE icon, DWORD dwMessage)
+{
+	if (m_bIcon[icon]
+	 &&	(m_dwOldMessage[icon] != dwMessage
+	  || memcmp(&m_stOldNtfyIcon[icon], &m_stNtfyIcon[icon], sizeof(m_stNtfyIcon[icon])))) {
+		m_dwOldMessage[icon] = dwMessage;
+		m_stOldNtfyIcon[icon] = m_stNtfyIcon[icon];
+
+		BOOL rc = FALSE;
+		for (int retry_count = 0; retry_count < 20; ++retry_count) { // retry for timeout
+			rc = Shell_NotifyIcon(dwMessage, &m_stNtfyIcon[icon]);
+			if (dwMessage != NIM_ADD || rc || (GetLastError() != ERROR_TIMEOUT && 5 < retry_count)) {
+				break;
+			}
+			Sleep(1000); // 1sec
+			if ((rc = Shell_NotifyIcon(NIM_MODIFY, &m_stNtfyIcon[icon])) != FALSE) {
+				break; // ERROR_TIMEOUT was returned but the icon was also added.
+			}
+		}
+		return rc;
+	} else {
+		return TRUE;
+	}
+}
+
+void CMainFrame::EnableShell_NotifyIcon(ICON_TYPE icon, BOOL bEnable)
+{
+	DeleteShell_NotifyIcon(icon);
+	m_bIcon[icon] = bEnable;
+	AddShell_NotifyIcon(icon);
+}
+
+void CMainFrame::AddShell_NotifyIcon(ICON_TYPE icon)
+{
+	DoShell_NotifyIcon(icon, NIM_ADD);
+}
+
+void CMainFrame::DeleteShell_NotifyIcon(ICON_TYPE icon)
+{
+	DoShell_NotifyIcon(icon, NIM_DELETE);
+}
+
+void CMainFrame::DeleteAllShell_NotifyIcon()
+{
+	for (int icon = 0; icon < MAX_ICON_TYPE; ++icon) {
+		DeleteShell_NotifyIcon((ICON_TYPE)icon);
+	}
+}
+
+void CMainFrame::AddAllShell_NotifyIcon()
+{
+	for (int icon = 0; icon < MAX_ICON_TYPE; ++icon) {
+		AddShell_NotifyIcon((ICON_TYPE)icon);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -355,7 +473,7 @@ LRESULT CMainFrame::WindowProc(const UINT message, const WPARAM wParam, const LP
 		}
 	default:
 		if (message == s_uTaskbarRestart) {
-			CXkeymacsDll::AddAllShell_NotifyIcon();
+			AddAllShell_NotifyIcon();
 		}
 		break;
 	}
@@ -408,7 +526,8 @@ void CMainFrame::OnQuit()
 	}
 
 	CXkeymacsDll::ReleaseHooks();
-	CXkeymacsDll::DeleteAllShell_NotifyIcon();
+	TerminatePollThread();
+	DeleteAllShell_NotifyIcon();
 
 	PostQuitMessage(0);
 }
@@ -457,6 +576,8 @@ void CMainFrame::OnReset()
 {
 	CXkeymacsDll::ReleaseHooks();
 	CXkeymacsDll::SetHooks();
+	TerminatePollThread();
+	StartPollThread();
 }
 
 void CMainFrame::OnHelpFinder() 

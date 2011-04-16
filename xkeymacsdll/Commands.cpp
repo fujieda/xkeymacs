@@ -1600,7 +1600,6 @@ BOOL CCommands::bC_()
 void CCommands::bC_(BOOL b)
 {
 	m_bC_ = b;
-	CXkeymacsDll::ModifyShell_NotifyIcon(CTRL_ICON, m_bC_);
 }
 
 BOOL CCommands::bC_x()
@@ -1611,7 +1610,6 @@ BOOL CCommands::bC_x()
 void CCommands::bC_x(BOOL b)
 {
 	m_bC_x = b;
-	CXkeymacsDll::ModifyShell_NotifyIcon(CX_ICON, m_bC_x);
 }
 
 BOOL CCommands::bM_x()
@@ -1624,9 +1622,9 @@ void CCommands::bM_x(const BOOL b)
 	m_bM_x = b;
 
 	if (b) {
-		CXkeymacsDll::ModifyM_xTip("");
+		CXkeymacsDll::SetM_xTip("");
 	} else {
-		CXkeymacsDll::ModifyM_xTip(NULL);
+		CXkeymacsDll::SetM_xTip(NULL);
 	}
 }
 
@@ -1804,7 +1802,6 @@ int CCommands::Ignore()
 void CCommands::bM_(BOOL b)
 {
 	m_bM_ = b;
-	CXkeymacsDll::ModifyShell_NotifyIcon(META_ICON, m_bM_);
 }
 
 BOOL CCommands::bM_()

@@ -200,6 +200,7 @@
     <ClInclude Include="ClipboardSnap.h" />
     <ClInclude Include="Commands.h" />
     <ClInclude Include="FunctionDefinition.h" />
+    <ClInclude Include="ipc.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="Utils.h" />

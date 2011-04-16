@@ -35,6 +35,8 @@ enum { EXTENDED_KEY = 0x01000000 };
 enum { REPEATED_KEY = 0x40000000 };
 enum { BEING_RELEASED = 0x80000000 };
 
+#include "ipc.h"
+
 struct KeyBind
 {
 	int nCommandType;
@@ -51,7 +53,7 @@ struct KeyName
 class AFX_EXT_CLASS CXkeymacsDll  
 {
 public:
-	static void ModifyM_xTip(const TCHAR *const szPath);
+	static void SetM_xTip(const TCHAR *const szPath);
 	static BOOL Get326Compatible();
 	static void Set326Compatible(int nApplicationID, BOOL b326Compatible);
 	static void SetCursorData(HCURSOR hEnable, HCURSOR hDisableTMP, HCURSOR hDisableWOCQ, HICON hDisable, BOOL bEnable);
@@ -60,12 +62,7 @@ public:
 	static int GetAccelerate(void);
 	static void SetAccelerate(int nAccelerate);
 	static void SetWindowText(int nApplicationID, CString szWindowText);
-	static void AddAllShell_NotifyIcon();
-	static void DeleteAllShell_NotifyIcon();
 	static void SetKillRingMax(int nApplicationID, int nKillRingMax);
-	static void EnableShell_NotifyIcon(ICON_TYPE icon, BOOL bEnable);
-	static void SetNotifyIconData(ICON_TYPE icon, NOTIFYICONDATA stNtfyIcon, HICON hEnable, HICON hDisableTMP, HICON hDisableWOCQ, HICON hDisable, BOOL bEnable);
-	static void SetNotifyIconData(ICON_TYPE icon, NOTIFYICONDATA stNtfyIcon, HICON hOn, HICON hOff, BOOL bEnable);
 	static void Clear(int nApplicationID);
 	static BOOL IsKeyboardHook();
 	static void SetCommandID(int nApplicationID, int nCommandType, int nKey, int nCommandID);
@@ -90,7 +87,6 @@ public:
 	static void IncreaseKillRingIndex(int nKillRing = 1);
 	static BOOL IsDown(BYTE bVk, BOOL bPhysicalKey = TRUE);
 	static void Kdu(BYTE bVk, DWORD n = 1, BOOL bOriginal = TRUE);
-	static int ModifyShell_NotifyIcon(ICON_TYPE icon, BOOL bNewStatus, BOOL bForce = TRUE);
 	static void ReleaseKey(BYTE bVk);
 	static void SetFunctionDefinition(int nFunctionID, CString szDefinition);
 	static void SetFunctionKey(int nFunctionID, int nApplicationID, int nCommandType, int nKey);
@@ -98,9 +94,11 @@ public:
 	static void SetKeyboardHookFlag(BOOL bFlag);
 	static BOOL Is106Keyboard();
 	static void Set106Keyboard(BOOL b106Keyboard);
+	static BOOL SendIconMessage(ICONMSG *pMsg, DWORD num);
 	CXkeymacsDll();
 	virtual ~CXkeymacsDll();
 private:
+	static TCHAR m_M_xTip[128];
 	static void InvokeM_x(const TCHAR* const szPath);
 	static BOOL m_b326Compatible[MAX_APP];
 	static void LogCallWndProcMessage(WPARAM wParam, LPARAM lParam);
@@ -118,11 +116,10 @@ private:
 	static HHOOK m_hHookCallWnd;
 	static HHOOK m_hHookGetMessage;
 	static HHOOK m_hHookShell;
-	static void AddShell_NotifyIcon(ICON_TYPE icon);
-	static void DeleteShell_NotifyIcon(ICON_TYPE icon);
 	static BOOL DefiningMacro();
 	static BOOL IsControl();
 	static BOOL IsMeta();
+	static void SetModifierIcons();
 	static void DoKeybd_event(BYTE bVk, DWORD dwFlags);
 	static LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK CallWndProc(int nCode, WPARAM wParam, LPARAM lParam);
@@ -145,7 +142,6 @@ private:
 	static BOOL m_bDefiningMacro;
 	static void Original(int nCommandType, BYTE bVk, int nOriginal);
 	static int Original(int nCommandType, BYTE bVk);
-	static HICON m_hIcon[MAX_ICON_TYPE][MAX_STATUS];
 	static BOOL m_bUseDialogSetting[MAX_APP];
 	static void InitKeyboardProc(BOOL bImeComposition);
 	static BOOL m_bIgnoreUndefinedC_x[MAX_APP];
@@ -157,11 +153,6 @@ private:
 	static CList<CClipboardSnap *, CClipboardSnap *> m_oKillRing;
 	static int m_nKillRingMax[MAX_APP];
 	static int GetMickey(int nDifferential, int nThreshold1, int nThreshold2, int nAcceleration, int nSpeed);
-	static BOOL DoShell_NotifyIcon(ICON_TYPE icon, DWORD dwMessage);
-	static BOOL m_bIcon[MAX_ICON_TYPE];
-	static DWORD m_dwOldMessage[MAX_ICON_TYPE];
-	static NOTIFYICONDATA m_stNtfyIcon[MAX_ICON_TYPE];
-	static NOTIFYICONDATA m_stOldNtfyIcon[MAX_ICON_TYPE];
 	static BOOL m_bHook;
 	static BOOL m_bRightShift;
 	static BOOL m_bRightAlt;
