@@ -843,6 +843,10 @@ int CUtils::GetClipboardTextLength()
 
 BOOL CUtils::IsDialog()
 {
+	HWND hwnd = GetForegroundWindow();
+	TCHAR szWindowText[0x100] = {'\0'};
+	if (!GetWindowText(hwnd, szWindowText, sizeof(szWindowText)))
+		return FALSE; // inside sound box
 	return GetParent(GetForegroundWindow()) != NULL;
 }
 
