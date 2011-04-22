@@ -246,7 +246,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 
 CXkeymacsDll::CXkeymacsDll()
 {
-	CUtils::InitCUtils();
+
 }
 
 CXkeymacsDll::~CXkeymacsDll()

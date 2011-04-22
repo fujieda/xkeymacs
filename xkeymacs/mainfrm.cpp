@@ -43,7 +43,6 @@ END_MESSAGE_MAP()
 
 CMainFrame::CMainFrame()
 {
-	m_pXkeymacsDll			= new CXkeymacsDll;
 	m_pPropertiesDlg		= new CProperties;
 	m_nResultPropertiesDlg	= -1;
 	m_bPropertiesDlgExist	= FALSE;
@@ -87,9 +86,6 @@ CMainFrame::CMainFrame()
 
 CMainFrame::~CMainFrame()
 {
-	delete m_pXkeymacsDll;
-	m_pXkeymacsDll = NULL;
-
 	delete m_pPropertiesDlg;
 	m_pPropertiesDlg = NULL;
 
@@ -114,7 +110,7 @@ int CMainFrame::OnCreate(const LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 
-	m_pXkeymacsDll->Set106Keyboard(CProfile::Is106Keyboard());
+	CXkeymacsDll::Set106Keyboard(CProfile::Is106Keyboard());
 
 	// init notify icon data
 	NOTIFYICONDATA notifyIconData[MAX_ICON_TYPE] = {
@@ -149,7 +145,7 @@ int CMainFrame::OnCreate(const LPCREATESTRUCT lpCreateStruct)
 			   sizeof(notifyIconData[ALT_ICON].szTip));
 
 	// set notify icon data
-	m_pXkeymacsDll->SetNotifyIconData(MAIN_ICON, notifyIconData[MAIN_ICON],
+	CXkeymacsDll::SetNotifyIconData(MAIN_ICON, notifyIconData[MAIN_ICON],
 		(HICON)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME), IMAGE_ICON, 16, 16, LR_SHARED),
 		(HICON)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAIN_DISABLE_TMP), IMAGE_ICON, 16, 16, LR_SHARED),
 		(HICON)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAIN_DISABLE_WOCQ), IMAGE_ICON, 16, 16, LR_SHARED),		// disable without C-q
@@ -157,45 +153,45 @@ int CMainFrame::OnCreate(const LPCREATESTRUCT lpCreateStruct)
 		AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_MAIN)), 1));
 
 	// set notify ^X icon data
-	m_pXkeymacsDll->SetNotifyIconData(CX_ICON, notifyIconData[CX_ICON], AfxGetApp()->LoadIcon(IDI_CX_ON),
+	CXkeymacsDll::SetNotifyIconData(CX_ICON, notifyIconData[CX_ICON], AfxGetApp()->LoadIcon(IDI_CX_ON),
 									  AfxGetApp()->LoadIcon(IDI_CX_OFF),
 									  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_CX)), 0));
 
 	// set notify M-x icon data
-	m_pXkeymacsDll->SetNotifyIconData(MX_ICON, notifyIconData[MX_ICON], AfxGetApp()->LoadIcon(IDI_MX_ON),
+	CXkeymacsDll::SetNotifyIconData(MX_ICON, notifyIconData[MX_ICON], AfxGetApp()->LoadIcon(IDI_MX_ON),
 									  AfxGetApp()->LoadIcon(IDI_MX_OFF),
 									  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_MX)), 0));
 
 	// set notify Meta icon data
-	m_pXkeymacsDll->SetNotifyIconData(META_ICON, notifyIconData[META_ICON], AfxGetApp()->LoadIcon(IDI_META_ON),
+	CXkeymacsDll::SetNotifyIconData(META_ICON, notifyIconData[META_ICON], AfxGetApp()->LoadIcon(IDI_META_ON),
 									  AfxGetApp()->LoadIcon(IDI_META_OFF),
 									  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_META)), 0));
 
 	// set notify Shift icon data
-	m_pXkeymacsDll->SetNotifyIconData(SHIFT_ICON, notifyIconData[SHIFT_ICON], AfxGetApp()->LoadIcon(IDI_SHIFT_ON),
+	CXkeymacsDll::SetNotifyIconData(SHIFT_ICON, notifyIconData[SHIFT_ICON], AfxGetApp()->LoadIcon(IDI_SHIFT_ON),
 									  AfxGetApp()->LoadIcon(IDI_SHIFT_OFF),
 									  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_SHIFT)), 0));
 
 	// set notify Ctrl icon data
-	m_pXkeymacsDll->SetNotifyIconData(CTRL_ICON, notifyIconData[CTRL_ICON], AfxGetApp()->LoadIcon(IDI_CTRL_ON),
+	CXkeymacsDll::SetNotifyIconData(CTRL_ICON, notifyIconData[CTRL_ICON], AfxGetApp()->LoadIcon(IDI_CTRL_ON),
 									  AfxGetApp()->LoadIcon(IDI_CTRL_OFF),
 									  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_CTRL)), 0));
 
 	// set notify Alt icon data
-	m_pXkeymacsDll->SetNotifyIconData(ALT_ICON, notifyIconData[ALT_ICON], AfxGetApp()->LoadIcon(IDI_ALT_ON),
+	CXkeymacsDll::SetNotifyIconData(ALT_ICON, notifyIconData[ALT_ICON], AfxGetApp()->LoadIcon(IDI_ALT_ON),
 									  AfxGetApp()->LoadIcon(IDI_ALT_OFF),
 									  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_ALT)), 0));
 
-	m_pXkeymacsDll->SetKeyboardSpeed(CProfile::GetKeyboardSpeed());
-	m_pXkeymacsDll->SetAccelerate(AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_ACCELERATE)), 1));
+	CXkeymacsDll::SetKeyboardSpeed(CProfile::GetKeyboardSpeed());
+	CXkeymacsDll::SetAccelerate(AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_ACCELERATE)), 1));
 
-	m_pXkeymacsDll->SetCursorData((HCURSOR)::LoadImage(NULL, MAKEINTRESOURCE(IDC_ARROW), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED),
+	CXkeymacsDll::SetCursorData((HCURSOR)::LoadImage(NULL, MAKEINTRESOURCE(IDC_ARROW), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED),
 								  (HCURSOR)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDC_DISABLE_TMP_CURSOR), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED),
 								  (HCURSOR)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDC_DISABLE_WOCQ_CURSOR), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED),
 								  (HCURSOR)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDC_DISABLE_CURSOR), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED),
 								  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_CHANGE_CURSOR)), 0));
 
-	m_pXkeymacsDll->SetHooks();
+	CXkeymacsDll::SetHooks();
 
 	return 0;
 }
@@ -290,7 +286,7 @@ void CMainFrame::ShowRightMenu(const ICON_TYPE icon)
 		popUp->SetDefaultItem(IDC_PROPERTIES);
 
 		CString szDisable(MAKEINTRESOURCE(IDS_ENABLE));
-		if (m_pXkeymacsDll->IsKeyboardHook()) {
+		if (CXkeymacsDll::IsKeyboardHook()) {
 			szDisable.LoadString(IDS_DISABLE);
 		}
 		szDisable += _T("\tCtrl+Q");
@@ -359,7 +355,7 @@ LRESULT CMainFrame::WindowProc(const UINT message, const WPARAM wParam, const LP
 		}
 	default:
 		if (message == s_uTaskbarRestart) {
-			m_pXkeymacsDll->AddAllShell_NotifyIcon();
+			CXkeymacsDll::AddAllShell_NotifyIcon();
 		}
 		break;
 	}
@@ -385,10 +381,10 @@ void CMainFrame::OnOptions()
 // stop/start keyboard hook
 void CMainFrame::OnDisable() 
 {
-	if (m_pXkeymacsDll->IsKeyboardHook()) {
-		m_pXkeymacsDll->SetKeyboardHookFlag(FALSE);
+	if (CXkeymacsDll::IsKeyboardHook()) {
+		CXkeymacsDll::SetKeyboardHookFlag(FALSE);
 	} else {
-		m_pXkeymacsDll->SetKeyboardHookFlag(TRUE);
+		CXkeymacsDll::SetKeyboardHookFlag(TRUE);
 	}
 }
 
@@ -411,8 +407,8 @@ void CMainFrame::OnQuit()
 		CloseDialog(m_p109KeyboardDlg[i], &m_nResultKeyboardDlg[JAPANESE_KEYBOARD][i]);
 	}
 
-	m_pXkeymacsDll->ReleaseHooks();
-	m_pXkeymacsDll->DeleteAllShell_NotifyIcon();
+	CXkeymacsDll::ReleaseHooks();
+	CXkeymacsDll::DeleteAllShell_NotifyIcon();
 
 	PostQuitMessage(0);
 }
@@ -459,8 +455,8 @@ void CMainFrame::OnExport()
 
 void CMainFrame::OnReset() 
 {
-	m_pXkeymacsDll->ReleaseHooks();
-	m_pXkeymacsDll->SetHooks();
+	CXkeymacsDll::ReleaseHooks();
+	CXkeymacsDll::SetHooks();
 }
 
 void CMainFrame::OnHelpFinder() 

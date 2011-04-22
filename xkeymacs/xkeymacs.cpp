@@ -89,6 +89,7 @@ BOOL CXkeymacsApp::InitInstance()
 
 	// set registry key
 	CProfile::InitDllData();
+	CUtils::InitCUtils();
 
 	return TRUE;
 }

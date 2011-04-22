@@ -86,9 +86,7 @@ private:
 	CAboutDlg *m_pAboutDlg;
 	int	m_nResultAboutDlg;
 	int m_nResultPropertiesDlg;
-public:
 	CProperties *m_pPropertiesDlg;
-	CXkeymacsDll *m_pXkeymacsDll;
 };
 
 /////////////////////////////////////////////////////////////////////////////

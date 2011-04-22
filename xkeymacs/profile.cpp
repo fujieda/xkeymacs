@@ -474,7 +474,7 @@ BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
 	}
 	return TRUE;
 }
-	
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -768,11 +768,9 @@ void CProfile::SaveRegistryData()
 
 void CProfile::SetDllData()
 {
-	CMainFrame *pMainFrame = (CMainFrame*)AfxGetMainWnd();
-
-	pMainFrame->m_pXkeymacsDll->ClearFunctionDefinition();
+	CXkeymacsDll::ClearFunctionDefinition();
 	for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); ++nFunctionID) {
-		pMainFrame->m_pXkeymacsDll->SetFunctionDefinition(nFunctionID, CDotXkeymacs::GetFunctionDefinition(nFunctionID));
+		CXkeymacsDll::SetFunctionDefinition(nFunctionID, CDotXkeymacs::GetFunctionDefinition(nFunctionID));
 	}
 
 	for (int nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
@@ -780,24 +778,24 @@ void CProfile::SetDllData()
 		CString szApplicationName = m_XkeymacsData[nApplicationID].GetApplicationName();
 
 		if (szApplicationName.IsEmpty()) {
-			pMainFrame->m_pXkeymacsDll->Clear(nApplicationID);
+			CXkeymacsDll::Clear(nApplicationID);
 			continue;
 		}
 
-		pMainFrame->m_pXkeymacsDll->SetApplicationName(nApplicationID, szApplicationName);
-		pMainFrame->m_pXkeymacsDll->SetWindowText(nApplicationID, m_XkeymacsData[nApplicationID].GetWindowText());
-		pMainFrame->m_pXkeymacsDll->SetCommandID(nApplicationID, CONTROL, 'X', 0);
-		pMainFrame->m_pXkeymacsDll->SetAtIbeamCursorOnly(nApplicationID, CONTROL, 'X', FALSE);
+		CXkeymacsDll::SetApplicationName(nApplicationID, szApplicationName);
+		CXkeymacsDll::SetWindowText(nApplicationID, m_XkeymacsData[nApplicationID].GetWindowText());
+		CXkeymacsDll::SetCommandID(nApplicationID, CONTROL, 'X', 0);
+		CXkeymacsDll::SetAtIbeamCursorOnly(nApplicationID, CONTROL, 'X', FALSE);
 
 		for (int nCommandType = 0; nCommandType < MAX_COMMAND_TYPE; ++nCommandType) {
 			for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
 				const int nCommandID = m_XkeymacsData[nApplicationID].GetCommandID(nCommandType, nKey);
-				pMainFrame->m_pXkeymacsDll->SetCommandID(nApplicationID, nCommandType, nKey, nCommandID);
+				CXkeymacsDll::SetCommandID(nApplicationID, nCommandType, nKey, nCommandID);
 				const BOOL bAtIbeamCursorOnly = m_XkeymacsData[nApplicationID].GetAtIbeamCursorOnly(nCommandType, nKey);
-				pMainFrame->m_pXkeymacsDll->SetAtIbeamCursorOnly(nApplicationID, nCommandType, nKey, bAtIbeamCursorOnly);
+				CXkeymacsDll::SetAtIbeamCursorOnly(nApplicationID, nCommandType, nKey, bAtIbeamCursorOnly);
 				if ((nCommandType & CONTROLX) && nCommandID) {
-					pMainFrame->m_pXkeymacsDll->SetCommandID(nApplicationID, CONTROL, 'X', 1);			// Commands[1] is C-x
-					pMainFrame->m_pXkeymacsDll->SetAtIbeamCursorOnly(nApplicationID, CONTROL, 'X', bAtIbeamCursorOnly);
+					CXkeymacsDll::SetCommandID(nApplicationID, CONTROL, 'X', 1);			// Commands[1] is C-x
+					CXkeymacsDll::SetAtIbeamCursorOnly(nApplicationID, CONTROL, 'X', bAtIbeamCursorOnly);
 				}
 			}
 		}
@@ -807,22 +805,22 @@ void CProfile::SetDllData()
 				int nCommandType = 0;
 				int nKey = 0;
 				CDotXkeymacs::GetKey(nFunctionID, nApplicationID, nKeyID, &nCommandType, &nKey);
-				pMainFrame->m_pXkeymacsDll->SetFunctionKey(nFunctionID, nApplicationID, nCommandType, nKey);
+				CXkeymacsDll::SetFunctionKey(nFunctionID, nApplicationID, nCommandType, nKey);
 				if (nCommandType & CONTROLX) {
-					pMainFrame->m_pXkeymacsDll->SetCommandID(nApplicationID, CONTROL, 'X', 1);			// Commands[1] is C-x
+					CXkeymacsDll::SetCommandID(nApplicationID, CONTROL, 'X', 1);			// Commands[1] is C-x
 					const BOOL bAtIbeamCursorOnly = m_XkeymacsData[nApplicationID].GetAtIbeamCursorOnly(nCommandType, nKey);
-					pMainFrame->m_pXkeymacsDll->SetAtIbeamCursorOnly(nApplicationID, CONTROL, 'X', bAtIbeamCursorOnly);
+					CXkeymacsDll::SetAtIbeamCursorOnly(nApplicationID, CONTROL, 'X', bAtIbeamCursorOnly);
 				}
 			}
 		}
 
-		pMainFrame->m_pXkeymacsDll->SetKillRingMax(nApplicationID, m_XkeymacsData[nApplicationID].GetKillRingMax());
-		pMainFrame->m_pXkeymacsDll->SetUseDialogSetting(nApplicationID, m_XkeymacsData[nApplicationID].GetUseDialogSetting());
-		pMainFrame->m_pXkeymacsDll->SetSettingStyle(nApplicationID, m_XkeymacsData[nApplicationID].GetSettingStyle());
-		pMainFrame->m_pXkeymacsDll->SetIgnoreUndefinedMetaCtrl(nApplicationID, m_XkeymacsData[nApplicationID].GetIgnoreUndefinedMetaCtrl());
-		pMainFrame->m_pXkeymacsDll->SetIgnoreUndefinedC_x(nApplicationID, m_XkeymacsData[nApplicationID].GetIgnoreUndefinedC_x());
-		pMainFrame->m_pXkeymacsDll->SetEnableCUA(nApplicationID, m_XkeymacsData[nApplicationID].GetEnableCUA());
-		pMainFrame->m_pXkeymacsDll->Set326Compatible(nApplicationID, m_XkeymacsData[nApplicationID].Get326Compatible());
+		CXkeymacsDll::SetKillRingMax(nApplicationID, m_XkeymacsData[nApplicationID].GetKillRingMax());
+		CXkeymacsDll::SetUseDialogSetting(nApplicationID, m_XkeymacsData[nApplicationID].GetUseDialogSetting());
+		CXkeymacsDll::SetSettingStyle(nApplicationID, m_XkeymacsData[nApplicationID].GetSettingStyle());
+		CXkeymacsDll::SetIgnoreUndefinedMetaCtrl(nApplicationID, m_XkeymacsData[nApplicationID].GetIgnoreUndefinedMetaCtrl());
+		CXkeymacsDll::SetIgnoreUndefinedC_x(nApplicationID, m_XkeymacsData[nApplicationID].GetIgnoreUndefinedC_x());
+		CXkeymacsDll::SetEnableCUA(nApplicationID, m_XkeymacsData[nApplicationID].GetEnableCUA());
+		CXkeymacsDll::Set326Compatible(nApplicationID, m_XkeymacsData[nApplicationID].Get326Compatible());
 	}
 }
 

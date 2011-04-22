@@ -160,13 +160,12 @@ void COptionsDlg::OnOK()
 		AfxGetApp()->WriteProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_ALT)), m_cAlt.GetCheck());
 
 		// set dll data
-		CMainFrame *pMainFrame = (CMainFrame*)AfxGetMainWnd();
-		pMainFrame->m_pXkeymacsDll->EnableShell_NotifyIcon(CX_ICON, m_cCx.GetCheck());
-		pMainFrame->m_pXkeymacsDll->EnableShell_NotifyIcon(MX_ICON, m_cMx.GetCheck());
-		pMainFrame->m_pXkeymacsDll->EnableShell_NotifyIcon(META_ICON, m_cM_.GetCheck());
-		pMainFrame->m_pXkeymacsDll->EnableShell_NotifyIcon(SHIFT_ICON, m_cShift.GetCheck());
-		pMainFrame->m_pXkeymacsDll->EnableShell_NotifyIcon(CTRL_ICON, m_cCtrl.GetCheck());
-		pMainFrame->m_pXkeymacsDll->EnableShell_NotifyIcon(ALT_ICON, m_cAlt.GetCheck());
+		CXkeymacsDll::EnableShell_NotifyIcon(CX_ICON, m_cCx.GetCheck());
+		CXkeymacsDll::EnableShell_NotifyIcon(MX_ICON, m_cMx.GetCheck());
+		CXkeymacsDll::EnableShell_NotifyIcon(META_ICON, m_cM_.GetCheck());
+		CXkeymacsDll::EnableShell_NotifyIcon(SHIFT_ICON, m_cShift.GetCheck());
+		CXkeymacsDll::EnableShell_NotifyIcon(CTRL_ICON, m_cCtrl.GetCheck());
+		CXkeymacsDll::EnableShell_NotifyIcon(ALT_ICON, m_cAlt.GetCheck());
 	}
 
 	CDialog::OnOK();
