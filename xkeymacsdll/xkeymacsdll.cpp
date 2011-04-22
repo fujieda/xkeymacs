@@ -18,7 +18,8 @@ static char THIS_FILE[] = __FILE__;
 
 static AFX_EXTENSION_MODULE XkeymacsdllDLL = { NULL, NULL };
 
-static HINSTANCE g_hDllInst = NULL;
+static __declspec(thread) HINSTANCE g_hDllInst = NULL;
+static __declspec(thread) HHOOK g_hHookKeyboard = NULL;
 
 extern "C" int APIENTRY
 DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
@@ -28,7 +29,8 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	// Remove this if you use lpReserved
 	UNREFERENCED_PARAMETER(lpReserved);
 
-	if (dwReason == DLL_PROCESS_ATTACH) {
+	switch (dwReason) {
+	case DLL_PROCESS_ATTACH:
 		TRACE0("XKEYMACSDLL.DLL Initializing!\n");
 		
 		// Extension DLL one-time initialization
@@ -55,10 +57,15 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 			e->Delete();
 //			CUtils::Log("DllMain: 'new' threw an exception");
 		}
-	} else if (dwReason == DLL_PROCESS_DETACH) {
+	case DLL_THREAD_ATTACH:
+		CXkeymacsDll::SetKeyboardHook();
+		break;
+	case DLL_PROCESS_DETACH:
 		TRACE0("XKEYMACSDLL.DLL Terminating!\n");
 		// Terminate the library before destructors are called
 		AfxTermExtensionModule(XkeymacsdllDLL);
+	case DLL_THREAD_DETACH:
+		CXkeymacsDll::ReleaseKeyboardHook();
 	}
 	return 1;   // ok
 }
@@ -69,7 +76,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 
 #include "xkeymacsDll.h"
 #pragma data_seg(".xkmcs")
-	HHOOK	CXkeymacsDll::m_hHookKeyboard = NULL;
+	BOOL	CXkeymacsDll::m_bEnableKeyboardHook = FALSE;
 	HHOOK	CXkeymacsDll::m_hHookCallWnd = NULL;
 	HHOOK	CXkeymacsDll::m_hHookCallWndRet = NULL;
 	HHOOK	CXkeymacsDll::m_hHookGetMessage = NULL;
@@ -206,19 +213,23 @@ void CXkeymacsDll::DeleteShell_NotifyIcon(ICON_TYPE icon)
 // set hooks
 void CXkeymacsDll::SetHooks()
 {
-	m_hHookKeyboard = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, g_hDllInst, 0);
+	m_bEnableKeyboardHook = TRUE;
 	m_hHookCallWnd = SetWindowsHookEx(WH_CALLWNDPROC, (HOOKPROC)CallWndProc, g_hDllInst, 0);
 	m_hHookCallWndRet = SetWindowsHookEx(WH_CALLWNDPROCRET, (HOOKPROC)CallWndRetProc, g_hDllInst, 0);
 	m_hHookGetMessage = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)GetMsgProc, g_hDllInst, 0);
 	m_hHookShell = SetWindowsHookEx(WH_SHELL, (HOOKPROC)ShellProc, g_hDllInst, 0);
 }
 
+void CXkeymacsDll::SetKeyboardHook()
+{
+	if (!g_hHookKeyboard)
+		SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, g_hDllInst, GetCurrentThreadId());
+}
+
 // release hooks
 void CXkeymacsDll::ReleaseHooks()
 {
-	if (m_hHookKeyboard)
-		UnhookWindowsHookEx(m_hHookKeyboard);
-	m_hHookKeyboard = NULL;
+	m_bEnableKeyboardHook = FALSE;
 	if (m_hHookCallWnd)
 		UnhookWindowsHookEx(m_hHookCallWnd);
 	m_hHookCallWnd = NULL;
@@ -231,6 +242,13 @@ void CXkeymacsDll::ReleaseHooks()
 	if (m_hHookShell)
 		UnhookWindowsHookEx(m_hHookShell);
 	m_hHookShell = NULL;
+}
+
+void CXkeymacsDll::ReleaseKeyboardHook()
+{
+	if (g_hHookKeyboard)
+		UnhookWindowsHookEx(g_hHookKeyboard);
+	g_hHookKeyboard = NULL;
 }
 
 void CXkeymacsDll::SetKeyboardHookFlag(BOOL bFlag)
@@ -678,6 +696,9 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	static BOOL bCherryOneShotModifier = FALSE;
 
 //	CUtils::Log(_T("nCode = %#x, nKey = %#x, lParam = %#x"), nCode, nKey, lParam);
+
+	if (!m_bEnableKeyboardHook)
+		return CallNextHookEx(g_hHookKeyboard, nCode, wParam, lParam);
 
 	if (nCode < 0 || nCode == HC_NOREMOVE) {
 		goto DO_NOTHING;
@@ -1129,7 +1150,7 @@ DO_NOTHING:
 		bDefiningMacro = m_bDefiningMacro;
 	}
 
-	return CallNextHookEx(m_hHookKeyboard, nCode, wParam, lParam);
+	return CallNextHookEx(g_hHookKeyboard, nCode, wParam, lParam);
 
 RECURSIVE:
 	Kdu(RECURSIVE_KEY, 1, FALSE);

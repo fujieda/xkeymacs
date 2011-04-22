@@ -194,10 +194,12 @@ public:
 	void SetAtIbeamCursorOnly(int nApplicationID, int nCommandType, int nKey, BOOL bAtIbeamCursorOnly);
 	void SetApplicationName(int nApplicationID, CString szApplicationName);
 	static void ReleaseHooks();
+	static void ReleaseKeyboardHook();
 	void SetEnableCUA(int nApplicationID, BOOL bEnableCUA);
 	void SetIgnoreUndefinedC_x(int nApplicationID, BOOL bIgnoreUndefinedC_x);
 	void SetIgnoreUndefinedMetaCtrl(int nApplicationID, BOOL bIgnoreUndefinedMetaCtrl);
 	static void SetHooks();
+	static void SetKeyboardHook();
 	void SetSettingStyle(int nApplicationID, int nSettingStyle);
 	void SetUseDialogSetting(int nApplicationID, BOOL bUseDialogSetting);
 	static void AddKillRing(BOOL bNewData = TRUE);
@@ -232,7 +234,7 @@ private:
 	static LRESULT CALLBACK CallWndRetProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static BOOL IsMatchWindowText(CString szWindowText);
 	static TCHAR m_szWindowText[MAX_APP][WINDOW_TEXT_LENGTH];
-	static HHOOK m_hHookKeyboard;
+	static BOOL m_bEnableKeyboardHook;
 	static HHOOK m_hHookCallWnd;
 	static HHOOK m_hHookGetMessage;
 	static HHOOK m_hHookShell;
