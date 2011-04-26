@@ -822,6 +822,12 @@ void CProfile::SetDllData()
 		CXkeymacsDll::SetEnableCUA(nApplicationID, m_XkeymacsData[nApplicationID].GetEnableCUA());
 		CXkeymacsDll::Set326Compatible(nApplicationID, m_XkeymacsData[nApplicationID].Get326Compatible());
 	}
+	CXkeymacsApp *pApp = static_cast<CXkeymacsApp *>(AfxGetApp());
+	if (!pApp->IsWow64())
+		return;
+	if (!CXkeymacsDll::SaveConfig())
+		return;
+	pApp->SendIPCMessage(XKEYMACS_RELOAD);
 }
 
 void CProfile::ReadKeyBind(int *const pnCommandType, int *const pnKey, LPCTSTR szKeyBind)

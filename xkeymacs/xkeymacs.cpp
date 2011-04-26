@@ -28,6 +28,7 @@ END_MESSAGE_MAP()
 CXkeymacsApp::CXkeymacsApp()
 {
 	m_hMutex = NULL;
+	m_bIsWow64 = FALSE;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -46,16 +47,12 @@ BOOL CXkeymacsApp::InitInstance()
 	// If you are not using these features and wish to reduce the size
 	//  of your final executable, you should remove from the following
 	//  the specific initialization routines you do not need.
-#ifdef _WIN64
-	m_hMutex = CreateMutex(FALSE, 0, CString(MAKEINTRESOURCE(AFX_IDS_APP_TITLE)) + _T("64"));
-#else
 	m_hMutex = CreateMutex(FALSE, 0, CString(MAKEINTRESOURCE(AFX_IDS_APP_TITLE)));
-#endif
-    if (GetLastError() == ERROR_ALREADY_EXISTS) {
-        CloseHandle(m_hMutex);
+	if (GetLastError() == ERROR_ALREADY_EXISTS) {
+		CloseHandle(m_hMutex);
 		m_hMutex = NULL;
-        return FALSE;
-    }
+		return FALSE;
+	}
 
 #ifdef _AFXDLL
 	Enable3dControls();			// Call this when using MFC in a shared DLL
@@ -83,10 +80,58 @@ BOOL CXkeymacsApp::InitInstance()
 	SetClassLongPtr(m_pMainWnd->m_hWnd, GCLP_HICON, (LONG_PTR)LoadIcon(IDR_MAINFRAME));
 
 	// set registry key
-	CProfile::InitDllData();
 	CUtils::InitCUtils();
+	if (!Create64bitProcess())
+		return FALSE;
+	CProfile::InitDllData();
 
 	return TRUE;
+}
+
+BOOL CXkeymacsApp::IsWow64()
+{
+	return m_bIsWow64;
+}
+
+BOOL CXkeymacsApp::Create64bitProcess()
+{
+	typedef BOOL (WINAPI *PFIsWow64Process)(HANDLE, PBOOL);
+	PFIsWow64Process func = (PFIsWow64Process)GetProcAddress(GetModuleHandle(_T("kernel32")), _T("IsWow64Process"));
+	if (!func)
+		return TRUE; // IsWow64Process not exists
+	if (!func(GetCurrentProcess(), &m_bIsWow64))
+		return FALSE; // error
+	if (!m_bIsWow64)
+		return TRUE; // do nothing
+	
+	TCHAR szFileName[MAX_PATH];
+	if (!GetModuleFileName(NULL, szFileName, sizeof(szFileName)))
+		return FALSE;
+	TCHAR szDrive[_MAX_DRIVE], szDir[_MAX_DIR], szFile[_MAX_FNAME], szExt[_MAX_EXT];
+	if (_tsplitpath_s(szFileName, szDrive, szDir, szFile, szExt) ||
+			_tcscat_s(szFile, _T("64")) ||
+			_tmakepath_s(szFileName, szDrive, szDir, szFile, szExt))
+		return FALSE;
+
+	STARTUPINFO si;
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&pi, sizeof(pi));
+	if (!CreateProcess(szFileName, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+		return FALSE;
+	// close unused handles
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
+	return TRUE;
+}
+
+BOOL CXkeymacsApp::SendIPCMessage(DWORD msg)
+{
+	if (!m_bIsWow64)
+		return TRUE;
+	DWORD ack, read;
+	return CallNamedPipe(IPC_PIPE, &msg, sizeof(msg), &ack, sizeof(DWORD), &read, 10000);
 }
 
 int CXkeymacsApp::ExitInstance() 

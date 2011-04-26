@@ -60,7 +60,13 @@
     <ClCompile Include="data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mainfrm64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="about.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xkeymacs64.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -113,7 +119,13 @@
     <ClInclude Include="data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mainfrm64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="about.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xkeymacs64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -37,9 +37,13 @@ public:
 		// NOTE - the ClassWizard will add and remove member functions here.
 		//    DO NOT EDIT what you see in these blocks of generated code !
 	//}}AFX_MSG
+	BOOL IsWow64();
+	BOOL SendIPCMessage(DWORD msg);
+	BOOL Create64bitProcess();
 	DECLARE_MESSAGE_MAP()
 private:
 	HANDLE m_hMutex;
+	BOOL m_bIsWow64;
 };
 
 //{{AFX_INSERT_LOCATION}}

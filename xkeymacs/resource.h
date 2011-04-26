@@ -31,7 +31,7 @@
 #define IDC_REG_ENTRY_IGNORE_META_CTRL  29
 #define IDC_REG_ENTRY_IGNORE_C_X        30
 #define IDS_ERR_SAVE_DATA               31
-#define IDS_ERR_WINDOWS_VERSION         32
+#define IDS_ERR_32BIT                   32
 #define IDS_ERR_IMPORT                  33
 #define IDS_ERR_EXPORT                  34
 #define IDC_REG_ENTRY_ENABLE_CUA        35

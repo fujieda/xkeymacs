@@ -1056,7 +1056,7 @@ END
 
 STRINGTABLE DISCARDABLE 
 BEGIN
-    IDS_ERR_WINDOWS_VERSION "XKeymacs はこのバージョンの Windows をサポートしておりません。"
+    IDS_ERR_32BIT           "32ビット版の xkeymacs.exe を実行してください。"
     IDS_ERR_IMPORT          "%s\nファイルが見つかりません。\n指定したファイル名が正しいかどうか確認してください。"
     IDS_ERR_EXPORT          "設定の書き出しに失敗しました。"
     IDC_REG_ENTRY_ENABLE_CUA "Enable CUA"
@@ -2874,7 +2874,7 @@ END
 
 STRINGTABLE DISCARDABLE 
 BEGIN
-    IDS_ERR_WINDOWS_VERSION "XKeymacs does not support the Windows of this version."
+    IDS_ERR_32BIT           "Please start 32bit version of xkeymacs.exe."
     IDS_ERR_IMPORT          "%s\nFile not found.\nPlease verify the correct file name was given."
     IDS_ERR_EXPORT          "Failed to export properties."
     IDC_REG_ENTRY_ENABLE_CUA "Enable CUA"
