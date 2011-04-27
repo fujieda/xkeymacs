@@ -56,6 +56,7 @@ public:
 	static BOOL SaveConfig();
 	static BOOL LoadConfig();
 	static void SetM_xTip(const TCHAR *const szPath);
+	static void SetHookAltRelease();
 	static BOOL Get326Compatible();
 	static void Set326Compatible(int nApplicationID, BOOL b326Compatible);
 	static void SetCursorData(HCURSOR hEnable, HCURSOR hDisableTMP, HCURSOR hDisableWOCQ, HICON hDisable, BOOL bEnable);
@@ -101,6 +102,7 @@ public:
 	CXkeymacsDll();
 	virtual ~CXkeymacsDll();
 private:
+	static BOOL m_bHookAltRelease;
 	static TCHAR m_M_xTip[128];
 	static void InvokeM_x(const TCHAR* const szPath);
 	static void LogCallWndProcMessage(WPARAM wParam, LPARAM lParam);

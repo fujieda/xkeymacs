@@ -196,6 +196,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 
 #include "xkeymacsDll.h"
 #pragma data_seg(".xkmcs")
+	BOOL	CXkeymacsDll::m_bHookAltRelease	= FALSE;
 	BOOL	CXkeymacsDll::m_bEnableKeyboardHook = FALSE;
 	HHOOK	CXkeymacsDll::m_hHookCallWnd = NULL;
 	HHOOK	CXkeymacsDll::m_hHookCallWndRet = NULL;
@@ -264,6 +265,11 @@ BOOL CXkeymacsDll::LoadConfig()
 	BOOL res = ReadFile(hFile, &m_Config, sizeof(m_Config), &read, NULL) && read == sizeof(m_Config);
 	CloseHandle(hFile);
 	return res;
+}
+
+void CXkeymacsDll::SetHookAltRelease()
+{
+	m_bHookAltRelease = TRUE;
 }
 
 // set hooks
@@ -816,21 +822,26 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	}
 
 	if (lParam & BEING_RELEASED) {
-		if (nKey == VK_MENU
-		 || nKey == VK_LWIN
-		 || nKey == VK_RWIN
-		 || nKey == VK_APPS
-		 || nKey == VK_LMENU
-		 || nKey == VK_RMENU) {
-			for (int i = 0; i < MAX_COMMAND_TYPE; ++i) {
-				if (Commands[m_Config.nCommandID[m_nApplicationID][i][nKey]].fCommand
-				 && (Commands[m_Config.nCommandID[m_nApplicationID][i][nKey]].fCommand != CCommands::MetaAlt
-				  || nKey != VK_MENU && nKey != VK_LMENU && nKey != VK_RMENU)) {
+		BOOL bAlt = FALSE;
+		switch (nKey) {
+		case VK_MENU:
+		case VK_LMENU:
+		case VK_RMENU:
+			bAlt = TRUE;
+			if (m_bHookAltRelease) {
+				m_bHookAltRelease = FALSE;
+				goto HOOK;
+			}
+			// pass through
+		case VK_LWIN:
+		case VK_RWIN:
+		case VK_APPS:
+			for (int i = 0; i < MAX_COMMAND_TYPE; i++) {
+				int (*func)() = Commands[m_Config.nCommandID[m_nApplicationID][i][nKey]].fCommand;
+				if (func && !(bAlt && func == CCommands::MetaAlt))
 					goto HOOK;
-				}
 			}
 		}
-
 		if (nOneShotModifier[nKey]) {
 			ReleaseKey(nOneShotModifier[nKey]);
 			nOneShotModifier[nKey] = 0;
@@ -840,7 +851,6 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 				Kdu(nKey);
 			}
 		}
-
 		goto DO_NOTHING;
 	}
 

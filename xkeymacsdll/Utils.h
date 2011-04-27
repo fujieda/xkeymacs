@@ -63,7 +63,8 @@ public:
 	static BOOL IsVisualBasic();
 	static BOOL IsProject();
 	static BOOL IsAccess();
-	static BOOL IsVisualStudioDotNet();
+	static BOOL IsVisualStudio();
+	static BOOL IsVisualStudio2010();
 	static BOOL IsCsh();
 	static BOOL IsSh();
 	static BOOL IsBash();

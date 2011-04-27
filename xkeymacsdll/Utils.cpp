@@ -752,9 +752,23 @@ BOOL CUtils::IsCsh()
 	return !_tcsicmp(m_szApplicationName, _T("csh.exe"));
 }
 
-BOOL CUtils::IsVisualStudioDotNet()
+BOOL CUtils::IsVisualStudio()
 {
-	return !_tcsicmp(m_szApplicationName, _T("devenv.exe"));
+	if (IsVisualCpp() || CUtils::IsVisualBasic())
+		return FALSE;
+	TCHAR szWindowText[WINDOW_TEXT_LENGTH] = _T("");
+	GetWindowText(GetForegroundWindow(), szWindowText, sizeof(szWindowText));
+	return _tcsstr(szWindowText, _T(" - Microsoft Visual ")) != NULL;
+}
+
+BOOL CUtils::IsVisualStudio2010()
+{
+	if (IsVisualStudio()) {
+		TCHAR szWindowText[WINDOW_TEXT_LENGTH] = _T("");
+		GetWindowText(GetForegroundWindow(), szWindowText, sizeof(szWindowText));
+		return _tcsstr(szWindowText, _T("2010")) != NULL;
+	}
+	return FALSE;
 }
 
 BOOL CUtils::IsAccess()

@@ -330,6 +330,8 @@ void CCommands::Kdu(BYTE bVk1, BYTE bVk2, BYTE bVk3, BYTE bVk4)
 		ReleaseKey(VK_CONTROL);
 	}
 	if (bIsAltDown) {
+		if (CUtils::IsVisualStudio2010())
+			CXkeymacsDll::SetHookAltRelease(); // Ignore Alt release
 		ReleaseKey(VK_MENU);
 	}
 	if (bIsShiftDown) {
@@ -1463,9 +1465,14 @@ DWORD CCommands::DeactivateMark()
 		AdKduAu('E', 'I');
 		return ERROR_SUCCESS;	// i.e. return 0;
 	}
-	if (CUtils::IsVisualStudioDotNet()) {	// Ctrl + Click select a word on Visual Studio .NET
-		ReleaseKey(VK_CONTROL);
-		return ClickCaret();
+	if (CUtils::IsVisualStudio()) {	// Ctrl + Click select a word on Visual Studio .NET
+		BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL, FALSE);
+		if (bIsCtrlDown)
+			ReleaseKey(VK_CONTROL);
+		DWORD res = ClickCaret();
+		if (bIsCtrlDown)
+			DepressKey(VK_CONTROL);
+		return res;
 	}
 
 	return ClickCaret();
@@ -1478,7 +1485,7 @@ int CCommands::FindFile()
 	if (CUtils::IsFlash()
 	 || CUtils::IsSleipnir()) {
 		CdKduCu('O');
-	} else if (CUtils::IsVisualStudioDotNet()) {
+	} else if (CUtils::IsVisualStudio()) {
 		AdKduAu('F', 'O', 'F');
 	} else {
 		AdKduAu('F', 'O');
@@ -2463,7 +2470,7 @@ void CCommands::OpenFindDialog()
 		AdKduAu('S', VK_RETURN);
 	} else if (CUtils::IsNami2000()) {
 		AdKduAu('D', 'F');
-	} else if (CUtils::IsVisualStudioDotNet()) {
+	} else if (CUtils::IsVisualStudio()) {
 		AdKduAu('E', 'F', 'F');
 	} else if (CUtils::IsDirector()) {
 		AdKduAu('E', 'F', 'T');
@@ -2536,7 +2543,7 @@ int CCommands::Search(SEARCH_DIRECTION direction)
 	}
 
 	if (CUtils::IsVisualCpp()
-	 || CUtils::IsVisualStudioDotNet()) {
+	 || CUtils::IsVisualStudio()) {
 		switch (direction) {
 		case FORWARD:
 			CdKduCu('I');
@@ -3185,7 +3192,7 @@ BYTE CCommands::GetDirectionForwardKey()
 	 || CUtils::IsOpenJane()
 	 || CUtils::IsStoryEditor()
 	 || CUtils::IsVisualBasicEditor()
-	 || CUtils::IsVisualStudioDotNet()
+	 || CUtils::IsVisualStudio()
 	 || CUtils::IsWordpad()) {
 		bDirectionForward = 0;
 	} else if (CUtils::IsLotusNotes()
