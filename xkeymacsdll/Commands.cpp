@@ -440,9 +440,7 @@ void CCommands::CdKduCu(BYTE bVk1, BYTE bVk2)
 	}
 
 	if (bIsShiftDown && !m_bSetMark) {
-		if (!CUtils::IsXPorLater()) {	// FIXME	Windows XP said VK_SHIFT was pressed physically after a user press VK_RSHIFT, so...
-			DepressKey(VK_SHIFT);
-		}
+		DepressKey(VK_SHIFT);
 	}
 	if (bIsAltDown) {
 		DepressKey(VK_MENU);
@@ -511,9 +509,7 @@ void CCommands::AdKduAu(BYTE bVk1, BYTE bVk2, BYTE bVk3)
 	}
 
 	if (bIsShiftDown) {
-		if (!CUtils::IsXPorLater()) {	// FIXME	Windows XP said VK_SHIFT was pressed physically after a user press VK_RSHIFT, so...
-			DepressKey(VK_SHIFT);
-		}
+		DepressKey(VK_SHIFT);
 	}
 
 	if (!bIsAltDown) {

@@ -619,32 +619,27 @@ void CXkeymacsDll::DoKeybd_event(BYTE bVk, DWORD dwFlags)
 	// Set KEYEVENTF_EXTENDEDKEY if needed
 	switch (bVk) {
 	case VK_CONTROL:
-		if (m_bRightControl) {		// Right Ctrl
+		if (m_bRightControl)
 			dwFlags |= KEYEVENTF_EXTENDEDKEY;
-		}
 		break;
 
 	case VK_MENU:
-		if (m_bRightAlt) {			// Right Alt
+		if (m_bRightAlt)
 			dwFlags |= KEYEVENTF_EXTENDEDKEY;
-//			CUtils::Log("Right Alt %d", dwFlags);
-//		} else {
-//			CUtils::Log("Left Alt %d", dwFlags);
-		}
 		break;
 
 	case VK_SHIFT:
-		if (m_bRightShift) {		// Right Shift
-			dwFlags |= KEYEVENTF_EXTENDEDKEY;
+		if (m_bRightShift) {
+			if (CUtils::IsXPorLater())
+				bVk = VK_RSHIFT;
+			else
+				dwFlags |= KEYEVENTF_EXTENDEDKEY;
 		}
 		break;
-
 	case VK_PAUSE:
-		if (IsDown(VK_CONTROL)) {	// Break
+		if (IsDown(VK_CONTROL)) // Break
 			dwFlags |= KEYEVENTF_EXTENDEDKEY;
-		}
 		break;
-
 	case VK_INSERT:
 	case VK_DELETE:
 	case VK_HOME:
@@ -659,14 +654,10 @@ void CXkeymacsDll::DoKeybd_event(BYTE bVk, DWORD dwFlags)
 	case VK_PRINT:
 		dwFlags |= KEYEVENTF_EXTENDEDKEY;
 		break;
-
-	default:
-		break;
 	}
-
-//	CUtils::Log(_T("b: %x, %x, %x, %#x, %#x"), bVk, dwFlags, GetMessageExtraInfo(), GetKeyState(bVk), GetAsyncKeyState(bVk));
+//	CUtils::Log(_T("b: %x, %x, %x, %#hx, %#hx"), bVk, dwFlags, GetMessageExtraInfo(), GetKeyState(bVk), GetAsyncKeyState(bVk));
 	keybd_event(bVk, 0, dwFlags, GetMessageExtraInfo());
-//	CUtils::Log(_T("a: %x, %x, %x, %#x, %#x"), bVk, dwFlags, GetMessageExtraInfo(), GetKeyState(bVk), GetAsyncKeyState(bVk));
+//	CUtils::Log(_T("a: %x, %x, %x, %#hx, %#hx"), bVk, dwFlags, GetMessageExtraInfo(), GetKeyState(bVk), GetAsyncKeyState(bVk));
 }
 
 // the key is being depressed
