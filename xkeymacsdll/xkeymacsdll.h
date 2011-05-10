@@ -50,6 +50,8 @@ struct KeyName
 	LPCTSTR name;
 };
 
+const DWORD HOOK_ALT_LATER = 0x10000;
+
 class AFX_EXT_CLASS CXkeymacsDll  
 {
 public:
@@ -101,7 +103,7 @@ public:
 	CXkeymacsDll();
 	virtual ~CXkeymacsDll();
 private:
-	static BOOL m_bHookAltRelease;
+	static DWORD m_nHookAltRelease;
 	static TCHAR m_M_xTip[128];
 	static void InvokeM_x(const TCHAR* const szPath);
 	static BOOL UpdateKeyboardState(BYTE bVK, BYTE bState);

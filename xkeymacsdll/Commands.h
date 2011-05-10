@@ -235,7 +235,7 @@ private:
 	static void AdSdKduSuAu(BYTE bVk1);
 	static void AdKduAu(BYTE bVk1, BYTE bVk2 = 0, BYTE bVk3 = 0);
 	static void CdKduCu(BYTE bVk1, BYTE bVk2 = 0);
-	static void Kdu(BYTE bVk1 = 0, BYTE bVk2 = 0, BYTE bVk3 = 0, BYTE bVk4 = 0);
+	static void Kdu(BYTE bVk1, BYTE bVk2 = 0, BYTE bVk3 = 0, BYTE bVk4 = 0);
 	static DWORD m_nNumericArgument;
 	static void Su();
 	static BOOL m_bIsSu;

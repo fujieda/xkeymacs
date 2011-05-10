@@ -322,8 +322,7 @@ void CCommands::Kdu(BYTE bVk1, BYTE bVk2, BYTE bVk3, BYTE bVk4)
 		before &= ~SHIFT;
 	CXkeymacsDll::SetModifierState(0, before);
 
-	if (bVk1)
-		CXkeymacsDll::Kdu(bVk1, m_nNumericArgument);
+	CXkeymacsDll::Kdu(bVk1, m_nNumericArgument);
 	if (bVk2)
 		CXkeymacsDll::Kdu(bVk2, m_nNumericArgument);
 	if (bVk3)
@@ -367,8 +366,7 @@ void CCommands::CdKduCu(BYTE bVk1, BYTE bVk2)
 	UINT before = CXkeymacsDll::GetModifierState();
 	CXkeymacsDll::SetModifierState(CONTROL, before);
 
-	if (bVk1)
-		CXkeymacsDll::Kdu(bVk1, m_nNumericArgument);
+	CXkeymacsDll::Kdu(bVk1, m_nNumericArgument);
 	if (bVk2)
 		CXkeymacsDll::Kdu(bVk2, m_nNumericArgument);
 
@@ -1409,17 +1407,10 @@ int CCommands::ScrollDown()
 		return ScrollUp();
 	}
 
-	if (m_bDefaultNumericArgument) {
-		if (CUtils::IsFirefox()
-		 || CUtils::IsVisualCpp()) {
-			CdKduCu(0);	// dummy to clear Alt effect.
-		}
+	if (m_bDefaultNumericArgument)
 		return Reset(MoveCaret(VK_PRIOR));
-	} else {
-		while (m_nNumericArgument--) {
-			SendMessage(GetFocus(), WM_VSCROLL, SB_LINEUP, NULL);
-		}
-	}
+	while (m_nNumericArgument--)
+		SendMessage(GetFocus(), WM_VSCROLL, SB_LINEUP, NULL);
 	return Reset(GOTO_HOOK);
 }
 

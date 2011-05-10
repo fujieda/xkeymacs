@@ -228,7 +228,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 
 #include "xkeymacsDll.h"
 #pragma data_seg(".xkmcs")
-	BOOL	CXkeymacsDll::m_bHookAltRelease	= FALSE;
+	DWORD	CXkeymacsDll::m_nHookAltRelease	= 0;
 	HHOOK	CXkeymacsDll::m_hHookCallWnd = NULL;
 	HHOOK	CXkeymacsDll::m_hHookCallWndRet = NULL;
 	HHOOK	CXkeymacsDll::m_hHookGetMessage = NULL;
@@ -625,11 +625,14 @@ void CXkeymacsDll::SetModifierState(UINT after, UINT before)
 		UpdateKeyboardState(VK_CONTROL, 0);
 	}
 
-	if (after & META && !(before & META))
+	BOOL bHookApp = CUtils::IsVisualCpp() || CUtils::IsFirefox() || CUtils::IsVisualStudio() || CUtils::IsInternetExplorer();
+	if (after & META && !(before & META)) {
+		if (bHookApp)
+			m_nHookAltRelease |= HOOK_ALT_LATER;
 		DepressKey(VK_MENU);
-	else if (!(after & META) && before & META) {
-		if (CUtils::IsVisualStudio2010())
-			m_bHookAltRelease = TRUE;
+	} else if (!(after & META) && before & META) {
+		if (bHookApp)
+			m_nHookAltRelease++;
 		ReleaseKey(VK_MENU);
 	}
 }
@@ -873,8 +876,11 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		case VK_LMENU:
 		case VK_RMENU:
 			bAlt = TRUE;
-			if (m_bHookAltRelease) {
-				m_bHookAltRelease = FALSE;
+			if (m_nHookAltRelease) {
+				if (m_nHookAltRelease & ~HOOK_ALT_LATER)
+					m_nHookAltRelease--;
+				else if (m_nHookAltRelease & HOOK_ALT_LATER)
+					m_nHookAltRelease = 0;
 				goto HOOK;
 			}
 			// pass through

@@ -767,16 +767,6 @@ BOOL CUtils::IsVisualStudio()
 	return _tcsstr(szWindowText, _T(" - Microsoft Visual ")) != NULL;
 }
 
-BOOL CUtils::IsVisualStudio2010()
-{
-	if (IsVisualStudio()) {
-		TCHAR szWindowText[WINDOW_TEXT_LENGTH] = _T("");
-		GetWindowText(GetForegroundWindow(), szWindowText, sizeof(szWindowText));
-		return _tcsstr(szWindowText, _T("2010")) != NULL;
-	}
-	return FALSE;
-}
-
 BOOL CUtils::IsAccess()
 {
 	return !_tcsicmp(m_szApplicationName, _T("MSACCESS.EXE"));
