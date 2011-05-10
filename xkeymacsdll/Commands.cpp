@@ -317,92 +317,41 @@ void CCommands::ReleaseKey(BYTE bVk)
 
 void CCommands::Kdu(BYTE bVk1, BYTE bVk2, BYTE bVk3, BYTE bVk4)
 {
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
-	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
+	UINT before = CXkeymacsDll::GetModifierState();
+	if (CXkeymacsDll::Get326Compatible() || CUtils::IsAtok())
+		before &= ~SHIFT;
+	CXkeymacsDll::SetModifierState(0, before);
 
-	if (CXkeymacsDll::Get326Compatible() || CUtils::IsAtok()) {
-		bIsShiftDown = FALSE;
-	}
-
-	if (bIsCtrlDown) {
-		CUtils::UpdateKeyboardState(VK_CONTROL, 0);
-		ReleaseKey(VK_CONTROL);
-	}
-	if (bIsAltDown) {
-		if (CUtils::IsVisualStudio2010())
-			CXkeymacsDll::SetHookAltRelease(); // Ignore Alt release
-		ReleaseKey(VK_MENU);
-	}
-	if (bIsShiftDown) {
-		ReleaseKey(VK_SHIFT);
-	}
-
-	if (bVk1) {
+	if (bVk1)
 		CXkeymacsDll::Kdu(bVk1, m_nNumericArgument);
-	}
-	if (bVk2) {
+	if (bVk2)
 		CXkeymacsDll::Kdu(bVk2, m_nNumericArgument);
-	}
-	if (bVk3) {
+	if (bVk3)
 		CXkeymacsDll::Kdu(bVk3, m_nNumericArgument);
-	}
-	if (bVk4) {
+	if (bVk4)
 		CXkeymacsDll::Kdu(bVk4, m_nNumericArgument);
-	}
 
-	if (bIsShiftDown) {
-		DepressKey(VK_SHIFT);
-	}
-	if (bIsAltDown) {
-		DepressKey(VK_MENU);
-	}
-	if (bIsCtrlDown) {
-		DepressKey(VK_CONTROL);
-		CUtils::UpdateKeyboardState(VK_CONTROL, 1);
-	}
+	CXkeymacsDll::SetModifierState(before, 0);
 }
 
 void CCommands::SdKduSu(BYTE bVk1, BYTE bVk2, BYTE bVk3, BYTE bVk4)
 {
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
-	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
-
-	if (bIsCtrlDown) {
-		ReleaseKey(VK_CONTROL);
-	}
-	if (bIsAltDown) {
-		ReleaseKey(VK_MENU);
-	}
-	if (!bIsShiftDown) {
-		DepressKey(VK_SHIFT);
-	}
+	UINT before = CXkeymacsDll::GetModifierState();
+	CXkeymacsDll::SetModifierState(SHIFT, before);
 
 	CXkeymacsDll::Kdu(bVk1, m_nNumericArgument);
-	if (bVk2) {
+	if (bVk2)
 		CXkeymacsDll::Kdu(bVk2, m_nNumericArgument);
-	}
-	if (bVk3) {
+	if (bVk3)
 		CXkeymacsDll::Kdu(bVk3, m_nNumericArgument);
-	}
-	if (bVk4) {
+	if (bVk4)
 		CXkeymacsDll::Kdu(bVk4, m_nNumericArgument);
-	}
 
-	if (!bIsShiftDown) {
-		if (CUtils::IsShuriken()) {
-			m_bIsSu = TRUE;
-		} else {
-			ReleaseKey(VK_SHIFT);
-		}
+	if (!(before & SHIFT) && CUtils::IsShuriken()) {
+		m_bIsSu = TRUE;
+		before |= SHIFT;
 	}
-	if (bIsAltDown) {
-		DepressKey(VK_MENU);
-	}
-	if (bIsCtrlDown) {
-		DepressKey(VK_CONTROL);
-	}
+	CXkeymacsDll::SetModifierState(before, SHIFT);
 }
 
 void CCommands::Su()
@@ -415,141 +364,49 @@ void CCommands::Su()
 
 void CCommands::CdKduCu(BYTE bVk1, BYTE bVk2)
 {
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
-	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
+	UINT before = CXkeymacsDll::GetModifierState();
+	CXkeymacsDll::SetModifierState(CONTROL, before);
 
-	if (!bIsCtrlDown) {
-		DepressKey(VK_CONTROL);
-		CUtils::UpdateKeyboardState(VK_CONTROL, 1);
-	}
-	if (bIsAltDown) {
-		ReleaseKey(VK_MENU);
-	}
-	if (bIsShiftDown && !m_bSetMark) {
-		ReleaseKey(VK_SHIFT);
-	}
-
-	if (bVk1) {
+	if (bVk1)
 		CXkeymacsDll::Kdu(bVk1, m_nNumericArgument);
-	}
-	if (bVk2) {
+	if (bVk2)
 		CXkeymacsDll::Kdu(bVk2, m_nNumericArgument);
-	}
 
-	if (bIsShiftDown && !m_bSetMark) {
-		DepressKey(VK_SHIFT);
-	}
-	if (bIsAltDown) {
-		DepressKey(VK_MENU);
-	}
-	if (!bIsCtrlDown) {
-		CUtils::UpdateKeyboardState(VK_CONTROL, 0);
-		ReleaseKey(VK_CONTROL);
-	}
+	CXkeymacsDll::SetModifierState(before, CONTROL);
 }
 
 void CCommands::CdSdKduSuCu(BYTE bVk)
 {
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
-	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
-
-	if (!bIsCtrlDown) {
-		DepressKey(VK_CONTROL);
-		CUtils::UpdateKeyboardState(VK_CONTROL, 1);
-	}
-	if (bIsAltDown) {
-		ReleaseKey(VK_MENU);
-	}
-	if (!bIsShiftDown) {
-		DepressKey(VK_SHIFT);
-	}
+	UINT before = CXkeymacsDll::GetModifierState();
+	CXkeymacsDll::SetModifierState(SHIFT | CONTROL, before);
 
 	CXkeymacsDll::Kdu(bVk, m_nNumericArgument);
 
-	if (!bIsShiftDown) {
-		ReleaseKey(VK_SHIFT);
-	}
-	if (bIsAltDown) {
-		DepressKey(VK_MENU);
-	}
-	if (!bIsCtrlDown) {
-		CUtils::UpdateKeyboardState(VK_CONTROL, 0);
-		ReleaseKey(VK_CONTROL);
-	}
+	CXkeymacsDll::SetModifierState(before, SHIFT | CONTROL);
 }
 
 void CCommands::AdKduAu(BYTE bVk1, BYTE bVk2, BYTE bVk3)
 {
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
-	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
-
-	if (bIsCtrlDown) {
-		ReleaseKey(VK_CONTROL);
-	}
-
-	if (!bIsAltDown) {
-		DepressKey(VK_MENU);
-	}
-
-	if (bIsShiftDown) {
-		ReleaseKey(VK_SHIFT);
-	}
+	UINT before = CXkeymacsDll::GetModifierState();
+	CXkeymacsDll::SetModifierState(META, before);
 
 	CXkeymacsDll::Kdu(bVk1, m_nNumericArgument);
-	if (bVk2) {
+	if (bVk2)
 		CXkeymacsDll::Kdu(bVk2, m_nNumericArgument);
-	}
-	if (bVk3) {
+	if (bVk3)
 		CXkeymacsDll::Kdu(bVk3, m_nNumericArgument);
-	}
 
-	if (bIsShiftDown) {
-		DepressKey(VK_SHIFT);
-	}
-
-	if (!bIsAltDown) {
-		ReleaseKey(VK_MENU);
-	}
-
-	if (bIsCtrlDown) {
-		DepressKey(VK_CONTROL);
-	}
+	CXkeymacsDll::SetModifierState(before, META);
 }
 
 void CCommands::AdSdKduSuAu(BYTE bVk1)
 {
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
-	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
-
-	if (bIsCtrlDown) {
-		ReleaseKey(VK_CONTROL);
-	}
-
-	if (!bIsAltDown) {
-		DepressKey(VK_MENU);
-	}
-
-	if (!bIsShiftDown) {
-		DepressKey(VK_SHIFT);
-	}
+	UINT before = CXkeymacsDll::GetModifierState();
+	CXkeymacsDll::SetModifierState(SHIFT | META, before);
 
 	CXkeymacsDll::Kdu(bVk1, m_nNumericArgument);
 
-	if (!bIsShiftDown) {
-		ReleaseKey(VK_SHIFT);
-	}
-
-	if (!bIsAltDown) {
-		ReleaseKey(VK_MENU);
-	}
-
-	if (bIsCtrlDown) {
-		DepressKey(VK_CONTROL);
-	}
+	CXkeymacsDll::SetModifierState(before, SHIFT | META);
 }
 
 // C-a: Home
@@ -1131,39 +988,12 @@ int CCommands::KillLine(BOOL bAllFormat, int (*pCommand)())
 int CCommands::Undo()
 {
 	if (CUtils::IsMicrosoftWord()) {
-		static BOOL bIsCtrlDown;
-		static BOOL bIsAltDown;
-		static BOOL bIsShiftDown;
-
-		bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
-		bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
-		bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
-
-		if (!bIsCtrlDown) {
-			DepressKey(VK_CONTROL);
-		}
-		if (bIsAltDown) {
-			ReleaseKey(VK_MENU);
-		}
-		if (bIsShiftDown) {
-			ReleaseKey(VK_SHIFT);
-		}
-
+		UINT before = CXkeymacsDll::GetModifierState();
+		CXkeymacsDll::SetModifierState(CONTROL, before);
 		PostMessage(GetFocus(), WM_KEYDOWN, 'Z', 0);
-
-		if (bIsShiftDown) {
-			DepressKey(VK_SHIFT);
-		}
-		if (bIsAltDown) {
-			DepressKey(VK_MENU);
-		}
-		if (!bIsCtrlDown) {
-			ReleaseKey(VK_CONTROL);
-		}
-
-	} else {
+		CXkeymacsDll::SetModifierState(before, CONTROL);
+	} else
 		CdKduCu('Z');
-	}
 	return Reset(GOTO_HOOK);
 }
 
@@ -2666,15 +2496,12 @@ int CCommands::Search(SEARCH_DIRECTION direction)
 			 || CUtils::IsNetscape()) {
 				// do nothing
 			} else if (CUtils::IsMicrosoftWord()) {
-				CUtils::UpdateKeyboardState(VK_CONTROL, 0);
-				ReleaseKey(VK_CONTROL);
-
+				UINT before = CXkeymacsDll::GetModifierState();
+				CXkeymacsDll::SetModifierState(before & ~CONTROL, before);
 				AdKduAu('N');
 				Kdu(VK_ESCAPE);
 				Kdu(VK_END);
-
-				DepressKey(VK_CONTROL);
-				CUtils::UpdateKeyboardState(VK_CONTROL, 1);
+				CXkeymacsDll::SetModifierState(before, before & ~CONTROL);
 			} else {
 				AdKduAu(GetFindWhatKey());
 			}
@@ -2703,8 +2530,8 @@ void CCommands::SetSearchDirection(SEARCH_DIRECTION direction)
 			SdKduSu(VK_TAB, VK_TAB);
 		}
 	} else if (CUtils::IsMicrosoftWord()) {
-		CUtils::UpdateKeyboardState(VK_CONTROL, 0);
-		ReleaseKey(VK_CONTROL);
+		UINT before = CXkeymacsDll::GetModifierState();
+		CXkeymacsDll::SetModifierState(before & ~CONTROL, before);
 
 		AdKduAu('M');
 		AdKduAu(0xBA);	// VK_OEM_1	Used for miscellaneous characters; it can vary by keyboard. 
@@ -2717,8 +2544,7 @@ void CCommands::SetSearchDirection(SEARCH_DIRECTION direction)
 		Kdu(VK_ESCAPE);
 		Kdu(VK_END);
 
-		DepressKey(VK_CONTROL);
-		CUtils::UpdateKeyboardState(VK_CONTROL, 1);
+		CXkeymacsDll::SetModifierState(before, before & ~CONTROL);
 	} else if (CUtils::IsLotusNotes()) {
 		BYTE bDirection	= 0;
 
@@ -3050,24 +2876,14 @@ int CCommands::CallLastKbdMacro()
 
 int CCommands::SwitchBetweenInputLocales()
 {
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
+	UINT before = CXkeymacsDll::GetModifierState();
+	CXkeymacsDll::SetModifierState(0, before);
 
 	// Alt+Shift
-	if (bIsCtrlDown) {
-		ReleaseKey(VK_CONTROL);
-	}
-	DepressKey(VK_MENU);	// why?
-	ReleaseKey(VK_MENU);
-	DepressKey(VK_MENU);
-	DepressKey(VK_SHIFT);
-	ReleaseKey(VK_SHIFT);
-	if (!bIsAltDown) {
-		ReleaseKey(VK_MENU);
-	}
-	if (bIsCtrlDown) {
-		DepressKey(VK_CONTROL);
-	}
+	CXkeymacsDll::SetModifierState(SHIFT | META, 0);
+	CXkeymacsDll::SetModifierState(0, SHIFT | META);
+
+	CXkeymacsDll::SetModifierState(before, 0);
 
 	return Reset(GOTO_HOOK);
 }
@@ -3328,58 +3144,35 @@ GOTO CCommands::MoveCaret(BYTE bVk, BOOL bCtrl)
 	last.time = time;
 
 	if (bCtrl) {
-		if (m_bSetMark) {
+		if (m_bSetMark)
 			CdSdKduSuCu(bVk);
-		} else {
+		else
 			CdKduCu(bVk);
-		}
-	} else {
-		if (m_bSetMark) {
-			if (CUtils::IsShuriken()) {
-				static BOOL bIsShiftDown = FALSE;
-				static int nStep = 0;
-				switch (nStep) {
-				case 0:
-					{
-						BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
-						BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
-						bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
-
-						if (bIsCtrlDown) {
-							ReleaseKey(VK_CONTROL);
-						}
-						if (bIsAltDown) {
-							ReleaseKey(VK_MENU);
-						}
-						if (!bIsShiftDown) {
-							DepressKey(VK_SHIFT);
-						}
-
-						CXkeymacsDll::Kdu(bVk, m_nNumericArgument);
-
-						if (bIsAltDown) {
-							DepressKey(VK_MENU);
-						}
-						if (bIsCtrlDown) {
-							DepressKey(VK_CONTROL);
-						}
-						nStep = 1;
-						return GOTO_RECURSIVE;
-					}
-				case 1:
-					nStep = 0;
-					if (!bIsShiftDown) {
-						ReleaseKey(VK_SHIFT);
-					}
-					return GOTO_HOOK;
-				}
-			} else {
-				SdKduSu(bVk);
-			}
-		} else {
-			Kdu(bVk);
+		return GOTO_HOOK;
+	}
+	if (!m_bSetMark) {
+		Kdu(bVk);
+		return GOTO_HOOK;
+	}
+	if (CUtils::IsShuriken()) {
+		static UINT before;
+		static int nStep = 0;
+		switch (nStep) {
+		case 0:
+			before = CXkeymacsDll::GetModifierState();
+			CXkeymacsDll::SetModifierState(SHIFT, before);
+			CXkeymacsDll::Kdu(bVk, m_nNumericArgument);
+			CXkeymacsDll::SetModifierState(before | SHIFT, SHIFT);
+			nStep = 1;
+			return GOTO_RECURSIVE;
+		case 1:
+			nStep = 0;
+			if (!(before & SHIFT))
+				ReleaseKey(VK_SHIFT);
+			return GOTO_HOOK;
 		}
 	}
+	SdKduSu(bVk);
 	return GOTO_HOOK;
 }
 

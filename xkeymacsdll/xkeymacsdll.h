@@ -56,7 +56,6 @@ public:
 	static BOOL SaveConfig();
 	static BOOL LoadConfig();
 	static void SetM_xTip(const TCHAR *const szPath);
-	static void SetHookAltRelease();
 	static BOOL Get326Compatible();
 	static void Set326Compatible(int nApplicationID, BOOL b326Compatible);
 	static void SetCursorData(HCURSOR hEnable, HCURSOR hDisableTMP, HCURSOR hDisableWOCQ, HICON hDisable, BOOL bEnable);
@@ -87,6 +86,8 @@ public:
 	static BOOL GetEnableCUA();
 	static CClipboardSnap* GetKillRing(CClipboardSnap *pSnap, BOOL bForce = TRUE);
 	static void IncreaseKillRingIndex(int nKillRing = 1);
+	static UINT GetModifierState(BOOL bPhysicalKey = TRUE);
+	static void SetModifierState(UINT before, UINT after);
 	static BOOL IsDown(BYTE bVk, BOOL bPhysicalKey = TRUE);
 	static void Kdu(BYTE bVk, DWORD n = 1, BOOL bOriginal = TRUE);
 	static void ReleaseKey(BYTE bVk);
@@ -103,6 +104,7 @@ private:
 	static BOOL m_bHookAltRelease;
 	static TCHAR m_M_xTip[128];
 	static void InvokeM_x(const TCHAR* const szPath);
+	static BOOL UpdateKeyboardState(BYTE bVK, BYTE bState);
 	static void LogCallWndProcMessage(WPARAM wParam, LPARAM lParam);
 	static void DoSetCursor();
 	static HCURSOR m_hCurrentCursor;

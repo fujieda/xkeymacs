@@ -1149,18 +1149,6 @@ BOOL CUtils::IsOpenJane()
 	return !_tcsicmp(m_szApplicationName, _T("Jane2ch.exe"));
 }
 
-BOOL CUtils::UpdateKeyboardState(BYTE bVk, BYTE bState)
-{
-	BYTE ks[256] = {'\0'};
-	BOOL rc = FALSE;
-
-	if ((rc = GetKeyboardState(ks)) != FALSE) {
-		ks[bVk] = bState;
-		rc = SetKeyboardState(ks);
-	}
-	return rc;
-}
-
 BOOL CUtils::IsThunderbird()
 {
 	return !_tcsicmp(m_szApplicationName, _T("thunderbird.exe"));

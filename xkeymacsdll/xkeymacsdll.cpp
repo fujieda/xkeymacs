@@ -298,11 +298,6 @@ BOOL CXkeymacsDll::LoadConfig()
 	return res;
 }
 
-void CXkeymacsDll::SetHookAltRelease()
-{
-	m_bHookAltRelease = TRUE;
-}
-
 // set hooks
 LRESULT WINAPI DummyProc(int code, WPARAM wp, LPARAM lp) {
 	return CallNextHookEx(0, code, wp, lp);
@@ -603,6 +598,51 @@ LRESULT CALLBACK CXkeymacsDll::ShellProc(int nCode, WPARAM wParam, LPARAM lParam
 	return CallNextHookEx( m_hHookShell, nCode, wParam, lParam );
 }
 
+UINT CXkeymacsDll::GetModifierState(BOOL bPhysicalKey)
+{
+	UINT result = 0;
+	if (IsDown(VK_SHIFT, bPhysicalKey))
+		result |= SHIFT;
+	if (IsDown(VK_CONTROL, bPhysicalKey))
+		result |= CONTROL;
+	if (IsDown(VK_MENU, bPhysicalKey))
+		result |= META;
+	return result;
+}
+
+void CXkeymacsDll::SetModifierState(UINT after, UINT before)
+{
+	if (after & SHIFT && !(before & SHIFT))
+		DepressKey(VK_SHIFT);
+	else if (!(after & SHIFT) && before & SHIFT)
+		ReleaseKey(VK_SHIFT);
+
+	if (after & CONTROL && !(before & CONTROL)) {
+		UpdateKeyboardState(VK_CONTROL, 1);
+		DepressKey(VK_CONTROL);
+	} else if (!(after & CONTROL) && before & CONTROL) {
+		ReleaseKey(VK_CONTROL);
+		UpdateKeyboardState(VK_CONTROL, 0);
+	}
+
+	if (after & META && !(before & META))
+		DepressKey(VK_MENU);
+	else if (!(after & META) && before & META) {
+		if (CUtils::IsVisualStudio2010())
+			m_bHookAltRelease = TRUE;
+		ReleaseKey(VK_MENU);
+	}
+}
+
+BOOL CXkeymacsDll::UpdateKeyboardState(BYTE bVk, BYTE bState)
+{
+	BYTE ks[256] = {'\0'};
+	if (!GetKeyboardState(ks))
+		return FALSE;
+	ks[bVk] = bState;
+	return SetKeyboardState(ks);
+}
+
 BOOL CXkeymacsDll::IsDown(BYTE bVk, BOOL bPhysicalKey)
 {
 	return bPhysicalKey ? GetAsyncKeyState(bVk) < 0 : GetKeyState(bVk) < 0;
@@ -662,17 +702,8 @@ void CXkeymacsDll::DepressKey(BYTE bVk, BOOL bOriginal)	// bVk is virtual-key co
 //		CUtils::Log(_T("i: %x, %d, %d, %d, %d, %d, %d, %d, %d"), bVk,
 //			IsDown(VK_CONTROL), IsDown(VK_CONTROL, FALSE), IsDepressedModifier(CCommands::C_), IsDepressedModifier(CCommands::C_, FALSE),
 //			IsDown(VK_MENU), IsDown(VK_MENU, FALSE), IsDepressedModifier(CCommands::MetaAlt), IsDepressedModifier(CCommands::MetaAlt, FALSE));
-
-		int nCommandType = NONE;
-		if (IsDown(VK_CONTROL)) {
-			nCommandType |= CONTROL;
-		}
-		if (IsDown(VK_MENU)) {
-			nCommandType |= META;
-		}
-		Original(nCommandType, bVk, 1);
+		Original(GetModifierState(), bVk, 1);
 	}
-
 	DoKeybd_event(bVk, 0);
 }
 
@@ -891,59 +922,41 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	}
 
 	// set command type
-	{
-		nCommandType = NONE;
-		if (IsDown(VK_SHIFT, FALSE)) {
-			nCommandType |= SHIFT;
-		}
-		if (IsControl()) {
-			nCommandType |= CONTROL;
-		}
-		if (IsMeta()) {
-			nCommandType |= META;
-		}
-		if (CCommands::bC_x()) {
-			nCommandType |= CONTROLX;
-		}
-
-		// Ignore undefined C-x ?
-		if (nCommandType & CONTROLX) {
-			if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][nKey]].fCommand == NULL
-			 && m_Config.nFunctionID[m_nApplicationID][nCommandType][nKey] < 0) {
-				if (m_Config.bIgnoreUndefinedC_x[m_nApplicationID]) {
-					CCommands::Reset(GOTO_HOOK);
-					goto HOOK;
-				}
-				nCommandType &= ~CONTROLX;
+	nCommandType = IsDown(VK_SHIFT) * SHIFT | IsControl() * CONTROL | IsMeta() * META | CCommands::bC_x() * CONTROLX;
+	// Ignore undefined C-x ?
+	if (nCommandType & CONTROLX) {
+		if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][nKey]].fCommand == NULL
+		 && m_Config.nFunctionID[m_nApplicationID][nCommandType][nKey] < 0) {
+			if (m_Config.bIgnoreUndefinedC_x[m_nApplicationID]) {
+				CCommands::Reset(GOTO_HOOK);
+				goto HOOK;
 			}
+			nCommandType &= ~CONTROLX;
 		}
-
-		// Ignore undefined Meta Ctrl+?
-		if (CCommands::bM_() && (nCommandType & CONTROL)) {
-			if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][nKey]].fCommand == NULL
-			 && m_Config.nFunctionID[m_nApplicationID][nCommandType][nKey] < 0) {
-				if (m_Config.bIgnoreUndefinedMetaCtrl[m_nApplicationID]) {
-					if (Original(CONTROL, nKey)) {
-						Original(CONTROL, nKey, -1);
-						goto DO_NOTHING;
-					}
-					CCommands::Reset(GOTO_HOOK);
-					goto HOOK;
+	}
+	// Ignore undefined Meta Ctrl+?
+	if (CCommands::bM_() && (nCommandType & CONTROL)) {
+		if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][nKey]].fCommand == NULL
+		 && m_Config.nFunctionID[m_nApplicationID][nCommandType][nKey] < 0) {
+			if (m_Config.bIgnoreUndefinedMetaCtrl[m_nApplicationID]) {
+				if (Original(CONTROL, nKey)) {
+					Original(CONTROL, nKey, -1);
+					goto DO_NOTHING;
 				}
-				nCommandType &= ~META;
+				CCommands::Reset(GOTO_HOOK);
+				goto HOOK;
 			}
+			nCommandType &= ~META;
 		}
 	}
 
 	{
 		BYTE nKey = (BYTE)wParam; // VK_CONTROL is needed instead of VK_RCONTROL and VK_LCONTROL in this block just for Original()
-		int nVirtualCommandType = NONE;
-		if (IsDown(VK_CONTROL, FALSE) && nKey != VK_CONTROL) {
-			nVirtualCommandType |= CONTROL;
-		}
-		if (IsDown(VK_MENU, FALSE) && nKey != VK_MENU) {
-			nVirtualCommandType |= META;
-		}
+		int nVirtualCommandType = GetModifierState(FALSE);
+		if (nKey == VK_CONTROL)
+			nVirtualCommandType &= ~CONTROL;
+		if (nKey == VK_MENU)
+			nVirtualCommandType &= ~META;
 		if (Original(nVirtualCommandType, nKey)) {
 			Original(nVirtualCommandType, nKey, -1);
 			goto DO_NOTHING;
@@ -1604,19 +1617,8 @@ BOOL CXkeymacsDll::DefiningMacro()
 /**/ 
 void CXkeymacsDll::CallMacro()
 {
-	BOOL bIsCtrlDown = IsDown(VK_CONTROL, FALSE);
-	if (bIsCtrlDown) {
-		ReleaseKey(VK_CONTROL);
-	}
-	BOOL bIsAltDown = IsDown(VK_MENU, FALSE);
-	if (bIsAltDown) {
-		ReleaseKey(VK_MENU);
-	}
-	BOOL bIsShiftDown = IsDown(VK_SHIFT, FALSE);
-	if (bIsShiftDown) {
-		ReleaseKey(VK_SHIFT);
-	}
-
+	UINT before = GetModifierState(FALSE);
+	SetModifierState(0, before);
 	for (POSITION pos = m_Macro.GetHeadPosition(); pos; ) {
 		KbdMacro *pKbdMacro = (KbdMacro *)m_Macro.GetNext(pos);
 		if (pKbdMacro->lParam & BEING_RELEASED) {
@@ -1625,16 +1627,7 @@ void CXkeymacsDll::CallMacro()
 			DepressKey((BYTE)pKbdMacro->wParam, pKbdMacro->bOriginal);
 		}
 	}
-
-	if (bIsCtrlDown) {
-		DepressKey(VK_CONTROL);
-	}
-	if (bIsAltDown) {
-		DepressKey(VK_MENU);
-	}
-	if (bIsShiftDown) {
-		DepressKey(VK_SHIFT);
-	}
+	SetModifierState(before, 0);
 }
 
 /*
@@ -1727,9 +1720,7 @@ void CXkeymacsDll::CallFunction(int nFunctionID)
 		return;
 	}
 
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL, FALSE);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU, FALSE);
-	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT, FALSE);
+	UINT before = GetModifierState(FALSE);
 
 	if (m_Config.szFunctionDefinition[nFunctionID][0] == _T('"') && m_Config.szFunctionDefinition[nFunctionID][_tcslen(m_Config.szFunctionDefinition[nFunctionID]) - 1] == _T('"')) {
 		for (unsigned int i = 1; i < _tcslen(m_Config.szFunctionDefinition[nFunctionID]) - 1; ++i) {	// skip '"'
@@ -1768,19 +1759,7 @@ void CXkeymacsDll::CallFunction(int nFunctionID)
 			if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][bVk]].fCommand == CCommands::ExecuteExtendedCommand) {
 				bM_x = TRUE;
 			} else if (!bInitialized) {
-				if (bIsCtrlDown) {
-					CUtils::UpdateKeyboardState(VK_CONTROL, 0);
-					ReleaseKey(VK_CONTROL);
-				}
-
-				if (bIsAltDown) {
-					ReleaseKey(VK_MENU);
-				}
-
-				if (bIsShiftDown) {
-					ReleaseKey(VK_SHIFT);
-				}
-
+				SetModifierState(0, before);
 				bInitialized = TRUE;
 			}
 //			CUtils::Log("CallFunction: Command Name: %s", Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][bVk]].szCommandName);
@@ -1801,69 +1780,36 @@ void CXkeymacsDll::CallFunction(int nFunctionID)
 			}
 		} else {
 			if (!bInitialized) {
-				if (bIsCtrlDown) {
-					CUtils::UpdateKeyboardState(VK_CONTROL, 0);
-					ReleaseKey(VK_CONTROL);
-				}
-
-				if (bIsAltDown) {
-					ReleaseKey(VK_MENU);
-				}
-
-				if (bIsShiftDown) {
-					ReleaseKey(VK_SHIFT);
-				}
-
+				SetModifierState(0, before);
 				bInitialized = TRUE;
 			}
-			if (nCommandType & WIN_WIN) {
+			if (nCommandType & WIN_WIN)
 				DepressKey(VK_LWIN);
-			}
-			if (nCommandType & WIN_CTRL) {
+			if (nCommandType & WIN_CTRL)
 				DepressKey(VK_CONTROL);
-			}
-			if (nCommandType & WIN_ALT) {
+			if (nCommandType & WIN_ALT)
 				DepressKey(VK_MENU);
-			}
-			if (nCommandType & SHIFT) {
+			if (nCommandType & SHIFT)
 				DepressKey(VK_SHIFT);
-			}
 
 			Kdu(bVk);
 
-			if (nCommandType & SHIFT && (keybinds.GetSize() <= i + 1 || !(keybinds.GetAt(i + 1).nCommandType & SHIFT))) {
+			if (nCommandType & SHIFT && (keybinds.GetSize() <= i + 1 || !(keybinds.GetAt(i + 1).nCommandType & SHIFT)))
 				ReleaseKey(VK_SHIFT);
-			}
-			if (nCommandType & WIN_ALT && (keybinds.GetSize() <= i + 1 || !(keybinds.GetAt(i + 1).nCommandType & WIN_ALT))) {
+			if (nCommandType & WIN_ALT && (keybinds.GetSize() <= i + 1 || !(keybinds.GetAt(i + 1).nCommandType & WIN_ALT)))
 				ReleaseKey(VK_MENU);
-			}
-			if (nCommandType & WIN_CTRL && (keybinds.GetSize() <= i + 1 || !(keybinds.GetAt(i + 1).nCommandType & WIN_CTRL))) {
+			if (nCommandType & WIN_CTRL && (keybinds.GetSize() <= i + 1 || !(keybinds.GetAt(i + 1).nCommandType & WIN_CTRL)))
 				ReleaseKey(VK_CONTROL);
-			}
-			if (nCommandType & WIN_WIN && (keybinds.GetSize() <= i + 1 || !(keybinds.GetAt(i + 1).nCommandType & WIN_WIN))) {
+			if (nCommandType & WIN_WIN && (keybinds.GetSize() <= i + 1 || !(keybinds.GetAt(i + 1).nCommandType & WIN_WIN)))
 				ReleaseKey(VK_LWIN);
-			}
 		}
 	}
 
 	keybinds.RemoveAll();
 
-	if (bInitialized) {
+	if (bInitialized)
 		// If these lines are invoked at M-x, a window transition does not work well.
-
-		if (bIsShiftDown) {
-			DepressKey(VK_SHIFT);
-		}
-
-		if (bIsAltDown) {
-			DepressKey(VK_MENU);
-		}
-
-		if (bIsCtrlDown) {
-			DepressKey(VK_CONTROL);
-			CUtils::UpdateKeyboardState(VK_CONTROL, 1);
-		}
-	}
+		SetModifierState(before, 0);
 	return;
 }
 

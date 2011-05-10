@@ -18,7 +18,6 @@ public:
 	static BOOL IsLunascape();
 	static int GetWindowTextType(CString strWindowText);
 	static BOOL IsThunderbird();
-	static BOOL UpdateKeyboardState(BYTE bVk, BYTE bState);
 	static BOOL IsOpenJane();
 	static void PrintWindowInfo(WINDOWINFO *pwi);
 	static BOOL IsVisualSlickEdit();
