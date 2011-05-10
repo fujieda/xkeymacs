@@ -317,9 +317,9 @@ void CCommands::ReleaseKey(BYTE bVk)
 
 void CCommands::Kdu(BYTE bVk1, BYTE bVk2, BYTE bVk3, BYTE bVk4)
 {
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL, FALSE);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU, FALSE);
-	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT, FALSE);
+	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
+	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
+	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
 
 	if (CXkeymacsDll::Get326Compatible() || CUtils::IsAtok()) {
 		bIsShiftDown = FALSE;
@@ -365,9 +365,9 @@ void CCommands::Kdu(BYTE bVk1, BYTE bVk2, BYTE bVk3, BYTE bVk4)
 
 void CCommands::SdKduSu(BYTE bVk1, BYTE bVk2, BYTE bVk3, BYTE bVk4)
 {
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL, FALSE);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU, FALSE);
-	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT, FALSE);
+	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
+	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
+	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
 
 	if (bIsCtrlDown) {
 		ReleaseKey(VK_CONTROL);
@@ -415,12 +415,10 @@ void CCommands::Su()
 
 void CCommands::CdKduCu(BYTE bVk1, BYTE bVk2)
 {
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL, FALSE);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU, FALSE);
-	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT, FALSE);
-//	if (!bVk1) {
-//		CUtils::Log("%d, %d, %d", CXkeymacsDll::IsDown(VK_MENU, FALSE), CXkeymacsDll::IsDown(VK_LMENU, FALSE), CXkeymacsDll::IsDown(VK_RMENU, FALSE));
-//	}
+	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
+	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
+	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
+
 	if (!bIsCtrlDown) {
 		DepressKey(VK_CONTROL);
 		CUtils::UpdateKeyboardState(VK_CONTROL, 1);
@@ -453,9 +451,9 @@ void CCommands::CdKduCu(BYTE bVk1, BYTE bVk2)
 
 void CCommands::CdSdKduSuCu(BYTE bVk)
 {
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL, FALSE);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU, FALSE);
-	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT, FALSE);
+	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
+	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
+	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
 
 	if (!bIsCtrlDown) {
 		DepressKey(VK_CONTROL);
@@ -484,9 +482,9 @@ void CCommands::CdSdKduSuCu(BYTE bVk)
 
 void CCommands::AdKduAu(BYTE bVk1, BYTE bVk2, BYTE bVk3)
 {
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL, FALSE);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU, FALSE);
-	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT, FALSE);
+	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
+	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
+	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
 
 	if (bIsCtrlDown) {
 		ReleaseKey(VK_CONTROL);
@@ -523,9 +521,9 @@ void CCommands::AdKduAu(BYTE bVk1, BYTE bVk2, BYTE bVk3)
 
 void CCommands::AdSdKduSuAu(BYTE bVk1)
 {
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL, FALSE);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU, FALSE);
-	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT, FALSE);
+	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
+	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
+	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
 
 	if (bIsCtrlDown) {
 		ReleaseKey(VK_CONTROL);
@@ -1137,9 +1135,9 @@ int CCommands::Undo()
 		static BOOL bIsAltDown;
 		static BOOL bIsShiftDown;
 
-		bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL, FALSE);
-		bIsAltDown = CXkeymacsDll::IsDown(VK_MENU, FALSE);
-		bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT, FALSE);
+		bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
+		bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
+		bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
 
 		if (!bIsCtrlDown) {
 			DepressKey(VK_CONTROL);
@@ -1462,7 +1460,7 @@ DWORD CCommands::DeactivateMark()
 		return ERROR_SUCCESS;	// i.e. return 0;
 	}
 	if (CUtils::IsVisualStudio()) {	// Ctrl + Click select a word on Visual Studio .NET
-		BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL, FALSE);
+		BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
 		if (bIsCtrlDown)
 			ReleaseKey(VK_CONTROL);
 		DWORD res = ClickCaret();
@@ -3052,8 +3050,8 @@ int CCommands::CallLastKbdMacro()
 
 int CCommands::SwitchBetweenInputLocales()
 {
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL, FALSE);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU, FALSE);
+	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
+	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
 
 	// Alt+Shift
 	if (bIsCtrlDown) {
@@ -3343,9 +3341,9 @@ GOTO CCommands::MoveCaret(BYTE bVk, BOOL bCtrl)
 				switch (nStep) {
 				case 0:
 					{
-						BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL, FALSE);
-						BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU, FALSE);
-						bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT, FALSE);
+						BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
+						BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
+						bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
 
 						if (bIsCtrlDown) {
 							ReleaseKey(VK_CONTROL);

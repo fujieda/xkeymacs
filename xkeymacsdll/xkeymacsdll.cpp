@@ -603,14 +603,9 @@ LRESULT CALLBACK CXkeymacsDll::ShellProc(int nCode, WPARAM wParam, LPARAM lParam
 	return CallNextHookEx( m_hHookShell, nCode, wParam, lParam );
 }
 
-// return true if the key is down
 BOOL CXkeymacsDll::IsDown(BYTE bVk, BOOL bPhysicalKey)
 {
-	if (bPhysicalKey) {
-		return GetKeyState(bVk) < 0;
-	} else {
-		return GetAsyncKeyState(bVk) < 0;
-	}
+	return bPhysicalKey ? GetAsyncKeyState(bVk) < 0 : GetKeyState(bVk) < 0;
 }
 
 // Do keybd_event
@@ -637,7 +632,7 @@ void CXkeymacsDll::DoKeybd_event(BYTE bVk, DWORD dwFlags)
 		}
 		break;
 	case VK_PAUSE:
-		if (IsDown(VK_CONTROL)) // Break
+		if (IsDown(VK_CONTROL, FALSE)) // Break
 			dwFlags |= KEYEVENTF_EXTENDEDKEY;
 		break;
 	case VK_INSERT:
@@ -669,10 +664,10 @@ void CXkeymacsDll::DepressKey(BYTE bVk, BOOL bOriginal)	// bVk is virtual-key co
 //			IsDown(VK_MENU), IsDown(VK_MENU, FALSE), IsDepressedModifier(CCommands::MetaAlt), IsDepressedModifier(CCommands::MetaAlt, FALSE));
 
 		int nCommandType = NONE;
-		if (IsDown(VK_CONTROL, FALSE)) {
+		if (IsDown(VK_CONTROL)) {
 			nCommandType |= CONTROL;
 		}
-		if (IsDown(VK_MENU, FALSE)) {
+		if (IsDown(VK_MENU)) {
 			nCommandType |= META;
 		}
 		Original(nCommandType, bVk, 1);
@@ -941,16 +936,12 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	}
 
 	{
-//		CUtils::Log(_T("o: %x, %d, %d, %d, %d, %d, %d, %d, %d"), (BYTE)wParam,
-//			IsDown(VK_CONTROL), IsDown(VK_CONTROL, FALSE), IsDepressedModifier(CCommands::C_), IsDepressedModifier(CCommands::C_, FALSE),
-//			IsDown(VK_MENU), IsDown(VK_MENU, FALSE), IsDepressedModifier(CCommands::MetaAlt), IsDepressedModifier(CCommands::MetaAlt, FALSE));
-
 		BYTE nKey = (BYTE)wParam; // VK_CONTROL is needed instead of VK_RCONTROL and VK_LCONTROL in this block just for Original()
 		int nVirtualCommandType = NONE;
-		if (IsDown(VK_CONTROL) && nKey != VK_CONTROL) {
+		if (IsDown(VK_CONTROL, FALSE) && nKey != VK_CONTROL) {
 			nVirtualCommandType |= CONTROL;
 		}
-		if (IsDown(VK_MENU) && nKey != VK_MENU) {
+		if (IsDown(VK_MENU, FALSE) && nKey != VK_MENU) {
 			nVirtualCommandType |= META;
 		}
 		if (Original(nVirtualCommandType, nKey)) {
@@ -1028,7 +1019,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 			memset(szPath, 0, sizeof(szPath));
 			goto HOOK;
 		} else if (index < MAX_PATH - 1) {
-			const BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
+			const BOOL bIsShiftDown = IsDown(VK_SHIFT, FALSE);
 			for (TCHAR nAscii = 1; nAscii != 0; ++nAscii) { // repeat until overflow
 				if (nKey != 0 && a2v(nAscii) == nKey && bIsShiftDown == IsShift(nAscii)) {
 //					CUtils::Log("M-x: %#X (%c), %#X (%c)", nKey, nKey, nAscii, nAscii);
@@ -1164,9 +1155,9 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		}
 	}
 
-	m_bRightControl	= IsDown(VK_RCONTROL);
-	m_bRightAlt		= IsDown(VK_RMENU);
-	m_bRightShift	= IsDown(VK_RSHIFT);
+	m_bRightControl = IsDown(VK_RCONTROL, FALSE);
+	m_bRightAlt = IsDown(VK_RMENU, FALSE);
+	m_bRightShift = IsDown(VK_RSHIFT, FALSE);
 
 	if (!bLocked) {
 		bLocked = TRUE;
@@ -1257,9 +1248,9 @@ void CXkeymacsDll::SetModifierIcons()
 		{MX_ICON, IconState(CCommands::bM_x()), ""},
 		{CX_ICON, IconState(CCommands::bC_x()), ""},
 		{META_ICON, IconState(CCommands::bM_()), ""},
-		{SHIFT_ICON, IconState(IsDown(VK_SHIFT)), ""},
+		{SHIFT_ICON, IconState(IsDown(VK_SHIFT, FALSE)), ""},
 		{CTRL_ICON, IconState(IsControl()), ""},
-		{ALT_ICON, IconState(IsDown(VK_MENU)), ""}
+		{ALT_ICON, IconState(IsDown(VK_MENU, FALSE)), ""}
 	};
 	_tcscpy_s(msg[0].szTip, m_M_xTip);
 	SendIconMessage(msg, 6);
@@ -1334,11 +1325,9 @@ BOOL CXkeymacsDll::IsDepressedModifier(int (__cdecl *Modifier)(void), BOOL bPhys
 {
 	BYTE bVk = 0;
 	do {
-		if (IsValidKey(bVk)
-		 && IsDown(bVk, bPhysicalKey)
-		 && Commands[m_Config.nCommandID[m_nApplicationID][NONE][bVk]].fCommand == Modifier) {
+		if (IsValidKey(bVk) && IsDown(bVk, bPhysicalKey) &&
+				Commands[m_Config.nCommandID[m_nApplicationID][NONE][bVk]].fCommand == Modifier)
 			return TRUE;
-		}
 	} while (++bVk);
 	return FALSE;
 }
@@ -1359,7 +1348,7 @@ BOOL CXkeymacsDll::IsDepressedShiftKeyOnly(BYTE nKey)
 			continue;
 		}
 
-		if (IsDown(bVk)) {
+		if (IsDown(bVk, FALSE)) {
 			return FALSE;
 		}
 	} while (++bVk);
@@ -1368,12 +1357,12 @@ BOOL CXkeymacsDll::IsDepressedShiftKeyOnly(BYTE nKey)
 
 BOOL CXkeymacsDll::IsControl()
 {
-	return CCommands::bC_() || IsDepressedModifier(CCommands::C_, FALSE);
+	return CCommands::bC_() || IsDepressedModifier(CCommands::C_);
 }
 
 BOOL CXkeymacsDll::IsMeta()
 {
-	return CCommands::bM_() || IsDepressedModifier(CCommands::MetaAlt, FALSE);
+	return CCommands::bM_() || IsDepressedModifier(CCommands::MetaAlt);
 }
 
 void CXkeymacsDll::AddKillRing(BOOL bNewData)
@@ -1615,15 +1604,15 @@ BOOL CXkeymacsDll::DefiningMacro()
 /**/ 
 void CXkeymacsDll::CallMacro()
 {
-	BOOL bIsCtrlDown = IsDown(VK_CONTROL);
+	BOOL bIsCtrlDown = IsDown(VK_CONTROL, FALSE);
 	if (bIsCtrlDown) {
 		ReleaseKey(VK_CONTROL);
 	}
-	BOOL bIsAltDown = IsDown(VK_MENU);
+	BOOL bIsAltDown = IsDown(VK_MENU, FALSE);
 	if (bIsAltDown) {
 		ReleaseKey(VK_MENU);
 	}
-	BOOL bIsShiftDown = IsDown(VK_SHIFT);
+	BOOL bIsShiftDown = IsDown(VK_SHIFT, FALSE);
 	if (bIsShiftDown) {
 		ReleaseKey(VK_SHIFT);
 	}
@@ -1738,9 +1727,9 @@ void CXkeymacsDll::CallFunction(int nFunctionID)
 		return;
 	}
 
-	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
-	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU);
-	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT);
+	BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL, FALSE);
+	BOOL bIsAltDown = CXkeymacsDll::IsDown(VK_MENU, FALSE);
+	BOOL bIsShiftDown = CXkeymacsDll::IsDown(VK_SHIFT, FALSE);
 
 	if (m_Config.szFunctionDefinition[nFunctionID][0] == _T('"') && m_Config.szFunctionDefinition[nFunctionID][_tcslen(m_Config.szFunctionDefinition[nFunctionID]) - 1] == _T('"')) {
 		for (unsigned int i = 1; i < _tcslen(m_Config.szFunctionDefinition[nFunctionID]) - 1; ++i) {	// skip '"'
