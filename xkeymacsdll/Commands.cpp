@@ -1259,19 +1259,14 @@ DWORD CCommands::ClickCaret()
 
 DWORD CCommands::DeactivateMark()
 {
-	if (CUtils::IsOpenOffice()
-	 || CUtils::IsVisualBasicEditor()) {
-		// GetCaretPos always returen (x,y) = (0,0) on OpenOffice, so ...
+	if (CUtils::IsOpenOffice() || CUtils::IsVisualStudio() || CUtils::IsVisualBasicEditor()) {
+		// GetCaretPos always returen (x,y) = (0,0) on OpenOffice and Visual Studio, so ...
 		// GetCaretPos always returen (x,y) = (-2199,*) on M$ Excel VBE, so ...
 		Kdu(VK_ESCAPE);
 		return ERROR_SUCCESS;	// i.e. return 0;
 	}
-	if (CUtils::IsFlash()
-	 || CUtils::IsInternetExplorer()
-	 || CUtils::IsMicrosoftPowerPoint()
-	 || CUtils::IsMicrosoftWord()
-	 || CUtils::IsSleipnir()
-	 || CUtils::IsThunderbird()) {
+	if (CUtils::IsFlash() || CUtils::IsInternetExplorer() || CUtils::IsMicrosoftPowerPoint() ||
+			CUtils::IsMicrosoftWord() || CUtils::IsSleipnir() || CUtils::IsThunderbird()) {
 		// GetCaretPos always returen (x,y) = (0,0) on M$ Word and Thunderbird, so ...
 		// GetCaretPos always returen start point on IE (and Sleipnir that uses IE), so ...
 		Kdu(VK_RIGHT);
@@ -1287,16 +1282,6 @@ DWORD CCommands::DeactivateMark()
 		AdKduAu('E', 'I');
 		return ERROR_SUCCESS;	// i.e. return 0;
 	}
-	if (CUtils::IsVisualStudio()) {	// Ctrl + Click select a word on Visual Studio .NET
-		BOOL bIsCtrlDown = CXkeymacsDll::IsDown(VK_CONTROL);
-		if (bIsCtrlDown)
-			ReleaseKey(VK_CONTROL);
-		DWORD res = ClickCaret();
-		if (bIsCtrlDown)
-			DepressKey(VK_CONTROL);
-		return res;
-	}
-
 	return ClickCaret();
 }
 
