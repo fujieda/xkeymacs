@@ -95,10 +95,10 @@ public:
 	static void ReleaseKey(BYTE bVk);
 	static void SetFunctionDefinition(int nFunctionID, CString szDefinition);
 	static void SetFunctionKey(int nFunctionID, int nApplicationID, int nCommandType, int nKey);
-	static void SetKeyboardHookFlag();
-	static void SetKeyboardHookFlag(BOOL bFlag);
 	static BOOL Is106Keyboard();
 	static void Set106Keyboard(BOOL b106Keyboard);
+	static void ToggleKeyboardHookState();
+	static void ShowKeyboardHookState();
 	static BOOL SendIconMessage(ICONMSG *pMsg, DWORD num);
 	CXkeymacsDll();
 	virtual ~CXkeymacsDll();

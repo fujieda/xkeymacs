@@ -499,11 +499,7 @@ void CMainFrame::OnOptions()
 // stop/start keyboard hook
 void CMainFrame::OnDisable() 
 {
-	if (CXkeymacsDll::IsKeyboardHook()) {
-		CXkeymacsDll::SetKeyboardHookFlag(FALSE);
-	} else {
-		CXkeymacsDll::SetKeyboardHookFlag(TRUE);
-	}
+	CXkeymacsDll::ToggleKeyboardHookState();
 }
 
 // Close the Dialog if it is opened.

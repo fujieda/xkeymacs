@@ -336,9 +336,14 @@ void CXkeymacsDll::ReleaseHooks()
 	unhook(g_hHookDummy);
 }
 
-void CXkeymacsDll::SetKeyboardHookFlag(BOOL bFlag)
+void CXkeymacsDll::ToggleKeyboardHookState()
 {
-	m_bHook = bFlag;
+	m_bHook = !m_bHook;
+	ShowKeyboardHookState();
+}
+
+void CXkeymacsDll::ShowKeyboardHookState()
+{
 	ICONMSG msg = {MAIN_ICON,};
 	if (m_bHook) {
 		if (CCommands::IsTemporarilyDisableXKeymacs()) {
@@ -361,14 +366,9 @@ void CXkeymacsDll::SetKeyboardHookFlag(BOOL bFlag)
 	DoSetCursor();
 }
 
-// if be keyboard hook, return TRUE
 BOOL CXkeymacsDll::IsKeyboardHook()
 {
-	if (m_bHook) {
-		return TRUE;
-	}
-
-	return FALSE;
+	return m_bHook;
 }
 
 void CXkeymacsDll::LogCallWndProcMessage(WPARAM wParam, LPARAM lParam)
@@ -510,14 +510,14 @@ LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lPar
 		case WM_SETFOCUS:
 			if (cwps.hwnd == GetForegroundWindow()) {
 				InitKeyboardProc(FALSE);
-				SetKeyboardHookFlag(m_bHook);
+				ShowKeyboardHookState();
 			}
 			break;
 		case WM_NCACTIVATE:
 			if (cwps.wParam) {
 				if (cwps.hwnd == GetForegroundWindow()) {
 					InitKeyboardProc(FALSE);
-					SetKeyboardHookFlag(m_bHook);
+					ShowKeyboardHookState();
 				}
 			}
 			break;
@@ -588,7 +588,7 @@ LRESULT CALLBACK CXkeymacsDll::ShellProc(int nCode, WPARAM wParam, LPARAM lParam
 		::GetClassName((HWND)wParam, className, 255);
 		if (!_tcsicmp(className, _T("ConsoleWindowClass"))) {
 			InitKeyboardProc(FALSE);
-			SetKeyboardHookFlag(m_bHook);
+			ShowKeyboardHookState();
 		}
 		break;
 	}
@@ -970,18 +970,18 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	}
 
 	if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][nKey]].fCommand == CCommands::EnableOrDisableXKeymacs) {
-		SetKeyboardHookFlag(!m_bHook);
+		ToggleKeyboardHookState();
 		goto HOOK;
 	}
 	if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][nKey]].fCommand == CCommands::EnableXKeymacs) {
 		if (!m_bHook) {
-			SetKeyboardHookFlag(!m_bHook);
+			ToggleKeyboardHookState();
 		}
 		goto HOOK;
 	}
 	if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][nKey]].fCommand == CCommands::DisableXKeymacs) {
 		if (m_bHook) {
-			SetKeyboardHookFlag(!m_bHook);
+			ToggleKeyboardHookState();
 		}
 		goto HOOK;
 	}
@@ -1680,11 +1680,6 @@ int CXkeymacsDll::IsPassThrough(BYTE nKey)
 		}
 	} while (++bVk);
 	return CONTINUE;
-}
-
-void CXkeymacsDll::SetKeyboardHookFlag()
-{
-	SetKeyboardHookFlag(m_bHook);
 }
 
 void CXkeymacsDll::SetFunctionKey(int nFunctionID, int nApplicationID, int nCommandType, int nKey)
