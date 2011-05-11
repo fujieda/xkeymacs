@@ -139,8 +139,8 @@ private:
 	static BOOL IsValidKey(BYTE bVk);
 	static CObList m_Macro;
 	static BOOL m_bDefiningMacro;
-	static void Original(int nCommandType, BYTE bVk, int nOriginal);
-	static int Original(int nCommandType, BYTE bVk);
+	static void SetOriginal(UINT nCommandType, BYTE bVk);
+	static int CheckOriginal(UINT nCommandType, BYTE bVk);
 	static void InitKeyboardProc(BOOL bImeComposition);
 	static int m_nApplicationID;
 	static int m_nOriginal[MAX_COMMAND_TYPE][MAX_KEY];

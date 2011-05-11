@@ -555,7 +555,7 @@ void CXkeymacsDll::DepressKey(BYTE bVk, BOOL bOriginal)	// bVk is virtual-key co
 //		CUtils::Log(_T("i: %x, %d, %d, %d, %d, %d, %d, %d, %d"), bVk,
 //			IsDown(VK_CONTROL), IsDown(VK_CONTROL, FALSE), IsDepressedModifier(CCommands::C_), IsDepressedModifier(CCommands::C_, FALSE),
 //			IsDown(VK_MENU), IsDown(VK_MENU, FALSE), IsDepressedModifier(CCommands::MetaAlt), IsDepressedModifier(CCommands::MetaAlt, FALSE));
-		Original(GetModifierState(), bVk, 1);
+		SetOriginal(GetModifierState(), bVk);
 	}
 	DoKeybd_event(bVk, 0);
 }
@@ -652,8 +652,8 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 {
 	ASSERT(0 <= wParam && wParam <= UCHAR_MAX);
 
-	int nCommandType = NONE;
-	BYTE nKey = (BYTE)wParam;
+	UINT nCommandType = NONE;
+	BYTE nOrigKey = (BYTE)wParam;
 
 	static BOOL bLocked = FALSE;
 	static const BYTE RECURSIVE_KEY = 0x07;
@@ -661,7 +661,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	static BYTE nOneShotModifier[MAX_KEY] = {'\0'};
 	static BOOL bCherryOneShotModifier = FALSE;
 
-//	CUtils::Log(_T("nCode = %#x, nKey = %#x, lParam = %p, %d, %d"), nCode, nKey, lParam, IsDll64, Is64ProcessHwnd(GetForegroundWindow()));
+//	CUtils::Log(_T("nCode = %#x, nKey = %#x, lParam = %p, %d, %d"), nOrigCode, nKey, lParam, IsDll64, Is64ProcessHwnd(GetForegroundWindow()));
 
 	if (Is64ProcessHwnd(GetForegroundWindow()) != IsDll64 || CUtils::IsXkeymacs())
 		return CallNextHookEx(g_hHookKeyboard, nCode, wParam, lParam);
@@ -670,7 +670,11 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		goto DO_NOTHING;
 	}
 
-	if (nKey == RECURSIVE_KEY) {
+//	CUtils::Log(_T("nKey = %#x, ext = %d, rel = %d, pre = %d, %#hx, %#hx"), nOrigKey,
+//		(lParam & EXTENDED_KEY) ? 1 : 0, (lParam & BEING_RELEASED) ? 1 : 0, (lParam & REPEATED_KEY) ? 1 : 0,
+//		GetKeyState(nOrigKey), GetAsyncKeyState(nOrigKey));
+
+	if (nOrigKey == RECURSIVE_KEY) {
 		if (lParam & BEING_RELEASED) {
 			goto HOOK_RECURSIVE_KEY;
 		} else {
@@ -680,7 +684,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 
 	{
 		static BOOL bShift = FALSE;
-		if (IsDepressedShiftKeyOnly(nKey)) {
+		if (IsDepressedShiftKeyOnly(nOrigKey)) {
 			if (lParam & BEING_RELEASED) {
 				if (bShift) {
 					CCommands::SetMark(FALSE);
@@ -693,6 +697,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		}
 	}
 
+	BYTE nKey = nOrigKey;
 	switch (nKey) {
 	case VK_CONTROL:
 		if (lParam & EXTENDED_KEY) {
@@ -720,12 +725,8 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	}
 
 	if (lParam & BEING_RELEASED) {
-		BOOL bAlt = FALSE;
-		switch (nKey) {
+		switch (nOrigKey) {
 		case VK_MENU:
-		case VK_LMENU:
-		case VK_RMENU:
-			bAlt = TRUE;
 			if (m_nHookAltRelease) {
 				if (m_nHookAltRelease & ~HOOK_ALT_LATER)
 					m_nHookAltRelease--;
@@ -739,7 +740,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		case VK_APPS:
 			for (int i = 0; i < MAX_COMMAND_TYPE; i++) {
 				int (*func)() = Commands[m_Config.nCommandID[m_nApplicationID][i][nKey]].fCommand;
-				if (func && !(bAlt && func == CCommands::MetaAlt))
+				if (func && !(nOrigKey == VK_MENU && func == CCommands::MetaAlt))
 					goto HOOK;
 			}
 		}
@@ -795,8 +796,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][nKey]].fCommand == NULL
 		 && m_Config.nFunctionID[m_nApplicationID][nCommandType][nKey] < 0) {
 			if (m_Config.bIgnoreUndefinedMetaCtrl[m_nApplicationID]) {
-				if (Original(CONTROL, nKey)) {
-					Original(CONTROL, nKey, -1);
+				if (CheckOriginal(CONTROL, nKey)) {
 					goto DO_NOTHING;
 				}
 				CCommands::Reset(GOTO_HOOK);
@@ -806,17 +806,13 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		}
 	}
 
-	{
-		BYTE nKey = (BYTE)wParam; // VK_CONTROL is needed instead of VK_RCONTROL and VK_LCONTROL in this block just for Original()
-		int nVirtualCommandType = GetModifierState(FALSE);
-		if (nKey == VK_CONTROL)
-			nVirtualCommandType &= ~CONTROL;
-		if (nKey == VK_MENU)
-			nVirtualCommandType &= ~META;
-		if (Original(nVirtualCommandType, nKey)) {
-			Original(nVirtualCommandType, nKey, -1);
-			goto DO_NOTHING;
-		}
+	int nVirtualCommandType = GetModifierState(FALSE);
+	if (nOrigKey == VK_CONTROL)
+		nVirtualCommandType &= ~CONTROL;
+	if (nOrigKey == VK_MENU)
+		nVirtualCommandType &= ~META;
+	if (CheckOriginal(nVirtualCommandType, nOrigKey)) {
+		goto DO_NOTHING;
 	}
 
 	if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][nKey]].fCommand == CCommands::EnableOrDisableXKeymacs) {
@@ -916,47 +912,47 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	}
 
 	if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType & ~CONTROL][nKey]].fCommand == CCommands::OneShotModifierCtrl) {
-		nOneShotModifier[nKey] = VK_LCONTROL;
-		DepressKey(nOneShotModifier[nKey]);
+		nOneShotModifier[nKey] = VK_CONTROL;
+		DepressKey(VK_CONTROL);
 		bCherryOneShotModifier = TRUE;
 		goto HOOK;
 	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][nKey]].fCommand == CCommands::OneShotModifierCtrlRepeat) {
-		nOneShotModifier[nKey] = VK_LCONTROL;
-		DepressKey(nOneShotModifier[nKey]);
+		nOneShotModifier[nKey] = VK_CONTROL;
+		DepressKey(VK_CONTROL);
 		bCherryOneShotModifier = TRUE;
 		goto HOOK;
 	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType & ~CONTROL][nKey]].fCommand == CCommands::OneShotModifierCtrlRepeat) {
-		ReleaseKey(nOneShotModifier[nKey]);
+		ReleaseKey(VK_CONTROL);
 		bCherryOneShotModifier = FALSE;
 		Kdu(nKey);
 		goto HOOK;
 	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType & ~META][nKey]].fCommand == CCommands::OneShotModifierAlt) {
-		nOneShotModifier[nKey] = VK_LMENU;
-		DepressKey(nOneShotModifier[nKey]);
+		nOneShotModifier[nKey] = VK_MENU;
+		DepressKey(VK_MENU);
 		bCherryOneShotModifier = TRUE;
 		goto HOOK;
 	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][nKey]].fCommand == CCommands::OneShotModifierAltRepeat) {
-		nOneShotModifier[nKey] = VK_LMENU;
-		DepressKey(nOneShotModifier[nKey]);
+		nOneShotModifier[nKey] = VK_MENU;
+		DepressKey(VK_MENU);
 		bCherryOneShotModifier = TRUE;
 		goto HOOK;
 	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType & ~META][nKey]].fCommand == CCommands::OneShotModifierAltRepeat) {
-		ReleaseKey(nOneShotModifier[nKey]);
+		ReleaseKey(VK_MENU);
 		bCherryOneShotModifier = FALSE;
 		Kdu(nKey);
 		goto HOOK;
 	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType & ~SHIFT][nKey]].fCommand == CCommands::OneShotModifierShift) {
 		nOneShotModifier[nKey] = VK_SHIFT;
-		DepressKey(nOneShotModifier[nKey]);
+		DepressKey(VK_SHIFT);
 		bCherryOneShotModifier = TRUE;
 		goto HOOK;
 	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][nKey]].fCommand == CCommands::OneShotModifierShiftRepeat) {
 		nOneShotModifier[nKey] = VK_SHIFT;
-		DepressKey(nOneShotModifier[nKey]);
+		DepressKey(VK_SHIFT);
 		bCherryOneShotModifier = TRUE;
 		goto HOOK;
 	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType & ~SHIFT][nKey]].fCommand == CCommands::OneShotModifierShiftRepeat) {
-		ReleaseKey(nOneShotModifier[nKey]);
+		ReleaseKey(VK_SHIFT);
 		bCherryOneShotModifier = FALSE;
 		Kdu(nKey);
 		goto HOOK;
@@ -980,15 +976,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	}
 
 	if (!Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][nKey]].fCommand) {
-		if (nKey == VK_CONTROL
-		 || nKey == VK_LCONTROL
-		 || nKey == VK_RCONTROL
-		 || nKey == VK_MENU
-		 || nKey == VK_LMENU
-		 || nKey == VK_RMENU
-		 || nKey == VK_SHIFT
-		 || nKey == VK_LSHIFT
-		 || nKey == VK_RSHIFT) {
+		if (nOrigKey == VK_CONTROL || nOrigKey == VK_MENU || nOrigKey == VK_SHIFT) {
 			goto DO_NOTHING;
 		}
 
@@ -1312,46 +1300,17 @@ CClipboardSnap* CXkeymacsDll::GetKillRing(CClipboardSnap* pSnap, BOOL bForce)
 	return pSnap->GetNext();
 }
 
-void CXkeymacsDll::Original(int nCommandType, BYTE bVk, int nOriginal)
+void CXkeymacsDll::SetOriginal(UINT nCommandType, BYTE bVk)
 {
-	nCommandType &= ~SHIFT;
-
-	switch (bVk) {
-	case VK_CONTROL:
-		bVk = VK_LCONTROL;
-		break;
-	case VK_MENU:
-		bVk = VK_LMENU;
-		break;
-	case VK_SHIFT:
-		bVk = VK_LSHIFT;
-		break;
-	default:
-		break;
-	}
-
-	m_nOriginal[nCommandType][bVk] += nOriginal;
+	m_nOriginal[nCommandType & ~SHIFT][bVk]++;
 }
 
-int CXkeymacsDll::Original(int nCommandType, BYTE bVk)
+int CXkeymacsDll::CheckOriginal(UINT nCommandType, BYTE bVk)
 {
 	nCommandType &= ~SHIFT;
-
-	switch (bVk) {
-	case VK_CONTROL:
-		bVk = VK_LCONTROL;
-		break;
-	case VK_MENU:
-		bVk = VK_LMENU;
-		break;
-	case VK_SHIFT:
-		bVk = VK_LSHIFT;
-		break;
-	default:
-		break;
-	}
-
-	return m_nOriginal[nCommandType][bVk];
+	if (m_nOriginal[nCommandType][bVk])
+		return m_nOriginal[nCommandType][bVk]--;
+	return 0;
 }
 
 void CXkeymacsDll::IncreaseKillRingIndex(int nKillRing)
