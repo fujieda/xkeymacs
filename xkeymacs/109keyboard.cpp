@@ -89,7 +89,7 @@ BOOL C109Keyboard::OnInitDialog()
 		KeyboardLayouts[i].pCurrentKey->SubclassDlgItem(KeyboardLayouts[i].nCurrentControlID, this);
 		m_ToolTip.AddTool(GetDlgItem(KeyboardLayouts[i].nCurrentControlID), CProfile::GetToolTipID(KeyboardLayouts[i].nToolTipID));
 
-		ScanCode_t current = {'\0'};
+		ScanCode current = {'\0'};
 		if (CProfile::GetScanCodeMap(m_HkeyType, KeyboardLayouts[i].scancode, &current)) {
 			KeyboardLayouts[i].pCurrentKey->SetKeyType(REMAPPED_KEY);
 
@@ -97,7 +97,7 @@ BOOL C109Keyboard::OnInitDialog()
 			GetDlgItem(CProfile::GetBaseControlID(current))->GetWindowText(szWindowText);
 			GetDlgItem(KeyboardLayouts[i].nCurrentControlID)->SetWindowText(szWindowText);
 
-			KeyboardLayout_t *pKeyboardLayout = CProfile::GetKeyboardLayouts(CProfile::GetBaseControlID(current));
+			KeyboardLayout *pKeyboardLayout = CProfile::GetKeyboardLayouts(CProfile::GetBaseControlID(current));
 			if (pKeyboardLayout) {
 				m_ToolTip.UpdateTipText(CProfile::GetToolTipID(pKeyboardLayout->nToolTipID), GetDlgItem(KeyboardLayouts[i].nCurrentControlID));
 			}

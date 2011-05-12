@@ -151,7 +151,7 @@ void CKey::OnLButtonUp(const UINT nFlags, const CPoint point)
 
 	if (m_nKeyType == REMAPPED_PUSHED_KEY) {
 		if (m_nKey == GetPointedKey(point)) {
-			KeyboardLayout_t *pKeyboardLayout = CProfile::GetKeyboardLayouts(m_nKey);
+			KeyboardLayout *pKeyboardLayout = CProfile::GetKeyboardLayouts(m_nKey);
 			if (pKeyboardLayout) {
 				CString szWindowText;
 				GetParent()->GetDlgItem(pKeyboardLayout->nBaseControlID)->GetWindowText(szWindowText);
@@ -163,8 +163,8 @@ void CKey::OnLButtonUp(const UINT nFlags, const CPoint point)
 					((C104Keyboard*)GetParent())->m_ToolTip.UpdateTipText(CProfile::GetToolTipID(pKeyboardLayout->nToolTipID), this);
 				}
 
-				ScanCodeMapping_t ScanCodeMapping = {{0, 0}, {pKeyboardLayout->scancode.nScanCode, pKeyboardLayout->scancode.nPrefixedScanCode}};
-				CProfile::SetScanCodeMap(m_HkeyType, ScanCodeMapping);
+				ScanCodeMapping mapping = {{0, 0}, {pKeyboardLayout->scancode.nScanCode, pKeyboardLayout->scancode.nPrefixedScanCode}};
+				CProfile::SetScanCodeMap(m_HkeyType, mapping);
 			}
 			SetKeyType(ORIGINAL_KEY);
 		} else {
@@ -184,8 +184,8 @@ void CKey::OnLButtonUp(const UINT nFlags, const CPoint point)
 		}
 
 		if (m_nDroppableKey) {
-			KeyboardLayout_t *pKeyboardLayout = CProfile::GetKeyboardLayouts(m_nDroppableKey);
-			KeyboardLayout_t *pBaseKeyboardLayout = CProfile::GetKeyboardLayouts(m_nKey);
+			KeyboardLayout *pKeyboardLayout = CProfile::GetKeyboardLayouts(m_nDroppableKey);
+			KeyboardLayout *pBaseKeyboardLayout = CProfile::GetKeyboardLayouts(m_nKey);
 			if (pKeyboardLayout && pBaseKeyboardLayout) {
 				CString szWindowText;
 				GetWindowText(szWindowText);
@@ -200,9 +200,9 @@ void CKey::OnLButtonUp(const UINT nFlags, const CPoint point)
 				((CKey*)GetParent()->GetDlgItem(pKeyboardLayout->nBaseControlID))->SetKeyType(NORMAL_KEY);
 				((CKey*)GetParent()->GetDlgItem(pKeyboardLayout->nCurrentControlID))->SetKeyType(REMAPPED_KEY);
 
-				ScanCodeMapping_t ScanCodeMapping = {{pBaseKeyboardLayout->scancode.nScanCode, pBaseKeyboardLayout->scancode.nPrefixedScanCode}, 
-													 {pKeyboardLayout->scancode.nScanCode, pKeyboardLayout->scancode.nPrefixedScanCode}};
-				CProfile::SetScanCodeMap(m_HkeyType, ScanCodeMapping);
+				ScanCodeMapping mapping = {{pBaseKeyboardLayout->scancode.nScanCode, pBaseKeyboardLayout->scancode.nPrefixedScanCode}, 
+											{pKeyboardLayout->scancode.nScanCode, pKeyboardLayout->scancode.nPrefixedScanCode}};
+				CProfile::SetScanCodeMap(m_HkeyType, mapping);
 			}
 		}
 	}

@@ -248,7 +248,7 @@ typedef struct Command
 	int nDescriptionID;
 	int nToolTipID;
 	int (*fCommand)();
-	KeyBind_t keybind[MAX_KEY_BIND];
+	KeyBind keybind[MAX_KEY_BIND];
 } Command_t;
 
 #include "../xkeymacs/resource.h"

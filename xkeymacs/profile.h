@@ -23,41 +23,42 @@
 typedef BOOL (WINAPI *PROCESSWALK)(HANDLE hSnapshot, LPPROCESSENTRY32 lppe);
 typedef HANDLE (WINAPI *CREATESNAPSHOT)(DWORD dwFlags, DWORD th32ProcessID);
 
-typedef struct _TASK_LIST {
+struct TASK_LIST {
     DWORD dwProcessId;
     CHAR ProcessName[PROCESS_SIZE];
-} TASK_LIST, *PTASK_LIST;
+};
+typedef TASK_LIST *PTASK_LIST;
 
 enum { MAX_TASKS = 256 };
 
 enum KEY_TYPE { NORMAL_KEY, PUSHED_KEY, DROPPABLE_KEY, ORIGINAL_KEY, REMAPPED_KEY, REMAPPED_PUSHED_KEY };
 enum HKEY_TYPE { CURRENT_USER, LOCAL_MACHINE, MAX_HKEY_TYPE }; // USERS, CLASSES_ROOT, CURRENT_CONFIG, 
 
-typedef struct ScanCode
+struct ScanCode
 {
 	BYTE nScanCode;
 	BYTE nPrefixedScanCode;	// 0x00, 0xE0 or 0xE1	cf. Keyboard Scan Code Specification -- 16
-} ScanCode_t;
+};
 
-typedef struct ScanCodeMapping
+struct ScanCodeMapping
 {
-	ScanCode_t current;
-	ScanCode_t original;
-} ScanCodeMapping_t;
+	ScanCode current;
+	ScanCode original;
+};
 
 class CKey;
 
 typedef struct KeyboardLayout
 {
-	ScanCode_t scancode;
+	ScanCode scancode;
 	int nBaseControlID;
 	int nCurrentControlID;
 	int nToolTipID;
 	CKey *pBaseKey;
 	CKey *pCurrentKey;
-} KeyboardLayout_t;
+} KeyboardLayout;
 
-static KeyboardLayout_t KeyboardLayouts[] = {
+static KeyboardLayout KeyboardLayouts[] = {
 	{{0x01, 0x00}, IDC_ESC,				IDC_ESC_,			IDS_ESC},
 	{{0x02, 0x00}, IDC_1,				IDC_1_,				IDS_1},
 	{{0x03, 0x00}, IDC_2,				IDC_2_,				IDS_2},
@@ -183,15 +184,15 @@ public:
 	static BOOL GetEnableCUA(int nApplicationID);
 	static void ImportProperties();
 	static void ExportProperties();
-	static KeyboardLayout_t* GetKeyboardLayouts(int nKey);
+	static KeyboardLayout* GetKeyboardLayouts(int nKey);
 	static int GetToolTipID(int nToolTipID);
 	static void SetNoCursor();
 	static void SetNormalCursor();
 	static void SetDraggingCursor();
-	static void SetScanCodeMap(HKEY_TYPE hkeyType, ScanCodeMapping_t ScanCodeMappeing);
-	static int GetCurrentControlID(ScanCode_t scancode);
-	static int GetBaseControlID(ScanCode_t scancode);
-	static BOOL GetScanCodeMap(HKEY_TYPE hkeyType, ScanCode_t original, ScanCode_t *current);
+	static void SetScanCodeMap(HKEY_TYPE hkeyType, ScanCodeMapping mapping);
+	static int GetCurrentControlID(ScanCode scancode);
+	static int GetBaseControlID(ScanCode scancode);
+	static BOOL GetScanCodeMap(HKEY_TYPE hkeyType, ScanCode original, ScanCode *current);
 	static void RestartComputer();
 	static BOOL IsVistaOrLater();
 	static BOOL IsNT();
@@ -239,9 +240,9 @@ private:
 	static BYTE PrefixedScanCodeID2Code(int nPrefixedScanCodeID);
 	static DWORD GetScanCodeLength(HKEY_TYPE hkeyType);
 	static int PrefixedScanCode2ID(BYTE nPrefixedScanCode);
-	static ScanCode_t m_CurrentScanCodeMap[MAX_HKEY_TYPE][4][256];
-	static ScanCode_t m_ScanCodeMap[MAX_HKEY_TYPE][4][256];
-	static int GetControlID(ScanCode_t scancode, BOOL bBase);
+	static ScanCode m_CurrentScanCodeMap[MAX_HKEY_TYPE][4][256];
+	static ScanCode m_ScanCodeMap[MAX_HKEY_TYPE][4][256];
+	static int GetControlID(ScanCode scancode, BOOL bBase);
 	static void Item2AppName(CString *sz);
 	static int IsNotSameString(CComboBox *pApplication, CString szListItem);
 	static int CountSeparator(CString szMainString, CString szSeparator);
@@ -264,13 +265,13 @@ private:
 	static void UpdateRegistryData(BOOL bSaveAndValidate);
 };
 
-typedef struct CommandTypeName
+struct CommandTypeName
 {
 	int nCommandType;
 	LPCTSTR szCommandTypeName;
-} CommandTypeName_t;
+};
 
-static const CommandTypeName_t CommandTypes[] = {
+static const CommandTypeName CommandTypes[] = {
 	{NONE,							_T("")},
 	{SHIFT,							_T("Shift+")},
 	{CONTROL,						_T("Ctrl+")},

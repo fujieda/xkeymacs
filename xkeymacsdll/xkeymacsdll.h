@@ -35,27 +35,27 @@ enum { EXTENDED_KEY = 0x01000000 };
 enum { REPEATED_KEY = 0x40000000 };
 enum { BEING_RELEASED = 0x80000000 };
 
-typedef struct KeyBind
+struct KeyBind
 {
 	int nCommandType;
 	BYTE bVk;
 	int nControlID;
-} KeyBind_t;
+};
 
-typedef struct KbdMacro
+struct KbdMacro
 {
 	int nCode;
 	WPARAM wParam;
 	LPARAM lParam;
 	BOOL bOriginal;
-} KbdMacro_t;
+};
 
-typedef struct Modifier {
+struct Modifier {
 	LPCTSTR name;
 	int id;
-} Modifier_t;
+};
 
-static const Modifier_t Modifiers[] = {
+static const Modifier Modifiers[] = {
 //	{ _T("A-"), ALT },
 	{ _T("C-"), CONTROL},
 //	{ _T("H-"), HYPER },
@@ -67,13 +67,13 @@ static const Modifier_t Modifiers[] = {
 	{ _T("Win+"), WIN_WIN },
 };
 
-typedef struct KeyName
+struct KeyName
 {
 	BYTE bVk;
 	LPCTSTR name;
-} KeyName_t;
+};
 
-static const KeyName_t ControlCharacters[] = {
+static const KeyName ControlCharacters[] = {
 //	{ VK_LBUTTON,		_T("mouse-1") },				// does not work well
 //	{ VK_RBUTTON,		_T("mouse-3") },				// does not work well
 	{ VK_CANCEL,		_T("break") },
@@ -247,7 +247,7 @@ private:
 	static LRESULT CALLBACK CallWndProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK ShellProc(int nCode, WPARAM wParam, LPARAM lParam);
-	static KeyBind_t ParseKey(const int nFunctionID, unsigned int &i);
+	static KeyBind ParseKey(const int nFunctionID, unsigned int &i);
 	static BYTE a2v(TCHAR nAscii);
 	static BOOL IsShift(TCHAR nAscii);
 	static TCHAR m_szFunctionDefinition[MAX_FUNCTION][MAX_DEFINITION];

@@ -87,7 +87,7 @@ protected:
 
 /////////////////////////////////////////////////////////////////////////////
 
-static const KeyName_t KeyNames[] = {
+static const KeyName KeyNames[] = {
 	{0,				_T("")},
 	{VK_LBUTTON,	_T("Left mouse button")},
 	{VK_RBUTTON,	_T("Right mouse button")},

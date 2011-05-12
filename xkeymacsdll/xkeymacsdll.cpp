@@ -1129,7 +1129,7 @@ DO_NOTHING:
 
 			if ((!(lParam & BEING_RELEASED)) || bDown[wParam]) {
 				try {
-					KbdMacro_t *pKbdMacro = new KbdMacro;
+					KbdMacro *pKbdMacro = new KbdMacro;
 					if (pKbdMacro) {
 						pKbdMacro->nCode = nCode;
 						pKbdMacro->wParam = wParam;
@@ -1774,7 +1774,7 @@ void CXkeymacsDll::DefiningMacro(BOOL bDefiningMacro)
 		}
 	} else {				// end-kbd-macro
 		while (!m_Macro.IsEmpty()) {
-			KbdMacro_t *pKbdMacro = (KbdMacro_t *)m_Macro.GetTail();
+			KbdMacro *pKbdMacro = (KbdMacro *)m_Macro.GetTail();
 			if (pKbdMacro->lParam & BEING_RELEASED) {
 				break;
 			} else {
@@ -1798,9 +1798,9 @@ void CXkeymacsDll::DefiningMacro(BOOL bDefiningMacro)
 //					CUtils::Log(_T("Macro MemMap: 2.5"));
 					for (int i = 0; i < m_Macro.GetCount(); ++i) {
 //						CUtils::Log(_T("Macro MemMap: 3-1 %d"), i);
-						KbdMacro_t *pKbdMacro = (KbdMacro_t *)m_Macro.GetAt(m_Macro.FindIndex(i));
+						KbdMacro *pKbdMacro = (KbdMacro *)m_Macro.GetAt(m_Macro.FindIndex(i));
 //						CUtils::Log(_T("Macro MemMap: 3-2 %d"), i);
-						memcpy((LPTSTR) pView + i * sizeof(KbdMacro_t), pKbdMacro, sizeof(KbdMacro_t));
+						memcpy((LPTSTR) pView + i * sizeof(KbdMacro), pKbdMacro, sizeof(KbdMacro));
 //						CUtils::Log(_T("Macro MemMap: 3-3 %d"), i);
 					}
 //					CUtils::Log(_T("Macro MemMap: 4"));
@@ -1839,7 +1839,7 @@ void CXkeymacsDll::CallMacro()
 	}
 
 	for (POSITION pos = m_Macro.GetHeadPosition(); pos; ) {
-		KbdMacro_t *pKbdMacro = (KbdMacro_t *)m_Macro.GetNext(pos);
+		KbdMacro *pKbdMacro = (KbdMacro *)m_Macro.GetNext(pos);
 		if (pKbdMacro->lParam & BEING_RELEASED) {
 			ReleaseKey((BYTE)pKbdMacro->wParam);
 		} else {
@@ -1942,7 +1942,7 @@ void CXkeymacsDll::SetFunctionDefinition(int nFunctionID, CString szDefinition)
 // call an original command which is defined in dot.xkeymacs
 void CXkeymacsDll::CallFunction(int nFunctionID)
 {
-	CArray<KeyBind_t, KeyBind_t> keybinds;
+	CArray<KeyBind, KeyBind> keybinds;
 
 	if (nFunctionID < 0 || MAX_FUNCTION <= nFunctionID || !_tcslen(m_szFunctionDefinition[nFunctionID])) {
 		return;
@@ -1964,7 +1964,7 @@ void CXkeymacsDll::CallFunction(int nFunctionID)
 			} else {												// [ControlCharacter]
 				for (int nKeyID = 0; nKeyID < sizeof(ControlCharacters) / sizeof(ControlCharacters[0]); ++nKeyID) {
 					if (!_tcsncmp(m_szFunctionDefinition[nFunctionID] + i, ControlCharacters[nKeyID].name, _tcslen(ControlCharacters[nKeyID].name))) {
-						KeyBind_t keybind = {NONE, ControlCharacters[nKeyID].bVk};
+						KeyBind keybind = {NONE, ControlCharacters[nKeyID].bVk};
 						keybinds.Add(keybind);
 						i += _tcslen(ControlCharacters[nKeyID].name);
 						break;
@@ -2088,7 +2088,7 @@ void CXkeymacsDll::CallFunction(int nFunctionID)
 	return;
 }
 
-KeyBind_t CXkeymacsDll::ParseKey(const int nFunctionID, unsigned int &i)
+KeyBind CXkeymacsDll::ParseKey(const int nFunctionID, unsigned int &i)
 {
 	KeyBind keybind = {NONE};
 

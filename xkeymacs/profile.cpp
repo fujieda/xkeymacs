@@ -21,8 +21,8 @@ static char THIS_FILE[]=__FILE__;
 CXkeymacsData CProfile::m_XkeymacsData[MAX_APP];
 TASK_LIST CProfile::m_TaskList[MAX_TASKS];
 DWORD CProfile::m_dwTasks;
-ScanCode_t CProfile::m_CurrentScanCodeMap[MAX_HKEY_TYPE][4][256];
-ScanCode_t CProfile::m_ScanCodeMap[MAX_HKEY_TYPE][4][256];
+ScanCode CProfile::m_CurrentScanCodeMap[MAX_HKEY_TYPE][4][256];
+ScanCode CProfile::m_ScanCodeMap[MAX_HKEY_TYPE][4][256];
 
 enum { INITIAL_SIZE	= 51200 };
 enum { EXTEND_SIZE	= 25600 };
@@ -1406,13 +1406,12 @@ void CProfile::LoadScanCodeMap(const HKEY_TYPE hkeyType)
 					// illegal data
 				} else {
 					while (offset < dwData - 4) {
-						ScanCodeMapping_t *pScanCodeMapping = (ScanCodeMapping_t *)(lpData + offset);
+						ScanCodeMapping *pMapping = (ScanCodeMapping *)(lpData + offset);
 						offset += 4;	// go to next data
-
-						m_CurrentScanCodeMap[hkeyType][PrefixedScanCode2ID(pScanCodeMapping->original.nPrefixedScanCode)][pScanCodeMapping->original.nScanCode].nPrefixedScanCode = pScanCodeMapping->current.nPrefixedScanCode;
-						m_CurrentScanCodeMap[hkeyType][PrefixedScanCode2ID(pScanCodeMapping->original.nPrefixedScanCode)][pScanCodeMapping->original.nScanCode].nScanCode = pScanCodeMapping->current.nScanCode;
-						m_ScanCodeMap[hkeyType][PrefixedScanCode2ID(pScanCodeMapping->original.nPrefixedScanCode)][pScanCodeMapping->original.nScanCode].nPrefixedScanCode = pScanCodeMapping->current.nPrefixedScanCode;
-						m_ScanCodeMap[hkeyType][PrefixedScanCode2ID(pScanCodeMapping->original.nPrefixedScanCode)][pScanCodeMapping->original.nScanCode].nScanCode = pScanCodeMapping->current.nScanCode;
+						m_CurrentScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nPrefixedScanCode = pMapping->current.nPrefixedScanCode;
+						m_CurrentScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nScanCode = pMapping->current.nScanCode;
+						m_ScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nPrefixedScanCode = pMapping->current.nPrefixedScanCode;
+						m_ScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nScanCode = pMapping->current.nScanCode;
 					}
 				}
 			}
@@ -1510,7 +1509,7 @@ void CProfile::SaveScanCodeMap(const HKEY_TYPE hkeyType)
 				for (int nPrefixedScanCodeID = 0; nPrefixedScanCodeID < 3; ++nPrefixedScanCodeID) {
 					for (int nScanCode = 0; nScanCode < 256; ++nScanCode) {
 						if (m_ScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nScanCode) {
-							ScanCodeMapping_t sScanCodeMapping = {'\0'};
+							ScanCodeMapping sScanCodeMapping = {'\0'};
 							sScanCodeMapping.original.nPrefixedScanCode = PrefixedScanCodeID2Code(nPrefixedScanCodeID);
 							sScanCodeMapping.original.nScanCode = (BYTE)nScanCode;
 							sScanCodeMapping.current.nPrefixedScanCode = m_ScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nPrefixedScanCode;
@@ -1582,7 +1581,7 @@ void CProfile::RestartComputer()
 	ExitWindowsEx(EWX_REBOOT, 0);
 }
 
-int CProfile::GetControlID(const ScanCode_t scancode, const BOOL bBase)
+int CProfile::GetControlID(const ScanCode scancode, const BOOL bBase)
 {
 	for (int i = 0; ; ++i) {
 		if (KeyboardLayouts[i].scancode.nPrefixedScanCode == scancode.nPrefixedScanCode
@@ -1597,17 +1596,17 @@ int CProfile::GetControlID(const ScanCode_t scancode, const BOOL bBase)
 	return 0;
 }
 
-int CProfile::GetBaseControlID(const ScanCode_t scancode)
+int CProfile::GetBaseControlID(const ScanCode scancode)
 {
 	return GetControlID(scancode, TRUE);
 }
 
-int CProfile::GetCurrentControlID(const ScanCode_t scancode)
+int CProfile::GetCurrentControlID(const ScanCode scancode)
 {
 	return GetControlID(scancode, FALSE);
 }
 
-BOOL CProfile::GetScanCodeMap(const HKEY_TYPE hkeyType, const ScanCode_t original, ScanCode_t *const current)
+BOOL CProfile::GetScanCodeMap(const HKEY_TYPE hkeyType, const ScanCode original, ScanCode *const current)
 {
 	if (!current) {
 		return FALSE;
@@ -1616,7 +1615,7 @@ BOOL CProfile::GetScanCodeMap(const HKEY_TYPE hkeyType, const ScanCode_t origina
 	return 0 < current->nScanCode;
 }
 
-void CProfile::SetScanCodeMap(const HKEY_TYPE hkeyType, const ScanCodeMapping_t ScanCodeMappeing)
+void CProfile::SetScanCodeMap(const HKEY_TYPE hkeyType, const ScanCodeMapping ScanCodeMappeing)
 {
 	m_ScanCodeMap[hkeyType][PrefixedScanCode2ID(ScanCodeMappeing.original.nPrefixedScanCode)][ScanCodeMappeing.original.nScanCode] = ScanCodeMappeing.current;
 }
@@ -1746,7 +1745,7 @@ int CProfile::GetToolTipID(int nToolTipID)
 	return nToolTipID;
 }
 
-KeyboardLayout_t* CProfile::GetKeyboardLayouts(const int nKey)
+KeyboardLayout* CProfile::GetKeyboardLayouts(const int nKey)
 {
 	for (int i = 0; i < sizeof(KeyboardLayouts) / sizeof(KeyboardLayouts[0]); ++i) {
 		if (KeyboardLayouts[i].nBaseControlID == nKey
