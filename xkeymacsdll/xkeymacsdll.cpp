@@ -847,32 +847,30 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		}
 	}
 
-	if (CUtils::IsNT()) {
-		switch (nKey) {
-		case VK_CONTROL:
-			if (lParam & EXTENDED_KEY) {
-				nKey = VK_RCONTROL;
-			} else {
-				nKey = VK_LCONTROL;
-			}
-			break;
-		case VK_MENU:
-			if (lParam & EXTENDED_KEY) {
-				nKey = VK_RMENU;
-			} else {
-				nKey = VK_LMENU;
-			}
-			break;
-		case VK_SHIFT:
-			if (lParam & EXTENDED_KEY) {
-				nKey = VK_RSHIFT;
-			} else {
-				nKey = VK_LSHIFT;
-			}
-			break;
-		default:
-			break;
+	switch (nKey) {
+	case VK_CONTROL:
+		if (lParam & EXTENDED_KEY) {
+			nKey = VK_RCONTROL;
+		} else {
+			nKey = VK_LCONTROL;
 		}
+		break;
+	case VK_MENU:
+		if (lParam & EXTENDED_KEY) {
+			nKey = VK_RMENU;
+		} else {
+			nKey = VK_LMENU;
+		}
+		break;
+	case VK_SHIFT:
+		if (lParam & EXTENDED_KEY) {
+			nKey = VK_RSHIFT;
+		} else {
+			nKey = VK_LSHIFT;
+		}
+		break;
+	default:
+		break;
 	}
 
 	if (lParam & BEING_RELEASED) {
@@ -1443,15 +1441,13 @@ BOOL CXkeymacsDll::IsValidKey(BYTE bVk)
 		return FALSE;
 	}
 
-	if (CUtils::IsNT()) {
-		switch (bVk) {
-		case VK_CONTROL:
-		case VK_MENU:
-		case VK_SHIFT:
-			return FALSE;
-		default:
-			break;
-		}
+	switch (bVk) {
+	case VK_CONTROL:
+	case VK_MENU:
+	case VK_SHIFT:
+		return FALSE;
+	default:
+		break;
 	}
 
 	return TRUE;
@@ -1585,20 +1581,18 @@ void CXkeymacsDll::Original(int nCommandType, BYTE bVk, int nOriginal)
 {
 	nCommandType &= ~SHIFT;
 
-	if (CUtils::IsNT()) {
-		switch (bVk) {
-		case VK_CONTROL:
-			bVk = VK_LCONTROL;
-			break;
-		case VK_MENU:
-			bVk = VK_LMENU;
-			break;
-		case VK_SHIFT:
-			bVk = VK_LSHIFT;
-			break;
-		default:
-			break;
-		}
+	switch (bVk) {
+	case VK_CONTROL:
+		bVk = VK_LCONTROL;
+		break;
+	case VK_MENU:
+		bVk = VK_LMENU;
+		break;
+	case VK_SHIFT:
+		bVk = VK_LSHIFT;
+		break;
+	default:
+		break;
 	}
 
 	m_nOriginal[nCommandType][bVk] += nOriginal;
@@ -1608,20 +1602,18 @@ int CXkeymacsDll::Original(int nCommandType, BYTE bVk)
 {
 	nCommandType &= ~SHIFT;
 
-	if (CUtils::IsNT()) {
-		switch (bVk) {
-		case VK_CONTROL:
-			bVk = VK_LCONTROL;
-			break;
-		case VK_MENU:
-			bVk = VK_LMENU;
-			break;
-		case VK_SHIFT:
-			bVk = VK_LSHIFT;
-			break;
-		default:
-			break;
-		}
+	switch (bVk) {
+	case VK_CONTROL:
+		bVk = VK_LCONTROL;
+		break;
+	case VK_MENU:
+		bVk = VK_LMENU;
+		break;
+	case VK_SHIFT:
+		bVk = VK_LSHIFT;
+		break;
+	default:
+		break;
 	}
 
 	return m_nOriginal[nCommandType][bVk];

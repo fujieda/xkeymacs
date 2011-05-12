@@ -377,11 +377,7 @@ void CUtils::SetApplicationName(BOOL bImeComposition)
 //			CUtils::Log(_T("SetApplicationName: console"));
 
 			memset(m_szApplicationName, 0, sizeof(m_szApplicationName));
-			if (IsNT()) {
-				_tcscpy(m_szApplicationName, _T("CMD.exe"));
-			} else {
-				_tcscpy(m_szApplicationName, _T("WINOA386.MOD"));
-			}
+			_tcscpy(m_szApplicationName, _T("CMD.exe"));
 			TCHAR szWindowText[0x100] = {'\0'};
 			GetWindowText(GetForegroundWindow(), szWindowText, sizeof(szWindowText));
 			SetCorrectApplicationName(m_szApplicationName, sizeof(m_szApplicationName), szWindowText, sizeof(szWindowText));
@@ -414,21 +410,10 @@ void CUtils::InitCUtils()
 	SetIMEName();
 }
 
-BOOL CUtils::IsNTor9x()
-{
-	return ((m_OsVersionInfo.dwPlatformId == VER_PLATFORM_WIN32_NT) && (m_OsVersionInfo.dwMajorVersion <= 4))
-		 || (m_OsVersionInfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS);
-}
-
 BOOL CUtils::IsXPorLater()
 {
 	return 5 < m_OsVersionInfo.dwMajorVersion
 		|| 5 == m_OsVersionInfo.dwMajorVersion && 1 <= m_OsVersionInfo.dwMinorVersion;
-}
-
-BOOL CUtils::IsNT()
-{
-	return m_OsVersionInfo.dwPlatformId == VER_PLATFORM_WIN32_NT;
 }
 
 BOOL CUtils::OpenClipboard()

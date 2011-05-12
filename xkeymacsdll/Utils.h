@@ -51,7 +51,6 @@ public:
 	static BOOL IsNami2000();
 	static BOOL IsStoryEditor();
 	static BOOL IseMemoPad();
-	static BOOL IsNT();
 	static BOOL IsCodeWarrior();
 	static BOOL IsVisualBasicEditor();
 	static BOOL IsEudora();
@@ -88,7 +87,6 @@ public:
 	static BOOL IsEmacs();
 	static BOOL SetClipboardText(CString *szClipboardText);
 	static BOOL GetClipboardText(CString *szClipboardText);
-	static BOOL IsNTor9x();
 	static void InitCUtils();
 	static void SetApplicationName(BOOL bImeComposition);
 	static LPCTSTR const GetApplicationName();

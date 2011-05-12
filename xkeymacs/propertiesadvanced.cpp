@@ -437,32 +437,30 @@ LRESULT CALLBACK CPropertiesAdvanced::KeyboardProc(int code, WPARAM wParam, LPAR
 
 	if (lParam & BEING_RELEASED) {	// Key Up
 	} else {						// Key Down
-		if (CProfile::IsNT()) {
-			switch (wParam) {
-			case VK_CONTROL:
-				if (lParam & EXTENDED_KEY) {
-					wParam = VK_RCONTROL;
-				} else {
-					wParam = VK_LCONTROL;
-				}
-				break;
-			case VK_MENU:
-				if (lParam & EXTENDED_KEY) {
-					wParam = VK_RMENU;
-				} else {
-					wParam = VK_LMENU;
-				}
-				break;
-			case VK_SHIFT:
-				if (lParam & EXTENDED_KEY) {
-					wParam = VK_RSHIFT;
-				} else {
-					wParam = VK_LSHIFT;
-				}
-				break;
-			default:
-				break;
+		switch (wParam) {
+		case VK_CONTROL:
+			if (lParam & EXTENDED_KEY) {
+				wParam = VK_RCONTROL;
+			} else {
+				wParam = VK_LCONTROL;
 			}
+			break;
+		case VK_MENU:
+			if (lParam & EXTENDED_KEY) {
+				wParam = VK_RMENU;
+			} else {
+				wParam = VK_LMENU;
+			}
+			break;
+		case VK_SHIFT:
+			if (lParam & EXTENDED_KEY) {
+				wParam = VK_RSHIFT;
+			} else {
+				wParam = VK_LSHIFT;
+			}
+			break;
+		default:
+			break;
 		}
 		m_nAssignKey = wParam;
 		SetNewKey();

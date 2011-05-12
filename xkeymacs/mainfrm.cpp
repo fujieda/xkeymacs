@@ -304,10 +304,7 @@ void CMainFrame::ShowRightMenu(const ICON_TYPE icon)
 			popUp->ModifyMenu(IDC_KEYBOARD, MF_STRING, IDC_KEYBOARD, szFor);
 		}
 
-		if (CProfile::Is9x()) {
-			popUp->DeleteMenu(IDC_KEYBOARD, MF_BYCOMMAND);
-			popUp->DeleteMenu(IDC_KEYBOARD_ANY_USER, MF_BYCOMMAND);
-		} else if (CProfile::IsVistaOrLater()) {
+		if (CProfile::IsVistaOrLater()) {
 			popUp->DeleteMenu(IDC_KEYBOARD_ANY_USER, MF_BYCOMMAND);
 		}
 	} else {

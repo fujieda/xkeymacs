@@ -8,8 +8,9 @@
 #include "MainFrm.h"
 #include "DotXkeymacs.h"
 #include <Imm.h>
-#include <Shlwapi.h>	// Windows NT/2000: Requires Windows 2000 (or Windows NT 4.0 with Internet Explorer 4.0 or later). 
-						// Windows 95/98/Me: Requires Windows 98 (or Windows 95 with Internet Explorer 4.0 or later). 
+#include <Shlwapi.h>
+#include <TlHelp32.h>
+
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -1176,42 +1177,14 @@ DWORD CProfile::GetTaskList(PTASK_LIST pTask, const DWORD dwNumTasks)
 		ZeroMemory(&pTask[i], sizeof(PTASK_LIST));
 	}
 
-	OSVERSIONINFO verInfo = {0};
-	verInfo.dwOSVersionInfoSize = sizeof (verInfo);
-	GetVersionEx(&verInfo);
-	if (verInfo.dwPlatformId == VER_PLATFORM_WIN32_NT
-	 && verInfo.dwMajorVersion < 5) {
-		return GetTaskListNT(pTask, dwNumTasks);
-	}
-
-	HMODULE hKernel = GetModuleHandle(_T("KERNEL32.DLL"));
-	if (!hKernel) {
-		return 0;
-	}
-
-	CREATESNAPSHOT pCreateToolhelp32Snapshot = (CREATESNAPSHOT)GetProcAddress(hKernel, "CreateToolhelp32Snapshot");
-	if (!pCreateToolhelp32Snapshot) {
-		return 0;
-	}
-
-	PROCESSWALK pProcess32First = (PROCESSWALK)GetProcAddress(hKernel, "Process32First");
-	if (!pProcess32First) {
-		return 0;
-	}
-
-	PROCESSWALK pProcess32Next = (PROCESSWALK)GetProcAddress(hKernel, "Process32Next");
-	if (!pProcess32Next) {
-		return 0;
-	}
-
-	HANDLE hProcessSnap = pCreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hProcessSnap == (HANDLE)-1) {
 		return 0;
 	}
 
 	DWORD dwTaskCount = 0;
 	PROCESSENTRY32 processEntry32 = {sizeof(PROCESSENTRY32)};
-	if (pProcess32First(hProcessSnap, &processEntry32)) {
+	if (Process32First(hProcessSnap, &processEntry32)) {
 		do {
 			LPTSTR pCurChar = NULL;
 			for (pCurChar = processEntry32.szExeFile + lstrlen(processEntry32.szExeFile); *pCurChar != _T('\\') && pCurChar != processEntry32.szExeFile; --pCurChar) {
@@ -1226,153 +1199,11 @@ DWORD CProfile::GetTaskList(PTASK_LIST pTask, const DWORD dwNumTasks)
 
 			++dwTaskCount;
 			++pTask;
-		} while (dwTaskCount < dwNumTasks && pProcess32Next(hProcessSnap, &processEntry32));
+		} while (dwTaskCount < dwNumTasks && Process32Next(hProcessSnap, &processEntry32));
 	}
 
 	CloseHandle(hProcessSnap);
 	return dwTaskCount;
-}
-
-LPBYTE CProfile::GetCounters()
-{
-	LANGID lid = MAKELANGID(LANG_ENGLISH, SUBLANG_NEUTRAL);
-	CString szSubKey;
-	szSubKey.Format(CString(MAKEINTRESOURCE(IDS_REGSUBKEY_PERF)), lid);
-	HKEY hKey = NULL;
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, szSubKey, 0, KEY_READ, &hKey) != ERROR_SUCCESS) {
-		return NULL;
-	}
-
-	DWORD dwSize = 0;
-	if (RegQueryValueEx(hKey, CString(MAKEINTRESOURCE(IDS_REGSUBKEY_COUNTERS)), NULL, NULL, NULL, &dwSize) != ERROR_SUCCESS) {
-		RegCloseKey(hKey);
-		return NULL;
-	}
-	LPBYTE pCounters = (LPBYTE) calloc(dwSize, sizeof(BYTE));
-	if (pCounters == NULL) {
-		RegCloseKey(hKey);
-		return NULL;
-	}
-	if (RegQueryValueEx(hKey, CString(MAKEINTRESOURCE(IDS_REGSUBKEY_COUNTERS)), NULL, NULL, pCounters, &dwSize) != ERROR_SUCCESS) {
-		RegCloseKey(hKey);
-		free(pCounters);
-		return NULL;
-	}
-	RegCloseKey(hKey);
-	return pCounters;
-}
-
-BOOL CProfile::GetProcessInfo(CString *const szProcessName, DWORD *const dwProcessId)
-{
-	LPBYTE pCounters = GetCounters();
-	if (!pCounters) {
-		return FALSE;
-	}
-	LPTSTR pTopOfString = (LPTSTR)pCounters;
-	while (*pTopOfString) {
-		if (_tcsicmp(pTopOfString, CString(MAKEINTRESOURCE(IDS_PROCESS))) == 0) {
-			for (LPTSTR p2 = pTopOfString - 2; _istdigit(*p2); --p2) {
-				;
-			}
-			szProcessName->Format(_T("%s"), p2 + 1);	// 230
-		} else if (_tcsicmp(pTopOfString, CString(MAKEINTRESOURCE(IDS_PROCESSID))) == 0) {
-			for (LPTSTR p2 = pTopOfString - 2; _istdigit(*p2); --p2) {
-				;
-			}
-			*dwProcessId = _ttol(p2 + 1);			// 784
-		}
-		pTopOfString += (_tcslen(pTopOfString) + 1);
-	}
-	free(pCounters);
-	return TRUE;
-}
-
-PPERF_DATA_BLOCK CProfile::GetPerformanceData(const CString szProcessName)
-{
-	DWORD dwSize = INITIAL_SIZE;
-	PPERF_DATA_BLOCK pPerformanceData = (PPERF_DATA_BLOCK) calloc(dwSize, sizeof(BYTE));
-	if (pPerformanceData == NULL) {
-		return NULL;
-	}
-
-	for (;;) {
-		switch (RegQueryValueEx(HKEY_PERFORMANCE_DATA, szProcessName, NULL, NULL, (LPBYTE)pPerformanceData, &dwSize)) {
-		case ERROR_SUCCESS:
-			if (0 < dwSize
-			 && pPerformanceData->Signature[0] == (WCHAR)'P'
-			 && pPerformanceData->Signature[1] == (WCHAR)'E'
-			 && pPerformanceData->Signature[2] == (WCHAR)'R'
-			 && pPerformanceData->Signature[3] == (WCHAR)'F') {
-				return pPerformanceData;
-			}
-		case ERROR_MORE_DATA:
-			dwSize += EXTEND_SIZE;
-			pPerformanceData = (PPERF_DATA_BLOCK) realloc(pPerformanceData, dwSize);
-			if (!pPerformanceData) {
-				return NULL;
-			}
-			memset(pPerformanceData, 0, dwSize);
-			break;
-		default:
-			free(pPerformanceData);
-			return NULL;
-		}
-	}
-}
-
-// Add running application's names to the list
-// only for _Windows NT_
-DWORD CProfile::GetTaskListNT(PTASK_LIST pTask, DWORD dwNumTasks)
-{
-	CString szProcessName;
-	DWORD dwProcessIdTitle = 0;
-	if (!GetProcessInfo(&szProcessName, &dwProcessIdTitle)) {
-		return dwNumTasks;
-	}
-
-	PPERF_DATA_BLOCK pPerformanceData = GetPerformanceData(szProcessName);
-	if (!pPerformanceData) {
-		return dwNumTasks;
-	}
-
-	PPERF_OBJECT_TYPE pObj = (PPERF_OBJECT_TYPE) ((DWORD)pPerformanceData + pPerformanceData->HeaderLength);
-	PPERF_COUNTER_DEFINITION pCounterDef = (PPERF_COUNTER_DEFINITION) ((DWORD)pObj + pObj->HeaderLength);
-	DWORD dwProcessIdCounter = 0;
-	for (DWORD i = 0; i < pObj->NumCounters; ++i) {
-		if (pCounterDef->CounterNameTitleIndex == dwProcessIdTitle) {
-			dwProcessIdCounter = pCounterDef->CounterOffset;
-			break;
-		}
-		++pCounterDef;
-	}
-
-	dwNumTasks = min(dwNumTasks - 1, (DWORD)pObj->NumInstances);
-	PPERF_INSTANCE_DEFINITION pInst = (PPERF_INSTANCE_DEFINITION) ((DWORD)pObj + pObj->DefinitionLength);
-	for (i = 0; i < dwNumTasks; ++i) {
-		LPCWSTR pProcessName = (LPCWSTR) ((DWORD)pInst + pInst->NameOffset);
-
-		CHAR szProcessName[MAX_PATH] = {'\0'};
-		if (!WideCharToMultiByte(CP_ACP, 0, pProcessName, -1, szProcessName, sizeof(szProcessName), NULL, NULL)) {
-			_tcscpy(pTask->ProcessName, CString(MAKEINTRESOURCE(IDS_UNKNOWN_TASK)));
-		}
-
-		if (_tcslen(szProcessName)+4 <= sizeof(pTask->ProcessName)) {
-			_tcscpy(pTask->ProcessName, szProcessName);
-			_tcscat(pTask->ProcessName, CString(MAKEINTRESOURCE(IDS_EXTENSION_EXECUTABLE)));
-		}
-
-		PPERF_COUNTER_BLOCK pCounter = (PPERF_COUNTER_BLOCK) ((DWORD)pInst + pInst->ByteLength);
-		pTask->dwProcessId = *((LPDWORD) ((DWORD)pCounter + dwProcessIdCounter));
-		if (pTask->dwProcessId == 0) {
-			pTask->dwProcessId = (DWORD) -2;
-		}
-
-		++pTask;
-		pInst = (PPERF_INSTANCE_DEFINITION) ((DWORD)pCounter + pCounter->ByteLength);
-	}
-
-	free(pPerformanceData);
-	return dwNumTasks;
 }
 
 // return application index
@@ -1644,25 +1475,18 @@ void CProfile::LoadScanCodeMap(const HKEY_TYPE hkeyType)
 	CString szSubKey;
 	CString szValueName;
 	HKEY hKey = HKEY_LOCAL_MACHINE;
-	if (IsNT()) {
-		switch (hkeyType) {
-		case CURRENT_USER:
-			hKey = HKEY_CURRENT_USER;
-			szSubKey.LoadString(IDS_REGSUBKEY_KEYBOARD_LAYOUT);
-			break;
-		case LOCAL_MACHINE:
-			szSubKey.LoadString(IDS_REGSUBKEY_KEYBOARD_LAYOUT_ANY_USER);
-			break;
-		default:
-			return;
-		}
-		szValueName.LoadString(IDS_SCANCODE_MAP);
-	} else if (Is9x()) {
-		szSubKey.LoadString(IDS_REGSUBKEY_KEY_REMAP);
-		szValueName.LoadString(IDS_0);
-	} else {
+	switch (hkeyType) {
+	case CURRENT_USER:
+		hKey = HKEY_CURRENT_USER;
+		szSubKey.LoadString(IDS_REGSUBKEY_KEYBOARD_LAYOUT);
+		break;
+	case LOCAL_MACHINE:
+		szSubKey.LoadString(IDS_REGSUBKEY_KEYBOARD_LAYOUT_ANY_USER);
+		break;
+	default:
 		return;
 	}
+	szValueName.LoadString(IDS_SCANCODE_MAP);
 
 	HKEY hkResult = NULL;
 	if (RegOpenKeyEx(hKey, szSubKey, 0, KEY_QUERY_VALUE, &hkResult) == ERROR_SUCCESS) {
@@ -1678,27 +1502,25 @@ void CProfile::LoadScanCodeMap(const HKEY_TYPE hkeyType)
 		}
 		RegCloseKey(hkResult);
 
-		if (IsNT()) {
-			if (lpData && dwData) {
-				DWORD offset = 0;
-				offset += 8;	// skip Version Information and Flags
-				DWORD *pdwMappings = (DWORD *)(lpData + offset);
-				offset += 4;	// skip Number of Mappings
-				DWORD *pdwNullTerminator = (DWORD *)(lpData + dwData - 4);
+		if (lpData && dwData) {
+			DWORD offset = 0;
+			offset += 8;	// skip Version Information and Flags
+			DWORD *pdwMappings = (DWORD *)(lpData + offset);
+			offset += 4;	// skip Number of Mappings
+			DWORD *pdwNullTerminator = (DWORD *)(lpData + dwData - 4);
 
-				if (4 * *pdwMappings + 12 != dwData) {
-					// illegal data
-				} else if (*pdwNullTerminator != 0) {
-					// illegal data
-				} else {
-					while (offset < dwData - 4) {
-						ScanCodeMapping *pMapping = (ScanCodeMapping *)(lpData + offset);
-						offset += 4;	// go to next data
-						m_CurrentScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nPrefixedScanCode = pMapping->current.nPrefixedScanCode;
-						m_CurrentScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nScanCode = pMapping->current.nScanCode;
-						m_ScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nPrefixedScanCode = pMapping->current.nPrefixedScanCode;
-						m_ScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nScanCode = pMapping->current.nScanCode;
-					}
+			if (4 * *pdwMappings + 12 != dwData) {
+				// illegal data
+			} else if (*pdwNullTerminator != 0) {
+				// illegal data
+			} else {
+				while (offset < dwData - 4) {
+					ScanCodeMapping *pMapping = (ScanCodeMapping *)(lpData + offset);
+					offset += 4;	// go to next data
+					m_CurrentScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nPrefixedScanCode = pMapping->current.nPrefixedScanCode;
+					m_CurrentScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nScanCode = pMapping->current.nScanCode;
+					m_ScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nPrefixedScanCode = pMapping->current.nPrefixedScanCode;
+					m_ScanCodeMap[hkeyType][PrefixedScanCode2ID(pMapping->original.nPrefixedScanCode)][pMapping->original.nScanCode].nScanCode = pMapping->current.nScanCode;
 				}
 			}
 		}
@@ -1756,60 +1578,51 @@ void CProfile::SaveScanCodeMap(const HKEY_TYPE hkeyType)
 	CString szSubKey;
 	CString szValueName;
 	HKEY hKey = HKEY_LOCAL_MACHINE;
-	if (IsNT()) {
-		switch (hkeyType) {
-		case CURRENT_USER:
-			hKey = HKEY_CURRENT_USER;
-			szSubKey.LoadString(IDS_REGSUBKEY_KEYBOARD_LAYOUT);
-			break;
-		case LOCAL_MACHINE:
-			szSubKey.LoadString(IDS_REGSUBKEY_KEYBOARD_LAYOUT_ANY_USER);
-			break;
-		default:
-			return;
-		}
-		szValueName.LoadString(IDS_SCANCODE_MAP);
-	} else if (Is9x()) {
-		szSubKey.LoadString(IDS_REGSUBKEY_KEY_REMAP);
-		szValueName.LoadString(IDS_0);
-	} else {
+	switch (hkeyType) {
+	case CURRENT_USER:
+		hKey = HKEY_CURRENT_USER;
+		szSubKey.LoadString(IDS_REGSUBKEY_KEYBOARD_LAYOUT);
+		break;
+	case LOCAL_MACHINE:
+		szSubKey.LoadString(IDS_REGSUBKEY_KEYBOARD_LAYOUT_ANY_USER);
+		break;
+	default:
 		return;
 	}
+	szValueName.LoadString(IDS_SCANCODE_MAP);
 
 	HKEY hkResult = NULL;
 	if (RegCreateKeyEx(hKey, szSubKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL, &hkResult, NULL) == ERROR_SUCCESS) {
-		if (IsNT()) {
-			DWORD cbData = GetScanCodeLength(hkeyType);
-			if (cbData <= 16) {
-				RegDeleteValue(hkResult, szValueName);
-			} else {
-				LPBYTE lpData = new BYTE[cbData];
-				memset(lpData, 0, sizeof(BYTE) * cbData);
+		DWORD cbData = GetScanCodeLength(hkeyType);
+		if (cbData <= 16) {
+			RegDeleteValue(hkResult, szValueName);
+		} else {
+			LPBYTE lpData = new BYTE[cbData];
+			memset(lpData, 0, sizeof(BYTE) * cbData);
 
-				{
-					DWORD dwMappings = (cbData - 12) / 4;
-					memmove(lpData + 8, &dwMappings, 4);
-				}
+			{
+				DWORD dwMappings = (cbData - 12) / 4;
+				memmove(lpData + 8, &dwMappings, 4);
+			}
 
-				int offset = 12;
-				for (int nPrefixedScanCodeID = 0; nPrefixedScanCodeID < 3; ++nPrefixedScanCodeID) {
-					for (int nScanCode = 0; nScanCode < 256; ++nScanCode) {
-						if (m_ScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nScanCode) {
-							ScanCodeMapping sScanCodeMapping = {'\0'};
-							sScanCodeMapping.original.nPrefixedScanCode = PrefixedScanCodeID2Code(nPrefixedScanCodeID);
-							sScanCodeMapping.original.nScanCode = (BYTE)nScanCode;
-							sScanCodeMapping.current.nPrefixedScanCode = m_ScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nPrefixedScanCode;
-							sScanCodeMapping.current.nScanCode = m_ScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nScanCode;
-							memcpy(lpData + offset, &sScanCodeMapping, sizeof(sScanCodeMapping));
-							offset += sizeof(sScanCodeMapping);
-						}
+			int offset = 12;
+			for (int nPrefixedScanCodeID = 0; nPrefixedScanCodeID < 3; ++nPrefixedScanCodeID) {
+				for (int nScanCode = 0; nScanCode < 256; ++nScanCode) {
+					if (m_ScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nScanCode) {
+						ScanCodeMapping sScanCodeMapping = {'\0'};
+						sScanCodeMapping.original.nPrefixedScanCode = PrefixedScanCodeID2Code(nPrefixedScanCodeID);
+						sScanCodeMapping.original.nScanCode = (BYTE)nScanCode;
+						sScanCodeMapping.current.nPrefixedScanCode = m_ScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nPrefixedScanCode;
+						sScanCodeMapping.current.nScanCode = m_ScanCodeMap[hkeyType][nPrefixedScanCodeID][nScanCode].nScanCode;
+						memcpy(lpData + offset, &sScanCodeMapping, sizeof(sScanCodeMapping));
+						offset += sizeof(sScanCodeMapping);
 					}
 				}
-				RegSetValueEx(hkResult, szValueName, 0, REG_BINARY, lpData, cbData);
-
-				delete[] lpData;
-				lpData = NULL;
 			}
+			RegSetValueEx(hkResult, szValueName, 0, REG_BINARY, lpData, cbData);
+
+			delete[] lpData;
+			lpData = NULL;
 		}
 		RegCloseKey(hkResult);
 	}
@@ -1820,30 +1633,6 @@ void CProfile::SaveScanCodeMap(const HKEY_TYPE hkeyType)
 			RestartComputer();
 		}
 	}
-}
-
-// Return True if Windows 95, Windows 98, or Windows Me. 
-BOOL CProfile::Is9x()
-{
-	OSVERSIONINFO info = {sizeof(OSVERSIONINFO)};
-	GetVersionEx(&info);
-
-	if (info.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
-		return TRUE;
-	}
-	return FALSE;
-}
-
-// Return True if Windows NT 4.0, Windows 2000, Windows XP, Windows 2003 or Windows Vista.
-BOOL CProfile::IsNT()
-{
-	OSVERSIONINFO info = {sizeof(OSVERSIONINFO)};
-	GetVersionEx(&info);
-
-	if (info.dwPlatformId == VER_PLATFORM_WIN32_NT) {
-		return TRUE;
-	}
-	return FALSE;
 }
 
 // Return True if Windows Vista or later.
@@ -2046,26 +1835,24 @@ BOOL CProfile::AdjustTokenPrivileges(LPCTSTR lpName)
 {
 	BOOL rc = TRUE;
 
-	if (IsNT()) {
-		HANDLE hToken;
-		if (OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hToken)) {
-			LUID luid;
-			if (LookupPrivilegeValue(NULL, lpName, &luid)) {
-				TOKEN_PRIVILEGES tp;
-				tp.PrivilegeCount = 1;
-				tp.Privileges[0].Luid = luid;
-				tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+	HANDLE hToken;
+	if (OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hToken)) {
+		LUID luid;
+		if (LookupPrivilegeValue(NULL, lpName, &luid)) {
+			TOKEN_PRIVILEGES tp;
+			tp.PrivilegeCount = 1;
+			tp.Privileges[0].Luid = luid;
+			tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
 
-				if (!::AdjustTokenPrivileges(hToken, FALSE, &tp, sizeof(TOKEN_PRIVILEGES), NULL, NULL)) {
-					rc = FALSE;
-				}
-			} else {
+			if (!::AdjustTokenPrivileges(hToken, FALSE, &tp, sizeof(TOKEN_PRIVILEGES), NULL, NULL)) {
 				rc = FALSE;
 			}
-			CloseHandle(hToken);
 		} else {
 			rc = FALSE;
 		}
+		CloseHandle(hToken);
+	} else {
+		rc = FALSE;
 	}
 
 	return rc;
@@ -2075,16 +1862,14 @@ BOOL CProfile::DiableTokenPrivileges()
 {
 	BOOL rc = TRUE;
 
-	if (IsNT()) {
-		HANDLE hToken;
-		if (OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hToken)) {
-			if (!::AdjustTokenPrivileges(hToken, TRUE, NULL, NULL, NULL, NULL)) {
-				rc = FALSE;
-			}
-			CloseHandle(hToken);
-		} else {
+	HANDLE hToken;
+	if (OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hToken)) {
+		if (!::AdjustTokenPrivileges(hToken, TRUE, NULL, NULL, NULL, NULL)) {
 			rc = FALSE;
 		}
+		CloseHandle(hToken);
+	} else {
+		rc = FALSE;
 	}
 
 	return rc;

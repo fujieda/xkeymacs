@@ -88,23 +88,19 @@ BOOL COptionsDlg::OnInitDialog()
 	}
 
 	// for file and directory name completion
-	if (CProfile::IsNT()) {
-		HKEY hKey = NULL;
+	HKEY hKey = NULL;
 
-		if (RegOpenKeyEx(HKEY_CURRENT_USER,  CString(MAKEINTRESOURCE(IDS_REGSUBKEY_FILE_COMPLETION)), 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS
-		 || RegOpenKeyEx(HKEY_LOCAL_MACHINE, CString(MAKEINTRESOURCE(IDS_REGSUBKEY_FILE_COMPLETION)), 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS) {
-			DWORD dwType = REG_DWORD;
-			DWORD dwCompletionChar = 0;
-			DWORD dwcbData = sizeof(dwCompletionChar);
-			RegQueryValueEx(hKey, CString(MAKEINTRESOURCE(IDS_COMPLETION_CHAR)), NULL, &dwType,
-							(LPBYTE)&dwCompletionChar, &dwcbData);
-			RegCloseKey(hKey);
-			if (dwCompletionChar == 0x9) {
-				m_cFileCompletion.SetCheck(1);
-			}
+	if (RegOpenKeyEx(HKEY_CURRENT_USER,  CString(MAKEINTRESOURCE(IDS_REGSUBKEY_FILE_COMPLETION)), 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS
+			|| RegOpenKeyEx(HKEY_LOCAL_MACHINE, CString(MAKEINTRESOURCE(IDS_REGSUBKEY_FILE_COMPLETION)), 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS) {
+		DWORD dwType = REG_DWORD;
+		DWORD dwCompletionChar = 0;
+		DWORD dwcbData = sizeof(dwCompletionChar);
+		RegQueryValueEx(hKey, CString(MAKEINTRESOURCE(IDS_COMPLETION_CHAR)), NULL, &dwType,
+			(LPBYTE)&dwCompletionChar, &dwcbData);
+		RegCloseKey(hKey);
+		if (dwCompletionChar == 0x9) {
+			m_cFileCompletion.SetCheck(1);
 		}
-	} else if (CProfile::Is9x()) {
-		m_cFileCompletion.EnableWindow(FALSE);
 	}
 
 	// for icons in the taskbar's status area
@@ -139,20 +135,18 @@ void COptionsDlg::OnOK()
 	}
 
 	// for file and directory name completion
-	if (CProfile::IsNT()) {
-		HKEY hKey = NULL;
+	HKEY hKey = NULL;
 
-		if (RegCreateKeyEx(HKEY_CURRENT_USER, CString(MAKEINTRESOURCE(IDS_REGSUBKEY_FILE_COMPLETION)), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL, &hKey, NULL) == ERROR_SUCCESS) {
-			DWORD dwCompletionChar;
-			if (m_cFileCompletion.GetCheck() == 1) {
-				dwCompletionChar = 0x9;	// use enum
-			} else {
-				dwCompletionChar = 0x0;
-			}
-			RegSetValueEx(hKey, CString(MAKEINTRESOURCE(IDS_COMPLETION_CHAR)), 0, REG_DWORD,
-						  (LPBYTE)&dwCompletionChar, sizeof(dwCompletionChar));
-			RegCloseKey(hKey);
+	if (RegCreateKeyEx(HKEY_CURRENT_USER, CString(MAKEINTRESOURCE(IDS_REGSUBKEY_FILE_COMPLETION)), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL, &hKey, NULL) == ERROR_SUCCESS) {
+		DWORD dwCompletionChar;
+		if (m_cFileCompletion.GetCheck() == 1) {
+			dwCompletionChar = 0x9;	// use enum
+		} else {
+			dwCompletionChar = 0x0;
 		}
+		RegSetValueEx(hKey, CString(MAKEINTRESOURCE(IDS_COMPLETION_CHAR)), 0, REG_DWORD,
+			(LPBYTE)&dwCompletionChar, sizeof(dwCompletionChar));
+		RegCloseKey(hKey);
 	}
 
 	// for icons in the taskbar's status area

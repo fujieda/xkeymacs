@@ -14,15 +14,6 @@
 
 #define PROCESS_SIZE        MAX_PATH
 
-//
-// Function pointer types for accessing Toolhelp32 functions dynamically.
-// By dynamically accessing these functions, we can do so only on Windows
-// 95 and still run on Windows NT, which does not have these functions.
-//
-#include <tlhelp32.h>  // for Windows 95
-typedef BOOL (WINAPI *PROCESSWALK)(HANDLE hSnapshot, LPPROCESSENTRY32 lppe);
-typedef HANDLE (WINAPI *CREATESNAPSHOT)(DWORD dwFlags, DWORD th32ProcessID);
-
 struct TASK_LIST {
     DWORD dwProcessId;
     CHAR ProcessName[PROCESS_SIZE];
@@ -195,8 +186,6 @@ public:
 	static BOOL GetScanCodeMap(HKEY_TYPE hkeyType, ScanCode original, ScanCode *current);
 	static void RestartComputer();
 	static BOOL IsVistaOrLater();
-	static BOOL IsNT();
-	static BOOL Is9x();
 	static void SaveScanCodeMap(HKEY_TYPE hkeyType);
 	static void LoadScanCodeMap(HKEY_TYPE hkeyType);
 	static BOOL Is106Keyboard();
@@ -250,13 +239,9 @@ private:
 	static void GetAppName(CString *szAppName, LPCTSTR pWindowName);
 	static BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam);
 	static BOOL IsTheString(CString sz, UINT nID);
-	static PPERF_DATA_BLOCK GetPerformanceData(CString szProcessName);
-	static BOOL GetProcessInfo(CString *szProcessName, DWORD *dwProcessId);
-	static LPBYTE GetCounters();
 	static void SetDllData();
 	static CXkeymacsData m_XkeymacsData[MAX_APP];
 	static void DeleteAllRegistryData();
-	static DWORD GetTaskListNT(PTASK_LIST pTask, DWORD dwNumTasks);
 	static DWORD GetTaskList(PTASK_LIST pTask, DWORD dwNumTasks);
 	static BOOL IsCommandType(int nCommandType, LPCTSTR szKeyBind);
 	static int KeyBind2Key(LPCTSTR szKey);
