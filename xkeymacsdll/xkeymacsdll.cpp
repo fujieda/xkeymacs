@@ -20,11 +20,6 @@ static AFX_EXTENSION_MODULE XkeymacsdllDLL = { NULL, NULL };
 
 static HINSTANCE g_hDllInst = NULL;
 
-HINSTANCE GetThisHInst()
-{
-	return g_hDllInst;
-}
-
 extern "C" int APIENTRY
 DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 {
@@ -211,18 +206,18 @@ void CXkeymacsDll::DeleteShell_NotifyIcon(ICON_TYPE icon)
 // set keyboard hook
 BOOL CXkeymacsDll::SetKeyboardHook()
 {
-	m_hHookKeyboard = ::SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, GetThisHInst(), 0);
+	m_hHookKeyboard = ::SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, g_hDllInst, 0);
 	if (!m_hHookKeyboard) {
 		return FALSE;
 	}
 
-	m_hHookCallWnd = ::SetWindowsHookEx(WH_CALLWNDPROC, (HOOKPROC)CallWndProc, GetThisHInst(), 0);
+	m_hHookCallWnd = ::SetWindowsHookEx(WH_CALLWNDPROC, (HOOKPROC)CallWndProc, g_hDllInst, 0);
 
-	m_hHookCallWndRet = ::SetWindowsHookEx(WH_CALLWNDPROCRET, (HOOKPROC)CallWndRetProc, GetThisHInst(), 0);
+	m_hHookCallWndRet = ::SetWindowsHookEx(WH_CALLWNDPROCRET, (HOOKPROC)CallWndRetProc, g_hDllInst, 0);
 
-	m_hHookGetMessage = ::SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)GetMsgProc, GetThisHInst(), 0);
+	m_hHookGetMessage = ::SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)GetMsgProc, g_hDllInst, 0);
 
-	m_hHookShell = ::SetWindowsHookEx(WH_SHELL, (HOOKPROC)ShellProc, GetThisHInst(), 0);
+	m_hHookShell = ::SetWindowsHookEx(WH_SHELL, (HOOKPROC)ShellProc, g_hDllInst, 0);
 
 	AddShell_NotifyIcon(MAIN_ICON);
 

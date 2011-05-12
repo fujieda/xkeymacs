@@ -9,8 +9,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-HINSTANCE GetThisHInst();
-
 #include "ClipboardSnap.h"
 
 enum { MAX_APP = 64 };
