@@ -197,7 +197,7 @@ int CMainFrame::OnCreate(const LPCREATESTRUCT lpCreateStruct)
 								  (HCURSOR)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDC_DISABLE_CURSOR), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED),
 								  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_CHANGE_CURSOR)), 0));
 
-	m_pXkeymacsDll->SetKeyboardHook();
+	m_pXkeymacsDll->SetHooks();
 
 	return 0;
 }
@@ -420,7 +420,7 @@ void CMainFrame::OnQuit()
 		CloseDialog(m_p109KeyboardDlg[i], &m_nResultKeyboardDlg[JAPANESE_KEYBOARD][i]);
 	}
 
-	m_pXkeymacsDll->ReleaseKeyboardHook();
+	m_pXkeymacsDll->ReleaseHooks();
 	m_pXkeymacsDll->DeleteAllShell_NotifyIcon();
 
 	PostQuitMessage(0);
@@ -474,8 +474,8 @@ void CMainFrame::OnExport()
 void CMainFrame::OnReset() 
 {
 	// TODO: Add your command handler code here
-	m_pXkeymacsDll->ReleaseKeyboardHook();
-	m_pXkeymacsDll->SetKeyboardHook();
+	m_pXkeymacsDll->ReleaseHooks();
+	m_pXkeymacsDll->SetHooks();
 }
 
 void CMainFrame::OnHelpFinder() 

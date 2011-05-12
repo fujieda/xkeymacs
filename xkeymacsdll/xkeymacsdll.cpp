@@ -203,62 +203,34 @@ void CXkeymacsDll::DeleteShell_NotifyIcon(ICON_TYPE icon)
 	DoShell_NotifyIcon(icon, NIM_DELETE);
 }
 
-// set keyboard hook
-BOOL CXkeymacsDll::SetKeyboardHook()
+// set hooks
+void CXkeymacsDll::SetHooks()
 {
-	m_hHookKeyboard = ::SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, g_hDllInst, 0);
-	if (!m_hHookKeyboard) {
-		return FALSE;
-	}
-
-	m_hHookCallWnd = ::SetWindowsHookEx(WH_CALLWNDPROC, (HOOKPROC)CallWndProc, g_hDllInst, 0);
-
-	m_hHookCallWndRet = ::SetWindowsHookEx(WH_CALLWNDPROCRET, (HOOKPROC)CallWndRetProc, g_hDllInst, 0);
-
-	m_hHookGetMessage = ::SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)GetMsgProc, g_hDllInst, 0);
-
-	m_hHookShell = ::SetWindowsHookEx(WH_SHELL, (HOOKPROC)ShellProc, g_hDllInst, 0);
-
-	AddShell_NotifyIcon(MAIN_ICON);
-
-	return TRUE;
+	m_hHookKeyboard = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, g_hDllInst, 0);
+	m_hHookCallWnd = SetWindowsHookEx(WH_CALLWNDPROC, (HOOKPROC)CallWndProc, g_hDllInst, 0);
+	m_hHookCallWndRet = SetWindowsHookEx(WH_CALLWNDPROCRET, (HOOKPROC)CallWndRetProc, g_hDllInst, 0);
+	m_hHookGetMessage = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)GetMsgProc, g_hDllInst, 0);
+	m_hHookShell = SetWindowsHookEx(WH_SHELL, (HOOKPROC)ShellProc, g_hDllInst, 0);
 }
 
-// release keyboard hook
-BOOL CXkeymacsDll::ReleaseKeyboardHook()
+// release hooks
+void CXkeymacsDll::ReleaseHooks()
 {
-	BOOL bKeyboard = TRUE;
-	BOOL bCallWnd = TRUE;
-	BOOL bCallWndRet = TRUE;
-	BOOL bGetMessage = TRUE;
-	BOOL bShell = TRUE;
-
-	if (m_hHookKeyboard) {
-		bKeyboard = ::UnhookWindowsHookEx(m_hHookKeyboard);
-	}
+	if (m_hHookKeyboard)
+		UnhookWindowsHookEx(m_hHookKeyboard);
 	m_hHookKeyboard = NULL;
-
-	if (m_hHookCallWnd) {
-		bCallWnd = ::UnhookWindowsHookEx(m_hHookCallWnd);
-	}
+	if (m_hHookCallWnd)
+		UnhookWindowsHookEx(m_hHookCallWnd);
 	m_hHookCallWnd = NULL;
-
-	if (m_hHookCallWndRet) {
-		bCallWndRet = ::UnhookWindowsHookEx(m_hHookCallWndRet);
-	}
+	if (m_hHookCallWndRet)
+		UnhookWindowsHookEx(m_hHookCallWndRet);
 	m_hHookCallWndRet = NULL;
-
-	if (m_hHookGetMessage) {
-		bGetMessage = ::UnhookWindowsHookEx(m_hHookGetMessage);
-	}
+	if (m_hHookGetMessage)
+		UnhookWindowsHookEx(m_hHookGetMessage);
 	m_hHookGetMessage = NULL;
-
-	if (m_hHookShell) {
-		bShell = ::UnhookWindowsHookEx(m_hHookShell);
-	}
+	if (m_hHookShell)
+		UnhookWindowsHookEx(m_hHookShell);
 	m_hHookShell = NULL;
-
-	return bKeyboard && bCallWnd && bCallWndRet && bGetMessage && bShell;
 }
 
 void CXkeymacsDll::SetKeyboardHookFlag(BOOL bFlag)
@@ -452,8 +424,8 @@ LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lPar
 			case PBT_APMRESUMECRITICAL: // 0x0006
 			case PBT_APMRESUMESUSPEND:  // 0x0007
 			case PBT_APMRESUMESTANDBY:  // 0x0008
-				ReleaseKeyboardHook();
-				SetKeyboardHook();
+				ReleaseHooks();
+				SetHooks();
 				break;
 			default:
 				break;
@@ -1157,7 +1129,7 @@ DO_NOTHING:
 		bDefiningMacro = m_bDefiningMacro;
 	}
 
-	return ::CallNextHookEx(m_hHookKeyboard, nCode, wParam, lParam);
+	return CallNextHookEx(m_hHookKeyboard, nCode, wParam, lParam);
 
 RECURSIVE:
 	Kdu(RECURSIVE_KEY, 1, FALSE);

@@ -193,11 +193,11 @@ public:
 	void SetCommandID(int nApplicationID, int nCommandType, int nKey, int nCommandID);
 	void SetAtIbeamCursorOnly(int nApplicationID, int nCommandType, int nKey, BOOL bAtIbeamCursorOnly);
 	void SetApplicationName(int nApplicationID, CString szApplicationName);
-	static BOOL ReleaseKeyboardHook();
+	static void ReleaseHooks();
 	void SetEnableCUA(int nApplicationID, BOOL bEnableCUA);
 	void SetIgnoreUndefinedC_x(int nApplicationID, BOOL bIgnoreUndefinedC_x);
 	void SetIgnoreUndefinedMetaCtrl(int nApplicationID, BOOL bIgnoreUndefinedMetaCtrl);
-	static BOOL SetKeyboardHook();
+	static void SetHooks();
 	void SetSettingStyle(int nApplicationID, int nSettingStyle);
 	void SetUseDialogSetting(int nApplicationID, BOOL bUseDialogSetting);
 	static void AddKillRing(BOOL bNewData = TRUE);
