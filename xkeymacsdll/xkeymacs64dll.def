@@ -1,0 +1,9 @@
+; xkeymacsdll.def : Declares the module parameters for the DLL.
+
+LIBRARY      "xkeymacs64"
+
+EXPORTS
+    ; Explicit exports can go here
+
+SECTIONS
+	.xkmcs	READ WRITE SHARED

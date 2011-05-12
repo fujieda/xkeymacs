@@ -53,8 +53,11 @@ BOOL CXkeymacsApp::InitInstance()
 	// If you are not using these features and wish to reduce the size
 	//  of your final executable, you should remove from the following
 	//  the specific initialization routines you do not need.
-
+#ifdef _WIN64
+	m_hMutex = CreateMutex(FALSE, 0, CString(MAKEINTRESOURCE(AFX_IDS_APP_TITLE)) + _T("64"));
+#else
 	m_hMutex = CreateMutex(FALSE, 0, CString(MAKEINTRESOURCE(AFX_IDS_APP_TITLE)));
+#endif
 
     if (::GetLastError() == ERROR_ALREADY_EXISTS) {
 		m_Instance = SecondInstance;
@@ -88,7 +91,7 @@ BOOL CXkeymacsApp::InitInstance()
 	m_pMainWnd = new CMainFrame;
 	m_pMainWnd->ShowWindow(SW_HIDE);
 	m_pMainWnd->UpdateWindow();
-	SetClassLong(m_pMainWnd->m_hWnd, GCL_HICON, (LONG)LoadIcon(IDR_MAINFRAME));
+	SetClassLongPtr(m_pMainWnd->m_hWnd, GCLP_HICON, (LONG_PTR)LoadIcon(IDR_MAINFRAME));
 
 	// set registry key
 //	CMainFrame *pMainWnd = (CMainFrame*)m_pMainWnd;

@@ -41,6 +41,9 @@
     <None Include="xkeymacsdll.def">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="xkeymacs64dll.def">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClipboardFormatSnap.h">

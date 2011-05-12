@@ -3712,7 +3712,7 @@ BOOL CCommands::GetCaretPos(LPPOINT lpPoint)
 	 || CUtils::IsThunderbird()) {
 		IMECHARPOSITION ImeCharPosition = {sizeof(IMECHARPOSITION)};
 
-		CallWindowProc((WNDPROC)GetWindowLong(GetFocus(), GWL_WNDPROC), GetFocus(), WM_IME_REQUEST, IMR_QUERYCHARPOSITION, (LPARAM)&ImeCharPosition);
+		CallWindowProc((WNDPROC)GetWindowLongPtr(GetFocus(), GWLP_WNDPROC), GetFocus(), WM_IME_REQUEST, IMR_QUERYCHARPOSITION, (LPARAM)&ImeCharPosition);
 //		CUtils::Log(_T("ImeCharPosition: rc = %d, x = %d, y = %d"), 0, ImeCharPosition.pt.x, ImeCharPosition.pt.y);
 
 		ScreenToClient(GetFocus(), &ImeCharPosition.pt);
