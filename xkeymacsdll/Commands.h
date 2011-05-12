@@ -16,10 +16,10 @@ enum MAXIMIZE_DIRECTION { VERTICAL, HORIZONTAL, ROLL_UP_UNROLL, MAX_MAXIMIZE_DIR
 enum INPUT_METHOD_OPEN_STATUS {CLOSE_INPUT_METHOD, OPEN_INPUT_METHOD, TOGGLE_INPUT_METHOD};
 enum CONSOLE_MENU_EDIT { CMD_MARK = 1, CMD_COPY, CMD_PASTE, CMD_SELECT_ALL, CMD_SCROLL, CMD_FIND };
 enum CONSOLE_MENU { CMD_RESTORE = 1, CMD_MOVE, CMD_SIZE, CMD_MINIMIZE, CMD_MAXIMIZE, CMD_CLOSE, CMD_EDIT, CMD_DEFAULTS, CMD_PROPERTIES };
-enum { MAX_WINDOW = 64 };
 enum CASE_WORD { DOWNCASE, UPCASE, CAPITALIZE };
+const int MAX_WINDOW = 64;
 
-typedef struct OriginalWindowPosition
+struct OriginalWindowPosition
 {
 	HWND hWnd;
 	BOOL bMax[MAX_MAXIMIZE_DIRECTION];
@@ -27,7 +27,7 @@ typedef struct OriginalWindowPosition
 	int nOriginalY;			// for VERTICAL
 	int nOriginalWidth;		// for HORIZONTAL
 	int nOriginalHeight;	// for VERTICAL
-} OriginalWindowPosition_t;
+};
 
 class AFX_EXT_CLASS CCommands  
 {
@@ -181,8 +181,8 @@ private:
 	static BOOL GetCaretPos(LPPOINT lpPoint);
 	static BOOL IsKillCommand(int (*nFunctionPointer)());
 	static void PrintFunctionName(int (*nFunctionPointer)());
-	static OriginalWindowPosition_t* GetOriginalWindowPosition(HWND hWnd);
-	static OriginalWindowPosition_t m_OriginalWindowPosition[MAX_WINDOW];
+	static OriginalWindowPosition* GetOriginalWindowPosition(HWND hWnd);
+	static OriginalWindowPosition m_OriginalWindowPosition[MAX_WINDOW];
 	static int KillLine(BOOL bAllFormat, int (*pCommand)() = KillLine);
 	static BOOL IsEmptyClipboardData(const int nID = 0);
 	static int FindReturnFromClipboardData(const int nID = 0);

@@ -289,7 +289,7 @@ CPtrList CCommands::m_FindText;
 BOOL CCommands::m_bFirstFindDialog = FALSE;
 BOOL CCommands::m_bTemporarilyDisableXKeymacs = FALSE;
 CArray<CClipboardSnap *, CClipboardSnap *> CCommands::m_oClipboardData;
-OriginalWindowPosition_t CCommands::m_OriginalWindowPosition[MAX_WINDOW] = {'\0'};
+OriginalWindowPosition CCommands::m_OriginalWindowPosition[MAX_WINDOW] = {'\0'};
 BOOL CCommands::m_bIsSu = FALSE;
 #pragma data_seg()
 
@@ -1181,8 +1181,8 @@ int CCommands::SaveBuffersKillEmacs()
 
 	HWND hWnd = GetForegroundWindow();
 	if (hWnd) {
-		OriginalWindowPosition_t *pOriginalWindowPosition = GetOriginalWindowPosition(hWnd);
-		if (pOriginalWindowPosition && pOriginalWindowPosition->bMax[ROLL_UP_UNROLL]) {
+		OriginalWindowPosition *pPos = GetOriginalWindowPosition(hWnd);
+		if (pPos && pPos->bMax[ROLL_UP_UNROLL]) {
 			RollUpUnroll();
 		}
 	}
@@ -1277,20 +1277,18 @@ int CCommands::Maximize()
 	return Reset(GOTO_HOOK);
 }
 
-OriginalWindowPosition_t* CCommands::GetOriginalWindowPosition(HWND hWnd)
+OriginalWindowPosition* CCommands::GetOriginalWindowPosition(HWND hWnd)
 {
-	const int nOriginalWindowPosition = sizeof(m_OriginalWindowPosition) / sizeof(m_OriginalWindowPosition[0]);
-
-	for (int i = 0; i < nOriginalWindowPosition; ++i) {
+	for (int i = 0; i < MAX_WINDOW; i++) {
 		if (m_OriginalWindowPosition[i].hWnd == hWnd) {
 			return &m_OriginalWindowPosition[i];
 		}
 	}
 
-	for (int j = 0; j < nOriginalWindowPosition; ++j) {
+	for (int j = 0; j < MAX_WINDOW; j++) {
 		if (m_OriginalWindowPosition[j].hWnd == 0) {
 			m_OriginalWindowPosition[j].hWnd = hWnd;
-			memset(&m_OriginalWindowPosition[(j + 1) % nOriginalWindowPosition], 0, sizeof(m_OriginalWindowPosition[0]));
+			memset(&m_OriginalWindowPosition[(j + 1) % MAX_WINDOW], 0, sizeof(OriginalWindowPosition));
 			return &m_OriginalWindowPosition[j];
 		}
 	}
@@ -1318,8 +1316,8 @@ int CCommands::Maximize(MAXIMIZE_DIRECTION direction)
 		return Reset(GOTO_HOOK);
 	}
 
-	OriginalWindowPosition_t *pOriginalWindowPosition = GetOriginalWindowPosition(hWnd);
-	if (!pOriginalWindowPosition) {
+	OriginalWindowPosition *pPos = GetOriginalWindowPosition(hWnd);
+	if (!pPos) {
 		return Reset(GOTO_HOOK);
 	}
 
@@ -1330,34 +1328,34 @@ int CCommands::Maximize(MAXIMIZE_DIRECTION direction)
 
 	switch (direction) {
 	case VERTICAL:
-		if (pOriginalWindowPosition->bMax[direction]) {
-			Y = pOriginalWindowPosition->nOriginalY;
-			nHeight = pOriginalWindowPosition->nOriginalHeight;
+		if (pPos->bMax[direction]) {
+			Y = pPos->nOriginalY;
+			nHeight = pPos->nOriginalHeight;
 		} else {
-			pOriginalWindowPosition->nOriginalY = Y;
-			pOriginalWindowPosition->nOriginalHeight = nHeight;
+			pPos->nOriginalY = Y;
+			pPos->nOriginalHeight = nHeight;
 
 			Y = workarea.top;
 			nHeight = workarea.bottom - workarea.top;
 		}
 		break;
 	case HORIZONTAL:
-		if (pOriginalWindowPosition->bMax[direction]) {
-			X = pOriginalWindowPosition->nOriginalX;
-			nWidth = pOriginalWindowPosition->nOriginalWidth;
+		if (pPos->bMax[direction]) {
+			X = pPos->nOriginalX;
+			nWidth = pPos->nOriginalWidth;
 		} else {
-			pOriginalWindowPosition->nOriginalX = X;
-			pOriginalWindowPosition->nOriginalWidth = nWidth;
+			pPos->nOriginalX = X;
+			pPos->nOriginalWidth = nWidth;
 
 			X = workarea.left;
 			nWidth = workarea.right - workarea.left;
 		}
 		break;
 	case ROLL_UP_UNROLL:
-		if (pOriginalWindowPosition->bMax[direction]) {
-			nHeight = pOriginalWindowPosition->nOriginalHeight;
+		if (pPos->bMax[direction]) {
+			nHeight = pPos->nOriginalHeight;
 		} else {
-			pOriginalWindowPosition->nOriginalHeight = nHeight;
+			pPos->nOriginalHeight = nHeight;
 
 			nHeight = 0x15;
 		}
@@ -1368,7 +1366,7 @@ int CCommands::Maximize(MAXIMIZE_DIRECTION direction)
 	}
 
 	MoveWindow(hWnd, X, Y, nWidth, nHeight, TRUE);
-	pOriginalWindowPosition->bMax[direction] = !pOriginalWindowPosition->bMax[direction];
+	pPos->bMax[direction] = !pPos->bMax[direction];
 	return Reset(GOTO_HOOK);
 }
 
