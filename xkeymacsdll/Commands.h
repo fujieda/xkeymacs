@@ -178,7 +178,6 @@ private:
 	static BOOL CopyCurrentLine();
 	static BOOL CopyPreviousLine();
 	static LRESULT VScroll(UINT nSBCode, int nTimes = 1);
-	static BOOL GetCaretPos(LPPOINT lpPoint);
 	static BOOL IsKillCommand(int (*nFunctionPointer)());
 	static void PrintFunctionName(int (*nFunctionPointer)());
 	static OriginalWindowPosition* GetOriginalWindowPosition(HWND hWnd);
@@ -197,11 +196,6 @@ private:
 	static int Maximize(MAXIMIZE_DIRECTION direction);
 	static DWORD DeactivateMark();
 	static BOOL m_bFirstFindDialog;
-	static BOOL SetCaretPosition();
-	static void GetCaretPosition();
-	static CPtrList m_FindText;
-	static CPtrList m_ScrollInfo;
-	static CPtrList m_CaretPos;
 	static void Copy_();
 	static BYTE GetDirectionBackwardKey();
 	static BYTE GetDirectionForwardKey();

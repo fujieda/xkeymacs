@@ -283,9 +283,6 @@ BOOL CCommands::m_bC_u = FALSE;
 SEARCH_DIRECTION CCommands::m_SearchDirection = NA;
 int (*CCommands::m_LastKillCommand)() = NULL;
 int (*CCommands::m_LastCommand)() = NULL;
-CPtrList CCommands::m_CaretPos;
-CPtrList CCommands::m_ScrollInfo;
-CPtrList CCommands::m_FindText;
 BOOL CCommands::m_bFirstFindDialog = FALSE;
 BOOL CCommands::m_bTemporarilyDisableXKeymacs = FALSE;
 CArray<CClipboardSnap *, CClipboardSnap *> CCommands::m_oClipboardData;
@@ -3278,130 +3275,6 @@ BYTE CCommands::GetDirectionBackwardKey()
 	return bDirectionBackward;
 }
 
-void CCommands::GetCaretPosition()
-{
-//	CUtils::Log(_T("GetClipboardTextLength = %d"), CUtils::GetClipboardTextLength());
-
-	try {
-		POINT *pCaretPos = new POINT;
-		if (pCaretPos && GetCaretPos(pCaretPos)) {
-//			CUtils::Log(_T("x = %d, y = %d"), pCaretPos->x, pCaretPos->y);
-			m_CaretPos.AddTail(pCaretPos);
-		} else {
-			delete pCaretPos;
-			pCaretPos = NULL;
-		}
-	}
-	catch (CMemoryException* e) {
-		e->Delete();
-//		CUtils::Log("GetCaretPosition: pCaretPos: 'new' threw an exception");
-	}
-
-	try {
-		SCROLLINFO *pScrollInfo = new SCROLLINFO;
-		if (pScrollInfo) {
-			memset(pScrollInfo, 0, sizeof(SCROLLINFO));
-			pScrollInfo->cbSize = sizeof(SCROLLINFO);
-			pScrollInfo->fMask = SIF_ALL;
-			if (GetScrollInfo(GetFocus(), SB_VERT, pScrollInfo)) {
-//				CUtils::Log(_T("page = %d, pos = %d, max = %d, min = %d, trackpos = %d"), pScrollInfo->nPage, pScrollInfo->nPos, pScrollInfo->nMax, pScrollInfo->nMin, pScrollInfo->nTrackPos);
-				m_ScrollInfo.AddTail(pScrollInfo);
-			} else {
-//				CUtils::Log(_T("GetScrollInfo Error: %d"), GetLastError());
-				delete pScrollInfo;
-				pScrollInfo = NULL;
-			}
-		}
-	}
-	catch (CMemoryException* e) {
-		e->Delete();
-//		CUtils::Log("GetCaretPosition: pScrollInfo: 'new' threw an exception");
-	}
-
-	try {
-		CString* pClipboardText = new CString;
-		if (pClipboardText) {
-			CUtils::GetClipboardText(pClipboardText);
-			CUtils::SetClipboardText(pClipboardText);
-			m_FindText.AddTail(pClipboardText);
-		}
-	}
-	catch (CMemoryException* e) {
-		e->Delete();
-//		CUtils::Log("GetCaretPosition: pClipboardText: 'new' threw an exception");
-	}
-}
-
-BOOL CCommands::SetCaretPosition()
-{
-	{
-//		TCHAR buf[0x100] = {'\0'};
-//		GetWindowText(GetForegroundWindow(), buf, sizeof(buf));
-//		CUtils::Log(buf);
-	}
-
-	if (!m_ScrollInfo.IsEmpty()) {
-		SCROLLINFO* pScrollInfo = (SCROLLINFO*)m_ScrollInfo.GetTail();
-		delete pScrollInfo;
-		pScrollInfo = NULL;
-		m_ScrollInfo.RemoveTail();
-	}
-	if (!m_ScrollInfo.IsEmpty()) {
-		SCROLLINFO* pScrollInfo = (SCROLLINFO*)m_ScrollInfo.GetTail();
-		SendMessage(GetFocus(), WM_VSCROLL, SB_THUMBPOSITION | (pScrollInfo->nPos << 0x10), NULL);
-	}
-
-	BOOL bMoveCaret = FALSE;
-	if (!m_CaretPos.IsEmpty()) {
-		POINT* pCaretPos = (POINT*)m_CaretPos.GetTail();
-		delete pCaretPos;
-		pCaretPos = NULL;
-		m_CaretPos.RemoveTail();
-	}
-	if (!m_CaretPos.IsEmpty()) {
-		POINT* pCaretPos = (POINT*)m_CaretPos.GetTail();
-		SetCaretPos(pCaretPos->x, pCaretPos->y);
-
-//		CUtils::Log(_T("set x = %d), y = %d", p->x, p->y);
-
-		DeactivateMark();
-
-		const int nPreviousFindTextLength = CUtils::GetClipboardTextLength();
-		if (0 < nPreviousFindTextLength) {
-			if (CUtils::IsWordpad()) {
-				POSITION position = m_FindText.GetTailPosition();
-				CString* pPreviousFindText = (CString*)m_FindText.GetPrev(position);
-				CString* pNextFindText = (CString*)m_FindText.GetPrev(position);
-				if (*pPreviousFindText == *pNextFindText) {
-					for (int i = 0; i <= nPreviousFindTextLength; ++i) {
-						Kdu(VK_LEFT);
-					}
-				} else {
-					Kdu(VK_LEFT);
-				}
-			}
-			bMoveCaret = TRUE;
-		}
-	} else {
-		Kdu(VK_LEFT);
-	}
-
-//	CUtils::Log(_T("scrollInfo.GetCount() = %d, szFindText.GetLength() = %d"), scrollInfo.GetCount(), szFindText.GetLength());
-
-	if (!m_FindText.IsEmpty()) {
-		CString *pFindText = (CString *)m_FindText.GetTail();
-		delete pFindText;
-		pFindText = NULL;
-		m_FindText.RemoveTail();
-	}
-	if (!m_FindText.IsEmpty()) {
-		CString *pFindText = (CString *)m_FindText.GetTail();
-		CUtils::SetClipboardText(pFindText);
-	}
-
-	return bMoveCaret;
-}
-
 void CCommands::SetMark(BOOL bSetMark)
 {
 	m_bSetMark = bSetMark;
@@ -3964,27 +3837,6 @@ int CCommands::TransposeWords()
 		break;
 	}
 	return Reset(GOTO_HOOK);
-}
-
-BOOL CCommands::GetCaretPos(LPPOINT lpPoint)
-{
-	if (CUtils::IsMicrosoftWord()
-	 || CUtils::IsThunderbird()) {
-		IMECHARPOSITION ImeCharPosition = {sizeof(IMECHARPOSITION)};
-
-		CallWindowProc((WNDPROC)GetWindowLongPtr(GetFocus(), GWLP_WNDPROC), GetFocus(), WM_IME_REQUEST, IMR_QUERYCHARPOSITION, (LPARAM)&ImeCharPosition);
-//		CUtils::Log(_T("ImeCharPosition: rc = %d, x = %d, y = %d"), 0, ImeCharPosition.pt.x, ImeCharPosition.pt.y);
-
-		ScreenToClient(GetFocus(), &ImeCharPosition.pt);
-//		CUtils::Log(_T("ScreenToClient: rc = %d, x = %d, y = %d"), 0, ImeCharPosition.pt.x, ImeCharPosition.pt.y);
-
-		*lpPoint = ImeCharPosition.pt;
-//		CUtils::Log(_T("x = %d, y = %d"), lpPoint->x, lpPoint->y);
-
-		return TRUE;
-	}
-
-	return ::GetCaretPos(lpPoint);
 }
 
 LRESULT CCommands::VScroll(UINT nSBCode, const int nTimes)
