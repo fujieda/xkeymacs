@@ -746,8 +746,12 @@ void CUtils::Log(LPTSTR fmt, ...)
 
 	static int n = 0;
 	TCHAR szPath[MAX_PATH] = {'\0'};
-	if (SHGetSpecialFolderPath(NULL, szPath, CSIDL_APPDATA, TRUE)) {
+	if (GetTempPath(MAX_PATH, szPath)) {
+#ifndef _WIN64
 		_tmakepath(szPath, NULL, szPath, _T("xkeylog"), _T("txt"));
+#else
+		_tmakepath(szPath, NULL, szPath, _T("xkeylog64"), _T("txt"));
+#endif
 	} else {
 		_tcscpy(szPath, _T("c:\\xkeylog.txt"));
 	}
