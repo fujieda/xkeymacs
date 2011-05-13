@@ -15,6 +15,126 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+struct KbdMacro
+{
+	int nCode;
+	WPARAM wParam;
+	LPARAM lParam;
+	BOOL bOriginal;
+};
+
+struct Modifier {
+	LPCTSTR name;
+	int id;
+};
+
+static const Modifier Modifiers[] = {
+//	{ _T("A-"), ALT },
+	{ _T("C-"), CONTROL},
+//	{ _T("H-"), HYPER },
+	{ _T("M-"), META },
+	{ _T("S-"), SHIFT },
+//	{ _T("s-"), SUPER },
+	{ _T("Ctrl+"), WIN_CTRL },
+	{ _T("Alt+"), WIN_ALT },
+	{ _T("Win+"), WIN_WIN },
+};
+
+static const KeyName ControlCharacters[] = {
+//	{ VK_LBUTTON,		_T("mouse-1") },				// does not work well
+//	{ VK_RBUTTON,		_T("mouse-3") },				// does not work well
+	{ VK_CANCEL,		_T("break") },
+//	{ VK_MBUTTON,		_T("mouse-2") },				// does not work well
+	{ VK_BACK,			_T("backspace") },
+	{ VK_TAB,			_T("tab") },
+	{ VK_RETURN,		_T("return") },
+	{ VK_CAPITAL,		_T("capslock") },
+	{ VK_KANA,			_T("kana") },
+	{ VK_KANJI,			_T("kanji") },
+	{ VK_ESCAPE,		_T("escape") },
+	{ VK_CONVERT,		_T("convert") },
+	{ VK_NONCONVERT,	_T("nonconvert") },
+//	{ VK_SPACE,			_T("SPC") },					// [? ]
+	{ VK_PRIOR,			_T("prior") },
+	{ VK_NEXT,			_T("next") },
+	{ VK_END,			_T("end") },
+	{ VK_HOME,			_T("home") },
+	{ VK_LEFT,			_T("left") },
+	{ VK_UP,			_T("up") },
+	{ VK_RIGHT,			_T("right") },
+	{ VK_DOWN,			_T("down") },
+	{ VK_SELECT,		_T("select") },
+	{ VK_PRINT,			_T("print") },
+	{ VK_EXECUTE,		_T("execute") },
+	{ VK_SNAPSHOT,		_T("printscreen") },			// work as print
+	{ VK_INSERT,		_T("insert") },
+	{ VK_DELETE,		_T("delete") },
+	{ VK_LWIN,			_T("lwindow") },
+	{ VK_RWIN,			_T("rwindow") },
+	{ VK_APPS,			_T("apps") },
+	{ VK_SLEEP,			_T("sleep") },
+	{ VK_NUMPAD0,		_T("kp-0") },
+	{ VK_NUMPAD1,		_T("kp-1") },
+	{ VK_NUMPAD2,		_T("kp-2") },
+	{ VK_NUMPAD3,		_T("kp-3") },
+	{ VK_NUMPAD4,		_T("kp-4") },
+	{ VK_NUMPAD5,		_T("kp-5") },
+	{ VK_NUMPAD6,		_T("kp-6") },
+	{ VK_NUMPAD7,		_T("kp-7") },
+	{ VK_NUMPAD8,		_T("kp-8") },
+	{ VK_NUMPAD9,		_T("kp-9") },
+	{ VK_MULTIPLY,		_T("kp-multiply") },
+	{ VK_ADD,			_T("kp-add") },
+	{ VK_SUBTRACT,		_T("kp-subtract") },
+	{ VK_DECIMAL,		_T("kp-decimal") },
+	{ VK_DIVIDE,		_T("kp-divide") },
+//	{ VK_F1,			_T("f1") },						// FIXME
+//	{ VK_F2,			_T("f2") },						// Move at the end of definition of funcgtion keys to keep away confliction f1/f2 and f1?/f2? by _tcsncmp() i.e. strncmp()
+	{ VK_F3,			_T("f3") },
+	{ VK_F4,			_T("f4") },
+	{ VK_F5,			_T("f5") },
+	{ VK_F6,			_T("f6") },
+	{ VK_F7,			_T("f7") },
+	{ VK_F8,			_T("f8") },
+	{ VK_F9,			_T("f9") },
+	{ VK_F10,			_T("f10") },
+	{ VK_F11,			_T("f11") },
+	{ VK_F12,			_T("f12") },
+	{ VK_F13,			_T("f13") },
+	{ VK_F14,			_T("f14") },
+	{ VK_F15,			_T("f15") },
+	{ VK_F16,			_T("f16") },
+	{ VK_F17,			_T("f17") },
+	{ VK_F18,			_T("f18") },
+	{ VK_F19,			_T("f19") },
+	{ VK_F20,			_T("f20") },
+	{ VK_F21,			_T("f21") },
+	{ VK_F22,			_T("f22") },
+	{ VK_F23,			_T("f23") },
+	{ VK_F24,			_T("f24") },
+	{ VK_F1,			_T("f1") },
+	{ VK_F2,			_T("f2") },
+	{ VK_NUMLOCK,		_T("kp-numlock") },
+	{ VK_SCROLL,		_T("scroll") },
+	{ 0xa6,				_T("browser-back") },			// VK_BROWSER_BACK
+	{ 0xa7,				_T("browser-forward") },		// VK_BROWSER_FORWARD
+	{ 0xa8,				_T("browser-refresh") },		// VK_BROWSER_REFRESH
+	{ 0xa9,				_T("browser-stop") },			// VK_BROWSER_STOP
+	{ 0xaa,				_T("browser-search") },			// VK_BROWSER_SEARCH
+	{ 0xab,				_T("browser-favorites") },		// VK_BROWSER_FAVORITES
+	{ 0xac,				_T("browser-home") },			// VK_BROWSER_HOME
+	{ 0xad,				_T("volume-mute") },			// VK_VOLUME_MUTE
+	{ 0xae,				_T("volume-down") },			// VK_VOLUME_DOWN
+	{ 0xaf,				_T("volume-up") },				// VK_VOLUME_UP
+	{ 0xb0,				_T("media-next-track") },		// VK_MEDIA_NEXT_TRACK
+	{ 0xb1,				_T("media-prev-track") },		// VK_MEDIA_PREV_TRACK
+	{ 0xb2,				_T("media-stop") },				// VK_MEDIA_STOP
+	{ 0xb3,				_T("media-play-pause") },		// VK_MEDIA_PLAY_PAUSE
+	{ 0xb4,				_T("launch-mail") },			// VK_LAUNCH_MAIL
+	{ 0xb5,				_T("launch-media-select") },	// VK_LAUNCH_MEDIA_SELECT
+	{ 0xb6,				_T("launch-1") },				// VK_LAUNCH_APP1
+	{ 0xb7,				_T("launch-2") },				// VK_LAUNCH_APP2
+};
 
 static AFX_EXTENSION_MODULE XkeymacsdllDLL = { NULL, NULL };
 
