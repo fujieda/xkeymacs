@@ -265,30 +265,4 @@ private:
 	static void UpdateRegistryData(BOOL bSaveAndValidate);
 };
 
-struct CommandTypeName
-{
-	int nCommandType;
-	LPCTSTR szCommandTypeName;
-};
-
-static const CommandTypeName CommandTypes[] = {
-	{NONE,							_T("")},
-	{SHIFT,							_T("Shift+")},
-	{CONTROL,						_T("Ctrl+")},
-	{CONTROL+SHIFT,					_T("Ctrl+Shift+")},
-	{META,							_T("Meta+")},
-	{META+SHIFT,					_T("Meta+Shift+")},
-	{CONTROL+META,					_T("Ctrl+Meta+")},
-	{CONTROL+META+SHIFT,			_T("Ctrl+Meta+Shift+")},
-	{CONTROLX+NONE,					_T("Ctrl+X ")},
-	{CONTROLX+SHIFT,				_T("Ctrl+X Shift+")},
-	{CONTROLX+CONTROL,				_T("Ctrl+X Ctrl+")},
-	{CONTROLX+CONTROL+SHIFT,		_T("Ctrl+X Ctrl+Shift+")},
-	{CONTROLX+META,					_T("Ctrl+X Meta+")},
-	{CONTROLX+META+SHIFT,			_T("Ctrl+X Meta+Shift+")},
-	{CONTROLX+CONTROL+META,			_T("Ctrl+X Ctrl+Meta+")},
-	{CONTROLX+CONTROL+META+SHIFT,	_T("Ctrl+X Ctrl+Meta+Shift+")},
-};
-
-
 #endif // !defined(AFX_PROFILE_H__9415254D_4656_484B_A730_E02580D8A221__INCLUDED_)
