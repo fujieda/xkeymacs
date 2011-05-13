@@ -3085,7 +3085,7 @@ int CCommands::Escape()
 int CCommands::Tilde()
 {
 	ClearNumericArgument();
-	if (CXkeymacsData::Is106Keyboard()) {
+	if (CXkeymacsDll::Is106Keyboard()) {
 		SdKduSu(0xDE);	// VK_OEM_7		Used for miscellaneous characters; it can vary by keyboard. 
 		Su();			//				Windows 2000/XP: For the US standard keyboard, the 'single-quote/double-quote' key
 	} else {
@@ -3098,7 +3098,7 @@ int CCommands::Tilde()
 int CCommands::BackQuote()
 {
 	ClearNumericArgument();
-	if (CXkeymacsData::Is106Keyboard()) {
+	if (CXkeymacsDll::Is106Keyboard()) {
 		SdKduSu(0xC0);
 		Su();
 	} else {
@@ -3699,7 +3699,7 @@ int CCommands::CapsLock()
 int CCommands::Underscore()
 {
 	ClearNumericArgument();
-	if (CXkeymacsData::Is106Keyboard()) {
+	if (CXkeymacsDll::Is106Keyboard()) {
 		SdKduSu(0xE2);	// VK_OEM_102	Windows 2000/XP: Either the angle bracket key or the backslash key on the RT 102-key keyboard
 		Su();
 	} else {

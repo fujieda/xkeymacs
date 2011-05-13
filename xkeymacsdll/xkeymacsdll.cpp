@@ -237,8 +237,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	HCURSOR CXkeymacsDll::m_hCurrentCursor = NULL;
 	BOOL	CXkeymacsDll::m_bCursor = FALSE;
 	BOOL	CXkeymacsDll::m_b326Compatible[MAX_APP] = {'\0'};
-
-	BOOL	CXkeymacsData::m_b106Keyboard = FALSE;
+	BOOL	CXkeymacsDll::m_b106Keyboard = FALSE;
 #pragma data_seg()
 
 //////////////////////////////////////////////////////////////////////
@@ -1643,7 +1642,7 @@ int CXkeymacsData::GetDefaultCommandType(int nCommandID, int nIndex)
 	int nCommandType	= Commands[nCommandID].keybind[nIndex].nCommandType;
 	int bVk				= Commands[nCommandID].keybind[nIndex].bVk;
 
-	if (m_b106Keyboard) {
+	if (CXkeymacsDll::Is106Keyboard()) {
 		if (nCommandType & SHIFT) {	// Shift
 			switch (bVk) {
 			case '2':
@@ -1685,7 +1684,7 @@ int CXkeymacsData::GetDefaultCommandKey(int nCommandID, int nIndex)
 	int nCommandType	= Commands[nCommandID].keybind[nIndex].nCommandType;
 	int bVk				= Commands[nCommandID].keybind[nIndex].bVk;
 
-	if (m_b106Keyboard) {
+	if (CXkeymacsDll::Is106Keyboard()) {
 		if (nCommandType & SHIFT) {	// Shift
 			switch (bVk) {
 			case '0':
@@ -1990,12 +1989,12 @@ void CXkeymacsDll::CallMacro()	// for debug
 }
 */
 
-void CXkeymacsData::Set106Keyboard(BOOL b106Keyboard)
+void CXkeymacsDll::Set106Keyboard(BOOL b106Keyboard)
 {
 	m_b106Keyboard = b106Keyboard;
 }
 
-BOOL CXkeymacsData::Is106Keyboard()
+BOOL CXkeymacsDll::Is106Keyboard()
 {
 	return m_b106Keyboard;
 }
@@ -2251,7 +2250,7 @@ BOOL CXkeymacsDll::IsShift(TCHAR nAscii)
 	case _T('&'):
 		return TRUE;
 	case _T('\''):
-		return CXkeymacsData::Is106Keyboard();
+		return m_b106Keyboard;
 	case _T('('):
 	case _T(')'):
 	case _T('*'):
@@ -2264,18 +2263,18 @@ BOOL CXkeymacsDll::IsShift(TCHAR nAscii)
 	case _T('0'): case _T('1'): case _T('2'): case _T('3'): case _T('4'): case _T('5'): case _T('6'): case _T('7'): case _T('8'): case _T('9'):
 		return FALSE;
 	case _T(':'):
-		return !CXkeymacsData::Is106Keyboard();
+		return !m_b106Keyboard;
 	case _T(';'):
 		return FALSE;
 	case _T('<'):
 		return TRUE;
 	case _T('='):
-		return CXkeymacsData::Is106Keyboard();
+		return m_b106Keyboard;
 	case _T('>'):
 	case _T('?'):
 		return TRUE;
 	case _T('@'):
-		return !CXkeymacsData::Is106Keyboard();
+		return !m_b106Keyboard;
 	case _T('A'): case _T('B'): case _T('C'): case _T('D'): case _T('E'): case _T('F'): case _T('G'): case _T('H'): case _T('I'): case _T('J'): 
 	case _T('K'): case _T('L'): case _T('M'): case _T('N'): case _T('O'): case _T('P'): case _T('Q'): case _T('R'): case _T('S'): case _T('T'): 
 	case _T('U'): case _T('V'): case _T('W'): case _T('X'): case _T('Y'): case _T('Z'): 
@@ -2285,11 +2284,11 @@ BOOL CXkeymacsDll::IsShift(TCHAR nAscii)
 	case _T(']'):
 		return FALSE;
 	case _T('^'):
-		return !CXkeymacsData::Is106Keyboard();
+		return !m_b106Keyboard;
 	case _T('_'):
 		return TRUE;
 	case _T('`'):
-		return CXkeymacsData::Is106Keyboard();
+		return m_b106Keyboard;
 	case _T('a'): case _T('b'): case _T('c'): case _T('d'): case _T('e'): case _T('f'): case _T('g'): case _T('h'): case _T('i'): case _T('j'): 
 	case _T('k'): case _T('l'): case _T('m'): case _T('n'): case _T('o'): case _T('p'): case _T('q'): case _T('r'): case _T('s'): case _T('t'): 
 	case _T('u'): case _T('v'): case _T('w'): case _T('x'): case _T('y'): case _T('z'): 
@@ -2312,7 +2311,7 @@ BYTE CXkeymacsDll::a2v(TCHAR nAscii)
 	case _T('!'):
 		return '1';
 	case _T('"'):
-		return CXkeymacsData::Is106Keyboard() ? '2' : (BYTE) 0xde;	// VK_OEM_7
+		return m_b106Keyboard ? '2' : (BYTE) 0xde;	// VK_OEM_7
 	case _T('#'):
 		return '3';
 	case _T('$'):
@@ -2320,15 +2319,15 @@ BYTE CXkeymacsDll::a2v(TCHAR nAscii)
 	case _T('%'):
 		return '5';
 	case _T('&'):
-		return CXkeymacsData::Is106Keyboard() ? '6' : '7';
+		return m_b106Keyboard ? '6' : '7';
 	case _T('\''):
-		return CXkeymacsData::Is106Keyboard() ? '7' : (BYTE) 0xde;	// VK_OEM_7
+		return m_b106Keyboard ? '7' : (BYTE) 0xde;	// VK_OEM_7
 	case _T('('):
-		return CXkeymacsData::Is106Keyboard() ? '8' : '9';
+		return m_b106Keyboard ? '8' : '9';
 	case _T(')'):
-		return CXkeymacsData::Is106Keyboard() ? '9' : '0';
+		return m_b106Keyboard ? '9' : '0';
 	case _T('*'):
-		return CXkeymacsData::Is106Keyboard() ? (BYTE) 0xba : '8';	// VK_OEM_1
+		return m_b106Keyboard ? (BYTE) 0xba : '8';	// VK_OEM_1
 	case _T('+'):
 		return 0xbb;	// VK_OEM_PLUS
 	case _T(','):
@@ -2344,17 +2343,17 @@ BYTE CXkeymacsDll::a2v(TCHAR nAscii)
 	case _T(':'):
 		return 0xba;	// VK_OEM_1
 	case _T(';'):
-		return CXkeymacsData::Is106Keyboard() ? (BYTE) 0xbb : (BYTE) 0xba;	// VK_OEM_PLUS	VK_OEM_1
+		return m_b106Keyboard ? (BYTE) 0xbb : (BYTE) 0xba;	// VK_OEM_PLUS	VK_OEM_1
 	case _T('<'):
 		return 0xbc;	// VK_OEM_COMMA
 	case _T('='):
-		return CXkeymacsData::Is106Keyboard() ? (BYTE) 0xbd : (BYTE) 0xbb;	// VK_OEM_MINUS	VK_OEM_PLUS
+		return m_b106Keyboard ? (BYTE) 0xbd : (BYTE) 0xbb;	// VK_OEM_MINUS	VK_OEM_PLUS
 	case _T('>'):
 		return 0xbe;	// VK_OEM_PERIOD
 	case _T('?'):
 		return 0xbf;	// VK_OEM_2
 	case _T('@'):
-		return CXkeymacsData::Is106Keyboard() ? (BYTE) 0xc0 : '2';
+		return m_b106Keyboard ? (BYTE) 0xc0 : '2';
 	case _T('A'): case _T('B'): case _T('C'): case _T('D'): case _T('E'): case _T('F'): case _T('G'): case _T('H'): case _T('I'): case _T('J'): 
 	case _T('K'): case _T('L'): case _T('M'): case _T('N'): case _T('O'): case _T('P'): case _T('Q'): case _T('R'): case _T('S'): case _T('T'): 
 	case _T('U'): case _T('V'): case _T('W'): case _T('X'): case _T('Y'): case _T('Z'): 
@@ -2366,9 +2365,9 @@ BYTE CXkeymacsDll::a2v(TCHAR nAscii)
 	case _T(']'):
 		return 0xdd;	// VK_OEM_6
 	case _T('^'):
-		return CXkeymacsData::Is106Keyboard() ? (BYTE) 0xde : '6';	// VK_OEM_7
+		return m_b106Keyboard ? (BYTE) 0xde : '6';	// VK_OEM_7
 	case _T('_'):
-		return CXkeymacsData::Is106Keyboard() ? (BYTE) 0xe2 : (BYTE) 0xbd;	// VK_OEM_102	VK_OEM_MINUS
+		return m_b106Keyboard ? (BYTE) 0xe2 : (BYTE) 0xbd;	// VK_OEM_102	VK_OEM_MINUS
 	case _T('`'):
 		return 0xc0;	// VK_OEM_3
 	case _T('a'): case _T('b'): case _T('c'): case _T('d'): case _T('e'): case _T('f'): case _T('g'): case _T('h'): case _T('i'): case _T('j'): 
@@ -2382,7 +2381,7 @@ BYTE CXkeymacsDll::a2v(TCHAR nAscii)
 	case _T('}'):
 		return 0xdd;	// VK_OEM_6
 	case _T('~'):
-		return CXkeymacsData::Is106Keyboard() ? (BYTE) 0xde : (BYTE) 0xc0;	// VK_OEM_7	VK_OEM_3
+		return m_b106Keyboard ? (BYTE) 0xde : (BYTE) 0xc0;	// VK_OEM_7	VK_OEM_3
 	default:
 		return 0;
 	}

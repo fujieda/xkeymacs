@@ -96,6 +96,8 @@ public:
 	static void SetFunctionKey(int nFunctionID, int nApplicationID, int nCommandType, int nKey);
 	static void SetKeyboardHookFlag();
 	static void SetKeyboardHookFlag(BOOL bFlag);
+	static BOOL Is106Keyboard();
+	static void Set106Keyboard(BOOL b106Keyboard);
 	CXkeymacsDll();
 	virtual ~CXkeymacsDll();
 private:
@@ -167,6 +169,7 @@ private:
 	static TCHAR m_szSpecialApp[MAX_APP][CLASS_NAME_LENGTH];
 	static int m_nCommandID[MAX_APP][MAX_COMMAND_TYPE][MAX_KEY];
 	static BOOL m_bAtIbeamCursorOnly[MAX_APP][MAX_COMMAND_TYPE][MAX_KEY];
+	static BOOL m_b106Keyboard;
 };
 
 
@@ -179,8 +182,6 @@ public:
 	void SetWindowTextType(int nWindowTextType);
 	CString GetWindowText();
 	void SetWindowText(LPCTSTR lpszWindowText);
-	static BOOL Is106Keyboard();
-	static void Set106Keyboard(BOOL b106Keyboard);
 	static int GetToolTipID(int nCommandID);
 	static int GetDescriptionID(int nCommandID);
 	void SetUseDialogSetting(BOOL bUseDialogSetting);
@@ -217,7 +218,6 @@ private:
 	int m_nWindowTextType;
 	CString m_strWindowText;
 	BOOL m_bEnableCUA;
-	static BOOL m_b106Keyboard;
 	BOOL m_bUseDialogSetting;
 	BOOL m_bIgnoreUndefinedC_x;
 	BOOL m_bIgnoreUndefinedMetaCtrl;

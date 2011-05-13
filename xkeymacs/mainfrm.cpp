@@ -114,7 +114,7 @@ int CMainFrame::OnCreate(const LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 
-	CXkeymacsData::Set106Keyboard(CProfile::Is106Keyboard());
+	m_pXkeymacsDll->Set106Keyboard(CProfile::Is106Keyboard());
 
 	// init notify icon data
 	NOTIFYICONDATA notifyIconData[MAX_ICON_TYPE] = {
