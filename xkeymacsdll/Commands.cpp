@@ -4233,3 +4233,147 @@ int CCommands::ExecuteExtendedCommand()
 	bM_x(TRUE);
 	return Reset(GOTO_HOOKX);
 }
+
+CString CCommands::GetCommandName(int nCommandID)
+{
+	CString szCommandName(Commands[nCommandID].szCommandName);
+	return szCommandName;
+}
+
+int CCommands::GetCategoryID(int nCommandID)
+{
+	return Commands[nCommandID].nCategoryID;
+}
+
+int CCommands::GetDescriptionID(int nCommandID)
+{
+	return Commands[nCommandID].nDescriptionID;
+}
+
+int CCommands::GetToolTipID(int nCommandID)
+{
+	return Commands[nCommandID].nToolTipID;
+}
+
+int CCommands::GetDefaultCommandType(int nCommandID, int nIndex)
+{
+	if (nCommandID < 0 || sizeof(Commands) / sizeof(Commands[0]) <= nCommandID
+	 || nIndex < 0 || sizeof(Commands[nCommandID].keybind) / sizeof(Commands[nCommandID].keybind[0]) <= nIndex) {
+		ASSERT(0);
+		return NONE;
+	}
+
+	int nCommandType	= Commands[nCommandID].keybind[nIndex].nCommandType;
+	int bVk				= Commands[nCommandID].keybind[nIndex].bVk;
+
+	if (CXkeymacsDll::Is106Keyboard()) {
+		if (nCommandType & SHIFT) {	// Shift
+			switch (bVk) {
+			case '2':
+			case '6':
+			case 0xBA:		// VK_OEM_1		Used for miscellaneous characters; it can vary by keyboard. 
+							//				Windows 2000/XP: For the US standard keyboard, the ';:' key
+				nCommandType &= ~SHIFT;
+				break;
+			default:
+				break;
+			}
+		} else {					// Normal
+			switch (bVk) {
+			case 0xBB:		// VK_OEM_PLUS	Windows 2000/XP: For any country/region, the '+' key
+			case 0xC0:		// VK_OEM_3		Used for miscellaneous characters; it can vary by keyboard. 
+							//				Windows 2000/XP: For the US standard keyboard, the '`~' key
+			case 0xDE:		// VK_OEM_7		Used for miscellaneous characters; it can vary by keyboard. 
+							//				Windows 2000/XP: For the US standard keyboard, the 'single-quote/double-quote' key
+				nCommandType |= SHIFT;
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	return nCommandType;
+}
+
+int CCommands::GetDefaultCommandKey(int nCommandID, int nIndex)
+{
+	if (nCommandID < 0 || sizeof(Commands) / sizeof(Commands[0]) <= nCommandID
+	 || nIndex < 0 || sizeof(Commands[nCommandID].keybind) / sizeof(Commands[nCommandID].keybind[0]) <= nIndex) {
+		ASSERT(0);
+		return 0;
+	}
+
+	int nCommandType	= Commands[nCommandID].keybind[nIndex].nCommandType;
+	int bVk				= Commands[nCommandID].keybind[nIndex].bVk;
+
+	if (CXkeymacsDll::Is106Keyboard()) {
+		if (nCommandType & SHIFT) {	// Shift
+			switch (bVk) {
+			case '0':
+				bVk = '9';
+				break;
+			case '2':
+				bVk = 0xC0;	// VK_OEM_3		Used for miscellaneous characters; it can vary by keyboard. 
+							//				Windows 2000/XP: For the US standard keyboard, the '`~' key
+				break;
+			case '6':
+				bVk = 0xDE;	// VK_OEM_7		Used for miscellaneous characters; it can vary by keyboard. 
+							//				Windows 2000/XP: For the US standard keyboard, the 'single-quote/double-quote' key
+				break;
+			case '7':
+				bVk = '6';
+				break;
+			case '8':
+				bVk = 0xBA;	// VK_OEM_1		Used for miscellaneous characters; it can vary by keyboard. 
+							//				Windows 2000/XP: For the US standard keyboard, the ';:' key
+				break;
+			case '9':
+				bVk = '8';
+				break;
+			case 0xBD:		// VK_OEM_MINUS	Windows 2000/XP: For any country/region, the '-' key
+				bVk = 0xE2;	// VK_OEM_102	Windows 2000/XP: Either the angle bracket key or the backslash key on the RT 102-key keyboard
+				break;
+			case 0xC0:
+				bVk = 0xDE;	// VK_OEM_7		Used for miscellaneous characters; it can vary by keyboard. 
+							//				Windows 2000/XP: For the US standard keyboard, the 'single-quote/double-quote' key
+				break;
+			case 0xDE:		// VK_OEM_7		Used for miscellaneous characters; it can vary by keyboard. 
+							//				Windows 2000/XP: For the US standard keyboard, the 'single-quote/double-quote' key
+				bVk = '2';
+				break;
+			default:
+				break;
+			}
+		} else {					// Normal
+			switch (bVk) {
+			case 0xBA:		// VK_OEM_1		Used for miscellaneous characters; it can vary by keyboard. 
+							//				Windows 2000/XP: For the US standard keyboard, the ';:' key
+				bVk = 0xBB;	// VK_OEM_PLUS	Windows 2000/XP: For any country/region, the '+' key
+				break;
+			case 0xBB:		// VK_OEM_PLUS	Windows 2000/XP: For any country/region, the '+' key
+				bVk = 0xBD;	// VK_OEM_MINUS	Windows 2000/XP: For any country/region, the '-' key
+				break;
+			case 0xDE:		// VK_OEM_7		Used for miscellaneous characters; it can vary by keyboard. 
+							//				Windows 2000/XP: For the US standard keyboard, the 'single-quote/double-quote' key
+				bVk = '7';
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	return bVk;
+}
+
+int CCommands::GetDefaultControlID(int nCommandID, int nIndex)
+{
+	if (nCommandID < 0 || sizeof(Commands) / sizeof(Commands[0]) <= nCommandID
+	 || nIndex < 0 || sizeof(Commands[nCommandID].keybind) / sizeof(Commands[nCommandID].keybind[0]) <= nIndex) {
+		ASSERT(0);
+		return 0;
+	}
+
+	return Commands[nCommandID].keybind[nIndex].nControlID;
+}

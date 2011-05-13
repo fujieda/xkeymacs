@@ -585,7 +585,7 @@ void CProfile::UpdateRegistryData(const BOOL bSaveAndValidate)
 		// on/off
 		if (bSaveAndValidate) {	// retrieve
 			for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-				szEntry = CXkeymacsData::GetCommandName(nCommandID);
+				szEntry = CCommands::GetCommandName(nCommandID);
 				if (szEntry.IsEmpty()) {
 					break;
 				}
@@ -620,12 +620,12 @@ void CProfile::UpdateRegistryData(const BOOL bSaveAndValidate)
 				} else {
 					// Use default setting
 					for (int i = 0; ; ++i) {
-						if (CXkeymacsData::GetDefaultControlID(nCommandID, i) == IDC_CO2) {
+						if (CCommands::GetDefaultControlID(nCommandID, i) == IDC_CO2) {
 							continue;
 						}
 
-						int nCommandType = CXkeymacsData::GetDefaultCommandType(nCommandID, i);
-						int nKey = CXkeymacsData::GetDefaultCommandKey(nCommandID, i);
+						int nCommandType = CCommands::GetDefaultCommandType(nCommandID, i);
+						int nKey = CCommands::GetDefaultCommandKey(nCommandID, i);
 						if (nKey == 0) {
 							break;
 						}
@@ -659,7 +659,7 @@ void CProfile::UpdateRegistryData(const BOOL bSaveAndValidate)
 		} else {				// initialize
 			// create all commands
 			for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-				szEntry = CXkeymacsData::GetCommandName(nCommandID);
+				szEntry = CCommands::GetCommandName(nCommandID);
 				if (szEntry.IsEmpty()) {
 					break;
 				}
@@ -909,7 +909,7 @@ void CProfile::SaveKeyBind(const CString szApplicationName, const int nCommandID
 		return;
 	}
 
-	CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
+	CString szCommandName = CCommands::GetCommandName(nCommandID);
 	if (szCommandName.IsEmpty()) {
 		return;
 	}

@@ -125,14 +125,14 @@ BOOL CPropertiesBasic::OnSetActive()
 void CPropertiesBasic::SetAllDialogData(UINT nCheck, BOOL bChanged)
 {
 	for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
-		CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
+		CString szCommandName = CCommands::GetCommandName(nCommandID);
 		if (szCommandName.IsEmpty()) {
 			break;
 		}
 
 		for (int i = 0; ; ++i) {
-			int nKey = CXkeymacsData::GetDefaultCommandKey(nCommandID, i);
-			int nControlID = CXkeymacsData::GetDefaultControlID(nCommandID, i);
+			int nKey = CCommands::GetDefaultCommandKey(nCommandID, i);
+			int nControlID = CCommands::GetDefaultControlID(nCommandID, i);
 			if (nKey == 0) {
 				break;
 			}
@@ -168,15 +168,15 @@ void CPropertiesBasic::UpdateDialogData(CString szApplicationName, BOOL bSaveAnd
 		CheckDlgButton(IDC_CO2, BST_CHECKED);
 	}
 	for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
-		CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
+		CString szCommandName = CCommands::GetCommandName(nCommandID);
 		if (szCommandName.IsEmpty()) {
 			break;
 		}
 
 		for (int i = 0; ; ++i) {
-			int nCommandType = CXkeymacsData::GetDefaultCommandType(nCommandID, i);
-			int nKey = CXkeymacsData::GetDefaultCommandKey(nCommandID, i);
-			int nControlID = CXkeymacsData::GetDefaultControlID(nCommandID, i);
+			int nCommandType = CCommands::GetDefaultCommandType(nCommandID, i);
+			int nKey = CCommands::GetDefaultCommandKey(nCommandID, i);
+			int nControlID = CCommands::GetDefaultControlID(nCommandID, i);
 			if (nKey == 0) {
 				break;
 			}
@@ -207,7 +207,7 @@ void CPropertiesBasic::UpdateDialogData(CString szApplicationName, BOOL bSaveAnd
 		if (CProfile::GetCommandID(m_pProperties->GetApplicationID(), nCommandType, nKey) == 0) {
 			if (IsDlgButtonChecked(IDC_CO2)) {
 				for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
-					CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
+					CString szCommandName = CCommands::GetCommandName(nCommandID);
 					if (szCommandName.IsEmpty()) {
 						break;
 					}
@@ -229,7 +229,7 @@ void CPropertiesBasic::UpdateDialogData(CString szApplicationName, BOOL bSaveAnd
 void CPropertiesBasic::InitChanged(BOOL bChanged)
 {
 	for (int i = 0; i < sizeof(m_bChanged)/sizeof(m_bChanged[0]); ++i) {
-		if (CXkeymacsData::GetDefaultControlID(i, 0) || !bChanged) {
+		if (CCommands::GetDefaultControlID(i, 0) || !bChanged) {
 			m_bChanged[i] = bChanged;
 		}
 	}
@@ -566,17 +566,17 @@ void CPropertiesBasic::OnSquareBra()
 void CPropertiesBasic::Changed(int nObjectID)
 {
 	for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
-		CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
+		CString szCommandName = CCommands::GetCommandName(nCommandID);
 		if (szCommandName.IsEmpty()) {
 			break;
 		}
 
 		for (int i = 0; ; ++i) {
-			if (CXkeymacsData::GetDefaultCommandKey(nCommandID, i) == 0) {
+			if (CCommands::GetDefaultCommandKey(nCommandID, i) == 0) {
 				break;
 			}
 
-			int nControlID = CXkeymacsData::GetDefaultControlID(nCommandID, i);
+			int nControlID = CCommands::GetDefaultControlID(nCommandID, i);
 			if ((nControlID == nObjectID)
 			 || ((nObjectID == IDC_CO) && (nControlID == IDC_CO2))
 			 || ((nObjectID == IDC_CO2) && (nControlID == IDC_CO))) {
@@ -598,14 +598,14 @@ void CPropertiesBasic::EnableControl()
 	BOOL bEnable = m_pProperties->IsEnableControl();
 
 	for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
-		CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
+		CString szCommandName = CCommands::GetCommandName(nCommandID);
 		if (szCommandName.IsEmpty()) {
 			break;
 		}
 
 		for (int i = 0; ; ++i) {
-			int nKey = CXkeymacsData::GetDefaultCommandKey(nCommandID, i);
-			int nControlID = CXkeymacsData::GetDefaultControlID(nCommandID, i);
+			int nKey = CCommands::GetDefaultCommandKey(nCommandID, i);
+			int nControlID = CCommands::GetDefaultControlID(nCommandID, i);
 			if (nKey == 0) {
 				break;
 			}
@@ -629,19 +629,19 @@ BOOL CPropertiesBasic::OnInitDialog()
 
 	if (m_ToolTip.Create(this)) {
 		for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
-			CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
+			CString szCommandName = CCommands::GetCommandName(nCommandID);
 			if (szCommandName.IsEmpty()) {
 				break;
 			}
 
 			for (int i = 0; ; ++i) {
-				int nKey = CXkeymacsData::GetDefaultCommandKey(nCommandID, i);
-				int nControlID = CXkeymacsData::GetDefaultControlID(nCommandID, i);
+				int nKey = CCommands::GetDefaultCommandKey(nCommandID, i);
+				int nControlID = CCommands::GetDefaultControlID(nCommandID, i);
 				if (nKey == 0) {
 					break;
 				}
 				if (GetDlgItem(nControlID)) {
-					m_ToolTip.AddTool(GetDlgItem(nControlID), CString(MAKEINTRESOURCE(CXkeymacsData::GetToolTipID(nCommandID))));
+					m_ToolTip.AddTool(GetDlgItem(nControlID), CString(MAKEINTRESOURCE(CCommands::GetToolTipID(nCommandID))));
 				}
 			}
 		}

@@ -182,8 +182,6 @@ public:
 	void SetWindowTextType(int nWindowTextType);
 	CString GetWindowText();
 	void SetWindowText(LPCTSTR lpszWindowText);
-	static int GetToolTipID(int nCommandID);
-	static int GetDescriptionID(int nCommandID);
 	void SetUseDialogSetting(BOOL bUseDialogSetting);
 	BOOL GetUseDialogSetting();
 	BOOL GetEnableCUA();
@@ -192,13 +190,8 @@ public:
 	void SetIgnoreUndefinedC_x(BOOL bIgnoreUndefinedC_x);
 	BOOL GetIgnoreUndefinedMetaCtrl();
 	void SetIgnoreUndefinedMetaCtrl(BOOL bIgnoreUndefinedMetaCtrl);
-	static int GetCategoryID(int nCommandID);
 	void SetSettingStyle(int nSettingStyle);
 	int GetSettingStyle();
-	static int GetDefaultControlID(int nCommandID, int nIndex);
-	static int GetDefaultCommandKey(int nCommandID, int nIndex);
-	static int GetDefaultCommandType(int nCommandID, int nIndex);
-	static CString GetCommandName(int nCommandID);
 	void SetKillRingMax(int nKillRingMax);
 	int GetKillRingMax();
 	CString GetApplicationTitle();

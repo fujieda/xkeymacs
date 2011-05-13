@@ -76,12 +76,12 @@ void CPropertiesList::UpdateDialogData(CString szApplicationName, BOOL bSaveAndV
 		m_nKeyWidth = 0;
 
 		for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-			CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
+			CString szCommandName = CCommands::GetCommandName(nCommandID);
 			if (szCommandName.IsEmpty()) {
 				break;
 			}
 
-			CString szCategory(MAKEINTRESOURCE(CXkeymacsData::GetCategoryID(nCommandID)));
+			CString szCategory(MAKEINTRESOURCE(CCommands::GetCategoryID(nCommandID)));
 			if (szCategory.IsEmpty()) {
 				continue;
 			}

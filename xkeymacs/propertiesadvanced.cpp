@@ -180,11 +180,11 @@ void CPropertiesAdvanced::InitCategoryList()
 	// get all category type
 	m_cCategory.ResetContent();
 	for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-		CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
+		CString szCommandName = CCommands::GetCommandName(nCommandID);
 		if (szCommandName.IsEmpty()) {
 			break;
 		}
-		int nCategoryID = CXkeymacsData::GetCategoryID(nCommandID);
+		int nCategoryID = CCommands::GetCategoryID(nCommandID);
 		if (!nCategoryID) {
 			continue;
 		}
@@ -229,12 +229,12 @@ void CPropertiesAdvanced::SetCommands()
 	m_cCategory.GetLBText(m_cCategory.GetCurSel(), szCategory);
 	if (szCategory.Compare(CString(MAKEINTRESOURCE(IDS_ORIGINAL)))) {
 		for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-			CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
+			CString szCommandName = CCommands::GetCommandName(nCommandID);
 			if (szCommandName.IsEmpty()) {
 				break;
 			}
 
-			if (szCategory == CString(MAKEINTRESOURCE(CXkeymacsData::GetCategoryID(nCommandID)))) {
+			if (szCategory == CString(MAKEINTRESOURCE(CCommands::GetCategoryID(nCommandID)))) {
 				m_cCommands.AddString(szCommandName);
 			}
 		}
@@ -242,7 +242,7 @@ void CPropertiesAdvanced::SetCommands()
 		for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); ++nFunctionID) {
 			BOOL bOriginal = TRUE;
 			for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-				CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
+				CString szCommandName = CCommands::GetCommandName(nCommandID);
 				if (szCommandName.IsEmpty()) {
 					break;
 				}
@@ -276,7 +276,7 @@ void CPropertiesAdvanced::SetCurrentKeys()
 	if (szCategory.Compare(CString(MAKEINTRESOURCE(IDS_ORIGINAL)))) {
 		for (int nCommandType = 0; nCommandType < MAX_COMMAND_TYPE; ++nCommandType) {
 			for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-				if (CXkeymacsData::GetCommandName(CProfile::GetCommandID(m_nApplicationID, nCommandType, nKey)) == szCurrentCommandName) {
+				if (CCommands::GetCommandName(CProfile::GetCommandID(m_nApplicationID, nCommandType, nKey)) == szCurrentCommandName) {
 					CString sz;
 					sz.Format(_T("%s%s"), CProfile::CommandType2String(nCommandType), CProfile::Key2String(nKey));
 					m_cCurrentKeys.AddString(sz);
@@ -286,7 +286,7 @@ void CPropertiesAdvanced::SetCurrentKeys()
 
 		CString szCommandName;
 		for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
-			szCommandName = CXkeymacsData::GetCommandName(nCommandID);
+			szCommandName = CCommands::GetCommandName(nCommandID);
 			if (szCommandName.IsEmpty()) {
 				break;
 			}
@@ -296,7 +296,7 @@ void CPropertiesAdvanced::SetCurrentKeys()
 			}
 		}
 
-		m_cDescription.SetWindowText(CString(MAKEINTRESOURCE(CXkeymacsData::GetDescriptionID(m_nCommandID))));
+		m_cDescription.SetWindowText(CString(MAKEINTRESOURCE(CCommands::GetDescriptionID(m_nCommandID))));
 
 		// overwrite by original command's description if needed
 		for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); ++nFunctionID) {
@@ -511,7 +511,7 @@ void CPropertiesAdvanced::SetNewKey()
 		CString szCurrentlyAssigned(_T("Currently assigned to:\n"));
 
 		if (m_nCommandIDs[m_nAssignCommandType][m_nAssignKey] || CDotXkeymacs::GetIndex(m_nApplicationID, m_nAssignCommandType, m_nAssignKey) == -1) {
-			szCurrentlyAssigned += CXkeymacsData::GetCommandName(m_nCommandIDs[m_nAssignCommandType][m_nAssignKey]);
+			szCurrentlyAssigned += CCommands::GetCommandName(m_nCommandIDs[m_nAssignCommandType][m_nAssignKey]);
 		} else {
 			szCurrentlyAssigned += CDotXkeymacs::GetFunctionSymbol(CDotXkeymacs::GetIndex(m_nApplicationID, m_nAssignCommandType, m_nAssignKey));
 		}
@@ -527,7 +527,7 @@ void CPropertiesAdvanced::SetCommandID(int nCommandType, int nKey, int nCommandI
 	if ((nCommandType & CONTROLX)) {
 		// Get CommandID of C-x.
 		for (int nCommandIDofC_x = 0; nCommandIDofC_x < MAX_COMMAND; ++nCommandIDofC_x) {
-			if (!_tcsicmp(CXkeymacsData::GetCommandName(nCommandIDofC_x), _T("C-x"))) {
+			if (!_tcsicmp(CCommands::GetCommandName(nCommandIDofC_x), _T("C-x"))) {
 				break;
 			}
 		}
@@ -606,7 +606,7 @@ BOOL CPropertiesAdvanced::IsShiftDown()
 BOOL CPropertiesAdvanced::IsFooDown(CString szCommandName)
 {
 	for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-		if (CXkeymacsData::GetCommandName(CProfile::GetCommandID(0, NONE, nKey)) == szCommandName) {	// FIXME
+		if (CCommands::GetCommandName(CProfile::GetCommandID(0, NONE, nKey)) == szCommandName) {	// FIXME
 			if (GetKeyState(nKey) < 0) {
 				return TRUE;
 			}
