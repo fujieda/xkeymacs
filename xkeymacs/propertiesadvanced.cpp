@@ -179,7 +179,7 @@ void CPropertiesAdvanced::InitCategoryList()
 
 	// get all category type
 	m_cCategory.ResetContent();
-	for (int nCommandID = 1; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+	for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
 		CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
 		if (szCommandName.IsEmpty()) {
 			break;
@@ -228,7 +228,7 @@ void CPropertiesAdvanced::SetCommands()
 	CString szCategory;
 	m_cCategory.GetLBText(m_cCategory.GetCurSel(), szCategory);
 	if (szCategory.Compare(CString(MAKEINTRESOURCE(IDS_ORIGINAL)))) {
-		for (int nCommandID = 1; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+		for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
 			CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
 			if (szCommandName.IsEmpty()) {
 				break;
@@ -241,7 +241,7 @@ void CPropertiesAdvanced::SetCommands()
 	} else {
 		for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); ++nFunctionID) {
 			BOOL bOriginal = TRUE;
-			for (int nCommandID = 1; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+			for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
 				CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
 				if (szCommandName.IsEmpty()) {
 					break;
@@ -285,7 +285,7 @@ void CPropertiesAdvanced::SetCurrentKeys()
 		}
 
 		CString szCommandName;
-		for (int nCommandID = 0; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+		for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
 			szCommandName = CXkeymacsData::GetCommandName(nCommandID);
 			if (szCommandName.IsEmpty()) {
 				break;
@@ -528,7 +528,7 @@ void CPropertiesAdvanced::SetCommandID(int nCommandType, int nKey, int nCommandI
 	// Set C-x if it is needed.
 	if ((nCommandType & CONTROLX)) {
 		// Get CommandID of C-x.
-		for (int nCommandIDofC_x = 0; nCommandIDofC_x < sizeof(Commands) / sizeof(Commands[0]); ++nCommandIDofC_x) {
+		for (int nCommandIDofC_x = 0; nCommandIDofC_x < MAX_COMMAND; ++nCommandIDofC_x) {
 			if (!_tcsicmp(CXkeymacsData::GetCommandName(nCommandIDofC_x), _T("C-x"))) {
 				break;
 			}

@@ -1643,7 +1643,7 @@ CString CXkeymacsData::GetCommandName(int nCommandID)
 int CXkeymacsData::GetDefaultCommandType(int nCommandID, int nIndex)
 {
 	if (nCommandID < 0 || sizeof(Commands) / sizeof(Commands[0]) <= nCommandID
-	 || nIndex < 0 || sizeof(Commands[nCommandID].keybind) / sizeof(Commands[nCommandID].keybind[0]) <= nIndex) {
+	 || nIndex < 0 || MAX_KEY_BIND <= nIndex) {
 		ASSERT(0);
 		return NONE;
 	}
@@ -1685,7 +1685,7 @@ int CXkeymacsData::GetDefaultCommandType(int nCommandID, int nIndex)
 int CXkeymacsData::GetDefaultCommandKey(int nCommandID, int nIndex)
 {
 	if (nCommandID < 0 || sizeof(Commands) / sizeof(Commands[0]) <= nCommandID
-	 || nIndex < 0 || sizeof(Commands[nCommandID].keybind) / sizeof(Commands[nCommandID].keybind[0]) <= nIndex) {
+	 || nIndex < 0 || MAX_KEY_BIND <= nIndex) {
 		ASSERT(0);
 		return 0;
 	}
@@ -1757,7 +1757,7 @@ int CXkeymacsData::GetDefaultCommandKey(int nCommandID, int nIndex)
 int CXkeymacsData::GetDefaultControlID(int nCommandID, int nIndex)
 {
 	if (nCommandID < 0 || sizeof(Commands) / sizeof(Commands[0]) <= nCommandID
-	 || nIndex < 0 || sizeof(Commands[nCommandID].keybind) / sizeof(Commands[nCommandID].keybind[0]) <= nIndex) {
+	 || nIndex < 0 || MAX_KEY_BIND <= nIndex) {
 		ASSERT(0);
 		return 0;
 	}
@@ -2537,7 +2537,7 @@ void CXkeymacsDll::InvokeM_x(const TCHAR *const szPath)
 //	CUtils::Log("M-x: szPath=_%s_", szPath);
 	int (*fCommand)() = NULL;
 
-	for (int i = 0; i < sizeof(Commands) / sizeof(Commands[0]); ++i) {
+	for (int i = 0; i < MAX_COMMAND; ++i) {
 		if (_tcsicmp(szPath, Commands[i].szCommandName) == 0) {
 			fCommand = Commands[i].fCommand;
 			break;

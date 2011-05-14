@@ -2861,7 +2861,7 @@ int CCommands::KillBuffer()
 
 BOOL CCommands::IsKillCommand(int (*nFunctionPointer)())
 {
-	for (int nCommandID = 1; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+	for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
 		if (Commands[nCommandID].fCommand == nFunctionPointer) {
 			return !_tcsncmp(Commands[nCommandID].szCommandName, _T("kill-"), 5);
 		}
@@ -3812,7 +3812,7 @@ BOOL CCommands::IsEmptyClipboardData(const int nID)
 
 void CCommands::PrintFunctionName(int (*nFunctionPointer)())
 {
-	for (int nCommandID = 1; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+	for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
 		if (Commands[nCommandID].fCommand == nFunctionPointer) {
 			CUtils::Log(_T("m_LastCommand: %s"), Commands[nCommandID].szCommandName);
 		}

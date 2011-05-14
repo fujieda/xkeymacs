@@ -585,7 +585,7 @@ void CProfile::UpdateRegistryData(const BOOL bSaveAndValidate)
 
 		// on/off
 		if (bSaveAndValidate) {	// retrieve
-			for (int nCommandID = 1; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+			for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
 				szEntry = CXkeymacsData::GetCommandName(nCommandID);
 				if (szEntry.IsEmpty()) {
 					break;
@@ -659,7 +659,7 @@ void CProfile::UpdateRegistryData(const BOOL bSaveAndValidate)
 			}
 		} else {				// initialize
 			// create all commands
-			for (int nCommandID = 1; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+			for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
 				szEntry = CXkeymacsData::GetCommandName(nCommandID);
 				if (szEntry.IsEmpty()) {
 					break;
@@ -940,7 +940,7 @@ void CProfile::SaveCommand(const CString szApplicationName, const int nCommandID
 
 void CProfile::AddKeyBind2C_(const CString szApplicationName, const BYTE bVk)
 {
-	for (int nCommandID = 0; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+	for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
 		if (Commands[nCommandID].fCommand == CCommands::C_) {
 			break;
 		}
@@ -1480,7 +1480,7 @@ void CProfile::SetCommandID(const int nApplicationID, const int nCommandType, co
 {
 	if (nKey == 0xf0 && Commands[nCommandID].fCommand == CCommands::C_) {
 		// Change CommandID C_Eisu
-		for (nCommandID = 1; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+		for (nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
 			if (Commands[nCommandID].fCommand == CCommands::C_Eisu) {
 				break;
 			}
@@ -1494,7 +1494,7 @@ int CProfile::GetCommandID(const int nApplicationID, const int nCommandType, con
 	int nCommandID = m_XkeymacsData[nApplicationID].GetCommandID(nCommandType, nKey);
 	if (nKey == 0xf0 && Commands[nCommandID].fCommand == CCommands::C_Eisu) {
 		// Change CommandID C_
-		for (nCommandID = 1; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+		for (nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
 			if (Commands[nCommandID].fCommand == CCommands::C_) {
 				break;
 			}

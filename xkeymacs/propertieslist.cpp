@@ -75,7 +75,7 @@ void CPropertiesList::UpdateDialogData(CString szApplicationName, BOOL bSaveAndV
 		m_nCommandWidth = 0;
 		m_nKeyWidth = 0;
 
-		for (int nCommandID = 1; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+		for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
 			CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
 			if (szCommandName.IsEmpty()) {
 				break;

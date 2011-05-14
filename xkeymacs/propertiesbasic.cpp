@@ -124,7 +124,7 @@ BOOL CPropertiesBasic::OnSetActive()
 
 void CPropertiesBasic::SetAllDialogData(UINT nCheck, BOOL bChanged)
 {
-	for (int nCommandID = 0; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+	for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
 		CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
 		if (szCommandName.IsEmpty()) {
 			break;
@@ -167,7 +167,7 @@ void CPropertiesBasic::UpdateDialogData(CString szApplicationName, BOOL bSaveAnd
 		SetAllDialogData(1, FALSE);
 		CheckDlgButton(IDC_CO2, BST_CHECKED);
 	}
-	for (int nCommandID = 0; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+	for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
 		CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
 		if (szCommandName.IsEmpty()) {
 			break;
@@ -206,7 +206,7 @@ void CPropertiesBasic::UpdateDialogData(CString szApplicationName, BOOL bSaveAnd
 		int nKey = 'O';
 		if (CProfile::GetCommandID(m_pProperties->GetApplicationID(), nCommandType, nKey) == 0) {
 			if (IsDlgButtonChecked(IDC_CO2)) {
-				for (int nCommandID = 0; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+				for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
 					CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
 					if (szCommandName.IsEmpty()) {
 						break;
@@ -565,7 +565,7 @@ void CPropertiesBasic::OnSquareBra()
 
 void CPropertiesBasic::Changed(int nObjectID)
 {
-	for (int nCommandID = 0; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+	for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
 		CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
 		if (szCommandName.IsEmpty()) {
 			break;
@@ -597,7 +597,7 @@ void CPropertiesBasic::EnableControl()
 {
 	BOOL bEnable = m_pProperties->IsEnableControl();
 
-	for (int nCommandID = 0; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+	for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
 		CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
 		if (szCommandName.IsEmpty()) {
 			break;
@@ -628,7 +628,7 @@ BOOL CPropertiesBasic::OnInitDialog()
 	CPropertyPage::OnInitDialog();
 
 	if (m_ToolTip.Create(this)) {
-		for (int nCommandID = 0; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
+		for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
 			CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
 			if (szCommandName.IsEmpty()) {
 				break;
