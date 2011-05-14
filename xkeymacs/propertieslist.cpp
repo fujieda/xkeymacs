@@ -208,11 +208,9 @@ void CPropertiesList::DisplayIndicator()
 
 	for (int nItemCount = 0; nItemCount < pHeaderCtrl->GetItemCount(); ++nItemCount) {
 		HDITEM hditem;
-		pHeaderCtrl->GetItem(nItemCount, &hditem);
-
 		if (nItemCount == m_nSelectedColumn) {
 			hditem.mask = HDI_FORMAT | HDI_BITMAP;
-			hditem.fmt |= HDF_BITMAP | HDF_BITMAP_ON_RIGHT;
+			hditem.fmt = HDF_STRING | HDF_BITMAP | HDF_BITMAP_ON_RIGHT;
 			const int IDB_SORT = m_bSortAscending ? IDB_SORT_ASCENDING : IDB_SORT_DESCENDING;
 			hditem.hbm = (HBITMAP)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_SORT), IMAGE_BITMAP, 0, 0, LR_LOADMAP3DCOLORS);
 			pHeaderCtrl->SetItem(nItemCount, &hditem);
