@@ -305,7 +305,7 @@ static const KeyName KeyNames[] = {
 	{0xff,			_T("")},
 };
 
-CXkeymacsData CProfile::m_XkeymacsData[MAX_APP];
+CData CProfile::m_XkeymacsData[MAX_APP];
 TASK_LIST CProfile::m_TaskList[MAX_TASKS];
 DWORD CProfile::m_dwTasks;
 

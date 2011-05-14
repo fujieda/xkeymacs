@@ -175,6 +175,7 @@
   <ItemGroup>
     <ClCompile Include="104keyboard.cpp" />
     <ClCompile Include="109keyboard.cpp" />
+    <ClCompile Include="data.cpp" />
     <ClCompile Include="dotxkeymacs.cpp" />
     <ClCompile Include="key.cpp" />
     <ClCompile Include="keyboardlayout.cpp" />
@@ -191,6 +192,7 @@
   <ItemGroup>
     <ClInclude Include="104keyboard.h" />
     <ClInclude Include="109keyboard.h" />
+    <ClInclude Include="data.h" />
     <ClInclude Include="dotxkeymacs.h" />
     <ClInclude Include="key.h" />
     <ClInclude Include="keyboardlayout.h" />

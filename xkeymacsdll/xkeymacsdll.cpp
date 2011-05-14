@@ -1287,80 +1287,6 @@ HOOK_RECURSIVE_KEY:
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////
-// CXkeymacsData Class
-//////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CXkeymacsData::CXkeymacsData()
-{
-	ClearAll();
-}
-
-CXkeymacsData::~CXkeymacsData()
-{
-
-}
-
-// set application name
-void CXkeymacsData::SetApplicationName(LPCTSTR lpszApplicationName)
-{
-	m_strApplicationName.Format(lpszApplicationName);
-}
-
-// return application name
-CString CXkeymacsData::GetApplicationName()
-{
-	return m_strApplicationName;
-}
-
-// set hook or not
-void CXkeymacsData::SetCommandID(int nCommandType, int nKey, int nCommandID)
-{
-	ASSERT(0 <= nCommandType	|| nCommandType	< MAX_COMMAND_TYPE);
-	ASSERT(0 <= nKey			|| nKey			< MAX_KEY);
-
-	m_nCommandID[nCommandType][nKey] = nCommandID;
-}
-
-// return hook or not
-int CXkeymacsData::GetCommandID(int nCommandType, int nKey)
-{
-	ASSERT(0 <= nCommandType	|| nCommandType	< MAX_COMMAND_TYPE);
-	ASSERT(0 <= nKey			|| nKey			< MAX_KEY);
-
-	return m_nCommandID[nCommandType][nKey];
-}
-
-// set hook at ibeam cursor only or not
-void CXkeymacsData::SetAtIbeamCursorOnly(int nCommandType, int nKey, BOOL bAtIbeamCursorOnly)
-{
-	ASSERT(0 <= nCommandType	|| nCommandType	< MAX_COMMAND_TYPE);
-	ASSERT(0 <= nKey			|| nKey			< MAX_KEY);
-
-	m_bAtIbeamCursorOnly[nCommandType][nKey] = bAtIbeamCursorOnly;
-}
-
-// get hook at ibeam cursor only or not
-BOOL CXkeymacsData::GetAtIbeamCursorOnly(int nCommandType, int nKey)
-{
-	ASSERT(0 <= nCommandType	|| nCommandType	< MAX_COMMAND_TYPE);
-	ASSERT(0 <= nKey			|| nKey			< MAX_KEY);
-
-	return m_bAtIbeamCursorOnly[nCommandType][nKey];
-}
-
-// clear all data
-void CXkeymacsData::ClearAll()
-{
-	ZeroMemory(m_nCommandID, sizeof(m_nCommandID));
-	ZeroMemory(m_bAtIbeamCursorOnly, sizeof(m_bAtIbeamCursorOnly));
-	m_strApplicationName.Empty();
-}
-
 void CXkeymacsDll::SetApplicationName(int nApplicationID, CString szApplicationName)
 {
 	ZeroMemory(m_szSpecialApp[nApplicationID], sizeof(m_szSpecialApp[nApplicationID]));
@@ -1406,32 +1332,6 @@ void CXkeymacsDll::Clear(int nApplicationID)
 	} else {
 		ASSERT(0);
 	}
-}
-
-void CXkeymacsData::SetApplicationTitle(LPCTSTR lpszApplicationTitle)
-{
-	m_strApplicationTitle.Format(lpszApplicationTitle);
-
-	// delete white space at the end of the application title.
-	while (!m_strApplicationTitle.IsEmpty()
-		&& _istspace(m_strApplicationTitle.GetAt(m_strApplicationTitle.GetLength() - 1))) {
-		m_strApplicationTitle.Delete(m_strApplicationTitle.GetLength() - 1);
-	}
-}
-
-CString CXkeymacsData::GetApplicationTitle()
-{
-	return m_strApplicationTitle;
-}
-
-void CXkeymacsData::SetKillRingMax(int nKillRingMax)
-{
-	m_nKillRingMax = nKillRingMax;
-}
-
-int CXkeymacsData::GetKillRingMax()
-{
-	return m_nKillRingMax;
 }
 
 BOOL CXkeymacsDll::IsValidKey(BYTE bVk)
@@ -1650,30 +1550,9 @@ int CXkeymacsDll::GetMickey(int nDifferential, int nThreshold1, int nThreshold2,
 	return nDifferential;
 }
 
-
-int CXkeymacsData::GetSettingStyle()
-{
-	return m_nSettingStyle;
-}
-
-void CXkeymacsData::SetSettingStyle(int nSettingStyle)
-{
-	m_nSettingStyle = nSettingStyle;
-}
-
 void CXkeymacsDll::SetSettingStyle(int nApplicationID, int nSettingStyle)
 {
 	m_nSettingStyle[nApplicationID] = nSettingStyle;
-}
-
-void CXkeymacsData::SetIgnoreUndefinedMetaCtrl(BOOL bIgnoreUndefinedMetaCtrl)
-{
-	m_bIgnoreUndefinedMetaCtrl = bIgnoreUndefinedMetaCtrl;
-}
-
-BOOL CXkeymacsData::GetIgnoreUndefinedMetaCtrl()
-{
-	return m_bIgnoreUndefinedMetaCtrl;
 }
 
 void CXkeymacsDll::SetIgnoreUndefinedMetaCtrl(int nApplicationID, BOOL bIgnoreUndefinedMetaCtrl)
@@ -1681,29 +1560,9 @@ void CXkeymacsDll::SetIgnoreUndefinedMetaCtrl(int nApplicationID, BOOL bIgnoreUn
 	m_bIgnoreUndefinedMetaCtrl[nApplicationID] = bIgnoreUndefinedMetaCtrl;
 }
 
-void CXkeymacsData::SetIgnoreUndefinedC_x(BOOL bIgnoreUndefinedC_x)
-{
-	m_bIgnoreUndefinedC_x = bIgnoreUndefinedC_x;
-}
-
-BOOL CXkeymacsData::GetIgnoreUndefinedC_x()
-{
-	return m_bIgnoreUndefinedC_x;
-}
-
 void CXkeymacsDll::SetIgnoreUndefinedC_x(int nApplicationID, BOOL bIgnoreUndefinedC_x)
 {
 	m_bIgnoreUndefinedC_x[nApplicationID] = bIgnoreUndefinedC_x;
-}
-
-void CXkeymacsData::SetEnableCUA(BOOL bEnableCUA)
-{
-	m_bEnableCUA = bEnableCUA;
-}
-
-BOOL CXkeymacsData::GetEnableCUA()
-{
-	return m_bEnableCUA;
 }
 
 void CXkeymacsDll::SetEnableCUA(int nApplicationID, BOOL bEnableCUA)
@@ -1714,16 +1573,6 @@ void CXkeymacsDll::SetEnableCUA(int nApplicationID, BOOL bEnableCUA)
 BOOL CXkeymacsDll::GetEnableCUA()
 {
 	return m_bEnableCUA[m_nApplicationID];
-}
-
-void CXkeymacsData::SetUseDialogSetting(BOOL bUseDialogSetting)
-{
-	m_bUseDialogSetting = bUseDialogSetting;
-}
-
-BOOL CXkeymacsData::GetUseDialogSetting()
-{
-	return m_bUseDialogSetting;
 }
 
 void CXkeymacsDll::DefiningMacro(BOOL bDefiningMacro)
@@ -2253,31 +2102,6 @@ void CXkeymacsDll::AddAllShell_NotifyIcon()
 	}
 }
 
-void CXkeymacsData::SetWindowText(LPCTSTR lpszWindowText)
-{
-	m_nWindowTextType = CUtils::GetWindowTextType(lpszWindowText);
-	if (m_nWindowTextType == IDS_WINDOW_TEXT_IGNORE) {
-		m_strWindowText = _T('*');
-	} else {
-		m_strWindowText.Format(lpszWindowText);
-	}
-}
-
-CString CXkeymacsData::GetWindowText()
-{
-	return m_strWindowText;
-}
-
-void CXkeymacsData::SetWindowTextType(int nWindowTextType)
-{
-	m_nWindowTextType = nWindowTextType;
-}
-
-int CXkeymacsData::GetWindowTextType()
-{
-	return m_nWindowTextType;
-}
-
 BOOL CXkeymacsDll::IsMatchWindowText(CString szWindowText)
 {
 	BOOL bIsMatchWindowText = TRUE;
@@ -2353,16 +2177,6 @@ void CXkeymacsDll::DoSetCursor()
 	if (m_bCursor && m_hCurrentCursor) {
 		::SetCursor(m_hCurrentCursor);
 	}
-}
-
-BOOL CXkeymacsData::Get326Compatible()
-{
-	return m_b326Compatible;
-}
-
-void CXkeymacsData::Set326Compatible(BOOL b326Compatible)
-{
-	m_b326Compatible = b326Compatible;
 }
 
 void CXkeymacsDll::Set326Compatible(int nApplicationID, BOOL b326Compatible)
