@@ -116,7 +116,6 @@ END_MESSAGE_MAP()
 
 BOOL CPropertiesBasic::OnSetActive() 
 {
-	// TODO: Add your specialized code here and/or call the base class
 	m_pProperties->EnableControl(BASIC_TAB);
 	SetDialogData(m_pProperties->GetCurrentApplication());
 
@@ -240,8 +239,7 @@ int CPropertiesBasic::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CPropertyPage::OnCreate(lpCreateStruct) == -1)
 		return -1;
-	
-	// TODO: Add your specialized creation code here
+
 	m_pProperties = (CProperties *)GetParent()->GetParent();
 
 	return 0;
@@ -254,115 +252,96 @@ void CPropertiesBasic::GetDialogData()
 
 void CPropertiesBasic::OnAlt() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_ALT);
 }
 
 void CPropertiesBasic::OnC_() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_C_);
 }
 
 void CPropertiesBasic::OnCa() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CA);
 }
 
 void CPropertiesBasic::OnCb() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CB);
 }
 
 void CPropertiesBasic::OnCbackslash() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CBACKSLASH);
 }
 
 void CPropertiesBasic::OnCbackslash106() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CBACKSLASH_106);
 }
 
 void CPropertiesBasic::OnCd() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CD);
 }
 
 void CPropertiesBasic::OnCdigit() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CDIGIT);
 }
 
 void CPropertiesBasic::OnCe() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CE);
 }
 
 void CPropertiesBasic::OnCf() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CF);
 }
 
 void CPropertiesBasic::OnCg() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CG);
 }
 
 void CPropertiesBasic::OnCh() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CH);
 }
 
 void CPropertiesBasic::OnCi() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CI);
 }
 
 void CPropertiesBasic::OnCk() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CK);
 }
 
 void CPropertiesBasic::OnCl() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CL);
 }
 
 void CPropertiesBasic::OnCm() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CM);
 }
 
 void CPropertiesBasic::OnCms5() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CMS5);
 }
 
 void CPropertiesBasic::OnCn() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CN);
 }
 
 void CPropertiesBasic::OnCo() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CO);
 	if (IsDlgButtonChecked(IDC_CO) == BST_CHECKED) {
 		CheckDlgButton(IDC_CO2, BST_UNCHECKED);
@@ -372,7 +351,6 @@ void CPropertiesBasic::OnCo()
 
 void CPropertiesBasic::OnCo2() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CO2);
 	if (IsDlgButtonChecked(IDC_CO2) == BST_CHECKED) {
 		CheckDlgButton(IDC_CO, BST_UNCHECKED);
@@ -382,247 +360,206 @@ void CPropertiesBasic::OnCo2()
 
 void CPropertiesBasic::OnCp() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CP);
 }
 
 void CPropertiesBasic::OnCq() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CQ);
 }
 
 void CPropertiesBasic::OnCr() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CR);
 }
 
 void CPropertiesBasic::OnCs() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CS);
 }
 
 void CPropertiesBasic::OnCslash() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CSLASH);
 }
 
 void CPropertiesBasic::OnCspace() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CSPACE);
 }
 
 void CPropertiesBasic::OnCt() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CT);
 }
 
 void CPropertiesBasic::OnCu() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CU);
 }
 
 void CPropertiesBasic::OnCv() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CV);
 }
 
 void CPropertiesBasic::OnCw() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CW);
 }
 
 void CPropertiesBasic::OnCxb() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CXB);
 }
 
 void CPropertiesBasic::OnCxcc() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CXCC);
 }
 
 void CPropertiesBasic::OnCxcf() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CXCF);
 }
 
 void CPropertiesBasic::OnCxcj() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CXCJ);
 }
 
 void CPropertiesBasic::OnCxcp() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CXCP);
 }
 
 void CPropertiesBasic::OnCxcs() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CXCS);
 }
 
 void CPropertiesBasic::OnCxct() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CXCT);
 }
 
 void CPropertiesBasic::OnCxcw() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CXCW);
 }
 
 void CPropertiesBasic::OnCxe() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CXE);
 }
 
 void CPropertiesBasic::OnCxh() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CXH);
 }
 
 void CPropertiesBasic::OnCxk() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CXK);
 }
 
 void CPropertiesBasic::OnCxs0() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CXS0);
 }
 
 void CPropertiesBasic::OnCxs9() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CXS9);
 }
 
 void CPropertiesBasic::OnCxu() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CXU);
 }
 
 void CPropertiesBasic::OnCy() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CY);
 }
 
 void CPropertiesBasic::OnCz() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_CZ);
 }
 
 void CPropertiesBasic::OnEscape() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_ESCAPE);
 }
 
 void CPropertiesBasic::OnLeftAlt() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_LEFT_ALT);
 }
 
 void CPropertiesBasic::OnMb() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MB);
 }
 
 void CPropertiesBasic::OnMd() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MD);
 }
 
 void CPropertiesBasic::OnMf() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MF);
 }
 
 void CPropertiesBasic::OnMi() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MI);
 }
 
 void CPropertiesBasic::OnMs1() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MS1);
 }
 
 void CPropertiesBasic::OnMs5() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MS5);
 }
 
 void CPropertiesBasic::OnMscomma() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MSCOMMA);
 }
 
 void CPropertiesBasic::OnMsperiod() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MSPERIOD);
 }
 
 void CPropertiesBasic::OnMv() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MV);
 }
 
 void CPropertiesBasic::OnMw() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MW);
 }
 
 void CPropertiesBasic::OnMy() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MY);
 }
 
 void CPropertiesBasic::OnRightAlt() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_RIGHT_ALT);
 }
 
 void CPropertiesBasic::OnSquareBra() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_SQUARE_BRA);
 }
 
@@ -651,7 +588,6 @@ void CPropertiesBasic::Changed(int nObjectID)
 
 BOOL CPropertiesBasic::OnKillActive() 
 {
-	// TODO: Add your specialized code here and/or call the base class
 	GetDialogData();
 
 	return CPropertyPage::OnKillActive();
@@ -682,7 +618,6 @@ void CPropertiesBasic::EnableControl()
 
 BOOL CPropertiesBasic::PreTranslateMessage(MSG* pMsg) 
 {
-	// TODO: Add your specialized code here and/or call the base class
 	m_ToolTip.RelayEvent(pMsg);
 
 	return CPropertyPage::PreTranslateMessage(pMsg);
@@ -692,7 +627,6 @@ BOOL CPropertiesBasic::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
 
-	// TODO: Add extra initialization here
 	if (m_ToolTip.Create(this)) {
 		for (int nCommandID = 0; nCommandID < sizeof(Commands) / sizeof(Commands[0]); ++nCommandID) {
 			CString szCommandName = CXkeymacsData::GetCommandName(nCommandID);
@@ -719,42 +653,35 @@ BOOL CPropertiesBasic::OnInitDialog()
 
 void CPropertiesBasic::OnMdel() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MDEL);
 }
 
 void CPropertiesBasic::OnMf12() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MF12);
 }
 
 void CPropertiesBasic::OnMt() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MT);
 }
 
 void CPropertiesBasic::OnMc() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MC);
 }
 
 void CPropertiesBasic::OnMl() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_ML);
 }
 
 void CPropertiesBasic::OnMu() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MU);
 }
 
 void CPropertiesBasic::OnMx() 
 {
-	// TODO: Add your control notification handler code here
 	Changed(IDC_MX);
 }

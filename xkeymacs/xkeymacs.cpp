@@ -31,9 +31,6 @@ END_MESSAGE_MAP()
 
 CXkeymacsApp::CXkeymacsApp()
 {
-	// TODO: add construction code here,
-	// Place all significant initialization in InitInstance
-
 	m_Instance = FirstInstance;
 }
 
@@ -72,9 +69,6 @@ BOOL CXkeymacsApp::InitInstance()
 #endif
 
 	// Change the registry key under which our settings are stored.
-	// TODO: You should modify this string to be something appropriate
-	// such as the name of your company or organization.
-//	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 	SetRegistryKey(IDS_REGISTRY_KEY);
 //
 //	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
@@ -94,7 +88,6 @@ BOOL CXkeymacsApp::InitInstance()
 	SetClassLongPtr(m_pMainWnd->m_hWnd, GCLP_HICON, (LONG_PTR)LoadIcon(IDR_MAINFRAME));
 
 	// set registry key
-//	CMainFrame *pMainWnd = (CMainFrame*)m_pMainWnd;
 	CProfile::InitDllData();
 
 	return TRUE;
@@ -199,8 +192,6 @@ void CXkeymacsApp::OnAppAbout()
 
 int CXkeymacsApp::ExitInstance() 
 {
-	// TODO: Add your specialized code here and/or call the base class
-
 	if (m_Instance == FirstInstance) {
 	    ReleaseMutex( m_hMutex );
 		CloseHandle( m_hMutex );
@@ -215,20 +206,17 @@ int CXkeymacsApp::ExitInstance()
 
 void CAboutDlg::OnOK() 
 {
-	// TODO: Add extra validation here
 	CDialog::OnOK();
 }
 
 
 void CAboutDlg::OnClose() 
 {
-	// TODO: Add your message handler code here and/or call default
 	CDialog::OnClose();
 }
 
 void CAboutDlg::OnUrl() 
 {
-	// TODO: Add your message handler code here and/or call default
 	CString szURL;
 	m_cURL.GetWindowText(szURL);
 
@@ -238,21 +226,18 @@ void CAboutDlg::OnUrl()
 HBRUSH CAboutDlg::OnCtlColor(CDC *pDC, CWnd *pWnd, UINT nCtlColor) 
 {
 	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
-	
-	// TODO: Change any attributes of the DC here
+
 	COLORREF crBlue = RGB(0, 0, 0xff);
 
 	if (pWnd == &m_cURL) {
 		pDC->SetTextColor(crBlue);
 	}
 
-	// TODO: Return a different brush if the default is not desired
 	return hbr;
 }
 
 BOOL CAboutDlg::OnSetCursor(CWnd *pWnd, UINT nHitTest, UINT message) 
 {
-	// TODO: Add your message handler code here and/or call default
 	CRect rect;
 	m_cURL.GetWindowRect(rect);
 

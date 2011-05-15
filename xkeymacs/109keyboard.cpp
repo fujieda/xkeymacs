@@ -48,7 +48,6 @@ BOOL C109Keyboard::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	
-	// TODO: Add extra initialization here
 	CString szWindowText;
 	CString szFor;
 	switch (m_HkeyType) {
@@ -111,7 +110,6 @@ BOOL C109Keyboard::OnInitDialog()
 
 void C109Keyboard::OnOK() 
 {
-	// TODO: Add extra validation here
 	if (CProfile::LostKeyWarning(m_HkeyType) != IDCANCEL) {
 		CProfile::SaveScanCodeMap(m_HkeyType);
 
@@ -123,7 +121,6 @@ void C109Keyboard::OnDestroy()
 {
 	CDialog::OnDestroy();
 
-	// TODO: Add your message handler code here
 	for (int i = 0; i < sizeof(KeyboardLayouts) / sizeof(KeyboardLayouts[0]); ++i) {
 		if (!GetDlgItem(KeyboardLayouts[i].nBaseControlID)
 		 || !GetDlgItem(KeyboardLayouts[i].nCurrentControlID)) {

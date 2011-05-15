@@ -181,7 +181,6 @@ public:
 	static int GetAccelerate(void);
 	static void SetAccelerate(int nAccelerate);
 	void SetWindowText(int nApplicationID, CString szWindowText);
-//	static int m_nPassThrough;
 	void AddAllShell_NotifyIcon();
 	void DeleteAllShell_NotifyIcon();
 	void SetKillRingMax(int nApplicationID, int nKillRingMax);

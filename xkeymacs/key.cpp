@@ -130,7 +130,6 @@ int CKey::GetKeyType()
 
 void CKey::OnLButtonDown(const UINT nFlags, const CPoint point) 
 {
-	// TODO: Add your message handler code here and/or call default
 	switch (m_nKeyType) {
 	case NORMAL_KEY:
 		SetKeyType(PUSHED_KEY);
@@ -146,7 +145,6 @@ void CKey::OnLButtonDown(const UINT nFlags, const CPoint point)
 
 void CKey::OnLButtonUp(const UINT nFlags, const CPoint point) 
 {
-	// TODO: Add your message handler code here and/or call default
 	if (m_nKeyType == PUSHED_KEY) {
 		SetKeyType(NORMAL_KEY);
 	}
@@ -242,7 +240,6 @@ int CKey::GetPointedKey(const CPoint point)
 
 void CKey::OnMouseMove(const UINT nFlags, const CPoint point) 
 {
-	// TODO: Add your message handler code here and/or call default
 	if (nFlags & MK_LBUTTON) {
 		if (m_nKeyType == PUSHED_KEY) {
 			int nPointedKey = GetPointedKey(point);

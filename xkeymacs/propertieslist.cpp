@@ -52,7 +52,6 @@ END_MESSAGE_MAP()
 
 BOOL CPropertiesList::OnSetActive() 
 {
-	// TODO: Add your specialized code here and/or call the base class
 	m_pProperties->EnableControl(LIST_TAB);
 	SetDialogData(m_pProperties->GetCurrentApplication());
 
@@ -126,7 +125,6 @@ int CPropertiesList::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CPropertyPage::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	// TODO: Add your specialized creation code here
 	m_pProperties = (CProperties *)GetParent()->GetParent();
 
 	return 0;
@@ -134,9 +132,7 @@ int CPropertiesList::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 BOOL CPropertiesList::OnKillActive() 
 {
-	// TODO: Add your specialized code here and/or call the base class
 	GetDialogData();
-
 	return CPropertyPage::OnKillActive();
 }
 
@@ -151,7 +147,6 @@ BOOL CPropertiesList::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
 
-	// TODO: Add extra initialization here
 	DWORD dwStyle = m_cPropertiesList.GetExtendedStyle();
 	dwStyle |= LVS_EX_FULLROWSELECT;
 	m_cPropertiesList.SetExtendedStyle(dwStyle);
@@ -185,7 +180,6 @@ int CALLBACK CPropertiesList::SortKey(LPARAM lParam1, LPARAM lParam2, LPARAM lPa
 void CPropertiesList::OnColumnclickPropertiesList(NMHDR* pNMHDR, LRESULT* pResult) 
 {
 	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
-	// TODO: Add your control notification handler code here
 	if (m_nSelectedColumn == pNMListView->iSubItem) {
 		m_bSortAscending = !m_bSortAscending;
 	} else {

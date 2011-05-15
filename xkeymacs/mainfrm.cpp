@@ -43,8 +43,6 @@ END_MESSAGE_MAP()
 
 CMainFrame::CMainFrame()
 {
-	// TODO: add member initialization code here
-
 	m_pXkeymacsDll			= new CXkeymacsDll;
 	m_pPropertiesDlg		= new CProperties;
 	m_nResultPropertiesDlg	= -1;
@@ -338,7 +336,6 @@ void CMainFrame::ShowRightMenu(const ICON_TYPE icon)
 // get message of icon on system tray
 LRESULT CMainFrame::WindowProc(const UINT message, const WPARAM wParam, const LPARAM lParam) 
 {
-	// TODO: Add your specialized code here and/or call the base class
 	static UINT s_uTaskbarRestart;
 
 	switch (message) {
@@ -385,14 +382,12 @@ void CMainFrame::PopUpOptionsDialog()
 
 void CMainFrame::OnOptions() 
 {
-	// TODO: Add your command handler code here
 	PopUpOptionsDialog();
 }
 
 // stop/start keyboard hook
 void CMainFrame::OnDisable() 
 {
-	// TODO: Add your command handler code here
 	if (m_pXkeymacsDll->IsKeyboardHook()) {
 		m_pXkeymacsDll->SetKeyboardHookFlag(FALSE);
 	} else {
@@ -411,7 +406,6 @@ void CMainFrame::CloseDialog(CDialog *const pDialog, int *const pnResult)
 
 void CMainFrame::OnQuit() 
 {
-	// TODO: Add your command handler code here
 	CloseDialog(m_pAboutDlg, &m_nResultAboutDlg);
 	CloseDialog(m_pPropertiesDlg, &m_nResultPropertiesDlg);
 	CloseDialog(m_pOptionsDlg, &m_nResultOptionsDlg);
@@ -433,19 +427,16 @@ void CMainFrame::PopUpAboutDialog()
 
 void CMainFrame::OnAbout() 
 {
-	// TODO: Add your command handler code here
 	PopUpAboutDialog();
 }
 
 void CMainFrame::OnKeyboard() 
 {
-	// TODO: Add your command handler code here
 	PopUpKeyboardDialog(CURRENT_USER);
 }
 
 void CMainFrame::OnKeyboardAnyUser() 
 {
-	// TODO: Add your command handler code here
 	PopUpKeyboardDialog(LOCAL_MACHINE);
 }
 
@@ -460,27 +451,23 @@ void CMainFrame::PopUpKeyboardDialog(const HKEY_TYPE hkeyType)
 
 void CMainFrame::OnImport() 
 {
-	// TODO: Add your command handler code here
 	CProfile::ImportProperties();
 	CProfile::InitDllData();
 }
 
 void CMainFrame::OnExport() 
 {
-	// TODO: Add your command handler code here
 	CProfile::ExportProperties();
 }
 
 void CMainFrame::OnReset() 
 {
-	// TODO: Add your command handler code here
 	m_pXkeymacsDll->ReleaseHooks();
 	m_pXkeymacsDll->SetHooks();
 }
 
 void CMainFrame::OnHelpFinder() 
 {
-	// TODO: Add your command handler code here
 	TCHAR szPath[MAX_PATH] = {'\0'};
 	const TCHAR szExt[] = _T("txt");
 	_tmakepath(szPath, NULL, NULL, CString(MAKEINTRESOURCE(IDS_README)), szExt);

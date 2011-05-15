@@ -57,7 +57,6 @@ BOOL COptionsDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	
-	// TODO: Add extra initialization here
 	// clear all check
 	m_cAutoRun.SetCheck(0);
 	m_cCx.SetCheck(0);
@@ -122,7 +121,6 @@ BOOL COptionsDlg::OnInitDialog()
 
 void COptionsDlg::OnOK() 
 {
-	// TODO: Add extra validation here
 	// for auto run
 	{
 		TCHAR szFileName[MAX_PATH] = {'\0'};

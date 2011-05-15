@@ -83,7 +83,6 @@ END_MESSAGE_MAP()
 
 BOOL CPropertiesAdvanced::OnSetActive() 
 {
-	// TODO: Add your specialized code here and/or call the base class
 	m_pProperties->EnableControl(ADVANCED_TAB);
 	SetDialogData(m_pProperties->GetCurrentApplication());
 
@@ -129,7 +128,6 @@ int CPropertiesAdvanced::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CPropertyPage::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	// TODO: Add your specialized creation code here
 	m_pProperties = (CProperties *)GetParent()->GetParent();
 
 	return 0;
@@ -137,7 +135,6 @@ int CPropertiesAdvanced::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 BOOL CPropertiesAdvanced::OnKillActive() 
 {
-	// TODO: Add your specialized code here and/or call the base class
 	GetDialogData();
 
 	return CPropertyPage::OnKillActive();
@@ -161,7 +158,6 @@ BOOL CPropertiesAdvanced::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
 
-	// TODO: Add extra initialization here
 	m_nApplicationID = m_pProperties->GetApplicationID();
 	InitCategoryList();
 	SetCommands();
@@ -327,14 +323,12 @@ void CPropertiesAdvanced::SetCurrentKeys()
 
 void CPropertiesAdvanced::OnSelchangeCategory() 
 {
-	// TODO: Add your control notification handler code here
 	SetCommands();
 	ClearNewKey();
 }
 
 void CPropertiesAdvanced::OnSelchangeCommands() 
 {
-	// TODO: Add your control notification handler code here
 	BOOL bEnableWindow = FALSE;
 	CString szCurrentCommandName;
 	m_cCommands.GetText(m_cCommands.GetCurSel(), szCurrentCommandName);
@@ -354,7 +348,6 @@ void CPropertiesAdvanced::OnSelchangeCommands()
 
 void CPropertiesAdvanced::OnSelchangeCurrentKeys() 
 {
-	// TODO: Add your control notification handler code here
 	TCHAR szKeyBind[128] = {'\0'};
 	m_cCurrentKeys.GetText(m_cCurrentKeys.GetCurSel(), szKeyBind);
 	CProfile::ReadKeyBind(&m_nRemoveCommandType, &m_nRemoveKey, szKeyBind);
@@ -363,7 +356,6 @@ void CPropertiesAdvanced::OnSelchangeCurrentKeys()
 
 void CPropertiesAdvanced::OnSetfocusNewKey() 
 {
-	// TODO: Add your control notification handler code here
 	m_pNewKey = &m_cNewKey;
 	m_pAssign = &m_cAssign;
 	m_pCurrentlyAssigned = &m_cCurrentlyAssigned;
@@ -375,7 +367,6 @@ void CPropertiesAdvanced::OnSetfocusNewKey()
 
 void CPropertiesAdvanced::OnAssign() 
 {
-	// TODO: Add your control notification handler code here
 	// Remove Current Setting
 	CProfile::SetCommandID(m_nApplicationID, m_nAssignCommandType, m_nAssignKey, 0);
 	SetCommandID(m_nAssignCommandType, m_nAssignKey, 0);
@@ -404,7 +395,6 @@ void CPropertiesAdvanced::OnAssign()
 
 void CPropertiesAdvanced::OnRemove() 
 {
-	// TODO: Add your control notification handler code here
 	CString szCategory;
 	m_cCategory.GetLBText(m_cCategory.GetCurSel(), szCategory);
 
@@ -425,7 +415,6 @@ void CPropertiesAdvanced::OnRemove()
 
 void CPropertiesAdvanced::OnResetAll() 
 {
-	// TODO: Add your control notification handler code here
 	CProfile::LoadRegistryData();
 	InitCommandIDs();
 	SetCurrentKeys();
@@ -575,7 +564,6 @@ void CPropertiesAdvanced::InitCommandIDs()
 
 void CPropertiesAdvanced::OnCX() 
 {
-	// TODO: Add your control notification handler code here
 	if (m_nAssignKey) {
 		OnSetfocusNewKey();
 		SetNewKey();
@@ -584,7 +572,6 @@ void CPropertiesAdvanced::OnCX()
 
 void CPropertiesAdvanced::OnKillfocusNewKey() 
 {
-	// TODO: Add your control notification handler code here
 	if (m_hKeyboardHook) {
 		::UnhookWindowsHookEx(m_hKeyboardHook);
 	}
@@ -593,7 +580,6 @@ void CPropertiesAdvanced::OnKillfocusNewKey()
 
 void CPropertiesAdvanced::OnEnableCua() 
 {
-	// TODO: Add your control notification handler code here
 	UpdateData();
 	CProfile::SetEnableCUA(m_nApplicationID, m_bEnableCUA);
 }

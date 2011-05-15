@@ -66,7 +66,6 @@ BOOL CProperties::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	
-	// TODO: Add extra initialization here
 	while (m_sheet.GetPageCount()) {
 		m_sheet.RemovePage(0);
 	}
@@ -103,7 +102,6 @@ BOOL CProperties::OnInitDialog()
 
 void CProperties::OnDropdownApplication() 
 {
-	// TODO: Add your control notification handler code here
 	InitApplicationList();
 
 	int nID = GetCurrentApplicationID();
@@ -119,7 +117,6 @@ void CProperties::OnDropdownApplication()
 
 void CProperties::OnSelchangeApplication() 
 {
-	// TODO: Add your control notification handler code here
 	GetDialogData();
 
 	CProfile::GetApplicationTitle(&m_cApplication, m_szCurrentApplication, m_cApplication.GetCurSel());
@@ -284,7 +281,6 @@ void CProperties::EnableUseDefaultButton(BOOL bEnable)
 
 void CProperties::OnOK() 
 {
-	// TODO: Add extra validation here
 	OnApply();
 
 	CDialog::OnOK();
@@ -292,7 +288,6 @@ void CProperties::OnOK()
 
 void CProperties::OnCancel() 
 {
-	// TODO: Add extra cleanup here
 	CProfile::LoadRegistryData();
 
 	CDialog::OnCancel();
@@ -300,27 +295,23 @@ void CProperties::OnCancel()
 
 void CProperties::OnApply() 
 {
-	// TODO: Add your control notification handler code here
 	GetDialogData();
 	CProfile::SaveRegistryData();
 }
 
 void CProperties::OnLoadDefault() 
 {
-	// TODO: Add your control notification handler code here
 	CProfile::CopyData(m_szCurrentApplication, CString(MAKEINTRESOURCE(IDS_DEFAULT)));
 	SetDialogData(m_szCurrentApplication);
 }
 
 void CProperties::OnSelectAll() 
 {
-	// TODO: Add your control notification handler code here
 	m_basic.SetAllDialogData(1, TRUE);
 }
 
 void CProperties::OnClearAll() 
 {
-	// TODO: Add your control notification handler code here
 	m_basic.SetAllDialogData(0, TRUE);
 }
 
@@ -336,21 +327,18 @@ CString CProperties::GetCurrentApplication()
 
 void CProperties::OnSettingDefault() 
 {
-	// TODO: Add your control notification handler code here
-	UpdateData();	// get data
+	UpdateData(); // get data
 	EnableControl(ACTIVE_TAB);
 }
 
 void CProperties::OnSettingDisable() 
 {
-	// TODO: Add your control notification handler code here
 	UpdateData();
 	EnableControl(ACTIVE_TAB);
 }
 
 void CProperties::OnSettingSpecific() 
 {
-	// TODO: Add your control notification handler code here
 	UpdateData();
 	EnableControl(ACTIVE_TAB);
 

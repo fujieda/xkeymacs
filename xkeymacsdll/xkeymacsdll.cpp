@@ -1858,7 +1858,7 @@ void CXkeymacsDll::CallMacro()
 	}
 }
 
-/*/
+/*
 void CXkeymacsDll::CallMacro()	// for debug
 {
 	CString sz;
@@ -1876,7 +1876,7 @@ void CXkeymacsDll::CallMacro()	// for debug
 	}
 //	CUtils::Log(sz);
 }
-/**/
+*/
 
 void CXkeymacsData::Set106Keyboard(BOOL b106Keyboard)
 {

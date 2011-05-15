@@ -189,7 +189,6 @@ BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
 	}
 	return TRUE;
 }
-
 	
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -673,7 +672,6 @@ void CProfile::LevelUp()
 	CString szEntry;
 	szEntry.Format(_T("Level"));
 
-//	const int nCurrentLevel = AfxGetApp()->GetProfileInt(szSection, szEntry, nDefalutLevel);
 	switch (AfxGetApp()->GetProfileInt(szSection, szEntry, nDefalutLevel)) {
 	case nDefalutLevel:
 		{

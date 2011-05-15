@@ -48,7 +48,6 @@ BOOL C104Keyboard::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	
-	// TODO: Add extra initialization here
 	CString szWindowText;
 	CString szFor;
 	switch (m_HkeyType) {
@@ -111,7 +110,6 @@ BOOL C104Keyboard::OnInitDialog()
 
 void C104Keyboard::OnOK() 
 {
-	// TODO: Add extra validation here
 	if (CProfile::LostKeyWarning(m_HkeyType) != IDCANCEL) {
 		CProfile::SaveScanCodeMap(m_HkeyType);
 
@@ -123,7 +121,6 @@ void C104Keyboard::OnDestroy()
 {
 	CDialog::OnDestroy();
 
-	// TODO: Add your message handler code here
 	for (int i = 0; i < sizeof(KeyboardLayouts) / sizeof(KeyboardLayouts[0]); ++i) {
 		if (!GetDlgItem(KeyboardLayouts[i].nBaseControlID)
 		 || !GetDlgItem(KeyboardLayouts[i].nCurrentControlID)) {
@@ -143,7 +140,6 @@ void C104Keyboard::OnDestroy()
 
 BOOL C104Keyboard::PreTranslateMessage(MSG *const pMsg) 
 {
-	// TODO: Add your specialized code here and/or call the base class
 	switch (pMsg->message) {
 	case WM_LBUTTONDOWN:
 	case WM_LBUTTONUP:
