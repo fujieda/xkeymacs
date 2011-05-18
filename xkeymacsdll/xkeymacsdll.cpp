@@ -2041,7 +2041,7 @@ BOOL CXkeymacsDll::IsMatchWindowText(CString szWindowText)
 {
 	BOOL bIsMatchWindowText = TRUE;
 
-	TCHAR szCurrentWindowText[0x100] = {'\0'};
+	TCHAR szCurrentWindowText[WINDOW_TEXT_LENGTH] = {'\0'};
 	GetWindowText(GetForegroundWindow(), szCurrentWindowText, sizeof(szCurrentWindowText));
 
 	switch (CUtils::GetWindowTextType(szWindowText)) {

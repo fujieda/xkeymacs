@@ -666,7 +666,7 @@ int CCommands::EndOfLine()
 // C-f: Right
 int CCommands::ForwardChar()
 {
-//	TCHAR szWindowText[0x100] = {'\0'};
+//	TCHAR szWindowText[WINDOW_TEXT_LENGTH] = {'\0'};
 //	GetWindowText(GetForegroundWindow(), szWindowText, sizeof(szWindowText));
 //	CUtils::Log("C-f: %s", szWindowText);
 

@@ -29,7 +29,7 @@ CUtils::~CUtils()
 BOOL CUtils::GetFindDialogTitle(CString *szDialogTitle)
 {
 	{
-		TCHAR buf[0x100] = {'\0'};
+		TCHAR buf[WINDOW_TEXT_LENGTH] = {'\0'};
 		GetWindowText(GetForegroundWindow(), buf, sizeof(buf));
 //		CUtils::Log(_T("Window Text --%s--"), buf);
 		szDialogTitle->Format(_T("%s"), buf);
@@ -198,7 +198,7 @@ LPCTSTR const CUtils::GetApplicationName()
 	return m_szApplicationName;
 }
 
-void CUtils::FairConsoleApplicationName(LPTSTR szApplicationName, int nApplicationNameLength, LPTSTR szWindowText, int nWindowTextLength)
+void CUtils::FairConsoleApplicationName(LPTSTR szApplicationName, LPTSTR szWindowText)
 {
 	if (IsFindDialog()) {
 		return;
@@ -207,13 +207,13 @@ void CUtils::FairConsoleApplicationName(LPTSTR szApplicationName, int nApplicati
 	if (*szWindowText == '"' && _tcschr(szWindowText+1, _T('"'))) {		// "foo bar" -> foo bar
 		int nApplicationName = _tcschr(szWindowText+1, _T('"')) - szWindowText - 1;	// length of "foo bar"
 		_tcsncpy(szWindowText, szWindowText + 1, nApplicationName);
-		memset(szWindowText + nApplicationName, 0, nWindowTextLength - nApplicationName);
+		memset(szWindowText + nApplicationName, 0, WINDOW_TEXT_LENGTH - nApplicationName);
 	} else if (_tcschr(szWindowText, _T(' '))) {	// foo bar -> foo
 		LPTSTR pFirstSpace = _tcschr(szWindowText, _T(' '));
-		memset(pFirstSpace, 0, nWindowTextLength - (pFirstSpace - szWindowText));
+		memset(pFirstSpace, 0, WINDOW_TEXT_LENGTH - (pFirstSpace - szWindowText));
 	}
 
-	memset(szApplicationName, 0, nApplicationNameLength);
+	memset(szApplicationName, 0, MAX_PATH);
 	_stprintf(szApplicationName, _T("%s"), szWindowText);
 
 	static LPCTSTR const szExe = _T(".exe");
@@ -223,9 +223,9 @@ void CUtils::FairConsoleApplicationName(LPTSTR szApplicationName, int nApplicati
 }
 
 // Set real application name in the szApplicationName.
-void CUtils::SetCorrectApplicationName(LPTSTR szApplicationName, const int nApplicationNameLength, LPTSTR szWindowText, const int nWindowTextLength)
+void CUtils::SetCorrectApplicationName(LPTSTR szApplicationName, LPTSTR szWindowText)
 {
-	if (IsConsole(szApplicationName, nApplicationNameLength)) {
+	if (IsConsole(szApplicationName)) {
 		int i = 0;
 		static LPCTSTR const szPromptName[] = {_T("Command Prompt"), _T("Mark Command Prompt"), _T("Select Command Prompt"), _T("MS-DOS Prompt"),
 											   _T("Visual Studio .NET Command Prompt"), _T("Visual Studio .NET 2003 Command Prompt"),
@@ -239,28 +239,28 @@ void CUtils::SetCorrectApplicationName(LPTSTR szApplicationName, const int nAppl
 				return;
 			}
 
-			TCHAR sz[0x100] = {'\0'};
+			TCHAR sz[WINDOW_TEXT_LENGTH] = {'\0'};
 			_stprintf(sz, _T("%s%s"), szPromptName[i], szSeparator);
 
 			if (!_tcsnicmp(szWindowText, sz, _tcslen(sz))) {	// "Command Promp - foo"
 				_tcscpy(szWindowText, szWindowText + _tcslen(sz));
-				FairConsoleApplicationName(szApplicationName, nApplicationNameLength, szWindowText, nWindowTextLength);
+				FairConsoleApplicationName(szApplicationName, szWindowText);
 				return;
 			}
 		}
 
 		for (i = 0; i < sizeof(szPromptPath) / sizeof(szPromptPath[0]); ++i) {
-			TCHAR szWindowTextLower[0x100] = {'\0'};
+			TCHAR szWindowTextLower[WINDOW_TEXT_LENGTH] = {'\0'};
 			_tcscpy(szWindowTextLower, szWindowText);
 			_tcslwr(szWindowTextLower);
 
 			if (_tcsstr(szWindowTextLower, szPromptPath[i])) {
-				TCHAR sz[0x100] = {'\0'};
+				TCHAR sz[WINDOW_TEXT_LENGTH] = {'\0'};
 				_stprintf(sz, _T("%s%s"), szPromptPath[i], szSeparator);
 
 				if (_tcsstr(szWindowTextLower, sz)) {				// "X:\WINNT\system32\cmd.exe - foo"
 					_tcscpy(szWindowText, _tcsstr(szWindowTextLower, sz) + _tcslen(sz));
-					FairConsoleApplicationName(szApplicationName, nApplicationNameLength, szWindowText, nWindowTextLength);
+					FairConsoleApplicationName(szApplicationName, szWindowText);
 					return;
 				} else {									// "X:\WINNT\system32\cmd.exe"
 					return;
@@ -268,65 +268,58 @@ void CUtils::SetCorrectApplicationName(LPTSTR szApplicationName, const int nAppl
 			}
 		}
 
-		if (!_tcsicmp(szWindowText, _T("Cygwin Bash Shell"))
+		LPTSTR newName = NULL, newText = NULL;
+				if (!_tcsicmp(szWindowText, _T("Cygwin Bash Shell"))
 		 || (*szWindowText == _T('~'))
 		 || (*szWindowText == _T('/'))) {						// Bash
-			memset(szApplicationName, 0, nApplicationNameLength);
-			_stprintf(szApplicationName, _T("bash.exe"));
-			memset(szWindowText, 0, nWindowTextLength);
-			_stprintf(szWindowText, _T("bash"));
+			newName = _T("bash.exe");
+			newText = _T("bash");
 		} else if (!_tcsicmp(szWindowText + _tcslen(szWindowText) - 8, _T(" - pdksh"))) {
-			memset(szApplicationName, 0, nApplicationNameLength);
-			_stprintf(szApplicationName, _T("pdksh.exe"));
-			memset(szWindowText, 0, nWindowTextLength);
-			_stprintf(szWindowText, _T("pdksh"));
+			newName = _T("pdksh.exe");
+			newText = _T("pdksh");
 		} else if (!_tcsicmp(szWindowText + _tcslen(szWindowText) - 7, _T(" - tcsh"))) {
-			memset(szApplicationName, 0, nApplicationNameLength);
-			_stprintf(szApplicationName, _T("tcsh.exe"));
-			memset(szWindowText, 0, nWindowTextLength);
-			_stprintf(szWindowText, _T("tcsh"));
+			newName = _T("tcsh.exe");
+			newText = _T("tcsh");
 		} else if (!_tcsicmp(szWindowText + _tcslen(szWindowText) - 6, _T(" - zsh"))) {
-			memset(szApplicationName, 0, nApplicationNameLength);
-			_stprintf(szApplicationName, _T("zsh.exe"));
-			memset(szWindowText, 0, nWindowTextLength);
-			_stprintf(szWindowText, _T("zsh"));
+			newName = _T("zsh.exe");
+			newText = _T("zsh");
 		} else if (!_tcsnicmp(szWindowText, _T("MKS Korn Shell"), 14)
 				|| !_tcsnicmp(szWindowText, _T("cat"), 3)) {
-			memset(szApplicationName, 0, nApplicationNameLength);
-			_stprintf(szApplicationName, _T("sh.exe"));
-			memset(szWindowText, 0, nWindowTextLength);
-			_stprintf(szWindowText, _T("MKS Korn Shell"));
+			newName = _T("sh.exe");
+			newText = _T("MKS Korn Shell");
 		} else if (!_tcsnicmp(szWindowText + 1, _T(":/"), 2)
 				|| !_tcsnicmp(szWindowText + 1, _T(":\\"), 2)) {
-			memset(szApplicationName, 0, nApplicationNameLength);
-			_stprintf(szApplicationName, _T("csh.exe"));
-			memset(szWindowText, 0, nWindowTextLength);
-			_stprintf(szWindowText, _T("C Shell"));
+			newName = _T("csh.exe");
+			newText = _T("C Shell");
 		} else if (_tcsstr(szWindowText, _T(" - VIM"))) {
-			memset(szApplicationName, 0, nApplicationNameLength);
-			_stprintf(szApplicationName, _T("vim.exe"));
-			memset(szWindowText, 0, nWindowTextLength);
-			_stprintf(szWindowText, _T("VIM"));
+			newName = _T("vim.exe");
+			newText = _T("VIM");
 		} else if (_tcsstr(szWindowText, _T(" - Poderosa"))) {
-			memset(szApplicationName, 0, nApplicationNameLength);
-			_stprintf(szApplicationName, _T("Poderosa.exe"));
-			memset(szWindowText, 0, nWindowTextLength);
-			_stprintf(szWindowText, _T("Poderosa"));
+			newName = _T("Poderosa.exe");
+			newText = _T("Poderosa");
 		} else {											// unknown console application
-			FairConsoleApplicationName(szApplicationName, nApplicationNameLength, szWindowText, nWindowTextLength);
+			FairConsoleApplicationName(szApplicationName, szWindowText);
 		}
-	} else if (IsJavaW(szApplicationName, nApplicationNameLength)) {
+		if (newName) {
+			memset(szApplicationName, 0, MAX_PATH);
+			_stprintf(szApplicationName, newName);
+			memset(szWindowText, 0, WINDOW_TEXT_LENGTH);
+			_stprintf(szWindowText, newText);
+		}
+	} else if (IsJavaW(szApplicationName)) {
+		LPTSTR newName = NULL;
 		if (!_tcsicmp(szWindowText + _tcslen(szWindowText) - 19, _T(" - Eclipse Platform"))) {
-			memset(szApplicationName, 0, nApplicationNameLength);
-			_stprintf(szApplicationName, _T("eclipse.exe"));
+			newName = _T("eclipse.exe");
 		} else if (!_tcsicmp(szWindowText, _T("BlueJ"))
 			    || !_tcsnicmp(szWindowText, _T("BlueJ: "), 7)) {
-			memset(szApplicationName, 0, nApplicationNameLength);
-			_stprintf(szApplicationName, _T("bluej.exe"));
+			newName = _T("bluej.exe");
 		} else if (!_tcsicmp(szWindowText, _T("JUDE"))
 			    || !_tcsnicmp(szWindowText, _T("JUDE - "), 7)) {
-			memset(szApplicationName, 0, nApplicationNameLength);
-			_stprintf(szApplicationName, _T("jude.exe"));
+			newName = _T("jude.exe");
+		}
+		if (newName) {
+			memset(szApplicationName, 0, MAX_PATH);
+			_stprintf(szApplicationName, newName);
 		}
 	}
 	return;
@@ -378,13 +371,13 @@ void CUtils::SetApplicationName(BOOL bImeComposition)
 
 			memset(m_szApplicationName, 0, sizeof(m_szApplicationName));
 			_tcscpy(m_szApplicationName, _T("CMD.exe"));
-			TCHAR szWindowText[0x100] = {'\0'};
+			TCHAR szWindowText[WINDOW_TEXT_LENGTH] = {'\0'};
 			GetWindowText(GetForegroundWindow(), szWindowText, sizeof(szWindowText));
-			SetCorrectApplicationName(m_szApplicationName, sizeof(m_szApplicationName), szWindowText, sizeof(szWindowText));
+			SetCorrectApplicationName(m_szApplicationName, szWindowText);
 		} else if (IsJavaW()) {
-			TCHAR szWindowText[0x100] = {'\0'};
+			TCHAR szWindowText[WINDOW_TEXT_LENGTH] = {'\0'};
 			GetWindowText(GetForegroundWindow(), szWindowText, sizeof(szWindowText));
-			SetCorrectApplicationName(m_szApplicationName, sizeof(m_szApplicationName), szWindowText, sizeof(szWindowText));
+			SetCorrectApplicationName(m_szApplicationName, szWindowText);
 		}
 		if (!_tcsicmp(m_szApplicationName, _T("Cygwin.exe"))) {
 //			CUtils::Log(_T("SetApplicationName: cygwin"));
@@ -646,15 +639,15 @@ BOOL CUtils::IsConsole()
 		|| !_tcsicmp(m_szApplicationName, _T("telnet.exe"));
 }
 
-BOOL CUtils::IsConsole(LPCTSTR szApplicationName, int nApplicationNameLength)
+BOOL CUtils::IsConsole(LPCTSTR szApplicationName)
 {
-	return !_tcsnicmp(szApplicationName, _T("WINOA386.MOD"), nApplicationNameLength)
-		|| !_tcsnicmp(szApplicationName, _T("CMD.exe"), nApplicationNameLength);
+	return !_tcsnicmp(szApplicationName, _T("WINOA386.MOD"), MAX_PATH)
+		|| !_tcsnicmp(szApplicationName, _T("CMD.exe"), MAX_PATH);
 }
 
-BOOL CUtils::IsJavaW(LPCTSTR szApplicationName, int nApplicationNameLength)
+BOOL CUtils::IsJavaW(LPCTSTR szApplicationName)
 {
-	return !_tcsnicmp(szApplicationName, _T("javaw.exe"), nApplicationNameLength);
+	return !_tcsnicmp(szApplicationName, _T("javaw.exe"), MAX_PATH);
 }
 
 BOOL CUtils::IsSleipnir()
@@ -789,7 +782,7 @@ BOOL CUtils::IsVisualBasicEditor()
 	 || IsMicrosoftWord()
 	 || IsOutlook()
 	 || IsProject()) {
-		TCHAR szWindowText[0x100] = {'\0'};
+		TCHAR szWindowText[WINDOW_TEXT_LENGTH] = {'\0'};
 		GetWindowText(GetForegroundWindow(), szWindowText, sizeof(szWindowText));
 		static LPCTSTR const szVBE = _T("Microsoft Visual Basic - ");
 		if (!_tcsnicmp(szWindowText, szVBE, _tcslen(szVBE))) {
@@ -801,7 +794,7 @@ BOOL CUtils::IsVisualBasicEditor()
 
 BOOL CUtils::IsEclipse()
 {
-	TCHAR szWindowText[0x100] = {'\0'};
+	TCHAR szWindowText[WINDOW_TEXT_LENGTH] = {'\0'};
 	GetWindowText(GetForegroundWindow(), szWindowText, sizeof(szWindowText));
 
 	LPCTSTR szEclipse = _T(" - Eclipse Platform");
@@ -833,7 +826,7 @@ int CUtils::GetClipboardTextLength()
 BOOL CUtils::IsDialog()
 {
 	HWND hwnd = GetForegroundWindow();
-	TCHAR szWindowText[0x100] = {'\0'};
+	TCHAR szWindowText[WINDOW_TEXT_LENGTH] = {'\0'};
 	if (!GetWindowText(hwnd, szWindowText, sizeof(szWindowText)))
 		return FALSE; // inside sound box
 	return GetParent(GetForegroundWindow()) != NULL;

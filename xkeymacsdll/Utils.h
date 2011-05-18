@@ -9,6 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "xkeymacsdll.h"
+
 class AFX_EXT_CLASS CUtils  
 {
 public:
@@ -65,7 +67,7 @@ public:
 	static BOOL IsCsh();
 	static BOOL IsSh();
 	static BOOL IsBash();
-	static void SetCorrectApplicationName(LPTSTR szApplicationName, int nApplicationNameLength, LPTSTR szWindowText, int nWindowTextLength);
+	static void SetCorrectApplicationName(LPTSTR szApplicationName, LPTSTR szWindowText);
 	static void Log(LPTSTR fmt, ...);
 	static BOOL IsSleipnir();
 	static BOOL IsConsole();
@@ -120,9 +122,9 @@ public:
 private:
 	static BOOL IsTOForEOF();
 	static int GetFormatTag(LPTSTR szFormatTag);
-	static void FairConsoleApplicationName(LPTSTR szApplicationName, int nApplicationNameLength, LPTSTR szWindowText, int nWindowTextLength);
-	static BOOL IsConsole(LPCTSTR szApplicationName, int nApplicationNameLength);
-	static BOOL IsJavaW(LPCTSTR szApplicationName, int nApplicationNameLength);
+	static void FairConsoleApplicationName(LPTSTR szApplicationName, LPTSTR szWindowText);
+	static BOOL IsConsole(LPCTSTR szApplicationName);
+	static BOOL IsJavaW(LPCTSTR szApplicationName);
 	static void SetIMEName();
 	static OSVERSIONINFO m_OsVersionInfo;
 	static TCHAR m_szIMEName[MAX_PATH];

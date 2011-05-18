@@ -454,7 +454,7 @@ BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
 			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("vim.exe"), sizeof(pTask[i].ProcessName))) {
 				szAppName.Format(_T("VIM"));
 			} else {
-				CUtils::SetCorrectApplicationName(pTask[i].ProcessName, sizeof(pTask[i].ProcessName), szWindowName, sizeof(szWindowName));
+				CUtils::SetCorrectApplicationName(pTask[i].ProcessName, szWindowName);
 				GetAppName(&szAppName, szWindowName);
 			}
 			break;
