@@ -14,13 +14,6 @@
 
 #include "resource.h"       // main symbols
 
-enum Instance
-{
-	FirstInstance,
-	SecondInstance,
-};
-
-
 /////////////////////////////////////////////////////////////////////////////
 // CXkeymacsApp:
 // See xkeymacs.cpp for the implementation of this class
@@ -41,13 +34,11 @@ public:
 
 // Implementation
 	//{{AFX_MSG(CXkeymacsApp)
-	afx_msg void OnAppAbout();
 		// NOTE - the ClassWizard will add and remove member functions here.
 		//    DO NOT EDIT what you see in these blocks of generated code !
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 private:
-	Instance m_Instance;
 	HANDLE m_hMutex;
 };
 
@@ -86,11 +77,6 @@ protected:
 };
 
 /////////////////////////////////////////////////////////////////////////////
-
-typedef struct Translate {
-	WORD wLanguage;
-	WORD wCodePage;
-} Translate_t;
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

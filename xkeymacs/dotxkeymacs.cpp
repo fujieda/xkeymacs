@@ -5,7 +5,6 @@
 #include "stdafx.h"
 #include <direct.h>
 #include <Shlwapi.h>
-#include "xkeymacs.h"
 #include "DotXkeymacs.h"
 
 #ifdef _DEBUG
@@ -276,10 +275,13 @@ LPCTSTR CDotXkeymacs::GetLanguage()
 		LPVOID lpData = malloc(dwLen);
 
 		if (lpData && GetFileVersionInfo(lptstrFilename, NULL, dwLen, lpData)) {
-			Translate_t *lpTranslate;
+			struct Translate {
+				WORD wLanguage;
+				WORD wCodePage;
+			} *lpTranslate;
 			UINT cbTranslate = 0;
 
-			if (VerQueryValue(lpData, _T("\\VarFileInfo\\Translation"), (LPVOID*)&lpTranslate, &cbTranslate) && sizeof(Translate_t) <= cbTranslate) {
+			if (VerQueryValue(lpData, _T("\\VarFileInfo\\Translation"), (LPVOID*)&lpTranslate, &cbTranslate) && sizeof(Translate) <= cbTranslate) {
 				for (int i = 0; i < sizeof(Languages)/sizeof(Languages[0]); ++i) {
 					if (Languages[i].wLanguage == lpTranslate->wLanguage) {
 						szLanguage = Languages[i].szLanguage;

@@ -17,13 +17,9 @@ static char THIS_FILE[] = __FILE__;
 
 BEGIN_MESSAGE_MAP(CXkeymacsApp, CWinApp)
 	//{{AFX_MSG_MAP(CXkeymacsApp)
-	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
 		// NOTE - the ClassWizard will add and remove mapping macros here.
 		//    DO NOT EDIT what you see in these blocks of generated code!
 	//}}AFX_MSG_MAP
-	// Standard file based document commands
-	ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
-	ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -31,7 +27,7 @@ END_MESSAGE_MAP()
 
 CXkeymacsApp::CXkeymacsApp()
 {
-	m_Instance = FirstInstance;
+	m_hMutex = NULL;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -55,10 +51,9 @@ BOOL CXkeymacsApp::InitInstance()
 #else
 	m_hMutex = CreateMutex(FALSE, 0, CString(MAKEINTRESOURCE(AFX_IDS_APP_TITLE)));
 #endif
-
-    if (::GetLastError() == ERROR_ALREADY_EXISTS) {
-		m_Instance = SecondInstance;
-        CloseHandle( m_hMutex );
+    if (GetLastError() == ERROR_ALREADY_EXISTS) {
+        CloseHandle(m_hMutex);
+		m_hMutex = NULL;
         return FALSE;
     }
 
@@ -129,9 +124,12 @@ CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
 				wRevisionVersion	= (WORD)((pInfo->dwProductVersionLS      ) & 0xffff);
 			}
 
-			Translate_t *lpTranslate = NULL;
+			struct Translate {
+				WORD wLanguage;
+				WORD wCodePage;
+			} *lpTranslate = NULL;
 			UINT cbTranslate = 0;
-			if (VerQueryValue(lpData, _T("\\VarFileInfo\\Translation"), (LPVOID*)&lpTranslate, &cbTranslate) && sizeof(Translate_t) <= cbTranslate) {
+			if (VerQueryValue(lpData, _T("\\VarFileInfo\\Translation"), (LPVOID*)&lpTranslate, &cbTranslate) && sizeof(Translate) <= cbTranslate) {
 				LPVOID lpLegalCopyright = NULL;
 				UINT uLen = 0;
 				CString SubBlock;
@@ -180,22 +178,15 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-// App command to run the dialog
-void CXkeymacsApp::OnAppAbout()
-{
-	CAboutDlg aboutDlg;
-	aboutDlg.DoModal();
-}
-
 /////////////////////////////////////////////////////////////////////////////
 // CXkeymacsApp message handlers
 
 
 int CXkeymacsApp::ExitInstance() 
 {
-	if (m_Instance == FirstInstance) {
-	    ReleaseMutex( m_hMutex );
-		CloseHandle( m_hMutex );
+	if (m_hMutex) {
+		ReleaseMutex(m_hMutex);
+		CloseHandle(m_hMutex);
 
 		m_pMainWnd->DestroyWindow();
 		delete m_pMainWnd;
