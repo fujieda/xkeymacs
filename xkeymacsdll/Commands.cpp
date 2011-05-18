@@ -1787,9 +1787,10 @@ int CCommands::YankPop()
 // M-!: cmd.exe/command.com
 int CCommands::ShellCommand()
 {
-	if (!CUtils::Run(_tgetenv(_T("XKEYMACS_SHELL")))) {
-		CUtils::Run(_tgetenv(_T("COMSPEC")));
-	}
+	TCHAR szShell[MAX_PATH];
+	size_t len;
+	!_tgetenv_s(&len, szShell, _T("XKEYMACS_SHELL")) && len != 0 && CUtils::Run(szShell) ||
+		!_tgetenv_s(&len, szShell, _T("COMSPEC")) && len != 0 && CUtils::Run(szShell);
 	return Reset(GOTO_HOOK);
 }
 

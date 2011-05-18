@@ -408,7 +408,7 @@ BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
 	CComboBox		*pApplication	= (CComboBox*)lParam;
 	PTASK_LIST		pTask			= CProfile::m_TaskList;
 	
-	TCHAR szWindowName[WINDOW_NAME_LENGTH];
+	TCHAR szWindowName[WINDOW_TEXT_LENGTH];
 	TCHAR szClassName[CLASS_NAME_LENGTH];
 	WINDOWPLACEMENT wpl;
 	

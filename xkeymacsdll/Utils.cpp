@@ -205,20 +205,20 @@ void CUtils::FairConsoleApplicationName(LPTSTR szApplicationName, LPTSTR szWindo
 	}
 
 	if (*szWindowText == '"' && _tcschr(szWindowText+1, _T('"'))) {		// "foo bar" -> foo bar
-		int nApplicationName = _tcschr(szWindowText+1, _T('"')) - szWindowText - 1;	// length of "foo bar"
-		_tcsncpy(szWindowText, szWindowText + 1, nApplicationName);
-		memset(szWindowText + nApplicationName, 0, WINDOW_TEXT_LENGTH - nApplicationName);
+		int len = _tcschr(szWindowText+1, _T('"')) - szWindowText - 1;	// length of "foo bar"
+		memmove(szWindowText, szWindowText + 1, len);
+		memset(szWindowText + len, 0, WINDOW_TEXT_LENGTH - len);
 	} else if (_tcschr(szWindowText, _T(' '))) {	// foo bar -> foo
-		LPTSTR pFirstSpace = _tcschr(szWindowText, _T(' '));
-		memset(pFirstSpace, 0, WINDOW_TEXT_LENGTH - (pFirstSpace - szWindowText));
+		LPTSTR p = _tcschr(szWindowText, _T(' '));
+		memset(p, 0, WINDOW_TEXT_LENGTH - (p - szWindowText));
 	}
 
 	memset(szApplicationName, 0, MAX_PATH);
-	_stprintf(szApplicationName, _T("%s"), szWindowText);
+	_stprintf_s(szApplicationName, MAX_PATH, _T("%s"), szWindowText);
 
 	static LPCTSTR const szExe = _T(".exe");
 	if (_tcsnicmp(szApplicationName + _tcslen(szApplicationName) - _tcslen(szExe), szExe, _tcslen(szExe))) {
-		_tcscat(szApplicationName, szExe);
+		_tcscat_s(szApplicationName, MAX_PATH, szExe);
 	}
 }
 
@@ -240,26 +240,26 @@ void CUtils::SetCorrectApplicationName(LPTSTR szApplicationName, LPTSTR szWindow
 			}
 
 			TCHAR sz[WINDOW_TEXT_LENGTH] = {'\0'};
-			_stprintf(sz, _T("%s%s"), szPromptName[i], szSeparator);
+			_stprintf_s(sz, _T("%s%s"), szPromptName[i], szSeparator);
 
 			if (!_tcsnicmp(szWindowText, sz, _tcslen(sz))) {	// "Command Promp - foo"
-				_tcscpy(szWindowText, szWindowText + _tcslen(sz));
+				_tcscpy_s(szWindowText, WINDOW_TEXT_LENGTH, szWindowText + _tcslen(sz));
 				FairConsoleApplicationName(szApplicationName, szWindowText);
 				return;
 			}
 		}
 
 		for (i = 0; i < sizeof(szPromptPath) / sizeof(szPromptPath[0]); ++i) {
-			TCHAR szWindowTextLower[WINDOW_TEXT_LENGTH] = {'\0'};
-			_tcscpy(szWindowTextLower, szWindowText);
-			_tcslwr(szWindowTextLower);
+			TCHAR lower[WINDOW_TEXT_LENGTH] = {'\0'};
+			_tcscpy_s(lower, szWindowText);
+			_tcslwr_s(lower);
 
-			if (_tcsstr(szWindowTextLower, szPromptPath[i])) {
+			if (_tcsstr(lower, szPromptPath[i])) {
 				TCHAR sz[WINDOW_TEXT_LENGTH] = {'\0'};
-				_stprintf(sz, _T("%s%s"), szPromptPath[i], szSeparator);
+				_stprintf_s(sz, _T("%s%s"), szPromptPath[i], szSeparator);
 
-				if (_tcsstr(szWindowTextLower, sz)) {				// "X:\WINNT\system32\cmd.exe - foo"
-					_tcscpy(szWindowText, _tcsstr(szWindowTextLower, sz) + _tcslen(sz));
+				if (_tcsstr(lower, sz)) {				// "X:\WINNT\system32\cmd.exe - foo"
+					_tcscpy_s(szWindowText, WINDOW_TEXT_LENGTH, _tcsstr(lower, sz) + _tcslen(sz));
 					FairConsoleApplicationName(szApplicationName, szWindowText);
 					return;
 				} else {									// "X:\WINNT\system32\cmd.exe"
@@ -269,7 +269,7 @@ void CUtils::SetCorrectApplicationName(LPTSTR szApplicationName, LPTSTR szWindow
 		}
 
 		LPTSTR newName = NULL, newText = NULL;
-				if (!_tcsicmp(szWindowText, _T("Cygwin Bash Shell"))
+		if (!_tcsicmp(szWindowText, _T("Cygwin Bash Shell"))
 		 || (*szWindowText == _T('~'))
 		 || (*szWindowText == _T('/'))) {						// Bash
 			newName = _T("bash.exe");
@@ -302,9 +302,9 @@ void CUtils::SetCorrectApplicationName(LPTSTR szApplicationName, LPTSTR szWindow
 		}
 		if (newName) {
 			memset(szApplicationName, 0, MAX_PATH);
-			_stprintf(szApplicationName, newName);
+			_tcscpy_s(szApplicationName, MAX_PATH, newName);
 			memset(szWindowText, 0, WINDOW_TEXT_LENGTH);
-			_stprintf(szWindowText, newText);
+			_tcscpy_s(szWindowText, WINDOW_TEXT_LENGTH, newText);
 		}
 	} else if (IsJavaW(szApplicationName)) {
 		LPTSTR newName = NULL;
@@ -319,7 +319,7 @@ void CUtils::SetCorrectApplicationName(LPTSTR szApplicationName, LPTSTR szWindow
 		}
 		if (newName) {
 			memset(szApplicationName, 0, MAX_PATH);
-			_stprintf(szApplicationName, newName);
+			_tcscpy_s(szApplicationName, MAX_PATH, newName);
 		}
 	}
 	return;
@@ -335,7 +335,7 @@ void CUtils::SetApplicationName(BOOL bImeComposition)
 		HKL hKL = GetKeyboardLayout(0);
 		if (ImmIsIME(hKL)) {
 			if (!ImmGetIMEFileName(hKL, m_szIMEName, sizeof(m_szIMEName))) {
-				_tcsncpy(m_szIMEName, _T("IME"), sizeof(m_szIMEName));	// IDS_IME_FILE_NAME
+				_tcsncpy_s(m_szIMEName, _T("IME"), _TRUNCATE);	// IDS_IME_FILE_NAME
 			}
 //			CUtils::Log(_T("SetApplicationName: m_szIMEName == %s"), m_szIMEName);
 		}
@@ -347,13 +347,13 @@ void CUtils::SetApplicationName(BOOL bImeComposition)
 		HKL hKL = GetKeyboardLayout(0);
 		if (ImmIsIME(hKL)) {
 			if (!ImmGetIMEFileName(hKL, m_szApplicationName, sizeof(m_szApplicationName))) {
-				_tcsncpy(m_szApplicationName, m_szIMEName, sizeof(m_szApplicationName));
+				_tcsncpy_s(m_szApplicationName, m_szIMEName, _TRUNCATE);
 			}
-			_tcsncpy(m_szIMEName, m_szApplicationName, sizeof(m_szIMEName));
+			_tcsncpy_s(m_szIMEName, m_szApplicationName, sizeof(m_szIMEName));
 		} else {
 			// ImmIsIME return 0 on Word2002, Excel2002, etc. with IME2002, so...
 			// _tcsncpy(m_szApplicationName, _T("imjp81.ime"), sizeof(m_szApplicationName));
-			_tcsncpy(m_szApplicationName, m_szIMEName, sizeof(m_szApplicationName));
+			_tcsncpy_s(m_szApplicationName, m_szIMEName, _TRUNCATE);
 		}
 	} else {
 //		CUtils::Log(_T("SetApplicationName: appication (%s)"), m_szApplicationName);
@@ -362,7 +362,7 @@ void CUtils::SetApplicationName(BOOL bImeComposition)
 		CString szFn(m_szApplicationName);
 		szFn.Delete(0, szFn.ReverseFind(_T('\\')) + 1);
 		ZeroMemory(m_szApplicationName, sizeof(m_szApplicationName));
-		_tcsncpy(m_szApplicationName, szFn, szFn.GetLength());
+		_tcscpy_s(m_szApplicationName, szFn);
 
 //		CUtils::Log(_T("SetApplicationName: appication [%s]"), m_szApplicationName);
 
@@ -370,7 +370,7 @@ void CUtils::SetApplicationName(BOOL bImeComposition)
 //			CUtils::Log(_T("SetApplicationName: console"));
 
 			memset(m_szApplicationName, 0, sizeof(m_szApplicationName));
-			_tcscpy(m_szApplicationName, _T("CMD.exe"));
+			_tcscpy_s(m_szApplicationName, _T("CMD.exe"));
 			TCHAR szWindowText[WINDOW_TEXT_LENGTH] = {'\0'};
 			GetWindowText(GetForegroundWindow(), szWindowText, sizeof(szWindowText));
 			SetCorrectApplicationName(m_szApplicationName, szWindowText);
@@ -383,7 +383,7 @@ void CUtils::SetApplicationName(BOOL bImeComposition)
 //			CUtils::Log(_T("SetApplicationName: cygwin"));
 
 			memset(m_szApplicationName, 0, sizeof(m_szApplicationName));
-			_tcscpy(m_szApplicationName, _T("bash.exe"));
+			_tcscpy_s(m_szApplicationName, _T("bash.exe"));
 		}
 //		CUtils::Log(_T("name: %s"), m_szApplicationName);
 	}
@@ -641,13 +641,13 @@ BOOL CUtils::IsConsole()
 
 BOOL CUtils::IsConsole(LPCTSTR szApplicationName)
 {
-	return !_tcsnicmp(szApplicationName, _T("WINOA386.MOD"), MAX_PATH)
-		|| !_tcsnicmp(szApplicationName, _T("CMD.exe"), MAX_PATH);
+	return !_tcsicmp(szApplicationName, _T("WINOA386.MOD"))
+		|| !_tcsicmp(szApplicationName, _T("CMD.exe"));
 }
 
 BOOL CUtils::IsJavaW(LPCTSTR szApplicationName)
 {
-	return !_tcsnicmp(szApplicationName, _T("javaw.exe"), MAX_PATH);
+	return !_tcsicmp(szApplicationName, _T("javaw.exe"));
 }
 
 BOOL CUtils::IsSleipnir()
@@ -671,11 +671,12 @@ void CUtils::Log(LPTSTR fmt, ...)
 
 	for (unsigned int nIndex = 0; nIndex < _tcslen(fmt); ) {
 		LPTSTR pNextString = fmt + nIndex;
-		LPTSTR pLogEnd = szLog + _tcslen(szLog);
+		int len = _tcslen(szLog);
+		LPTSTR pLogEnd = szLog + len;
 
 		if (*pNextString == _T('%')) {
 			TCHAR szFormatTag[LOG_MAX] = {'0'};
-			_tcscpy(szFormatTag, pNextString);
+			_tcscpy_s(szFormatTag, pNextString);
 
 			switch (GetFormatTag(szFormatTag)) {
 			case _T('d'):
@@ -685,36 +686,37 @@ void CUtils::Log(LPTSTR fmt, ...)
 			case _T('X'):
 			case _T('u'):
 			case _T('c'):
-				_stprintf(pLogEnd, szFormatTag, va_arg(ap, int));
+				_stprintf_s(pLogEnd, LOG_MAX - len, szFormatTag, va_arg(ap, int));
 				break;
 			case _T('s'):
-				_stprintf(pLogEnd, szFormatTag, va_arg(ap, LPTSTR));
+				_stprintf_s(pLogEnd, LOG_MAX - len, szFormatTag, va_arg(ap, LPTSTR));
 				break;
 			case _T('f'):
 			case _T('e'):
 			case _T('E'):
 			case _T('g'):
 			case _T('G'):
-				_stprintf(pLogEnd, szFormatTag, va_arg(ap, double));
+				_stprintf_s(pLogEnd, LOG_MAX - len, szFormatTag, va_arg(ap, double));
 				break;
 			case _T('p'):
-				_stprintf(pLogEnd, szFormatTag, va_arg(ap, void *));
+				_stprintf_s(pLogEnd, LOG_MAX - len, szFormatTag, va_arg(ap, void *));
 				break;
 			case _T('n'):
-				_stprintf(pLogEnd, szFormatTag, va_arg(ap, int *));
+				_stprintf_s(pLogEnd, LOG_MAX - len, szFormatTag, va_arg(ap, int *));
 				break;
 			case _T('%'):
 			default:
-				_stprintf(pLogEnd, _T("%s"), szFormatTag);
+				_stprintf_s(pLogEnd, LOG_MAX - len, _T("%s"), szFormatTag);
 				break;
 			}
 
 			nIndex += _tcslen(szFormatTag);
 		} else {
 			TCHAR szString[LOG_MAX] = {'0'};
-			_tcscpy(szString, pNextString);
-			LPTSTR pString = _tcstok(szString, _T("%"));
-			_stprintf(pLogEnd, _T("%s"), pString);
+			_tcscpy_s(szString, pNextString);
+			LPTSTR c;
+			LPTSTR pString = _tcstok_s(szString, _T("%"), &c);
+			_stprintf_s(pLogEnd, LOG_MAX - len, _T("%s"), pString);
 
 			nIndex += _tcslen(pString);
 		}
@@ -726,14 +728,15 @@ void CUtils::Log(LPTSTR fmt, ...)
 	TCHAR szPath[MAX_PATH] = {'\0'};
 	if (GetTempPath(MAX_PATH, szPath)) {
 #ifndef _WIN64
-		_tmakepath(szPath, NULL, szPath, _T("xkeylog"), _T("txt"));
+		_tmakepath_s(szPath, NULL, szPath, _T("xkeylog"), _T("txt"));
 #else
-		_tmakepath(szPath, NULL, szPath, _T("xkeylog64"), _T("txt"));
+		_tmakepath_s(szPath, NULL, szPath, _T("xkeylog64"), _T("txt"));
 #endif
 	} else {
-		_tcscpy(szPath, _T("c:\\xkeylog.txt"));
+		_tcscpy_s(szPath, _T("c:\\xkeylog.txt"));
 	}
-	FILE *fp = _tfopen(szPath, _T("a"));
+	FILE *fp;
+	_tfopen_s(&fp, szPath, _T("a"));
 	_ftprintf(fp, _T("%8d: %s	%s\n"), n++, m_szApplicationName, szLog);
 	fflush(fp);
 	fclose(fp);

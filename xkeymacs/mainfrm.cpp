@@ -589,14 +589,14 @@ void CMainFrame::OnHelpFinder()
 {
 	TCHAR szPath[MAX_PATH] = {'\0'};
 	const TCHAR szExt[] = _T("txt");
-	_tmakepath(szPath, NULL, NULL, CString(MAKEINTRESOURCE(IDS_README)), szExt);
+	_tmakepath_s(szPath, NULL, NULL, CString(MAKEINTRESOURCE(IDS_README)), szExt);
 
 	TCHAR szModuleFileName[MAX_PATH] = {'\0'};
 	if (GetModuleFileName(NULL, szModuleFileName, sizeof(szModuleFileName))) {
 		TCHAR szDrive[_MAX_DRIVE] = {'\0'};
 		TCHAR szDir[_MAX_DIR] = {'\0'};
-		_tsplitpath(szModuleFileName, szDrive, szDir, NULL, NULL);
-		_tmakepath(szPath, szDrive, szDir, CString(MAKEINTRESOURCE(IDS_README)), szExt);
+		_tsplitpath_s(szModuleFileName, szDrive, _MAX_DRIVE, szDir, _MAX_DIR, NULL, 0, NULL, 0);
+		_tmakepath_s(szPath, szDrive, szDir, CString(MAKEINTRESOURCE(IDS_README)), szExt);
 	}
 
 	ShellExecute(NULL, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);

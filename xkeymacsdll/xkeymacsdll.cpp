@@ -1238,14 +1238,14 @@ void CXkeymacsDll::SetModifierIcons()
 
 void CXkeymacsDll::SetApplicationName(int nApplicationID, CString szApplicationName)
 {
-	ZeroMemory(m_Config.szSpecialApp[nApplicationID], sizeof(m_Config.szSpecialApp[nApplicationID]));
-	_tcsncpy(m_Config.szSpecialApp[nApplicationID], szApplicationName, sizeof(m_Config.szSpecialApp[nApplicationID]));
+	ZeroMemory(m_Config.szSpecialApp[nApplicationID], CLASS_NAME_LENGTH);
+	_tcsncpy_s(m_Config.szSpecialApp[nApplicationID], szApplicationName, _TRUNCATE);
 }
 
 void CXkeymacsDll::SetWindowText(int nApplicationID, CString szWindowText)
 {
-	ZeroMemory(m_Config.szWindowText[nApplicationID], sizeof(m_Config.szWindowText[nApplicationID]));
-	_tcsncpy(m_Config.szWindowText[nApplicationID], szWindowText, sizeof(m_Config.szWindowText[nApplicationID]));
+	ZeroMemory(m_Config.szWindowText[nApplicationID], WINDOW_TEXT_LENGTH);
+	_tcsncpy_s(m_Config.szWindowText[nApplicationID], szWindowText, _TRUNCATE);
 }
 
 void CXkeymacsDll::SetCommandID(int nApplicationID, int nCommandType, int nKey, int nCommandID)
@@ -1694,7 +1694,7 @@ void CXkeymacsDll::SetFunctionDefinition(int nFunctionID, CString szDefinition)
 	}
 
 	memset(m_Config.szFunctionDefinition[nFunctionID], 0, sizeof(m_Config.szFunctionDefinition[nFunctionID]));
-	_stprintf(m_Config.szFunctionDefinition[nFunctionID], _T("%s"), szDefinition);
+	_stprintf_s(m_Config.szFunctionDefinition[nFunctionID], _T("%s"), szDefinition);
 
 	return;
 

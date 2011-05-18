@@ -64,24 +64,25 @@ void CDotXkeymacs::LoadMainData(LPCTSTR lpszFileName)
 	TCHAR szDir[_MAX_DIR] = {'\0'};
 
 	if (GetModuleFileName(NULL, szModuleFileName, sizeof(szModuleFileName))) {
-		_tsplitpath(szModuleFileName, szDrive, szDir, NULL, NULL);
+		_tsplitpath_s(szModuleFileName, szDrive, _MAX_DRIVE, szDir, _MAX_DIR, NULL, 0, NULL, 0);
 	}
 
 	TCHAR szOldPath[MAX_PATH] = {'\0'};	// This path is used by XKeymacs 3.22 and earlier
-	_tmakepath(szOldPath, szDrive, szDir, lpszFileName, m_szExt);
+	_tmakepath_s(szOldPath, szDrive, szDir, lpszFileName, m_szExt);
 
 	PathAppend(szDir, _T("etc"));
 	TCHAR szEtc[MAX_PATH] = {'\0'};
-	_tmakepath(szEtc, szDrive, szDir, NULL, NULL);
+	_tmakepath_s(szEtc, szDrive, szDir, NULL, NULL);
 	(void)_tmkdir(szEtc);	// make etc directory if needed
 
 	TCHAR szPath[MAX_PATH] = {'\0'};
-	_tmakepath(szPath, szDrive, szDir, lpszFileName, m_szExt);
+	_tmakepath_s(szPath, szDrive, szDir, lpszFileName, m_szExt);
 
 	if (_trename(szOldPath, szPath)) {			// try to move old file as backup when rename returns an error because files exist in both directorys
 		TCHAR szBackupPath[MAX_PATH] = {'\0'};
 		TCHAR szBackupFlag[_MAX_FNAME] = _T("~");
-		_tmakepath(szBackupPath, szDrive, szDir, _tcscat(szBackupFlag, lpszFileName), m_szExt);
+		_tcscat_s(szBackupFlag, lpszFileName);
+		_tmakepath_s(szBackupPath, szDrive, szDir, szBackupFlag, m_szExt);
 		(void)_trename(szOldPath, szBackupPath);	// do nothing when a backup file has existed already
 	}
 
@@ -92,7 +93,7 @@ void CDotXkeymacs::LoadUserData(LPCTSTR lpszFileName)
 {
 	TCHAR szPath[MAX_PATH] = {'\0'};
 	if (SHGetSpecialFolderPath(NULL, szPath, CSIDL_APPDATA, TRUE)) {
-		_tmakepath(szPath, NULL, szPath, lpszFileName, m_szExt);
+		_tmakepath_s(szPath, NULL, szPath, lpszFileName, m_szExt);
 		Load(szPath);
 	}
 }
@@ -268,7 +269,10 @@ LPCTSTR CDotXkeymacs::GetLanguage()
 	LPCTSTR szLanguage = _T("unknown");
 
 	TCHAR lptstrFilename[MAX_PATH] = {'\0'};
-	_tmakepath(lptstrFilename, NULL, _tgetenv(_T("windir")), _T("explorer"), _T("exe"));
+	TCHAR windir[MAX_PATH] = "";
+	size_t len;
+	_tgetenv_s(&len, windir, _T("windir"));
+	_tmakepath_s(lptstrFilename, NULL, windir, _T("explorer"), _T("exe"));
 	DWORD dwLen = GetFileVersionInfoSize(lptstrFilename, NULL);
 
 	if (dwLen) {
