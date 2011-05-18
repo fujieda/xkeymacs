@@ -10,6 +10,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "about.h"
 #include "104Keyboard.h"
 #include "109Keyboard.h"
 #include "Properties.h"
