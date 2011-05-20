@@ -12,11 +12,9 @@
 #include <winperf.h>   // for Windows NT
 #include "resource.h"
 
-#define PROCESS_SIZE        MAX_PATH
-
 struct TASK_LIST {
     DWORD dwProcessId;
-    CHAR ProcessName[PROCESS_SIZE];
+    CHAR ProcessName[MAX_PATH];
 };
 typedef TASK_LIST *PTASK_LIST;
 
@@ -206,8 +204,6 @@ public:
 	static void GetApplicationTitle(CComboBox *cApplicationList, CString &rList, int nIndex = -1);
 	static BOOL IsDefault(CString sz);
 	static int GetApplicationIndex(CString szApplicationName, BOOL bSaveAndValidate, int *nSettingStyle);
-	static TASK_LIST m_TaskList[MAX_TASKS];
-	static DWORD m_dwTasks;
 	static void InitApplicationList(CComboBox *cApplicationList);
 	static int GetSavedSettingCount();
 	static void ClearData(CString szCurrentApplication);
@@ -242,7 +238,9 @@ private:
 	static void SetDllData();
 	static CXkeymacsData m_XkeymacsData[MAX_APP];
 	static void DeleteAllRegistryData();
-	static DWORD GetTaskList(PTASK_LIST pTask, DWORD dwNumTasks);
+	static TASK_LIST m_TaskList[MAX_TASKS];
+	static DWORD m_dwTasks;
+	static void GetTaskList();
 	static BOOL IsCommandType(int nCommandType, LPCTSTR szKeyBind);
 	static int KeyBind2Key(LPCTSTR szKey);
 	static int KeyBind2CommandType(LPCTSTR szKeyBind);

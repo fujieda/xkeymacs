@@ -1108,7 +1108,7 @@ void CProfile::InitApplicationList(CComboBox *const cApplicationList)
 {
 	cApplicationList->ResetContent();
 
-	m_dwTasks = GetTaskList(m_TaskList, MAX_TASKS);
+	GetTaskList();
 
 	EnumWindows(EnumWindowsProc, (LPARAM)cApplicationList);
 
@@ -1171,39 +1171,24 @@ void CProfile::InitApplicationList(CComboBox *const cApplicationList)
 	cApplicationList->SelectString(-1, CString(MAKEINTRESOURCE(IDS_DEFAULT_TITLE)));
 }
 
-DWORD CProfile::GetTaskList(PTASK_LIST pTask, const DWORD dwNumTasks)
+void CProfile::GetTaskList()
 {
-	for (int i = 0; i < MAX_TASKS; ++i) {
-		ZeroMemory(&pTask[i], sizeof(PTASK_LIST));
-	}
+	ZeroMemory(m_TaskList, sizeof(m_TaskList));
 
 	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-	if (hProcessSnap == (HANDLE)-1) {
-		return 0;
-	}
+	if (hProcessSnap == (HANDLE)-1)
+		return;
 
-	DWORD dwTaskCount = 0;
+	m_dwTasks = 0;
 	PROCESSENTRY32 processEntry32 = {sizeof(PROCESSENTRY32)};
 	if (Process32First(hProcessSnap, &processEntry32)) {
 		do {
-			LPTSTR pCurChar = NULL;
-			for (pCurChar = processEntry32.szExeFile + lstrlen(processEntry32.szExeFile); *pCurChar != _T('\\') && pCurChar != processEntry32.szExeFile; --pCurChar) {
-				;
-			}
-			if (*pCurChar == _T('\\')) {
-				++pCurChar;
-			}
-
-			lstrcpy(pTask->ProcessName, pCurChar);
-			pTask->dwProcessId = processEntry32.th32ProcessID;
-
-			++dwTaskCount;
-			++pTask;
-		} while (dwTaskCount < dwNumTasks && Process32Next(hProcessSnap, &processEntry32));
+			lstrcpy(m_TaskList[m_dwTasks].ProcessName, processEntry32.szExeFile);
+			m_TaskList[m_dwTasks++].dwProcessId = processEntry32.th32ProcessID;
+		} while (m_dwTasks < MAX_TASKS && Process32Next(hProcessSnap, &processEntry32));
 	}
 
 	CloseHandle(hProcessSnap);
-	return dwTaskCount;
 }
 
 // return application index
