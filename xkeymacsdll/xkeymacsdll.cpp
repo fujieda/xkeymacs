@@ -1291,33 +1291,6 @@ void CXkeymacsDll::IncreaseKillRingIndex(int nKillRing)
 	m_nKillRing += nKillRing;
 }
 
-// nobody use
-int CXkeymacsDll::GetMickey(int nDifferential, int nThreshold1, int nThreshold2, int nAcceleration, int nSpeed)
-{
-	nDifferential = nDifferential * 10 / nSpeed;
-
-	switch (nAcceleration) {
-	case 2:
-		if (nThreshold2 < fabs((double)(nDifferential / 4))) {
-			nDifferential /= 4;
-			break;
-		}
-		// Do NOT write break; here.
-	case 1:
-		if (nThreshold1 < fabs((double)(nDifferential / 2))) {
-			nDifferential /= 2;
-		}
-		break;
-	case 0:
-		break;
-	default:
-		ASSERT(0);
-		break;
-	}
-
-	return nDifferential;
-}
-
 void CXkeymacsDll::SetSettingStyle(int nApplicationID, int nSettingStyle)
 {
 	m_Config.nSettingStyle[nApplicationID] = nSettingStyle;

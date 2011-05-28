@@ -155,7 +155,6 @@ private:
 	static int m_nOriginal[MAX_COMMAND_TYPE][MAX_KEY];
 	static int m_nKillRing;
 	static CList<CClipboardSnap *, CClipboardSnap *> m_oKillRing;
-	static int GetMickey(int nDifferential, int nThreshold1, int nThreshold2, int nAcceleration, int nSpeed);
 	static BOOL m_bHook;
 	static BOOL m_bRightShift;
 	static BOOL m_bRightAlt;
