@@ -50,6 +50,14 @@ struct KeyName
 	LPCTSTR name;
 };
 
+struct KbdMacro
+{
+	int nCode;
+	WPARAM wParam;
+	LPARAM lParam;
+	BOOL bOriginal;
+};
+
 const DWORD HOOK_ALT_LATER = 0x10000;
 
 class AFX_EXT_CLASS CXkeymacsDll  
@@ -83,7 +91,8 @@ public:
 	static void AddKillRing(BOOL bNewData = TRUE);
 	static void CallMacro();
 	static void ClearFunctionDefinition();
-	static void DefiningMacro(BOOL bDefiningMacro);
+	static void StartRecordMacro();
+	static void EndRecordMacro();
 	static void DepressKey(BYTE bVk, BOOL bOriginal = TRUE);
 	static BOOL GetEnableCUA();
 	static CClipboardSnap* GetKillRing(CClipboardSnap *pSnap, BOOL bForce = TRUE);
@@ -120,7 +129,6 @@ private:
 	static HHOOK m_hHookCallWnd;
 	static HHOOK m_hHookGetMessage;
 	static HHOOK m_hHookShell;
-	static BOOL DefiningMacro();
 	static BOOL IsControl();
 	static BOOL IsMeta();
 	static void SetModifierIcons();
@@ -137,8 +145,9 @@ private:
 	static BOOL IsDepressedShiftKeyOnly(BYTE nKey);
 	static BOOL IsDepressedModifier(int Modifier(), BOOL bPhysicalKey = TRUE);
 	static BOOL IsValidKey(BYTE bVk);
-	static CObList m_Macro;
-	static BOOL m_bDefiningMacro;
+	static CList<KbdMacro, KbdMacro&> m_Macro;
+	static BOOL m_bRecordingMacro;
+	static BOOL m_bDown[MAX_KEY];
 	static void SetOriginal(UINT nCommandType, BYTE bVk);
 	static int CheckOriginal(UINT nCommandType, BYTE bVk);
 	static void InitKeyboardProc(BOOL bImeComposition);

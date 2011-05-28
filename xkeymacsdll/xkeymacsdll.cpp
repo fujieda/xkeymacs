@@ -15,14 +15,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-struct KbdMacro
-{
-	int nCode;
-	WPARAM wParam;
-	LPARAM lParam;
-	BOOL bOriginal;
-};
-
 struct Modifier {
 	LPCTSTR name;
 	int id;
@@ -237,9 +229,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	BOOL	CXkeymacsDll::m_bRightAlt		= FALSE;
 	BOOL	CXkeymacsDll::m_bRightShift		= FALSE;
 	BOOL	CXkeymacsDll::m_bHook			= TRUE;
-	BOOL	CXkeymacsDll::m_bDefiningMacro	= FALSE;
 	CList<CClipboardSnap *, CClipboardSnap *> CXkeymacsDll::m_oKillRing;
-	CObList CXkeymacsDll::m_Macro;
 	int		CXkeymacsDll::m_nKillRing = 0;
 	int		CXkeymacsDll::m_nOriginal[MAX_COMMAND_TYPE][MAX_KEY] = {'\0'};
 	int		CXkeymacsDll::m_nApplicationID = 0;
@@ -251,6 +241,9 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	TCHAR	CXkeymacsDll::m_M_xTip[128] = "";
 	CONFIG	CXkeymacsDll::m_Config = {0};
 #pragma data_seg()
+BOOL CXkeymacsDll::m_bRecordingMacro = FALSE;
+BOOL CXkeymacsDll::m_bDown[MAX_KEY] = {0};
+CList<KbdMacro, KbdMacro&> CXkeymacsDll::m_Macro;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -1046,42 +1039,22 @@ RECURSIVE_COMMAND:
 
 DO_NOTHING:
 	SetModifierIcons();
-	{
-		static BOOL bDefiningMacro = FALSE;
-		if (m_bDefiningMacro) {
-			static BOOL bDown[MAX_KEY] = {'\0'};
-
-			if (!bDefiningMacro) {
-				while (m_Macro.GetHeadPosition()) {
-					void *p = m_Macro.GetAt(m_Macro.GetHeadPosition());
-					m_Macro.RemoveHead();
-					delete p;
-					p = NULL;
-				}
-				memset(bDown, 0, sizeof(bDown));
+	if (m_bRecordingMacro) {
+		if (!(lParam & BEING_RELEASED) || m_bDown[wParam]) {
+			try {
+				KbdMacro m;
+				m.nCode = nCode;
+				m.wParam = wParam;
+				m.lParam = lParam;
+				m.bOriginal = TRUE;
+				m_Macro.AddTail(m);
+			} catch (CMemoryException* e) {
+				e->Delete();
+//				CUtils::Log("KeyboardProc: 'new' threw an exception");
 			}
-
-			if ((!(lParam & BEING_RELEASED)) || bDown[wParam]) {
-				try {
-					KbdMacro *pKbdMacro = new KbdMacro;
-					if (pKbdMacro) {
-						pKbdMacro->nCode = nCode;
-						pKbdMacro->wParam = wParam;
-						pKbdMacro->lParam = lParam;
-						pKbdMacro->bOriginal = TRUE;
-						m_Macro.AddTail((CObject *)pKbdMacro);
-					}
-				}
-				catch (CMemoryException* e) {
-					e->Delete();
-//					CUtils::Log("KeyboardProc: 'new' threw an exception");
-				}
-				if (!(lParam & BEING_RELEASED)) {
-					bDown[wParam] = TRUE;
-				}
-			}
+			if (!(lParam & BEING_RELEASED))
+				m_bDown[wParam] = TRUE;
 		}
-		bDefiningMacro = m_bDefiningMacro;
 	}
 
 	return CallNextHookEx(g_hHookKeyboard, nCode, wParam, lParam);
@@ -1370,77 +1343,38 @@ BOOL CXkeymacsDll::GetEnableCUA()
 	return m_Config.bEnableCUA[m_nApplicationID];
 }
 
-void CXkeymacsDll::DefiningMacro(BOOL bDefiningMacro)
+void CXkeymacsDll::StartRecordMacro()
 {
-	m_bDefiningMacro = bDefiningMacro;
+	m_bRecordingMacro = TRUE;
+	if (CCommands::bC_u())
+		CallMacro();
+	m_Macro.RemoveAll();
+	ZeroMemory(m_bDown, MAX_KEY);
+}
 
-	if (bDefiningMacro) {	// start-kbd-macro
-		if (CCommands::bC_u()) {
-			ReleaseKey(VK_SHIFT);
-			CallMacro();
-		}
-	} else {				// end-kbd-macro
-		while (!m_Macro.IsEmpty()) {
-			KbdMacro *pKbdMacro = (KbdMacro *)m_Macro.GetTail();
-			if (pKbdMacro->lParam & BEING_RELEASED) {
-				break;
-			} else {
-				m_Macro.RemoveTail();
-				delete pKbdMacro;
-				pKbdMacro = NULL;
-			}
-		}
-
-//		CUtils::Log(_T("Macro MemMap: start"));
-		if (!m_Macro.IsEmpty()) {
-			static HANDLE hMacro = NULL;
-			if (!hMacro) {
-				hMacro = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, 0x3000, _T("macro"));
-			}
-			if (hMacro) {
-//				CUtils::Log(_T("Macro MemMap: 1"));
-				PVOID pView = MapViewOfFile(hMacro, FILE_MAP_ALL_ACCESS, 0, 0, 0);
-//				CUtils::Log(_T("Macro MemMap: 2"));
-				if (pView) {
-//					CUtils::Log(_T("Macro MemMap: 2.5"));
-					for (int i = 0; i < m_Macro.GetCount(); ++i) {
-//						CUtils::Log(_T("Macro MemMap: 3-1 %d"), i);
-						KbdMacro *pKbdMacro = (KbdMacro *)m_Macro.GetAt(m_Macro.FindIndex(i));
-//						CUtils::Log(_T("Macro MemMap: 3-2 %d"), i);
-						memcpy((LPTSTR) pView + i * sizeof(KbdMacro), pKbdMacro, sizeof(KbdMacro));
-//						CUtils::Log(_T("Macro MemMap: 3-3 %d"), i);
-					}
-//					CUtils::Log(_T("Macro MemMap: 4"));
-					UnmapViewOfFile(pView);
-//					CUtils::Log(_T("Macro MemMap: 5"));
-				} else {
-//					CUtils::Log(_T("Macro MemMpa: error: %d"), GetLastError());
-				}
-			} else {
-//				CUtils::Log(_T("Macro MemMap: 6"));
-				ASSERT(0);
-			}
-		}
+void CXkeymacsDll::EndRecordMacro()
+{
+	m_bRecordingMacro = FALSE;
+	while (!m_Macro.IsEmpty()) { // remove not released push
+		KbdMacro& m = m_Macro.GetTail();
+		if (m.lParam & BEING_RELEASED)
+			break;
+		m_Macro.RemoveTail();
 	}
 }
 
-BOOL CXkeymacsDll::DefiningMacro()
-{
-	return m_bDefiningMacro;
-}
-
-/**/ 
 void CXkeymacsDll::CallMacro()
 {
+	if (m_bRecordingMacro)
+		m_bRecordingMacro = FALSE;
 	UINT before = GetModifierState(FALSE);
 	SetModifierState(0, before);
 	for (POSITION pos = m_Macro.GetHeadPosition(); pos; ) {
-		KbdMacro *pKbdMacro = (KbdMacro *)m_Macro.GetNext(pos);
-		if (pKbdMacro->lParam & BEING_RELEASED) {
-			ReleaseKey((BYTE)pKbdMacro->wParam);
-		} else {
-			DepressKey((BYTE)pKbdMacro->wParam, pKbdMacro->bOriginal);
-		}
+		KbdMacro& m = m_Macro.GetNext(pos);
+		if (m.lParam & BEING_RELEASED)
+			ReleaseKey((BYTE)m.wParam);
+		else
+			DepressKey((BYTE)m.wParam, m.bOriginal);
 	}
 	SetModifierState(before, 0);
 }
@@ -1450,14 +1384,14 @@ void CXkeymacsDll::CallMacro()	// for debug
 {
 	CString sz;
 	for (POSITION pos = m_Macro.GetHeadPosition(); pos; ) {
-		KbdMacro_t *pKbdMacro = (KbdMacro_t *)m_Macro.GetNext(pos);
-		if (pKbdMacro->lParam & BEING_RELEASED) {
+		KbdMacro m = m_Macro.GetNext(pos);
+		if (m.lParam & BEING_RELEASED) {
 			CString t;
-			t.Format(_T("0x%xu "), pKbdMacro->wParam);
+			t.Format(_T("0x%xu "), m.wParam);
 			sz += t;
 		} else {
 			CString t;
-			t.Format(_T("0x%xd "), pKbdMacro->wParam);
+			t.Format(_T("0x%xd "), m.wParam);
 			sz += t;
 		}
 	}

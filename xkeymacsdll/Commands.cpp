@@ -2810,7 +2810,7 @@ int CCommands::StartKbdMacro()
 	} else if (CUtils::IsHidemaru()) {
 		SdKduSu(VK_F1);
 	} else {
-		CXkeymacsDll::DefiningMacro(TRUE);
+		CXkeymacsDll::StartRecordMacro();
 	}
 	return Reset(GOTO_HOOK);
 }
@@ -2823,7 +2823,7 @@ int CCommands::EndKbdMacro()
 	} else if (CUtils::IsHidemaru()) {
 		SdKduSu(VK_F1);
 	} else {
-		CXkeymacsDll::DefiningMacro(FALSE);
+		CXkeymacsDll::EndRecordMacro();
 	}
 	return Reset(GOTO_HOOK);
 }
