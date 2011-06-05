@@ -302,7 +302,7 @@ static const KeyName KeyNames[] = {
 	{VK_NONAME,		_T("Noname")},
 	{VK_PA1,		_T("PA1")},
 	{VK_OEM_CLEAR,	_T("OEM Clear")},
-	{0xff,			_T("")},
+	{0xff,			_T("Fn")},
 };
 
 CData CProfile::m_XkeymacsData[MAX_APP];
@@ -855,7 +855,7 @@ int CProfile::KeyBind2CommandType(LPCTSTR szKeyBind)
 
 int CProfile::KeyBind2Key(LPCTSTR szKey)
 {
-	for (int nKey = 1; nKey < 0xff; ++nKey) {
+	for (int nKey = 1; nKey <= 0xff; ++nKey) {
 		if (!_tcscmp(szKey, Key2String(nKey))) {
 			return nKey;
 		}

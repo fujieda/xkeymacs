@@ -132,7 +132,8 @@ BOOL CUtils::IsMicrosoftWord()
 
 BOOL CUtils::IsMozilla()
 {
-	return !_tcsicmp(m_szApplicationName, _T("mozilla.exe"));
+	return !_tcsicmp(m_szApplicationName, _T("mozilla.exe"))
+		|| !_tcsicmp(m_szApplicationName, _T("firefox.exe"));
 }
 
 BOOL CUtils::IsMuleForWin32()
