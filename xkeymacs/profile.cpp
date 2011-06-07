@@ -605,14 +605,6 @@ void CProfile::UpdateRegistryData(const BOOL bSaveAndValidate)
 						int nKey = 0;
 						ReadKeyBind(&nCommandType, &nKey, szKeyBind);
 						m_XkeymacsData[nApplicationID].SetCommandID(nCommandType, nKey, nCommandID);
-
-//						if (nCommandType == CONTROL && nKey == 'D') {
-//							CUtils::Log("GetProfileInt(at ibeam cursor only): %s, %s", szSubKey, szKeyBind);
-//						}
-						const CString szSection = szSubKey.Right(szSubKey.GetLength() - CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)).GetLength() - _tcslen(_T("\\"))) + _T("\\") + szKeyBind;
-						const BOOL bAtIbeamCursorOnly = AfxGetApp()->GetProfileInt(szSection, CString(MAKEINTRESOURCE(IDS_REG_ENTRY_AT_IBEAM_CURSOR_ONLY)), FALSE);
-						m_XkeymacsData[nApplicationID].SetAtIbeamCursorOnly(nCommandType, nKey, bAtIbeamCursorOnly);
-
 						memset(szKeyBind, 0, sizeof(szKeyBind));
 						dwKeyBind = sizeof(szKeyBind);
 					}
@@ -630,7 +622,6 @@ void CProfile::UpdateRegistryData(const BOOL bSaveAndValidate)
 							break;
 						}
 						m_XkeymacsData[nApplicationID].SetCommandID(nCommandType, nKey, nCommandID);
-						m_XkeymacsData[nApplicationID].SetAtIbeamCursorOnly(nCommandType, nKey, FALSE);
 					}
 				}
 			}
@@ -785,17 +776,13 @@ void CProfile::SetDllData()
 		CXkeymacsDll::SetApplicationName(nApplicationID, szApplicationName);
 		CXkeymacsDll::SetWindowText(nApplicationID, m_XkeymacsData[nApplicationID].GetWindowText());
 		CXkeymacsDll::SetCommandID(nApplicationID, CONTROL, 'X', 0);
-		CXkeymacsDll::SetAtIbeamCursorOnly(nApplicationID, CONTROL, 'X', FALSE);
 
 		for (int nCommandType = 0; nCommandType < MAX_COMMAND_TYPE; ++nCommandType) {
 			for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
 				const int nCommandID = m_XkeymacsData[nApplicationID].GetCommandID(nCommandType, nKey);
 				CXkeymacsDll::SetCommandID(nApplicationID, nCommandType, nKey, nCommandID);
-				const BOOL bAtIbeamCursorOnly = m_XkeymacsData[nApplicationID].GetAtIbeamCursorOnly(nCommandType, nKey);
-				CXkeymacsDll::SetAtIbeamCursorOnly(nApplicationID, nCommandType, nKey, bAtIbeamCursorOnly);
 				if ((nCommandType & CONTROLX) && nCommandID) {
 					CXkeymacsDll::SetCommandID(nApplicationID, CONTROL, 'X', 1);			// Commands[1] is C-x
-					CXkeymacsDll::SetAtIbeamCursorOnly(nApplicationID, CONTROL, 'X', bAtIbeamCursorOnly);
 				}
 			}
 		}
@@ -808,8 +795,6 @@ void CProfile::SetDllData()
 				CXkeymacsDll::SetFunctionKey(nFunctionID, nApplicationID, nCommandType, nKey);
 				if (nCommandType & CONTROLX) {
 					CXkeymacsDll::SetCommandID(nApplicationID, CONTROL, 'X', 1);			// Commands[1] is C-x
-					const BOOL bAtIbeamCursorOnly = m_XkeymacsData[nApplicationID].GetAtIbeamCursorOnly(nCommandType, nKey);
-					CXkeymacsDll::SetAtIbeamCursorOnly(nApplicationID, CONTROL, 'X', bAtIbeamCursorOnly);
 				}
 			}
 		}

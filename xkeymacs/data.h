@@ -29,11 +29,8 @@ public:
 	int GetKillRingMax();
 	CString GetApplicationTitle();
 	void SetApplicationTitle(LPCTSTR lpszApplicationTitle);
-
 	int GetCommandID(int nCommandType, int nKey);
 	void SetCommandID(int nCommandType, int nKey, int nCommandID);
-	BOOL GetAtIbeamCursorOnly(int nCommandType, int nKey);
-	void SetAtIbeamCursorOnly(int nCommandType, int nKey, BOOL bAtIbeamCursorOnly);
 	CString GetApplicationName();
 	void SetApplicationName(LPCTSTR lpszApplicationName);
 	CData();

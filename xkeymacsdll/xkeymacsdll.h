@@ -78,7 +78,6 @@ public:
 	static void Clear(int nApplicationID);
 	static BOOL IsKeyboardHook();
 	static void SetCommandID(int nApplicationID, int nCommandType, int nKey, int nCommandID);
-	static void SetAtIbeamCursorOnly(int nApplicationID, int nCommandType, int nKey, BOOL bAtIbeamCursorOnly);
 	static void SetApplicationName(int nApplicationID, CString szApplicationName);
 	static void ReleaseHooks();
 	static void SetEnableCUA(int nApplicationID, BOOL bEnableCUA);

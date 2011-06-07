@@ -59,20 +59,6 @@ int CData::GetCommandID(int nCommandType, int nKey)
 	return m_nCommandID[nCommandType][nKey];
 }
 
-void CData::SetAtIbeamCursorOnly(int nCommandType, int nKey, BOOL bAtIbeamCursorOnly)
-{
-	ASSERT(nCommandType >= 0 || nCommandType < MAX_COMMAND_TYPE);
-	ASSERT(nKey <= 0 || nKey < MAX_KEY);
-	m_bAtIbeamCursorOnly[nCommandType][nKey] = bAtIbeamCursorOnly;
-}
-
-BOOL CData::GetAtIbeamCursorOnly(int nCommandType, int nKey)
-{
-	ASSERT(nCommandType >= 0 || nCommandType < MAX_COMMAND_TYPE);
-	ASSERT(nKey <= 0 || nKey < MAX_KEY);
-	return m_bAtIbeamCursorOnly[nCommandType][nKey];
-}
-
 void CData::ClearAll()
 {
 	ZeroMemory(m_nCommandID, sizeof(m_nCommandID));

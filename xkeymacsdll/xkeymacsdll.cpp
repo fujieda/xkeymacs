@@ -998,13 +998,6 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		goto DO_NOTHING;
 	}
 
-	if (m_Config.bAtIbeamCursorOnly[m_nApplicationID][nCommandType][nKey]) {
-		CURSORINFO cursorinfo = { sizeof(cursorinfo) };
-		if (GetCursorInfo(&cursorinfo) && cursorinfo.flags && cursorinfo.hCursor != LoadCursor(NULL, IDC_IBEAM)) {
-			goto DO_NOTHING;
-		}
-	}
-
 	m_bRightControl = IsDown(VK_RCONTROL, FALSE);
 	m_bRightAlt = IsDown(VK_RMENU, FALSE);
 	m_bRightShift = IsDown(VK_RSHIFT, FALSE);
@@ -1103,11 +1096,6 @@ void CXkeymacsDll::SetCommandID(int nApplicationID, int nCommandType, int nKey, 
 	m_Config.nCommandID[nApplicationID][nCommandType][nKey] = nCommandID;
 }
 
-void CXkeymacsDll::SetAtIbeamCursorOnly(int nApplicationID, int nCommandType, int nKey, BOOL bAtIbeamCursorOnly)
-{
-	m_Config.bAtIbeamCursorOnly[nApplicationID][nCommandType][nKey] = bAtIbeamCursorOnly;
-}
-
 void CXkeymacsDll::SetKillRingMax(int nApplicationID, int nKillRingMax)
 {
 	m_Config.nKillRingMax[nApplicationID] = nKillRingMax;
@@ -1124,7 +1112,6 @@ void CXkeymacsDll::Clear(int nApplicationID)
 	if (0 <= nApplicationID && nApplicationID < MAX_APP) {
 		ZeroMemory(m_Config.szSpecialApp[nApplicationID], sizeof(m_Config.szSpecialApp[nApplicationID]));
 		ZeroMemory(m_Config.nCommandID[nApplicationID], sizeof(m_Config.nCommandID[nApplicationID]));
-		ZeroMemory(m_Config.bAtIbeamCursorOnly[nApplicationID], sizeof(m_Config.bAtIbeamCursorOnly[nApplicationID]));
 		m_Config.nKillRingMax[nApplicationID] = 0;
 		m_Config.bUseDialogSetting[nApplicationID] = FALSE;
 		m_Config.nSettingStyle[nApplicationID] = 0;
