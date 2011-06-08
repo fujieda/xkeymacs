@@ -582,6 +582,8 @@ void CProfile::UpdateRegistryData(const BOOL bSaveAndValidate)
 			AfxGetApp()->WriteProfileString(szApplicationName, szEntry, szWindowTextType);
 		}
 
+		CString regApp(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
+		regApp += _T("\\") + szApplicationName;
 		// on/off
 		if (bSaveAndValidate) {	// retrieve
 			for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
@@ -589,11 +591,9 @@ void CProfile::UpdateRegistryData(const BOOL bSaveAndValidate)
 				if (szEntry.IsEmpty()) {
 					break;
 				}
-
 				HKEY hKey = NULL;
-				CString szSubKey(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
-				szSubKey += _T("\\") + szApplicationName + _T("\\") + szEntry;
-				if (RegOpenKeyEx(HKEY_CURRENT_USER, szSubKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
+				CString regKey = regApp + _T("\\") + szEntry;
+				if (RegOpenKeyEx(HKEY_CURRENT_USER, regKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
 					// Use registry data
 					TCHAR szKeyBind[128] = {'\0'};
 					DWORD dwKeyBind = sizeof(szKeyBind);
@@ -627,9 +627,8 @@ void CProfile::UpdateRegistryData(const BOOL bSaveAndValidate)
 			}
 			for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); ++nFunctionID) {
 				HKEY hKey = NULL;
-				CString szSubKey(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
-				szSubKey += _T("\\") + szApplicationName + _T("\\") + CDotXkeymacs::GetFunctionSymbol(nFunctionID);
-				if (RegOpenKeyEx(HKEY_CURRENT_USER, szSubKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
+				CString regKey = regApp + _T("\\") + CDotXkeymacs::GetFunctionSymbol(nFunctionID);
+				if (RegOpenKeyEx(HKEY_CURRENT_USER, regKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
 					// Use registry data
 					CDotXkeymacs::ClearKey(nFunctionID, nApplicationID);
 					TCHAR szKeyBind[128] = {'\0'};
@@ -696,9 +695,13 @@ void CProfile::UpdateRegistryData(const BOOL bSaveAndValidate)
 		// Setting Style
 		szEntry.LoadString(IDS_REG_ENTRY_DISABLE_XKEYMACS);
 		if (bSaveAndValidate) {	// retrieve
-			int nSettingStyle = SETTING_SPECIFIC;
+			int nSettingStyle = SETTING_DEFAULT;
+			HKEY hKey;
 			if (AfxGetApp()->GetProfileInt(szApplicationName, szEntry, 0) != 0) {
 				nSettingStyle = SETTING_DISABLE;
+			} else if (RegOpenKeyEx(HKEY_CURRENT_USER, regApp, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
+				RegCloseKey(hKey);
+				nSettingStyle = SETTING_SPECIFIC;
 			}
 			m_XkeymacsData[nApplicationID].SetSettingStyle(nSettingStyle);
 		} else {				// initialize
