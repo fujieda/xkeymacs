@@ -116,6 +116,7 @@ public:
 	static BOOL IsExplorer();
 	static BOOL IsBecky();
 	static BOOL IsAstecX();
+	static BOOL IsXkeymacs();
 	static BOOL CUtils::GetFindDialogTitle(CString *szDialogTitle);
 	CUtils();
 	virtual ~CUtils();

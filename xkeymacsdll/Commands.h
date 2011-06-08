@@ -176,6 +176,7 @@ public:
 	static int GetDefaultCommandType(int nCommandID, int nIndex);
 	static int GetDefaultCommandKey(int nCommandID, int nIndex);
 	static int GetDefaultControlID(int nCommandID, int nIndex);
+	static void DoSetInputMethodOpenStatus(INPUT_METHOD_OPEN_STATUS status, BOOL isComplete = FALSE);
 	CCommands();
 	virtual ~CCommands();
 

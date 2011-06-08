@@ -2815,7 +2815,18 @@ int CCommands::CompleteCloseInputMethod()
 	return Reset(GOTO_HOOK);
 }
 
-void CCommands::SetInputMethodOpenStatus(INPUT_METHOD_OPEN_STATUS status, BOOL isComplete)
+void CCommands::SetInputMethodOpenStatus(INPUT_METHOD_OPEN_STATUS status, BOOL isComplete) {
+	extern UINT g_ImeManipulationMessage;
+	HWND hWnd = GetFocus();
+	GUITHREADINFO gui;
+	gui.cbSize = sizeof(gui);
+	if (!hWnd && GetGUIThreadInfo(GetWindowThreadProcessId(GetForegroundWindow(), 0), &gui)) hWnd = gui.hwndFocus;
+	else hWnd = GetForegroundWindow();
+	//CUtils::Log(_T(" post ime manip, %d, %d, %p"), status, isComplete, hWnd);
+	PostMessage(hWnd, g_ImeManipulationMessage, status, isComplete);
+}
+
+void CCommands::DoSetInputMethodOpenStatus(INPUT_METHOD_OPEN_STATUS status, BOOL isComplete)
 {
 	ClearNumericArgument();
 	HKL hKL = GetKeyboardLayout(0);
@@ -2824,7 +2835,12 @@ void CCommands::SetInputMethodOpenStatus(INPUT_METHOD_OPEN_STATUS status, BOOL i
 	} else if (ImmIsIME(hKL)) {
 		// default
 		HWND hWnd = GetFocus();
+		GUITHREADINFO gui;
+		gui.cbSize = sizeof(gui);
+		if (!hWnd && GetGUIThreadInfo(GetWindowThreadProcessId(GetForegroundWindow(), 0), &gui)) hWnd = gui.hwndFocus;
+		else hWnd = GetForegroundWindow();
 		HIMC hIMC = ImmGetContext(hWnd);
+		//CUtils::Log(_T(" do ime manip, %d, %d, %d, %p, %p"), status, isComplete, ImmGetOpenStatus(hIMC), hWnd, hIMC);
 
 		if (isComplete && ImmGetOpenStatus(hIMC)) {
 			ImmNotifyIME(hIMC, NI_COMPOSITIONSTR, CPS_COMPLETE, 0);

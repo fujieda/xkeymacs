@@ -72,13 +72,12 @@ public:
 	static void SetAtIbeamCursorOnly(int nApplicationID, int nCommandType, int nKey, BOOL bAtIbeamCursorOnly);
 	static void SetApplicationName(int nApplicationID, CString szApplicationName);
 	static void ReleaseHooks();
-	static void ReleaseKeyboardHook();
 	static void SetEnableCUA(int nApplicationID, BOOL bEnableCUA);
 	static void SetIgnoreUndefinedC_x(int nApplicationID, BOOL bIgnoreUndefinedC_x);
 	static void SetIgnoreUndefinedMetaCtrl(int nApplicationID, BOOL bIgnoreUndefinedMetaCtrl);
 	static void SetHooks();
 	static void EnableKeyboardHook();
-	static void SetKeyboardHook();
+	static void ResetHook();
 	static void SetSettingStyle(int nApplicationID, int nSettingStyle);
 	static void SetUseDialogSetting(int nApplicationID, BOOL bUseDialogSetting);
 	static void AddKillRing(BOOL bNewData = TRUE);
@@ -152,5 +151,7 @@ private:
 	static BOOL m_bRightControl;
 	static CONFIG m_Config;
 };
+
+extern UINT g_ImeManipulationMessage;
 
 #endif // !defined(AFX_XKEYMACS_H__88552DEC_1233_4A0A_BE62_9EF7BC618EC6__INCLUDED_)
