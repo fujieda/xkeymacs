@@ -272,7 +272,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\xkeymacsdll\xkeymacsdll-vc10.vcxproj">
-      <Project>{6e0d026b-0162-ecf5-9db6-3d5ec4311906}</Project>
+      <Project>{8c2afb83-41f5-d1fa-a951-88f91b4db016}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
