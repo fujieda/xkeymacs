@@ -68,6 +68,11 @@ BOOL CUtils::IsAstecX()
 	return !_tcsicmp(m_szApplicationName, _T("astecx.exe"));
 }
 
+BOOL CUtils::IsXkeymacs()
+{
+	return !_tcsicmp(m_szApplicationName, _T("xkeymacs.exe")) || !_tcsicmp(m_szApplicationName, _T("xkeymacs64.exe"));
+}
+
 BOOL CUtils::IsBecky()
 {
 	return !_tcsicmp(m_szApplicationName, _T("b2.exe"));

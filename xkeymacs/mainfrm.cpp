@@ -576,9 +576,8 @@ void CMainFrame::OnExport()
 
 void CMainFrame::OnReset() 
 {
-	CXkeymacsDll::ReleaseHooks();
-	CXkeymacsDll::SetHooks();
 	TerminatePollThread();
+	CXkeymacsDll::ResetHook();
 	StartPollThread();
 	CXkeymacsApp *pApp = static_cast<CXkeymacsApp *>(AfxGetApp());
 	if (!pApp->SendIPCMessage(XKEYMACS_RESET))
