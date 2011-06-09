@@ -27,18 +27,22 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -46,6 +50,7 @@
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>Windows7.1SDK</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -65,10 +70,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>xkeymacs</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <TargetName>xkeymacs64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -95,7 +102,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>C:\WinDDK\7600.16385.1\lib\Mfc\i386;C:\WinDDK\7600.16385.1\lib\ATL\i386</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Version.lib;ShLwApi.Lib;Imm32.lib</AdditionalDependencies>
+      <AdditionalDependencies>Version.lib;ShLwApi.Lib;Imm32.lib;$(SolutionDir)xkeymacsdll\$(IntDir)$(TargetName).lib</AdditionalDependencies>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
     <ResourceCompile>
@@ -116,7 +123,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>C:\WinDDK\7600.16385.1\lib\Mfc\amd64;C:\WinDDK\7600.16385.1\lib\ATL\amd64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Version.lib;ShLwApi.Lib;Imm32.lib</AdditionalDependencies>
+      <AdditionalDependencies>Version.lib;ShLwApi.Lib;Imm32.lib;$(SolutionDir)xkeymacsdll\$(IntDir)$(TargetName).lib</AdditionalDependencies>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
     <ResourceCompile>
@@ -131,9 +138,11 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>C:\WinDDK\7600.16385.1\inc\mfc42</AdditionalIncludeDirectories>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
-      <Optimization>MinSpace</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <StringPooling>true</StringPooling>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -142,7 +151,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>C:\WinDDK\7600.16385.1\lib\Mfc\i386;C:\WinDDK\7600.16385.1\lib\ATL\i386</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Version.lib;Imm32.lib;ShLwApi.Lib</AdditionalDependencies>
+      <AdditionalDependencies>Version.lib;ShLwApi.Lib;Imm32.lib;$(SolutionDir)xkeymacsdll\$(IntDir)$(TargetName).lib</AdditionalDependencies>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
     <ResourceCompile>
@@ -158,6 +167,9 @@
       <AdditionalIncludeDirectories>C:\WinDDK\7600.16385.1\inc\mfc42</AdditionalIncludeDirectories>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
       <Optimization>MaxSpeed</Optimization>
+      <OmitFramePointers>true</OmitFramePointers>
+      <StringPooling>true</StringPooling>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -165,7 +177,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>C:\WinDDK\7600.16385.1\lib\Mfc\amd64;C:\WinDDK\7600.16385.1\lib\ATL\amd64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Version.lib;Imm32.lib;ShLwApi.Lib</AdditionalDependencies>
+      <AdditionalDependencies>Version.lib;ShLwApi.Lib;Imm32.lib;$(SolutionDir)xkeymacsdll\$(IntDir)$(TargetName).lib</AdditionalDependencies>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
     <ResourceCompile>
@@ -269,11 +281,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="xkeymacs.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\xkeymacsdll\xkeymacsdll-vc10.vcxproj">
-      <Project>{6e0d026b-0162-ecf5-9db6-3d5ec4311906}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
