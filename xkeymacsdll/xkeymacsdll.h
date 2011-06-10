@@ -76,8 +76,7 @@ public:
 	static void SetIgnoreUndefinedC_x(int nApplicationID, BOOL bIgnoreUndefinedC_x);
 	static void SetIgnoreUndefinedMetaCtrl(int nApplicationID, BOOL bIgnoreUndefinedMetaCtrl);
 	static void SetHooks();
-	static void EnableKeyboardHook();
-	static void ResetHook();
+	static void ResetHooks();
 	static void SetSettingStyle(int nApplicationID, int nSettingStyle);
 	static void SetUseDialogSetting(int nApplicationID, BOOL bUseDialogSetting);
 	static void AddKillRing(BOOL bNewData = TRUE);
@@ -114,7 +113,6 @@ private:
 	static HHOOK m_hHookCallWndRet;
 	static LRESULT CALLBACK CallWndRetProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static BOOL IsMatchWindowText(CString szWindowText);
-	static BOOL m_bEnableKeyboardHook;
 	static HHOOK m_hHookCallWnd;
 	static HHOOK m_hHookGetMessage;
 	static HHOOK m_hHookShell;

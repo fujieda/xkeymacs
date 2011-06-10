@@ -206,7 +206,6 @@ int CMainFrame::OnCreate(const LPCREATESTRUCT lpCreateStruct)
 								  AfxGetApp()->GetProfileInt(CString(), CString(MAKEINTRESOURCE(IDS_REG_ENTRY_CHANGE_CURSOR)), 0));
 
 	CXkeymacsDll::SetHooks();
-	CXkeymacsDll::EnableKeyboardHook();
 	StartPollThread();
 
 	return 0;
@@ -577,7 +576,7 @@ void CMainFrame::OnExport()
 void CMainFrame::OnReset() 
 {
 	TerminatePollThread();
-	CXkeymacsDll::ResetHook();
+	CXkeymacsDll::ResetHooks();
 	StartPollThread();
 	CXkeymacsApp *pApp = static_cast<CXkeymacsApp *>(AfxGetApp());
 	if (!pApp->SendIPCMessage(XKEYMACS_RESET))

@@ -229,7 +229,6 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 #include "xkeymacsDll.h"
 #pragma data_seg(".xkmcs")
 	BOOL	CXkeymacsDll::m_bHookAltRelease	= FALSE;
-	BOOL	CXkeymacsDll::m_bEnableKeyboardHook = FALSE;
 	HHOOK	CXkeymacsDll::m_hHookCallWnd = NULL;
 	HHOOK	CXkeymacsDll::m_hHookCallWndRet = NULL;
 	HHOOK	CXkeymacsDll::m_hHookGetMessage = NULL;
@@ -319,35 +318,21 @@ void CXkeymacsDll::SetHooks()
 	g_hHookKeyboard = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, g_hDllInst, 0);
 }
 
-void CXkeymacsDll::EnableKeyboardHook()
-{
-	m_bEnableKeyboardHook = TRUE;
-}
-
 inline void unhook(HHOOK &hh) {
 	if (hh)
 		UnhookWindowsHookEx(hh);
 	hh = NULL;
 }
 
-void CXkeymacsDll::ResetHook() 
+void CXkeymacsDll::ResetHooks() 
 {
-	unhook(m_hHookCallWnd);
-	unhook(m_hHookCallWndRet);
-	unhook(m_hHookGetMessage);
-	unhook(m_hHookShell);
-	unhook(g_hHookKeyboard);
-	m_hHookCallWnd = SetWindowsHookEx(WH_CALLWNDPROC, (HOOKPROC)CallWndProc, g_hDllInst, 0);
-	m_hHookCallWndRet = SetWindowsHookEx(WH_CALLWNDPROCRET, (HOOKPROC)CallWndRetProc, g_hDllInst, 0);
-	m_hHookGetMessage = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)GetMsgProc, g_hDllInst, 0);
-	m_hHookShell = SetWindowsHookEx(WH_SHELL, (HOOKPROC)ShellProc, g_hDllInst, 0);
-	g_hHookKeyboard = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, g_hDllInst, 0);
+	ReleaseHooks();
+	SetHooks();
 }
 
 // release hooks
 void CXkeymacsDll::ReleaseHooks()
 {
-	m_bEnableKeyboardHook = FALSE;
 	unhook(m_hHookCallWnd);
 	unhook(m_hHookCallWndRet);
 	unhook(m_hHookGetMessage);
@@ -806,7 +791,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	static BYTE nOneShotModifier[MAX_KEY] = {'\0'};
 	static BOOL bCherryOneShotModifier = FALSE;
 
-//	CUtils::Log(_T("nCode = %#x, nKey = %#x, lParam = %p, en = %d, %d, %d"), nCode, nKey, lParam, m_bEnableKeyboardHook, IsDll64, Is64ProcessHwnd(GetForegroundWindow()));
+//	CUtils::Log(_T("nCode = %#x, nKey = %#x, lParam = %p, %d, %d"), nCode, nKey, lParam, IsDll64, Is64ProcessHwnd(GetForegroundWindow()));
 
 	if (Is64ProcessHwnd(GetForegroundWindow()) != IsDll64 || CUtils::IsXkeymacs())
 		return CallNextHookEx(g_hHookKeyboard, nCode, wParam, lParam);

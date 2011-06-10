@@ -60,11 +60,10 @@ UINT PollIPCMessage(LPVOID lpParam)
 			goto exit;
 			break;
 		case XKEYMACS_RELOAD:
-			if (CXkeymacsDll::LoadConfig())
-				CXkeymacsDll::EnableKeyboardHook();
+			CXkeymacsDll::LoadConfig();
 			break;
 		case XKEYMACS_RESET:
-			//CXkeymacsDll::ResetHook();
+			//CXkeymacsDll::ResetHooks();
 			break;
 		}
 	}
