@@ -1,0 +1,166 @@
+======================================================================
+ XKeymacs - Keyboard Utility for Windows
+======================================================================
+
+--- FAQ (Frequently Asked Questions) ---
+Q. How can I run XKeymacs automatically when I logon Windows?
+A. Open the options dialog and check Auto Run check box.
+
+Q. How to avoid opening a warning dialog when I run XKeymacs on Windowx XP.
+A. You can hide it to do these procedures.
+1. Select xkeymacs.exe on Explorer.
+2. Alt+Enter (or right click) to open a property dialog.
+3. Alt+K on General tab
+4. Click OK button
+
+Q. What does "Disable XKeymacs" mean?
+A. "Disable XKeymacs" is the same as "Exit" but a silver key icon remains in the taskbar.
+When you want to use XKeymacs again, just right click the icon and select "Enable XKeymacs".
+
+Q. XKeymacs does not reflect setting of Properties Dialog.
+A. Reboot Windows first. If XKeymacs does not reflect setting after reboot,
+exit XKeymacs. Then run Registry Edit (regedit.exe) to rename XKeymacs2 to
+XKeymacs2_org of the next key.
+HKEY_CURRENT_USER\Software\Oishi\XKeymacs2
+Run XKeymacs to set again.
+
+Q. How can I run Bash by M-!?
+A. Install Bash. Create the environment variable XKEYMACS_SHELL and set
+value "bash". Reboot Windows. By doing this, you can use M-! to run bash.
+
+Q. I can not open File menu by Alt+F after I install XKeymacs. Why?
+A. In default setting, Alt+F work as M-f.
+You should uncheck M-f and/or Alt:Meta check box on Properties dialog
+if you want to use Alt+F to open File menu.
+Or if you depress F after releasing Alt,
+File menu is opened by Alt+F when M-f and Alt:Meta are enabled.
+
+Q.Why does the remapping indication differ from the actual system behaviour?
+A. The Keyboard Layout dialog indicates the current registry data.
+On the other hand, the behavior of the system reflects the registry data at the time the system started.
+If you restart Windows, the system behaves the way you want.
+
+Q. Why are some check boxes in the options dialog always disabled?
+A. Some check boxes are only for Windows NT, 2000 and XP.
+So they are disabled every time on Windows 95, 98 and ME.
+
+Q. Why a mail window is closed of Microsoft Outlook Express when a user depress Esc key as Meta?
+A. Assign Esc as commands "Meta" category "Other" on Advanced tab of Properties Dialog.
+Esc key is assigned "Meta for Esc" on default setting.
+"Meta for Esc" work not only Meta but also original key, i.e. Esc.
+So Esc key work as Meta on Notepad and Esc can close a dialog,
+but Esc did not work well on some application like Microsoft Outlook Express.
+
+Q. Why C-d input ~ insted of Delete on bash of Cygwin?
+A. You should add the next line on ~/.inputrc
+  "\e[3~": delete-char
+
+Q. Why M-v open View menu insted of scroll down on Opera?
+A. M-v works fine if you delete View menu on Opera.
+You can delete View menu to do these procedures.
+1. Exit Opera.
+2. Open Opera\defaults\standard_menu.ini file.
+3. Find "Submenu, 67390, Browser View Menu".
+4. Input ';' at line head of found line such as:
+;Submenu, 67390, Browser View Menu
+5. Save the file.
+
+Q. How to prevent that search string is swapped with the word on which Keyboard Cursor is
+when a user changes search direction on Borland C++ Builder?
+A. Select "Edit Option..." on Tool menu of Borland C++ Builder, press Alt+X and click OK button.
+
+Q. What is the best value of kill-ring-max?
+A. Default value is 30 on Emacs.
+
+Q. Why C-y yanks last killed data only after a user execute C-k, C-k, C-k?
+A. XKeymacs connects data by kill-ring when clipboard data has other than plane text.
+So if kill-ring-max is 0, killed data is not connected.
+Open Properties dialog and set kill-ring-max 1 and over to connect killed data.
+
+Q. The combo box on the properties dialog shows only "set as default" IME
+even if some IMEs are installed. (IME or "Input Method Editor" is a gizmo to input Japanese or some other languages).
+How can I set for other IMEs?
+A. Open the properties dialog and select the IME for which you want to set.
+So you can set for the IME.
+
+Q. I can't disable C-x. What can I do?
+A. C-x is fooked when one of setting which user C-x is enabled.
+If you set by Properties dialog, clear all check box of "C-x *" to disable C-x.
+In some case -- you change 101 keyboard to 106 keyboard or vice versa --
+'(' of "C-x (" becomes Shift+8 from Shift+9 and the setting can not be cleared from Properties dialog.
+On such an occasion, you need to use Advanced tab of Properties dialog (or Regedit.exe).
+
+Q. Can I use ~/Esc key?
+A. Yes. Assign Shift-Esc at Category:Other Commands:~ on Advanced tab of Properties dialog.
+
+Q. How to pass the only next key to an application such as C-q of Emacs?
+A. Open Property dialog of XKeymacs and assign command "Temporarily Disable XKeymacs"
+category "Other" to C-q.
+
+Q. Why can I pop up properties dialog if I click gold key icon in taskbar?
+A. It is changed from click to double click since version 1.14
+to conform with "The Windows Interface Guidelines for Software Design"
+written by Microsoft.
+
+Q. Why isn't there an Auto Run check box in the properties dialog?
+A. The check box was in the properties dialog before version 1.14.
+But now, it is in the options dialog.
+
+Q. Why does XKeymacs run even if I turn off Auto Run check box?
+A. Since version 1.15, XKeymacs can set Auto Run per user.
+So if you set it on by XKeymacs before version 1.14,
+XKeymacs cannot stop Auto Run.
+You have to turn off by XKeymacs before version 1.14 or
+delete the xkeymacs key (HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run) from the windows registry.
+
+Q. How can I hide gold key icon in taskbar?
+A. You can hide it to do these procedures.
+1. Right click the next key of the registory to open pop up menu.
+HKEY_CURRENT_USER\Software\oishi\XKeymacs2
+2. Depress N and D of your keyboard to create new DWORD.
+3. Change the name of the DWORD main_icon.
+4. Comfirm the data of main_icon is 0x00000000 (0).
+
+Q. Why gold key icon in taskbar is not displayed?
+A. The icon will be displayed if you delete main_icon in the next key of the registory.
+HKEY_CURRENT_USER\Software\oishi\XKeymacs2
+
+Q. What is CUA-mode?
+A. If you enable CUA-mode, C-x works as Cut during Set Mark.
+Original CUA-mode is available on the next site:
+cua.dk - Storm's Free Software Collection
+http://www.cua.dk/cua.html
+
+Q. What is Program Manager (Progman.exe)?
+Program Manager is the desktop interface.
+
+Q. I turned a key which is needed to input password to logon Windows
+by Keyboard Layout dialog.
+How should I do to logon again?
+A. If you can logon by other address or access on the network,
+delete the next value by regedit.exe
+HKEY_CURRENT_USER\Keyboard Layout\Scancode Map
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\Scancode Map
+If you can not access on the network,
+you have or made dual boot environment, you can edit registry by the following procedues.
+1. Run regedt32 on Windows which you can login.
+2. Select [Load Hive] on [File] menu to load the next file.
+X:\WINDOWS\system32\config\SYSTEM
+3. Delete next value.
+HKEY_CURRENT_USER\Keyboard Layout\Scancode Map
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\Scancode Map
+4. Select [Unload Hive] on [File].
+5. Restart Windows and logon Windows which you could not logon.
+
+Q. Does XKeymacs accelerate key repeat speed to move caret?
+A. Yes. Please create the next DWORD value in registry.
+HKEY_CURRENT_USER\Software\Oishi\XKeymacs2\accelerate
+If you set the value n and reboot XKeymacs, you can input n times speed.
+
+Q. Does XKeymacs change mouse cursor to indicate XKeymacs status?
+A. Yes. Please create the next DWORD value in registry and set the value 1.
+HKEY_CURRENT_USER\Software\Oishi\XKeymacs2\change_cursor
+
+
+- ---
+oishi@cam.hi-ho.ne.jp

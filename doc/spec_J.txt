@@ -1,0 +1,266 @@
+======================================================================
+ XKeymacs - Windows 用 キーボードユーティリティ
+======================================================================
+
+--- 仕様 ---
+
+ファイル
+find-file [C-x C-f: 開く...]
+	ファイルを開く。
+kill-buffer [C-x k: 閉じる]
+	ファイルを閉じる。
+save-buffer [C-x C-s: 上書き保存]
+	ファイルを上書き保存する。
+write-file [C-x C-w: 名前を付けて保存...]
+	ファイルを名前を付けて保存する。
+
+検索、置換
+isearch-backward [C-r: 検索... (上へ)]
+	後向きにインクリメンタルサーチする。
+isearch-forward [C-s: 検索... (下へ)]
+	前向きにインクリメンタルサーチする。
+query-replace [M-%: 置換...]
+	置換ダイアログを開く。
+query-replace-regexp [C-M-%: 置換...]
+	置換ダイアログを開く。
+
+アクティブウィンドウから離れる
+iconify-or-deiconify-frame [C-z: 最小化]
+	ウィンドウを最小化する。
+Roll-up/Unroll
+	あたかも巻き上げたかのように、ウィンドウのタイトルバーだけ表示する。
+save-buffers-kill-emacs [C-x C-c: 終了]
+	アプリケーションを終了する。
+
+エラーリカバリー
+keyboard-quit [C-g: keyboard-quit]
+	入力中のコマンドをキャンセルする。
+undo [C-x u: 元に戻す][C-/: 元に戻す][C-_: 元に戻す]
+	元に戻す。
+
+移動
+backward-char [C-b: 左]
+	1 文字左へ移動する。
+backward-word [M-b: backward-word]
+	1 語左へ移動する。
+beginning-of-buffer [M-<: go to buffer beginning]
+	バッファの先頭に移動する。
+beginning-of-line [C-a: Home]
+	行頭に移動する。
+end-of-buffer [M->: go to buffer end]
+	バッファの末尾に移動する。
+end-of-line [C-e: End]
+	行末に移動する。
+forward-char [C-f: 右]
+	1 文字右へ移動する。
+forward-word [M-f: forward-word]
+	1 語右へ移動する。
+next-line [C-n: 下]
+	垂直に 1 行下へ移動する。
+previous-line [C-p: 上]
+	垂直に 1 行上へ移動する。
+recenter [C-l: recenter]
+	画面をクリアして再表示し、選択されたウィンドウではポイントが縦方向の中央に位置するようにスクロールする。
+scroll-down [M-v: Page Up]
+	(ウィンドウ 1 面分か指定した行数だけ) 後向きにスクロールする。
+scroll-up [C-v: Page Down]
+	(ウィンドウ 1 面分か指定した行数だけ) 前向きにスクロールする。
+
+IME の切替え
+Close Input Method
+	インプットメソッドを無効にする。
+Complete & Close Input Method
+	現在の文字列を変換結果として確定し、インプットメソッドを無効にする。
+Complete & Toggle Input Method
+	現在の文字列を変換結果として確定し、インプットメソッドが有効ならば無効に、無効ならば有効にする。
+Open Input Method
+	インプットメソッドを有効にする。
+Switch Between Input Locales
+	入力ロケールを切り替える。
+toggle-win32ime-mode [C-x C-j: SKK][C-o: Canna][C-\: Wnn][C-／: Wnn]
+	インプットメソッドが有効ならば無効に、無効ならば有効にする。
+
+消去、編集
+backward-kill-word [M-DEL]
+	ポイントの直前の単語をキルする。
+delete-backward-char [C-h: Back space]
+	キャレットの左側の文字を削除する。
+delete-char [C-d: 削除]
+	キャレットの右側の文字を削除する。
+kill-line [C-k: kill-line]
+	行末までをキルする。
+kill-region [C-w: 切取り]
+	リージョン (ポイントからマークまで) をキルする。
+kill-ring-save [M-w: コピー]
+	リージョンを実際にはキルせずに、最後にキルしたテキストとして保存する。
+kill-word [M-d: kill-word]
+	単語の末尾までキルする。
+transpose-chars [C-t: transpose-chars]
+	2 つの文字を入れ替える。
+transpose-lines [C-x C-t]
+	2 つの行を入れ替える。
+transpose-words [M-t]
+	2 つの単語を入れ替える。
+yank [C-y: 貼り付け]
+	最後にキルしたテキストをヤンクする。
+yank-pop [M-y: yank-pop]
+	ヤンクしたテキストを、それより前にキルしたテキストで置き換える。
+
+One Shot モディファイヤ
+One Shot Modifier Alt
+One Shot Modifier Alt with Repeat
+One Shot Modifier Ctrl
+One Shot Modifier Ctrl with Repeat
+One Shot Modifier Shift
+One Shot Modifier Shift with Repeat
+	割り当てられているキーが押されている間に他のキーを押すと Ctrl キー等として扱われる。
+	割り当てられたキーを押したあと、他のキーを押す前に離すと、元のキーとして扱われる。
+	* with Repeat では、割り当てられたキーを押し続けると、元のキーが押し続けられたものとして扱われる。
+
+その他
+_
+	_
+`
+	`
+~
+	~
+C-
+	C-
+call-last-kbd-macro [C-x e: call-last-kbd-macro]
+	もっとも最近のキーボードマクロを実行する。
+capitalize-word [M-c]
+	後続の単語の1文字目だけを大文字にする。
+Copy
+	コピー
+Cut
+	切り取り
+Cycle items
+	オープンした順番に、項目を循環
+Cycle items inversely
+	オープンした順番とは逆の順番に、項目を循環
+downcase-word [M-l]
+	後続の単語を大文字に変換する。
+Enable or Disable XKeymacs [C-q: Enable/Disable XKeymacs]
+	XKeymacs が有効ならば無効に、無効ならば有効にする。
+end-kbd-macro [C-x ): end-kbd-macro]
+	キーボードマクロの定義を終了する。
+Esc
+	Esc
+execute-extended-command
+	コマンドを実行
+Find
+	検索...
+Find Next
+	次を検索
+Ignore
+	キーを無視する。
+mark-page [C-x C-p: mark-page]
+	ファイル全体をリージョンとする。
+mark-whole-buffer [C-x h: mark-whole-buffer]
+	ファイル全体をリージョンとする。
+Maximize
+	ウィンドウを最大化する。
+Maximize Horizontally
+	ウィンドウを横向きに最大化する。
+Maximize Vertically
+	ウィンドウを縦向きに最大化する。
+Meta [C-[: Meta]
+	Meta のプレフィックスキー。
+Meta for Alt [右 Alt: Meta][左 Alt: Meta] (Windows NT, 2000, XP)
+Meta for Alt [Alt: Meta (Windows 95, 98, Me)]
+	Meta
+Meta for Escape [Esc: Meta]
+	本来の機能を生かしたまま Meta のプレフィックスキーとしても機能する。
+Minimize
+	ウィンドウを最小化する。
+Move
+	ウィンドウを移動する。
+New
+	新規
+newline [C-m: 改行]
+	Enter
+numeric argument [C-0...9: digit-argument]
+	引数を指定する。
+open-line [C-o: open-line]
+	1 行以上の空行をキャレットの右側に挿入する。
+Pass Through
+	このコマンドに割り当てられているキーが押されている間、XKeymacs は全ての入力をそのままアプリケーションへ渡す。
+Paste
+	貼り付け
+Print
+	印刷...
+Redo
+	Redo
+Restore
+	ウィンドウを元のサイズに戻す。
+Retop
+	画面をクリアして再表示し、選択されたウィンドウではポイントが冒頭に位置するようにスクロールする。
+Select All
+	すべて選択
+set-mark-command [C-Space: set-mark-command]
+	マークをキャレットの位置に置く。
+shell-command [M-!: コマンド プロンプト]
+	コマンドプロンプト/MS-DOS プロンプトを起動する。
+Size
+	ウィンドウのサイズを変更する。
+start-kbd-macro [C-x (: start-kbd-macro]
+	キーボードマクロの定義を開始する。
+switch-to-buffer [C-x b: switch-to-buffer]
+	次のタブ、または、子ウィンドウ (MDI) を表示する。
+tab-to-tab-stop [C-i: タブ][M-i: タブ]
+	ポイント位置からあらかじめ設定したつぎのタブストップ位置まで字下げする。
+Temporarily Disable XKeymacs
+	次のコマンドを、直接アプリケーションへ渡す。
+universal-argument [C-u: universal-argument]
+	引数を指定する。
+upcase-word [M-u]
+	後続の単語を大文字に変換する。
+
+オリジナルコマンド
+dot.xkeymacs ファイル内で定義されたコマンド。
+dot.xkeymacs ファイルは xkeymacs.exe と同じディレクトリにある etc ディレクトリか
+%APPDATA% (大抵は C:\Documents and Settings\＜ユーザ名＞\Application Data) に置く必要がある。
+
+ログオン時に実行
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run
+に XKeymacs のパスを XKeymacs という名前の String データとして保存します。
+
+ファイル名自動補完 (Windows NT, 2000, XP のみ)
+HKEY_CURRENT_USER\Software\Microsoft\Command Processor
+の CompletionChar の値を 0x09 に変更します。
+
+タスクバーのステータス領域
+C-x-: C-x を押したあと、C-x を用いたコマンドを実行するか取り消されるまで、LED が緑色に光る。
+Meta: C-[ や Esc を押すと、LED が緑色に光る。
+Shift: Shift key が論理的に押されていると、LED が緑色に光る。
+Ctrl: Ctrl key が論理的に押されていると、LED が緑色に光る。
+Alt: Alt key が論理的に押されていると、LED が緑色に光る。
+
+キーボードレイアウト
+--- Windows NT, 2000, XP ---
+以下の場所に Scancode Map を作成します。
+現在ログオンしているユーザー用:
+HKEY_CURRENT_USER\Keyboard Layout
+すべてのユーザー用:
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout
+詳細は下記サイトを参照してください。
+http://www.microsoft.com/HWDEV/input/W2kscan-map.htm
+
+--- Windows 95, 98, Me ---
+XKeymacs は Windows 95, 98, Me 上でのキーの入れ換えをサポートしません。
+Windows 95, 98, Me 上でキーを入れ換えるためには
+The Windows 95 Kernel PowerToys の Windows 95 Keyboard Remap が
+インストールされている必要があります。
+The Windows 95 Kernel PowerToys は下記サイトから入手可能です。
+http://www.microsoft.com/windows95/downloads/contents/WUToys/W95KernelToy/Default.asp
+The Windows 95 Kernel PowerToys の利用は XKeymacs 同様、自己責任でお願いします。
+私の手元では Windows 98 日本語版上で Windows 95 Keyboard Remap が
+問題なく動作してるようですが、
+上記サイトには次のような記述があります。
+---
+NOTE: This download is not intended for use on computers running Microsoft Windows 98.
+---
+
+
+- ---
+oishi@cam.hi-ho.ne.jp

@@ -1,0 +1,263 @@
+======================================================================
+ XKeymacs - Keyboard Utility for Windows
+======================================================================
+
+--- Specification ---
+
+Files
+find-file [C-x C-f: Open...]
+	Open a file.
+kill-buffer [C-x k: Close]
+	Close the current file.
+save-buffer [C-x C-s: Save]
+	Save current file if modified.
+write-file [C-x C-w: Save As...]
+	Save current buffer into file FILENAME.
+
+Incremental Search
+isearch-backward [C-r: search backward]
+	Do incremental search backward.
+isearch-forward [C-s: search forward]
+	Do incremental search forward.
+query-replace [M-%: Replace...]
+	Replace some occurrences of FROM-STRING with TO-STRING.
+query-replace-regexp [C-M-%: Replace...]
+	Replace some things after point matching REGEXP with TO-STRING.
+
+Leaving Active Window
+iconify-or-deiconify-frame [C-z: Minimize]
+	Minimize the selected window.
+Roll-up/Unroll
+	Shows only the title bar of the window, as if it has been "rolled up".
+save-buffers-kill-emacs [C-x C-c: Exit]
+	Exit the application.
+
+Error Recovery
+keyboard-quit [C-g: keyboard-quit]
+	Cancel the inputting command.
+undo [C-x u: Undo][C-/: Undo][C-_: Undo]
+	Undo some previous changes.
+
+Motion
+backward-char [C-b: Left]
+	Move point left N characters (right if N is negative).
+backward-word [M-b: previous word]
+	Move backward until encountering the end of a word.
+beginning-of-buffer [M-<: go to buffer beginning]
+	Move point to the beginning of the buffer; leave mark at previous position.
+beginning-of-line [C-a: Home]
+	Move point to beginning of current line.
+end-of-buffer [M->: go to buffer end]
+	Move point to the end of the buffer; leave mark at previous position.
+end-of-line [C-e: End]
+	Move point to end of current line.
+forward-char [C-f: Right]
+	Move point right N characters (left if N is negative).
+forward-word [M-f: next word]
+	Move point forward ARG words (backward if ARG is negative).
+next-line [C-n: Down]
+	Move cursor vertically down ARG lines.
+previous-line [C-p: Up]
+	Move cursor vertically up ARG lines.
+recenter [C-l: recenter]
+	Center point in window and redisplay frame.
+scroll-down [M-v: Page Up]
+	Scroll text of current window down ARG lines; or near full screen if no ARG.
+scroll-up [C-v: Page Down]
+	Scroll text of current window upward ARG lines; or near full screen if no ARG.
+
+Toggle Input Method Editor 
+Close Input Method
+	Close input method
+Complete & Close Input Method
+	Set the composition string as the result string and close input method.
+Complete & Toggle Input Method
+	Set the composition string as the result string and turn on or off a multilingual text input method for the current buffer.
+Open Input Method
+	Open Input Method
+Switch Between Input Locales
+	Switch Between Input Locales.
+toggle-win32ime-mode [C-x C-j: SKK][C-o: Canna][C-\: Wnn][C-BACKSLASH of 106/109 keyboard: Wnn]
+	Turn on or off a multilingual text input method for the current buffer.
+
+Killing and Deleting
+backward-kill-word [M-DEL]
+	Kill characters backward until encountering the end of a word.
+delete-backward-char [C-h: Back space]
+	Delete the previous N characters (following if N is negative).
+delete-char [C-d: Delete]
+	Delete the following N characters (previous if N is negative).
+kill-line [C-k: kill-line]
+	Kill the rest of the current line; if no nonblanks there, kill thru newline.
+kill-region [C-w: Cut]
+	Kill between point and mark.
+kill-ring-save [M-w: Copy]
+	Save the region as if killed, but don't kill it.
+kill-word [M-d: kill-word]
+	Kill characters forward until encountering the end of a word.
+transpose-chars [C-t: transpose-chars]
+	Interchange characters around point, moving forward one character.
+transpose-lines [C-x C-t]
+	Exchange current line and previous line, leaving point after both.
+transpose-words [M-t]
+	Interchange words around point, leaving point after both words.
+yank [C-y: Paste]
+	Reinsert the last stretch of killed text.
+yank-pop [M-y: yank-pop]
+	Replace just-yanked stretch of killed text with a different stretch.
+
+One Shot Modifier
+One Shot Modifier Alt
+One Shot Modifier Alt with Repeat
+One Shot Modifier Ctrl
+One Shot Modifier Ctrl with Repeat
+One Shot Modifier Shift
+One Shot Modifier Shift with Repeat
+	A user presses any key '?' during depressing an assigned key to work as A-?/C-?/S-?.
+	A user releases an assigned key before pressing any key to work as original key.
+	With Repeat, a user keeps pressing an assigned key to work as original key.
+
+Other
+_
+	_
+`
+	`
+~
+	~
+C-
+	C-
+call-last-kbd-macro [C-x e: call-last-kbd-macro]
+	Call the last keyboard macro that you defined with C-x (.
+capitalize-word [M-c]
+	Capitalize the following word.
+Copy
+	Copy
+Cut
+	Cut
+Cycle items
+	Cycle through items in the order they were opened.
+Cycle items inversely
+	Cycle through items in the inverse order they were opened.
+downcase-word [M-l]
+	Convert following word to lower case.
+Enable or Disable XKeymacs [C-q: Enable/Disable XKeymacs]
+	Enable or disable XKeymacs
+end-kbd-macro [C-x ): end-kbd-macro]
+	Finish defining a keyboard macro.
+Esc
+	Esc
+execute-extended-command
+	Invoking commands by their names.
+Find
+	Find...
+Find Next
+	Find Next
+Ignore
+	Ignore
+mark-page [C-x C-p: mark-page]
+	Put mark at end of page, point at beginning.
+mark-whole-buffer [C-x h: mark-whole-buffer]
+	Put point at beginning and mark at end of buffer.
+Maximize
+	Maximize the window.
+Maximize Horizontally
+	Maximize the window horizontally.
+Maximize Vertically
+	Maximize the window vertically.
+Meta [C-[: Meta]
+	Prefix for typing Meta.
+Meta for Alt [Left Alt: Meta][Right Alt: Meta] (Windows NT, 2000, XP)
+Meta for Alt [Alt: Meta] (Windows 95, 98, Me)
+	Meta
+Meta for Escape [ESC: Meta]
+	Assigned key works as not only original key but also prefix for typing Meta.
+Minimize
+	Minimize the window.
+Move
+	Move the window.
+New
+	New
+newline [C-m: Enter]
+	Enter
+numeric argument [C-0...9: digit-argument]
+open-line [C-o: open-line]
+	Insert a newline and leave point before it.
+Pass Through
+	If the key assigned this command is depressed, XKeymacs does nothing for any input.
+Paste
+	Paste
+Print
+	Print...
+Redo
+	Redo
+Restore
+	Restore the window.
+Retop
+	Top point in window and redisplay frame.
+Select All
+	Select All
+set-mark-command [C-Space: set-mark-command]
+	Set mark at where point is, or jump to mark.
+shell-command [M-!: Command Prompt]
+	Execute string COMMAND in inferior shell; display output, if any.
+Size
+	Change the size the window.
+start-kbd-macro [C-x (: start-kbd-macro]
+	Record subsequent keyboard input, defining a keyboard macro.
+switch-to-buffer [C-x b: switch-to-buffer]
+	Display next tabbed page or child window (MDI).
+tab-to-tab-stop [C-i: Tab][M-i: Tab]
+	Insert spaces or tabs to next defined tab-stop column.
+Temporarily Disable XKeymacs
+	XKeymacs does nothing for the next command.
+universal-argument [C-u: universal-argument]
+	Begin a numeric argument for the following command.
+upcase-word [M-u]
+	Convert following word to upper case.
+
+Original Command
+Some commands which are defined in a dot.xkeymacs file.
+You have to put the file in etc directory which is in the same directory of xkeymacs.exe or
+%APPDATA% (C:\Documents and Settings\username\Application Data).
+
+Auto Run
+Save the path of XKeymacs as "XKeymacs" in the next place.
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run
+
+Automatic completion (for Windows NT, 2000, XP)
+Set "CompletionChar" in the next place 0x09.
+HKEY_CURRENT_USER\Software\Microsoft\Command Processor
+
+Taskbar's Status Area
+C-x-: LED become green after pressing ^X.
+Meta: LED become green after pressing C-[ or Esc.
+Shift: LED become green when the Shift key is depressed logically.
+Ctrl: LED become green when the Ctrl key is depressed logically.
+Alt: LED become green when the Alt key is depressed logically.
+
+Keyboard Layout
+--- Windows NT, 2000, XP ---
+Create "Scancode Map" in the next places.
+For the user who is currently logged on:
+HKEY_CURRENT_USER\Keyboard Layout
+For any user:
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout
+See:
+http://www.microsoft.com/HWDEV/input/W2kscan-map.htm
+
+--- Windows 95, 98, Me ---
+XKeymacs does not support keyboard remapping for Windows 95, 98 or Me.
+"Windows 95 Keyboard Remap" of "The Windows 95 Kernel PowerToys"
+is required to remap keyboard on Windows 95, 98 or Me.
+You can get "The Windows 95 Kernel PowerToys" from the site.
+http://www.microsoft.com/windows95/downloads/contents/WUToys/W95KernelToy/Default.asp
+Use "The Windows 95 Kernel PowerToys" at your own risk.
+In my case, "Windows 95 Keyboard Remap" works well on Windows 98 Japanese Edition,
+but the above site said:
+---
+NOTE: This download is not intended for use on computers running Microsoft Windows 98.
+---
+
+
+- ---
+oishi@cam.hi-ho.ne.jp

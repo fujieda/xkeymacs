@@ -1,0 +1,1213 @@
+======================================================================
+ XKeymacs - Keyboard Utility for Windows
+======================================================================
+
+--- History ---
+2008/07/27 version 3.48
+- Fixed the problem that C-s and C-r did not work well on Firefox 3.
+- Support Fn key as shortcut key.
+
+2008/04/05 version 3.47
+- Modified C-s and C-r to work as incremental search on Visual Studio.
+- Added execute-extended-command (M-x).
+(Thanks to Harold-san)
+
+2007/12/08 version 3.46
+- Fixed the problem that M-d did not work well on PowerPoint and
+Mozilla Thunderbird.
+- Fixed the problem that keyboard forcus jumped to subject field
+by C-x C-s on Mozilla Thunderbird.
+(Thanks to Dave-san, satoru-san)
+
+2007/11/25 version 3.45
+- Enhanced to set not only Keyboard Layout for the user who is
+currently logged on but also for any user. It means that the function
+to save the setting of Keyboard Layout in the next place revived.
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\Scancode Map
+(Thanks to Koichi-san)
+
+2007/7/28 version 3.44
+- Tried to Fix the problem that specific setting was not applied for
+Poderosa on 64bit system but it did not work well.
+(Thanks to Imai-san)
+
+2007/3/3 version 3.43
+- Fixed the problem that Excel hang up by C-k if a cell on column A is
+selected.
+- Fixed the problem that Keyboard Layout dialog does not work well on
+Windows Vista.
+Changed the place to save the setting of Keyboard Layout from
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\Scancode Map
+to
+HKEY_CURRENT_USER\Keyboard Layout\Scancode Map
+(Thanks to nissy-san)
+
+2007/1/8 version 3.42
+- Fixed the problem that an icon sometimes does not displayed in
+status area of task bar after logon.
+- Support Win+ as modifiers for original commands.
+(Thanks to lokuden-san, Koichi-san, Yahiro-san)
+
+2006/11/23 version 3.41.1
+- Fixed the problem that M-l, M-u and M-c did not work well on
+Hidemaru editor.
+(Thanks to mets-san)
+
+2006/11/19 version 3.41
+- Add downcase-word (M-l), upcase-word (M-u) and capitalize-word (M-c).
+(Thanks to amd64-fan-san)
+
+2006/11/5 version 3.40
+- Fixed the problem that M-w opens file menu on OpenOffice.org Writer.
+(Thanks to bon108-san)
+
+2006/10/14 version 3.39
+- Changed that c-B work as SHIFT+LEFT instead of LEFT on ATOK.
+(Thanks to Onoue-san, Nakano-san, OTA-san)
+
+2006/8/9 version 3.38
+- Fixed the problem that specific setting was not applied for Vim
+when a user run it on Command Prompt.
+
+2006/8/6 version 3.37
+- Fixed the problem that XKeymacs sometimes stop working when a user
+came back from sleep.
+- Fixed the problem that some original commands did not work well on
+Scientific WorkPlace.
+(Thanks to jonathan-san, Pradip-san)
+
+2006/7/16 version 3.36
+- Fixed the problem that C-l does not work well on Microsoft Word and
+Mozilla Thunderbird.
+(Thanks to Kawabata-san)
+
+2006/6/24 version 3.35
+- Fixed the problem that c-p, c-n, c-f etc. does not work well on
+Mozilla Thunderbird. This is a side effect of version 3.33.
+(Thanks to lokuden-san)
+
+2006/6/18 version 3.34
+- Fixed the problem that XKeymacs does not use correct setting for IME
+on applications on which ImmGetIMEFileName does not work such as Nif-X.
+(Thanks to lokuden-san)
+
+2006/6/11 version 3.33
+- Add function to accelerate key repeat to move caret.
+- Add function to indicate XKeymacs status on mouse cursor.
+(Thanks to Nagato-san)
+
+2006/2/26 version 3.32
+- Fixed the problem that icons was not displayed in the taskbar's
+status area in some cases when a user run XKeymacs.
+(Thanks to lokuden-san)
+
+2006/2/19 version 3.31
+- Changed to pop up a warning dialog if a user turns keys off on
+Keyboard Layout dialog.
+- Changed a font which was layout changed by a user on Keyboard Layout
+ dialog to bold.
+(Thanks to Totsuka-san)
+
+2006/2/9 version 3.30
+- Fixed the problem that C-s and C-r did not work well on Lunascape.
+(Thanks to Fudaba-san)
+
+2006/1/26 version 3.29
+- Fixed the problem that a memory leaked when a user open Properties
+dialog. This is a side effect of version 3.23.
+
+2006/1/16 version 3.28
+- Fixed the problem that an IME file name was not displayed correctly
+on Properties dialog on Windows XP in some cases.
+(Thanks to WUXIN-san)
+
+2006/1/9 version 3.27
+- Fixed the problem that Ctrl+Shift+M or some other keybindings did
+not work well on Hidemaru Editor and Hidemaru Mail.
+(Thanks to WUXIN-san)
+
+2006/1/6 version 3.26
+- Fixed the problem that C-o work as not open-line but new-line on
+Hidemaru Editor and Hidemaru Mail.
+(Thanks to WUXIN-san)
+
+2006/1/2 version 3.25
+- Fixed the problem that C-s displayed the menus from file to debug or
+selected "current document" on Visual Studio .NET.
+(Thanks to William-san)
+
+2005/12/28 version 3.24
+- Fixed the problem that C-g did not cancel the selection on Visual
+Studio .NET.
+(Thanks to William-san)
+
+2005/12/26 version 3.23
+- Moved dot.xkeymacs from the same directory of xkeymacs.exe to etc
+directory which was in the same directory of xkeymacs.exe.
+- Changed to overwrite a command of XKeymacs by a original command in
+dot.xkeymacs.
+- Supported a localisation file such as "English (United States).xkeymacs"
+to save a localized setting.
+(Thanks to Otmar-san)
+
+2005/11/24 version 3.22
+- Fixed the problem that Alt and Ctrl key did not work well when a
+user could not assign a normal command to those keys.
+- Fixed the problem that C-x C-c C-x C-x did not work well on
+Explorer on Windows XP when a user opened two windows.
+- Fixed the problem that C-x was not cleared when a user assign
+an original command to C-x C-?. (? is any key)
+(Thanks to Kodama-san)
+
+2005/11/4 version 3.21
+- Fixed the problem that C-s worked as not Find but First Find on
+Adobe Reader 7.0.
+- Fixed the problem that C-x t did not work well when a user assigned
+C-x t to traspose-chars.
+- Fixed the problem that C-t did not work as transpose-char in
+an original command.
+- Fixed the problem that Ctrl+left Ctrl+left did not work well in
+an original command.
+
+2005/10/20 version 3.20
+- Added M-t (transpose-words).
+(Thanks to Jeroen-san)
+
+2005/9/22 version 3.19
+- Fixed the problem that caret move to top of a file after M-w on
+Mozilla Thunderbird.
+(Thanks to Kawabata-san)
+
+2005/7/2 version 3.18
+- Fixed the problem that C-k and C-t did not work well on Shuriken Pro4.
+- Support dot.xkeymacs in %APPDATA% (C:\Documents and Settings\username\Application Data).
+(Thanks to Muramatsu-san)
+
+2005/2/14 version 3.17
+- Fixed the problem that XKeymacs ABEND when a user opened "Keyboard
+Layout" dialog if Convert key or other Japanese specific key was
+swapped and English keyboard driver was used.
+(Thanks to Ota-san)
+
+2005/2/8 version 3.16
+- Fixed the problem that M-d also kill right of cursor charactor on
+Microsoft Word.
+- Modified to enable XKeymacs on Dialog of Visual SlickEdit, xyzzy and
+Tera Term Pro if a specific setting was not used for these applications.
+(Thanks to Ono-san)
+
+2005/1/15 version 3.15
+- Supported a combination of Modifier and Control Key such as
+[?\Alt+escape] in dot.xkeymacs.
+(Thanks to Aoyama-san)
+
+2005/1/9 version 3.14
+- Changed to use unique setting insted of javaw.exe's one for Eclipse,
+BlueJ and JUDE.
+(Thanks to Kura-san, Goto-san, Nakamura-san)
+
+2004/12/24 version 3.13
+- Fixed the problem that M-v switch tab on Mozilla Firefox.
+
+2004/12/19 version 3.12
+- Added commands "Cycle items (Alt+Esc)" and "Cycle items inversely
+(Alt+Shift+Esc)" to cycle through items in the order they were opened.
+(Thanks to Aoyama-san)
+
+2004/12/13 version 3.11
+- Added "Reset" in pop up menu.
+- Added "Help" in pop up menu.
+(Thanks to Goto-san, Zenji-san, Sugita-san)
+
+2004/11/23 version 3.10
+- Fixed the problem that C-s and C-r did not work well on Mozilla
+Firefox.
+- Supported capslock, browser-back, media-next-track, etc. as Control
+Key for dot.xkeymacs.
+- Fixed the problem that f1?/f2? working as f1/f2 in dot.xkeymacs.
+- Fixed the problem that escape work as Meta insted of Esc in
+dot.xkeymacs.
+- Fixed the problem that Ctrl+Shift+? did not work well if a user
+assigned it for original command and invoked more than two times
+to keep press shift key.
+- Added sample-mkdir command in dot.xkeymacs.
+- Changed default key assign of backward-kill-word from M-delete to
+M-backspace.
+(Thanks to Zenji-san, Goto-san)
+
+2004/10/30 version 3.9
+- Fixed the problem that C-k did not kill last one character at To: or
+somewhere on Microsoft Outlook.
+(Thanks to Ohwaki-san)
+
+2004/10/5 version 3.8
+- Fixed the problem that M-d did not work well on Microsoft Visual
+Studio.
+
+2004/8/30 version 3.7
+- Fixed the problem that C-s and C-s did not work well.
+(Thanks to Zenji-san)
+
+2004/8/16 version 3.6
+- Fixed the problem that "Command Prompt" was called
+"C Shell (csh.exe)" on Windows XP.
+- Fixed the problem that "Visual Studio .NET 2003 Command Prompt" was
+called "Visual (Visual.exe)".
+(Thanks to Jason-san)
+
+2004/8/10 version 3.5.1
+- Fixed the problem that M-v did not work well on Mozilla Firefox on
+Windows XP.
+(Thanks to Goto-san)
+
+2004/8/9 version 3.5
+- Fixed the problem that the string in "Find what" area on the Find
+dialog was deleted by C-s or C-r.
+- Fixed the problem that M-v did not work well on Mozilla Firefox.
+- Changed command name from Enter to newline which is assigned to C-m.
+- Fixed the problem that XKeymacs did not display the application name
+of Sakura Editor.
+
+2004/8/6 version 3.4
+- Fixed the problem that Opera was minimized by C-s.
+- Modified to ignore Visual SlickEdit on Default setting.
+
+2004/8/1 version 3.3.1
+- Fixed the problem that a user could not build XKeymacs by Microsoft
+Visual Studio .NET.
+(Thanks to Goto-san)
+
+2004/7/25 version 3.3
+- Fixed the problem that C-s and C-r do not work well on Microsoft PowerPoint.
+- Fixed the problem that a shortcut key which was assigned for
+an original command was not cleared when a user check a check box
+on Basic tab of Properties dialog.
+(Thanks to shun-san)
+
+2004/7/8 version 3.2
+- Fixed the problem that Alt+ in dot.xkeymacs did not work well.
+- Fixed the problem that dot.xkeymacs file was not loaded when a user
+logon Windows.
+(Thanks to Arisawa-san, Kaok-san)
+
+2004/6/17 version 3.1
+- Supported One Shot Modifier.
+- Fixed the problem that C-x C-c did not work well on Microsoft
+Internet Explorer in some cases when a user opne a PDF file.
+- Fixed the problem that M-v did not work well on Microsoft Visual C++.
+(Thanks to Flost-san, Muramatsu-san)
+
+2004/6/16 version 3.0.1
+- Fixed the problem that a user could not execute original command
+by C-x C-?.
+(Thanks to Kaok-san)
+
+2004/6/13 version 3.0
+- Supported dot.xkeymacs file to define original commands.
+- Added Retop command to point top.
+
+2004/5/26 version 2.69
+- Supported Roll-up/Unroll (M-F12) which showed only the title bar of
+the window.
+- Fixed the problem that C-s opened not only find dialog but also
+another dialog on MSDN library.
+(Thanks to Timothy-san)
+
+2004/5/23 version 2.68
+- Modified to use not environment variable ComSpec but XKEYMACS_SHELL
+if it had valid value for M-!.
+- Fixed the problem that XKeymacs did not use correct setting for 4NT.
+- Added the function that a user use any key as ~.
+(Thanks to Timothy-san, Goto-san, Fujieda-san, Nitta-san)
+
+2004/5/16 version 2.67
+- Added command "Complete & Close Input Method" and "Complete & Toggle
+Input Method" to set the composition string as the result string
+when a user closed input method.
+(Thanks to Flost-san, Nitta-san)
+
+2004/5/9 version 2.66
+- Fixed the problem that C-w and M-w did not work well in some cases
+on Excel.
+- Fixed the problem that C-w and M-w did not keep font information
+on Lotus Notes.
+- Fixed the problem that some Java applications were not exited by
+C-x C-c.
+(Thanks to Fukuchi-san, rikuji-san)
+
+2004/4/20 version 2.65.1
+- Fixed the problem that C-s and C-r were sometimes ignored.
+
+2004/4/18 version 2.65
+- Fixed the problem that some shortcut keys which were not assigned
+an XKeymacs command were ignored.
+- Fixed the problem that C-s, C-r, M-% and C-M-% did not work well
+on Borland C++ Builder.
+- Modified to import/export Properties in the same format as regedit.
+(Thanks to Ohashi-san, hop-san, Hamada-san)
+
+2004/4/11 version 2.64
+- Fixed the problem that the setting for some applications which had
+long application name did not work well.
+- Modified to ignore "LispWorks Personal Edition" on Default setting.
+(Thanks to Eduardo-san)
+
+2004/3/28 version 2.63
+- Fixed the problem that C-x C-s did not work well on Microsoft Word
+2002.
+
+2004/3/21 version 2.62
+- Added "Caps Lock".
+- Fixed the problem that Font was changed by C-y after C-w, M-w and
+C-k.
+(Thanks to BoB-san, rikuji-san)
+
+2004/3/16 version 2.61.1
+- Canceled the fix for kbdacc because the fix did not work well on
+Windows XP.
+- Fixed typo.
+(Thanks to Sato-san, rikuji-san, BoB-san)
+
+2004/3/12 version 2.61
+- Fixed the problem that C-s and C-r did not work well on TeraPad.
+- Fixed the problem that XKeymacs conflicted with kbdacc.
+(Thanks to Ishikawa-san, rikuji-san)
+
+2004/3/7 version 2.60
+- Supported CUA-mode for C-x.
+- Fixed the problem that C-s, C-r, M-% and C-M-% did not work well on
+PHP Editor.
+- Modified Advanced tab on Properties dialog to input and assign a new
+shotcut key more naturally.
+(Thanks to BoB-san, kei-san, Sugita-san)
+
+2004/3/2 version 2.59
+- Fixed the problem that M-v did not work well on Mozilla Firefox.
+(Thanks to rikuji-san)
+
+2004/2/14 version 2.58
+- Fixed the problem that XKeymacs was not disabled until a user
+change forcus when a user run bash.
+- Fixed the problem that XKeymacs was not disabled when a user run
+tcsh or zsh.
+(Thanks to Ariga-san)
+
+2004/2/6 version 2.57
+- Supported "Enable XKeymacs" and "Disable XKeymacs" command.
+- Fixed the problem that C-s did not work well on ez-HTML.
+- Fixed the problem that C-s did not work well on IP Messenger.
+(Thanks to ed-san, Zenji-san, Hatakeyama-san)
+
+2004/2/3 version 2.56
+- Fixed the problem that C-s did not work well on Dana and JmEditor.
+(Thanks to Hatakeyama-san)
+
+2004/2/1 version 2.55.1
+- Localized Properties dialog for Japanese.
+
+2004/1/22 version 2.55
+- Added M-DEL (backward-kill-word).
+(Thanks to Howie-san)
+
+2004/1/19 version 2.54.1
+- Fixed the problem that CD was ejected and/or XKeymacs ABEND when
+a user pressed C-k or C-t.
+(Thanks to Sasabe-san)
+
+2004/1/18 version 2.54
+- Fixed the problem that C-k and C-t did not work well when a user
+keep pressing C-k or C-t.
+- Fixed the problem that Left Shift key is pressed after M-< C-s
+used Right Shift key for M-< on Notepad of Windows XP. 
+- Fixed the problem that XKeymacs did not disabled when a user run
+Cygwin.
+(Thanks to Sute-san, Kitao-san, Hamada-san)
+
+2003/12/30 version 2.53
+- Properties dialog consolidated Customize dialog.
+- Fixed the problem that M-% and C-M-% did not work well on EdLeaf.
+(Thanks to hop-san, Sugita-san, Zenji-san)
+
+2003/12/25 version 2.52
+- Added functions to import/export properties.
+(Thanks to hop-san, Gotoh-san, Hamada-san, Furukawa-san)
+
+2003/12/24 version 2.51
+- Fixed the problem that arror keys worked as not Shift+"arror key" but
+Ctrl+Shift+"arror key" after C-Space.
+- Fixed the problem that C-y after C-w worked as not Cut but Copy
+on Excel.
+(Thanks to Uchida-san, Sasabe-san, Sugita-san)
+
+2003/12/16 version 2.50
+- Fixed the problem that C-x C-f, C-x C-s and C-x C-w did not work
+well on Macromedia Flash MX 2004.
+(Thanks to Sugita-san)
+
+2003/12/14 version 2.49
+- Fixed the problem that C-x C-c set all of your folders to the
+current folder's view on Explorer.
+- Fixed the problem that C-y yanked last killed data only of
+C-k, C-k, ... on Microsoft Word, Microsoft Outlook, etc.
+(Thanks to Takayama-san, Sugita-san, Zenji-san, Ohwaki-san, Sasabe-san)
+
+2003/12/7 version 2.48
+- Fixed the problem that C-k did not work quickly on Microsoft
+ Outlook, Microsoft Word, etc.
+(Thanks to Tieko-san, Ohwaki-san)
+
+2003/11/3 version 2.47
+- Fixed the problem that "Maximize Horizontally" and
+"Maximize Vertically" did not work well on Microsoft Internet Explorer
+when a user open Excel data by it.
+- Fixed the problem that C-Space C-f did not work well on Shuriken
+Pro3.
+(Thanks to Ohwaki-san, Sugita-san, Nasu-san)
+
+2003/10/24 version 2.46
+- Fixed the problem that Maximize Horizontally and Maximize Vertically
+did not work well when a user did not set taskbar "Auto hide".
+(Thanks to Ohwaki-san)
+
+2003/10/22 version 2.45
+- Fixed the problem that C-s and C-r did not work well on AUTLA.
+- Fixed the problem that M-% and C-M-% did not work well on AUTLA.
+(Thanks to Zenji-san)
+
+2003/10/15 version 2.44
+- Fixed the problem that C-k did not work well on OpenOffice.
+- Fixed the problem that C-Space and C-g did not work well
+on OpenOffice after C-Space.
+- Fixed the problem that a user must wait for a long time to pop up
+menu by right click in some environment.
+(Thanks to kanno-san)
+
+2003/10/13 version 2.43
+- Fixed the problem that C-s and C-r did not work well on OEdit.
+(Thanks to Zenji-san)
+
+2003/9/17 version 2.42.2
+- Fixed the problem that C-k did not work well on eMemoPad.
+(Thanks to Zenji-san)
+
+2003/9/16 version 2.42.1
+- Fixed the problem that C-k did not work well on Hidemaru and
+TuruKame Mail.
+(Thanks to Zenji-san)
+
+2003/9/15 version 2.42
+- Fixed the problem that XKeymacs sometimes used uncorrect setting
+after Alt+Tab.
+- Fixed the problem that the format information was lost after C-k C-k
+on Microsoft Word or other applications.
+- Modified C-y to paste the text which was copied by C-c.
+(Thanks to Yamazaki-san, Hamada-san, Sugita-san)
+
+2003/9/13 version 2.41
+- Supported "Kill Line for All Format" command to keep RTF on kill-line.
+- Fixed the problem that XKeymacs could not use Windows key.
+- Modified C-y and M-y to yank killed data only.
+- Fixed the problem that C-s and C-r did not work well on Adobe Reader.
+(Thanks to Hamada-san, Sugita-san)
+
+2003/9/7 version 2.40.1
+- Modified to keep merged text data instead of last killed RTF data
+when a user input C-k C-k on Microsoft Word or other applications.
+- Fixed the problem that C-k killed not only line but also CR-LF
+on some applications.
+(Thanks to Hamada-san, Sugita-san)
+
+2003/8/27 version 2.40
+- Fixed the problem that XKeymacs did not work well on Command Prompt
+after C-x C-p, C-x h or C-Space.
+- Fixed the problem that C-k kill not only line but alse linefeed on
+Husen95, Outlook Express, Outlook and Lotus WordPro.
+(Thanks to Muramatsu-san, Hamada-san)
+
+2003/8/24 version 2.39
+- Fixed the problem that Rich-Text information was lost from kill-ring.
+(Thanks to Hamada-san)
+
+2003/8/22 version 2.38.2
+- Fixed the problem that C-r worked as C-s on Command Prompt.
+- Fixed the problem that C-s and C-r did not work well on Command
+Prompt.
+(Thanks to Muramatsu-san)
+
+2003/8/21 version 2.38.1
+- Fixed the problem that C-s, C-r, C-y, M-w, C-Space, C-x C-p and
+C-x h did not work well on Command Prompt of Windows XP.
+(Thanks to Muramatsu-san)
+
+2003/8/17 version 2.38
+- Supported C-x C-t.
+- Fixed the problem that C-x C-c, C-z, C-s, C-r, C-y, M-w, C-Space,
+C-x C-p and C-x h did not work well on Command Prompt.
+- Changed XKeymacs icon after TemporarilyDisableXKeymacs command.
+- Changed to cancel TemporarilyDisableXKeymacs when a user changed
+foreground window.
+- Fixed the problem that edit box of "Press new shortcut key" did not
+update when a user check a check box.
+(Thanks to Zenji-san, Muramatsu-san, Noda-san, Hamada-san, Sugita-san)
+
+2003/8/6 version 2.37
+- Fixed the problem that M-w did not work well on Microsoft PowerPoint.
+- Supported New, Print, Cut, Copy, Paste, Find and Find Next.
+- Fixed the problem that Redo did not work well on CorelDRAW.
+(Thanks to Kevin-san, Hamada-san, Sugita-san)
+
+2003/7/27 version 2.36
+- Added function "Redo".
+- Added function "Temporarily Disable XKeymacs" to do nothing for the
+next command.
+- Fixed the problem that "Alt + <-" and "Alt + ->" did not work well
+on IE.
+- Fixed the problem that C-k, C-r, C-s, C-t, M-% and C-M-% did not
+work well on Story Editor.
+- Fixed the problem that C-r, C-s, M-%, C-M-% did not work well on
+Nami2000.
+- Fixed the problem that C-s to opne Find Dialog sets wrong direction
+after C-r and vice versa.
+(Thanks to Hamada-san, Nitta-san, Sugita-san, Zenji-san)
+
+2003/7/21 version 2.35
+- Fixed the problem that M-> and M-< did not work well after C-Space.
+- Added function "Pass Through" to do nothing when the key assigned
+this command is depressed.
+(Thanks to Kogetsu-san, Sugita-san)
+
+2003/7/19 version 2.34
+- Fixed the problem that C-k, C-t, C-s, C-r, M-% and C-M-% did not
+work well on eMemoPad.
+(Thanks to Zenji-san)
+
+2003/7/15 version 2.33.1
+- Fixed the problem that M-w did not work well on Sakura Editor.
+(Thanks to Kawasaki-san)
+
+2003/7/8 version 2.33
+- Fixed the problem that C-k, C-t, M-w, etc. did not work well on
+Sakura Editor.
+- Fixed some bugs on Customize dialog.
+(Thanks to Yamato-san, Kawasaki-san)
+
+2003/7/3 version 2.32
+- Modified Maximize, Maximize vertically and Maximize horizontally
+to work as Restore when the window was already maximized.
+- Fixed the problem that C-s and C-r did not work well on Opera.
+- Fixed the problem that C-s and C-r did not work well on Sleipnir.
+- Fixed the problem that C-s and C-r did not work well on Netscape.
+- Fixed the problem that C-k did not work well on Macromedia Flash MX.
+- Fixed the problem that C-t did not work well on Macromedia Flash MX.
+- Fixed the problem that M-w did not work well on Macromedia Flash MX.
+(Thanks to Zenji-san, Ohwaki-san, Ueno-san, Kawasaki-san, Utsu-san)
+
+2003/7/1 version 2.31
+- Changed to distinguish between Right and Left of Ctrl and Alt
+on Windows NT and later.
+- Fixed the problem that C-s and C-r did not work well on Hidemaru.
+- Fixed the problem that C-s, C-r, M-% and C-M-% did not work well
+on Eclipse.
+- Fixed the problem that C-s and C-r did not work well
+on Macromedia Flash MX.
+- Fixed the problem that C-s and C-r did not work well on CodeWarrior.
+- Fixed the problem that C-g did not work well after C-Space
+on Explorer.
+- Fixed the problem that C-i did not work well after C-Space.
+- Supported Maximize, Maximize vertically, Maximize horizontally,
+Restore, Move and Change size of window.
+(Thanks to Sugita-san, Tanaka-san, Utsu-san, hop-san, Ohwaki-san,
+Furukawa-san, Makino-san, rikuji-san, Yamato-san, Kusayanagi-san)
+
+2003/6/22 version 2.30
+- Fixed the problem that C-w and M-w did not work well on Explorer.
+- Fixed the problem that C-s and C-r did not work well
+on Visual Basic Editor.
+- Fixed the problem that C-d worked as cut after C-Space.
+- Fixed the problem that C-i did not work well.
+- Fixed the problem that C-k did not work well
+on Eudora at top of file.
+- Fixed the problem that XKeymacs did not display title
+of Microsoft Visual Basic.
+(Thanks to Utsu-san, Yamato-san)
+
+2003/6/18 version 2.29
+- Fixed the problem that C-t and C-k did not work well on Eudora.
+- Fixed the problem that incremental search did not work well
+on Internet Explorer or Wordpad.
+(Thanks to Yamato-san, Sugita-san, Furukawa-san)
+
+2003/6/8 version 2.28.1
+- Fixed the problems of incremental search.
+
+2003/5/25 version 2.28
+- Modified C-s and C-r to work as incremental search.
+(Thanks to Furukawa-san)
+
+2003/5/27 version 2.27.2
+- Fixed the problem that C-t and C-k did not work well on Eclipse.
+
+2003/5/17 version 2.27.1
+- Fixed the problem that the region was not canceled after M-w
+on VisualBasic 6.0.
+- Fixed the problem that the region was not canceled after M-w
+on Visual Basic Editor which was called by Access, FrontPage,
+Outlook, PowerPoint, Project and Word.
+(Thanks to Tanaka-san, Saito-san)
+
+2003/5/10 version 2.27
+- Fixed the problem that the setting for dialog is used for Visul Studio .NET.
+- Fixed the problem that the region was not canceled after M-w
+on Visual Basic Editor which was called by Excel.
+(Thanks to Tanaka-san, Saito-san)
+
+2003/4/9 version 2.26
+- Fixed the problem that M-w did not work well
+when a user uses Esc or C-[ as Meta.
+- Fixed the problem that the region was not canceled after M-w.
+(Thanks to Steve-san, Kawabata-san, Sugita-san)
+
+2003/4/8 version 2.25
+- Fixed the problem that C-Space or C-g did not cancel region on Macromedia Director.
+(Thanks to Sugita-san)
+
+2003/4/7 version 2.24.1
+- Fixed the problem that Ctrl+RightArrow is input when a user input C-f.
+(Thanks to Sugita-san)
+
+2003/4/5 version 2.24
+- Fixed the problem that C-y did not work well after C-Space on some applications.
+- Fixed the problem that Ctrl+Alt+? is input when a user input C-?.
+(Thanks to Sugita-san)
+
+2003/3/30 version 2.23
+- Fixed the problem that ? was input when a user kept pressing C-?. (? is any key.)
+(Thanks to Sugita-san)
+
+2003/3/22 version 2.22
+- Fixed the problem that Ctrl did not work as C- after that a user pushed
+"Select All" or "Clear All" button on Properties dialog.
+- Fixed the problem that C-t did not work well on Macromedia Director.
+- Fixed the problem that inline input of MS-PinYin98 did not work well with XKeymacs.
+- Shorten the start-up time of Properties dialog and Customize dialog.
+(Thanks to Yokoyama-san, Sugita-san, Sera-san)
+
+2003/3/16 version 2.21
+- Fixed the problem that C-k did not work well on Macromedia Director.
+- Fixed the problem that MS-PinYin98 did not work well with XKeymacs.
+(Thanks to Sugita-san, Sera-san)
+
+2003/3/9 version 2.20
+- Fixed the problem that C-t did not work well when some characters were selected.
+- Fixed the problem that C-k did not work well when some characters were selected.
+- Fixed the problem that C-x C-f did not work well on Microsoft Visual Studio .NET.
+- Fixed the problem that C-s or C-r did not work well on Microsoft Visual Studio .NET.
+- Fixed the problem that C-k did not work well at the middle of line on Netscape.
+- Fixed the problem that the application name of Microsoft Visual Source Safe
+or Microsoft Visual Studio .NET was not displayed correctly on
+Properties dialog and Customize dialog.
+- Supported "Power off", "Sleep" and "Wake up" keys on Keyboard Layout dialog.
+- Fixed memory leak of Keyboard Layout dialog.
+
+2003/3/2 version 2.19
+- Fixed the problem that C-k C-k C-k does not work well at top of line on Netscape.
+- Remap Keyboard was given independence from Options dialog.
+(Thanks to Howie-san, James-san)
+
+2003/2/23 version 2.18.1
+- Fixed the problem that XKeymacs abends when a user opens Properties dialog.
+
+2003/2/23 version 2.18
+- Added the function that a user use any key as C-.
+- Added the function that a user use any key as Esc.
+- Added the function that a user use any key as `.
+- Added the function that a user use any key as ~.
+(Thanks to Howie-san, Gen-san, Noda-san, Saito-san)
+
+2003/2/11 version 2.17
+- Supported C-x b (switch-to-buffer).
+- Changed to do nothing for KornShell and C Shell of MKS Toolkit
+if a user uses Default setting.
+(Thanks to Steve-san, Sugita-san)
+
+2003/2/3 version 2.16
+- Fixed the problem that the settings for console applications were not used.
+- Fixed the problem that Shift key was released when a user input alphabet on input method.
+- Supported "Switch Between Input Locales".
+(Thanks to James-san, Steve-san, rikuji-san, Sugita-san, Kawata-san, Takei-san)
+
+2003/1/26 version 2.15
+- Fixed the problem that default setting was not used
+at "Use Specific Setting" on Customize dialog.
+- Fixed the problem that C-w and C-y did not work well after C-Space on Mozilla.
+- Fixed the problem that set-mark-command did not clear
+when a user chenge the forground window.
+- ESC and C-[ did not work well when a user enable "Ignore undefined Meta Ctrl+?".
+- Supported Meadow.exe as Meadow.
+(Thanks to Nishimoto-san, Muramatsu-san, Sugita-san)
+
+2003/1/19 version 2.14
+- Fixed the problem that the setting for other application was used in some case.
+(Thanks to rikuji-san, Sugita-san)
+
+2003/1/7 version 2.13
+- Supported C-# C-k. (# is any number.) 
+- Fixed the problem that C-- C-a did not work well.
+- Fixed the problem that C-- C-e did not work well.
+- Fixed the problem that call-last-kbd-macro did not work well on Hidemaru.
+(Thanks to Sugita-san)
+
+2003/1/6 version 2.12.1
+- Fixed the problem that call-last-kbd-macro did not work well
+when a user mapped C-] call-last-kbd-macro.
+(Thanks to Sugita-san)
+
+2003/1/5 version 2.12
+- Supported C-x (, C-x ), C-x e and C-u C-x (.
+- Fixed the problem that kill-ring was cleared when a user changed the active window.
+- Fixed the problem that ^, @, ; or : was not display well on Customize dialog
+if a user used 106/109 keyboard.
+(Thanks to Fujiwara-san)
+
+2002/12/25 version 2.11
+- Fixed the problem that C-Space did not work well on Internet Explorer or Sleipnir after C-Space.
+- Fixed the problem that C-x C-f, C-x C-s, C-x C-w, C-M-% or M-% did not work well on Sleipnir.
+- Fixed the problem that ESC did not work as Meta after C-Space.
+- Fixed the problem that C-x C-c did not work well on Command Prompt.
+(Thanks to rikuji-san)
+
+2002/12/23 version 2.10
+- Fixed the problem that Default setting was used for Console after using IME.
+- Fixed the problem that "Toggle Input Method Editor" did not work well on Console.
+- Fixed the problem that C-s did not work well on Sleipnir.
+(Thanks to Nishimoto-san, rikuji-san)
+
+2002/12/19 version 2.9
+- Fixed the problem that the setting for command prompt was not used.
+- Fixed the problem that C-/ or C-. did not work well in some case.
+- Fixed the problem that XKeymacs did not display the application name of PaintShop.
+(Thanks to Nishimoto-san, Utsu-san, Oyama-san, zenji-san)
+
+2002/12/10 version 2.8
+- Supported C-# C-a/C-e. (# is any number.)
+- Fixed the problem that C-Space C-f M-w did not work well on Excel, Becky! etc.
+(Thanks to Utsu-san)
+
+2002/12/9 version 2.7
+- Fixed the problem that Ignore worked as Enable/Disable XKeymacs.
+(Thanks to Oyama-san)
+
+2002/12/8 version 2.6
+- Supported C-# C-v/M-v. (# is any number.)
+- Fixed the problem that C-k did not work well at end of line on Lotus Notes.
+- Added command's descriptions on Customize dialog.
+- Added Customize dialog Japanese edition.
+- Fixed the problem that C-2 C-z minimized the window.
+- Fixed the problem that C-Space C-f C-h/C-d keep depressing Shift key.
+- Modified C-s/C-r on Becky! or Hidemaru.
+- Fixed the problem that checkbox of C-o on Properties dialog did not work well.
+(Thanks to Kubo-san)
+
+2002/11/25 version 2.5.2
+- Fixed the problem that C-s and C-r do not work well if Find dialog is opend.
+
+2002/11/20 version 2.5.1
+- Fixed the problem that C-Space C-y does not work well.
+- Fixed the problem that C-x h and C-x C-p do not work well on Paint etc.
+(Thanks to Sugita-san)
+
+2002/11/17 version 2.5
+- Supported "Select All".
+- Added C-x h.
+- Fixed the problem that C-x C-p does not work well on Explorer.
+- Fixed the problem that mark-set is canceled after C-x C-p.
+- Changed to use "Dialog" setting for all dialogs.
+- Changed XKeymacs's icon in the taskbar's status area from gold to copper
+when XKeymacs is disabled.
+(Thanks to Kaok-san, Sugita-san, santarou-san)
+
+2002/11/13 version 2.4.5
+- Fixed the problem that C-k and C-t do not work well on K2Editor.
+- Fixed the problem that C-s and C-r do not work well on Dremweaver's site window.
+- Fixed the problem that C-s and C-r do not work well on Microsoft PowerPoint.
+(Thanks to Nakano-san, Sugita-san, zenji-san)
+
+2002/11/12 version 2.4.4
+- Fixed the problem that C-k does not work well on Microsoft Word.
+- Disable C-s and C-r on Photoshop.
+(Thanks to Sugita-san, Makoto-san)
+
+2002/11/10 version 2.4.3
+- Fixed the problem that Alt key is kept down after C-s or C-r.
+(Thanks to Sugita-san, zenji-san)
+
+2002/11/8 version 2.4.2
+- Fixed the problem that Application List on Properties dialog or Customize dialog
+is not displayed well on some environment.
+- Fixed the problem that Alt key is kept down after C-s on Excel.
+(Thanks to Akiyama-san, Sugita-san)
+
+2002/10/27 version 2.4.1
+- Fixed the problem that the killed data is not in kill-ring at kill-word.
+- Fixed the problem that kill-word does not work well on Notepad etc.
+
+2002/10/26 version 2.4
+- Supported kill-word (M-d).
+(Thanks to Scott-san)
+
+2002/10/20 version 2.3
+- Supported kill-buffer (C-x k).
+- Fixed the problem that there is only last killed data in Clipboard after C-k C-k.
+- Fixed the problem that C-k does not work well at end of line on Microsoft Word.
+(Thanks to Makoto-san, Sugita-san)
+
+2002/10/14 version 2.2.2
+- Fixed the problem that Properties dialog sometimes broke the setting
+which was set by Customize dialog.
+- Fixed the problem that M-> and M-< does not work well after C-Space.
+(Thanks to Sugita-san、Muramatsu-san)
+
+2002/10/7 version 2.2.1
+- Fixed the problem that Customize dialog can not save if the command has no Current Keys.
+- Fixed the problem that C-x C-s does not work well on Microsoft Word.
+- Fixed the problem that C-s and C-r do not work well on Macromedia Director.
+- Fixed the problem that C-g does not close Replace dialog.
+- Fixed the problem that C-g does not cancel mark-page.
+(Thanks to Furukawa-san, Muramatsu-san, Sugita-san)
+
+2002/10/6 version 2.2
+- Fixed the problem that C-s and C-r do not work well
+on Microsoft Word, Explorer, DWFM, K2Editor or Egg Explorer.
+- Supported "Hiragana", "Hankaku/Zenkaku" and "Caps Lock" key on customize dialog.
+- Supported the function to ignore Meta Ctrl+? (? is anykey) when C-M-? is undefined.
+- Supported the function to ignore C-x ? when C-x ? is undefined.
+- Added Meta LED icon.
+- Fixed the problem that "Customize..." menu item is diplayed
+on right click menu of LED icon.
+(Thanks to Muramatsu-san, zenji-san, Sugita-san, Nakano-san, Furukawa-san)
+
+2002/10/5 version 2.1
+- Added Customize dialog.
+- Added radio button on Properties dialog to Disable XKeymacs per application.
+- Modified to Meta Ctrl+? work as Ctrl+? when C-M-? undefined.
+- Fixed the problem that the icon of XKeymacs is not displayed at Alt+Tab.
+
+2002/9/26 version 2.0
+- Modified that a user can set any command on any key.
+- Supported C-- and M--.
+- Supported M-0, M-1, ..., and M-9.
+- Added "Ignore" command.
+- Added "Open Input Method" and "Close Input Method" command.
+
+2002/9/22 version 1.29.2
+- Fixed the problem that C-x u does not work well on Becky!.
+- Fixed the problem that C-_ does not work well on some applications like Becky!.
+- Fixed the problem that M-% and C-M-% do not work well
+on Internet Explorer, Lotus Notes or Becky!.
+(Thanks to Muramatsu-san)
+
+2002/9/21 version 1.29.1
+- Changed that Ctrl + Shift + [ work as Meta if C-[ is enabled.
+- Fixed the problem that M-% wark as Backspace after C-Space.
+- Fixed the problem that C-o (open-line) ignore the numeric argument.
+- Fixed the problem that C-o (open-line) did not work well on Microsoft Visual C++.
+- Added XWin.exe and Emacs.exe in ignore applications list.
+- Fixed the problem that a user can not cancel key-remap which added at version 1.28.
+(Thanks to Tatsumi-san, Muramatsu-san)
+
+2002/9/17 version 1.29
+- Added M-i as Tab.
+(Thanks to Fujiwara-san)
+
+2002/9/6 version 1.28.2
+- Fixed the problem that sometimes Properties dialog displayed wrong data.
+- Fixed the problem that Ctrl+Shift+Enter did not ignore on Lotus Notes.
+(Thanks to Sunohara-san)
+
+2002/9/3 version 1.28.1
+- Fixed the problem that Xkeymacs ABEND by C-k, C-w, etc.
+This is side effect of kill-ring.
+
+2002/9/1 version 1.28
+- Supported kill-ring. (C-u # C-y, M-y)
+- Modified to ignore these applications on Default setting.
+Meadow (Meadow95.exe, MeadowNT.exe)
+Mule for Win32 (mule.exe, mulent.exe, mulecd.exe)
+xyzzy (xyzzy.exe)
+Tera Term Pro (ttermpro.exe)
+ASTEC-X (astecx.exe)
+- Modified to ignore Ctrl+Enter on these Applications:
+Lotus Notes (nlnotes.exe)
+Microsoft Outlook (outlook.exe)
+Microsoft Outlook Express (msimn.exe)
+- Added C-_ as undo.
+- Added C-o as open-line.
+- Added next key-remap functions:
+Left Windows -> Left Alt
+Left Alt -> Left Windows
+Right Windows -> Right Alt
+Right Alt -> Right Windows
+Nonconvert -> Left Alt
+Convert -> Left Alt
+Right Ctrl -> Left Alt
+(Thanks to Jonathan-san, Yabuki-san, Shirasaki-san, Uranov-san, Noda-san,
+Muramatsu-san, Harada-san, Enshu-san, Fujiwara-san)
+
+2002/8/24 version 1.27
+- Supported C-u.
+- Supported C-M-% and M-%.
+(Thanks to Jonathan-san)
+
+2002/6/23 version 1.26.1
+- Fixed the problem that C-g and second C-Space work as "Select all" on Microsoft Word.
+- Changed from always using Default setting for console applications
+to using MS-DOS Prompt's setting if there is that.
+- Fixed the problem that C-k can not clear old clipboard data on Microsoft Word.
+(Thanks to Muramatsu-san、Sunohara-san)
+
+2002/6/15 version 1.26
+- Fixed the problem that Xkeymacs always uses default setting for Command Prompt.
+- Fixed the problem that C-t sometimes does not work well if a user select a string.
+- Fixed the problem that C-Space does not work well at end of file.
+- Fixed the problem that C-g does not work well at end of file.
+(Thanks to Steve-san)
+
+2002/6/1 version 1.25
+- Fixed the problem that continuous C-k saves only last C-k data in the clipboard.
+- Modified C-v and M-v to work not as PageUp/Down but as scroll-up/down on notepad.
+- Fixed the problem that some setting for IME does not use on some applications.
+(Thanks to Ohwaki-san, Fujiwara-san, Muramatsu-san, Kuroiwa-san, Suzuki-san)
+
+2002/5/14 version 1.24
+- Added close the Find dialog function to C-g.
+- Fixed the problem that C-s and C-r do not work well with Lotus Notes.
+- Modified C-Space that it always work as set-mark-command.
+- Added cancel C-Space function to C-g.
+- Fixed the problem that M-> and M-< do not work well after C-Space.
+(Thanks to Fujiwara-san, Muramatsu-san)
+
+2002/5/1 version 1.23
+- Supported the function to hide Xkeymacs's icon in the taskbar's status area.
+- Added an icon that indicates status of Shift key in the taskbar's status area.
+- Added an icon that indicates status of Alt key in the taskbar's status area.
+- Supported double click and right click for all icons in the taskbar's status area.
+(Thanks to Oyama-san)
+
+2002/4/21 version 1.22.4
+- Fixed opening dialog box problem with Mozilla 1.0 Release Candidate 1.
+- Modified cursor at the link on the about dialog.
+- Fixed problem that a user cannot compile on Windows NT/9x.
+- Fixed typos.
+(Thanks to Akiyama-san)
+
+2002/4/20 version 1.22.3
+- Fixed beep problem with Netscape or Mozilla when a user presses C-s or C-r.
+(Thanks to Akiyama-san)
+
+2002/4/17 version 1.22.2
+- Fixed the problem that C-s and C-r do not work well with Mozilla English pack.
+(Thanks to Akiyama-san)
+
+2002/4/16 version 1.22.1
+- Fixed the problem that C-s and C-r do not work well with Mozilla.
+(Thanks to Akiyama-san)
+
+2002/4/14 version 1.22
+- Fixed the problem of compiling by VC++.NET.
+- Added an icon that indicates status of Ctrl key in the taskbar's status area.
+- Added an icon that indicates status of C-x in the taskbar's status area.
+- Fixed the problem that C-s and C-r do not work well with Netscape 6.
+(Thanks to Suzuki-san, Oyama-san, knd-san, SATO-san)
+
+2002/4/9 version 1.21.2
+- Modified algorithm of toggle-IME-function for Microsoft IME2002.
+(Thanks to mets-san)
+
+2002/4/8 version 1.21.1
+- Fixed typo.
+(Thanks to mets-san)
+
+2002/4/6 version 1.21
+- Modified the toggle IME function to work well on Windows XP.
+(Thanks to mets-san)
+
+2002/1/31 version 1.20.1
+- Modified the icon in taskbar to be switched to silver when a user disables Xkeymacs with C-q.
+(Thanks to Timothy-san)
+
+2002/1/18 version 1.20
+- Supported C-q as a hotkey to enable/disable Xkeymacs.
+(Thanks to Timothy-san)
+
+2001/12/17 version 1.19
+- Fixed the problem that C-k does not work well with Microsoft Word.
+(Thanks to Muramatsu-san)
+
+2001/12/11 version 1.18
+- Fixed the problem that C-o does not work well on an edit box
+with Internet Explorer on Windows XP.
+(Thanks to SATO-san, Suzuki-san)
+
+2001/12/8 version 1.17
+- Fixed the problem that the icon of Xkeymacs is disappear after Explorer ABEND.
+- Added clickable URL of Xkeymacs on the About dialog.
+- Fixed typo on the Options dialog (only for Japanese edition).
+(Thanks to Suzuki-san, Muramatsu-san)
+
+2001/12/5 version 1.16.2
+- Swap the "Right Alt" check box on the properties dailog for Japanese with the "Left Alt".
+(Thanks to Muramatsu-san)
+
+2001/12/4 version 1.16.1
+- Fixed the problem that Xkeymacs use the Default setting
+instead of the setting for Microsoft IME 2000 (Japanese).
+
+2001/12/2 version 1.16
+- Supported the setting for IME.
+- Changed to select you use the Alt key as the Meta key or not.
+- Changed to get name of command prompt form COMSPEC which is an environment variable.
+- Changed to pop up menu when you release right button of your mouse.
+(Thanks to Noda-san)
+
+2001/11/25 version 1.15
+- Added remap keyboard to swap the left CTRL key with the CAPS LOCK key and/or
+swap the ESC key with the ~/` key.
+- Added automatic completion for the Command Prompt.
+- Fixed the problem that C-s/C-r pop up a font dialog with notepad on Windows NT.
+- Supported the right CTRL, the right ALT and the right SHIFT.
+- Changed to do not find next word when a direction is changed by C-s or C-r.
+- Fixed the problem that Xkeymacs show an indefinite memory
+when user press C-t at the end of file.
+- Fixed the problem that Xkeymacs can not an application name well
+when user write mail with Becky! or Outlook Express.
+- Fixed the problem that Xkeymacs can not set auto run or not per a user.
+- Improved some user interface.
+(Thanks to Ishino-san)
+
+2001/11/6 version 1.14
+Modified the icon in taskbar silver if the Xkeymacs is "stop".
+Changed how to pop up the properties dialog from single click to double click.
+Modified pop up menu.
+(Thanks to santarou-san)
+
+2001/11/5 version 1.131
+Fixed the problem that C-s and C-r do not work well with Hidemaru and sakura editor.
+(Thanks to Ishino-san)
+
+2001/11/3 version 1.13
+- Added M-b and M-f.
+- Fixed the problem that C-s and C-r do not work well with Lotus Notes.
+(Thanks to Suzuki-san)
+
+2001/11/1 version 1.12
+Modified C-s and C-r only.
+Added ISearch for Microsoft Outlook, Outlook Express, Opera and Visual C++.
+Moved a cursor to the end of FindWhat when searching again and the dialog is visible.
+Set direction at first time and changed direction.
+Changed C-x C-s from Alt+F Alt+S to Ctrl+S with Microsoft Word only.
+(Thanks to Johann-san)
+
+2001/10/28 version 1.11
+Designe change of C-s and c-r to fix these defects.
+- C-s pushes [Find Next] button two times with notepad on Windows 9x.
+- Xkeymacs can not set direction with Microsoft Word.
+- Xkeymacs opens [Find what] list with Microsoft Word.
+- The history is filled in by 's' when a user keep depressing C-s
+with Microsoft Word.
+- C-s pushes [Find Next] button two times with Lotus Notes.
+- Xkeymacs can not set direction with Lotus Notes.
+- Xkeymacs beeps when a user depress C-s/C-r.
+(The last defect is pending with some applications.)
+(Thanks to Muramatsu-san)
+
+2001/10/26 version 1.101
+Deleted this change on ver 1.10.
+- Changed Alt+F Alt of C-s and C-r Esc Esc Esc.
+(Why did I do the foolish action.)
+(Thanks to Muramatsu-san, Ishino-san)
+
+2001/10/25 version 1.10
+- Modified C-Y to work as C-y.
+- Changed Alt+F Alt of C-s and C-r Esc Esc Esc.
+(but Alt+F Alt is deleted in VC++)
+- Fixed the problem that C-s and C-r show a dialog on sakura.exe.
+- Changed C-x C-s from Ctrl+S to Alt+F Alt+S.
+(Thanks to Ishino-san)
+
+2001/10/14 version 1.09
+- Added M-< and M->.
+- Added C-x C-p.
+- Changed C-x C-s from Alt+F Alt+S to Ctrl+S.
+(Thanks to Ishino-san、Muramatsu-san)
+
+2001/10/5 version 1.08
+Added C-[ and Esc for M-?.
+(Thanks to Katou-san、Muramatsu-san)
+
+2001/9/30 version 1.072
+Fixed the problem that "Toggle Input Method Editor" like C-o
+does not work correctly with Excel 2000 on Windows 98.
+If you want to know why 1.071 is not here, see log of Xkeymacs ML.
+(Thanks to Ishino-san)
+
+2001/9/21 version 1.07
+Modified C-s, C-r to work as "Find Next".
+(Thanks to Katou-san)
+
+2001/9/16 version 1.06
+- Added C-l to scroll to move the line at caret center of the window.
+- Added M-! to run MS-DOS Prompt on Windows 95, 98, Me
+and run Command Prompt on Windows NT, 2000, XP
+- Added C-r to search up.
+- Modified C-s to search down when a user is searching.
+
+2001/9/10 version 1.051
+The fix of 
+- Fixed the problem that C-m, C-h, etc... do not work correctly
+with Microsoft Word, and so on.
+causes side effect that Xkeymacs does not work correctly
+on Windows 2000 if a user turn on the NumLock.
+I modified not to take this fix to avoid this problem
+if a user turn on the NumLock.
+
+2001/9/9 version 1.05
+- Modified C-k to work like emacs.
+- Modified C-t to work like emacs.
+- Fixed the problem that C-t break out data in clipboard.
+- Fixed the problem that C-m, C-h, etc... do not work correctly
+with Microsoft Word, and so on.
+- Fixed the problem that C-/ does not work correctly with Becky!
+- Fixed the problem that C-w work as Delete if a user does not select something.
+- Fixed the problem that C-w, M-w do not work correctly after C-Space.
+
+2001/8/14 version 1.04
+Fixed the problem that some functions do not work correctly
+on Windows 2000 if a user turn on the NumLock.
+"some functions": C-s, C-x u, C-/, M-v, M-w
+
+2001/8/13 version 1.03
+Fixed the problem that Xkeymacs does not work correctly
+on Windows 2000 if a user turn on the NumLock.
+
+2001/7/22 version 1.02
+- Localization for Japanese. If the OS is Japanese edition,
+Xkeymacs displays Japanese.
+- Modified layout of main dialog along the
+GNU Emacs Reference Card (for version 19).
+- Fixed the problem that Xkeymacs does not display
+application name correctly in some applications
+if that uses a file which name is "foo - bar"
+- Fixed the problem that Xkeymacs is abend
+if a user do C-x C-c C-x C-c
+when Xkeymacs's dialog is displayed.
+- Modified to focus the main dialog if a user closes about dialog
+when the main dialg is displayed.
+
+2001/7/15 version 1.01
+Changed to display an application name in the list on the dialog.
+
+2001/6/6 version 1.00
+
+
+- ---
+oishi@cam.hi-ho.ne.jp
