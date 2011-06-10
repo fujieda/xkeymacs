@@ -371,189 +371,45 @@ BOOL CXkeymacsDll::IsKeyboardHook()
 	return m_bHook;
 }
 
-void CXkeymacsDll::LogCallWndProcMessage(WPARAM wParam, LPARAM lParam)
-{
-	CWPSTRUCT &cwps = *(CWPSTRUCT *)lParam;
-
-	switch (cwps.message) {
-	case WM_PAINT:					// 0x000F
-	case WM_MDIGETACTIVE:			// 0x0229
-	case 0x0403:
-	case 0x0407:
-	case 0x0418:
-	case 0x043F:
-	case 0x0440:
-		break;
-	case WM_CREATE:					// 0x0001
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_CREATE"));
-		break;
-	case WM_DESTROY:				// 0x0002
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_DESTROY"));
-		break;
-	case WM_MOVE:					// 0x0003
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_MOVE");)
-		break;
-	case WM_SIZE:					// 0x0005
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_SIZE"));
-		break;
-	case WM_GETTEXT:				// 0x000D
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_GETTEXT"));
-		break;
-	case WM_ERASEBKGND:				// 0x0014
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_ERASEBKGND"));
-		break;
-	case WM_WINDOWPOSCHANGING:		// 0x0046
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_WINDOWPOSCHANGING"));
-		break;
-	case WM_WINDOWPOSCHANGED:		// 0x0047
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_WINDOWPOSCHANGED"));
-		break;
-	case WM_COPYDATA:				// 0x004A
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_COPYDATA"));
-		break;
-	case WM_NCCREATE:				// 0x0081
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_NCCREATE"));
-		break;
-	case WM_NCDESTROY:				// 0x0082
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_NCDESTROY"));
-		break;
-	case WM_NCCALCSIZE:				// 0x0083
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_NCCALCSIZE"));
-		break;
-	case WM_NCPAINT:				// 0x0085
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_NCPAINT"));
-		break;
-	case WM_IME_STARTCOMPOSITION:	// 0x010D
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_IME_STARTCOMPOSITION"));
-		break;
-	case WM_IME_ENDCOMPOSITION:		// 0x010E
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_IME_ENDCOMPOSITION"));
-		break;
-	case WM_IME_KEYLAST:			// 0x010F
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_IME_KEYLAST"));
-		break;
-	case WM_COMMAND:				// 0x0111
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_COMMAND"));
-		break;
-	case WM_CTLCOLOREDIT:			// 0x0133
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_CTLCOLOREDIT"));
-		break;
-	case WM_POWERBROADCAST:			// 0x0218
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_POWERBROADCAST"));
-		switch (wParam) {
-		case PBT_APMQUERYSUSPEND:		// 0x0000
-//			CUtils::Log(_T("PBT_APMQUERYSUSPEND"));
-			break;
-		case PBT_APMQUERYSTANDBY:		// 0x0001
-//			CUtils::Log(_T("PBT_APMQUERYSTANDBY"));
-			break;
-		case PBT_APMQUERYSUSPENDFAILED:	// 0x0002
-//			CUtils::Log(_T("PBT_APMQUERYSUSPENDFAILED"));
-			break;
-		case PBT_APMQUERYSTANDBYFAILED:	// 0x0003
-//			CUtils::Log(_T("PBT_APMQUERYSTANDBYFAILED"));
-			break;
-		case PBT_APMSUSPEND:			// 0x0004
-//			CUtils::Log(_T("PBT_APMSUSPEND"));
-			break;
-		case PBT_APMSTANDBY:			// 0x0005
-//			CUtils::Log(_T("PBT_APMSTANDBY"));
-			break;
-		case PBT_APMRESUMECRITICAL:		// 0x0006
-//			CUtils::Log(_T("PBT_APMRESUMECRITICAL"));
-			break;
-		case PBT_APMRESUMESUSPEND:		// 0x0007
-//			CUtils::Log(_T("PBT_APMRESUMESUSPEND"));
-			break;
-		case PBT_APMRESUMESTANDBY:		// 0x0008
-//			CUtils::Log(_T("PBT_APMRESUMESTANDBY"));
-			break;
-		case PBT_APMBATTERYLOW:			// 0x0009
-//			CUtils::Log(_T("PBT_APMBATTERYLOW"));
-			break;
-		case PBT_APMPOWERSTATUSCHANGE:	// 0x000A
-//			CUtils::Log(_T("PBT_APMPOWERSTATUSCHANGE"));
-			break;
-		case PBT_APMOEMEVENT:			// 0x000B
-//			CUtils::Log(_T("PBT_APMOEMEVENT"));
-			break;
-		case PBT_APMRESUMEAUTOMATIC:	// 0x0012
-//			CUtils::Log(_T("PBT_APMRESUMEAUTOMATIC"));
-			break;
-		default:
-//			CUtils::Log(_T("PBT_OTHERS: %d"), wParam);
-			break;
-		}
-		break;
-	case WM_IME_NOTIFY:				// 0x0282
-//		CUtils::Log(_T("CallWndProc: cwps.message = WM_IME_NOTIFY"));
-		break;
-	default:
-//		CUtils::Log(_T("CallWndProc: cwps.message = 0x%04X"), cwps.message);
-		break;
-	}
-}
-
 LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-//	LogCallWndProcMessage(wParam, lParam);
-
-	if (0 <= nCode) {
-		CWPSTRUCT &cwps = *(CWPSTRUCT *)lParam;
-		switch (cwps.message) {
-		case WM_IME_STARTCOMPOSITION:
-			InitKeyboardProc(TRUE);
-			break;
-		case WM_IME_ENDCOMPOSITION:
+	if (nCode < 0)
+		CallNextHookEx(m_hHookCallWnd, nCode, wParam, lParam);
+	const CWPSTRUCT *cwps = reinterpret_cast<CWPSTRUCT *>(lParam);
+	switch (cwps->message) {
+	case WM_IME_STARTCOMPOSITION:
+		InitKeyboardProc(TRUE);
+		break;
+	case WM_IME_ENDCOMPOSITION:
+		InitKeyboardProc(FALSE);
+		break;
+	case WM_SETFOCUS:
+		if (cwps->hwnd == GetForegroundWindow()) {
 			InitKeyboardProc(FALSE);
-			break;
-		case WM_SETFOCUS:
-			if (cwps.hwnd == GetForegroundWindow()) {
-				InitKeyboardProc(FALSE);
-				ShowKeyboardHookState();
-			}
-			break;
-		case WM_NCACTIVATE:
-			if (cwps.wParam) {
-				if (cwps.hwnd == GetForegroundWindow()) {
-					InitKeyboardProc(FALSE);
-					ShowKeyboardHookState();
-				}
-			}
-			break;
-		case WM_POWERBROADCAST:
-			switch (wParam) {
-			case PBT_APMRESUMECRITICAL: // 0x0006
-			case PBT_APMRESUMESUSPEND:  // 0x0007
-			case PBT_APMRESUMESTANDBY:  // 0x0008
-				ReleaseHooks();
-				SetHooks();
-				break;
-			default:
-				break;
-			}
-			break;
-		default:
-			break;
+			ShowKeyboardHookState();
 		}
+		break;
+	case WM_NCACTIVATE:
+		if (cwps->wParam && cwps->hwnd == GetForegroundWindow()) {
+			InitKeyboardProc(FALSE);
+			ShowKeyboardHookState();
+		}
+		break;
 	}
 	return CallNextHookEx(m_hHookCallWnd, nCode, wParam, lParam);
 }
 
 LRESULT CALLBACK CXkeymacsDll::CallWndRetProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-	if (0 <= nCode) {
-		CWPRETSTRUCT &cwprets = *(CWPRETSTRUCT *)lParam;
-		switch (cwprets.message) {
+	if (nCode >= 0) {
+		const CWPRETSTRUCT *cwprets = reinterpret_cast<CWPRETSTRUCT *>(lParam);
+		switch (cwprets->message) {
 		case WM_SETTEXT:
-			if (cwprets.hwnd == GetForegroundWindow()) {
+			if (cwprets->hwnd == GetForegroundWindow())
 				InitKeyboardProc(FALSE);
-			}
 			break;
 		case WM_SETCURSOR:
 			DoSetCursor();
-			break;
-		default:
 			break;
 		}
 	}
@@ -562,13 +418,13 @@ LRESULT CALLBACK CXkeymacsDll::CallWndRetProc(int nCode, WPARAM wParam, LPARAM l
 
 LRESULT CALLBACK CXkeymacsDll::GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-	MSG &msg = (*(MSG *)lParam);
-	if (msg.message == g_ImeManipulationMessage) {
+	const MSG *msg = reinterpret_cast<MSG *>(lParam);
+	if (msg->message == g_ImeManipulationMessage) {
 		if (wParam)
-			CCommands::DoSetInputMethodOpenStatus((INPUT_METHOD_OPEN_STATUS)msg.wParam, msg.lParam);
+			CCommands::DoSetInputMethodOpenStatus((INPUT_METHOD_OPEN_STATUS)msg->wParam, msg->lParam);
 		return 1;
 	}
-	switch (msg.message) {
+	switch (msg->message) {
 	case WM_IME_STARTCOMPOSITION:
 		InitKeyboardProc(TRUE);
 		break;
@@ -581,19 +437,13 @@ LRESULT CALLBACK CXkeymacsDll::GetMsgProc(int nCode, WPARAM wParam, LPARAM lPara
 
 LRESULT CALLBACK CXkeymacsDll::ShellProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-	switch (nCode) {
-	case HSHELL_WINDOWACTIVATED:
-	{
+	if (nCode == HSHELL_WINDOWACTIVATED) {
 		TCHAR className[256];
-		::GetClassName((HWND)wParam, className, 255);
+		GetClassName((HWND)wParam, className, 255);
 		if (!_tcsicmp(className, _T("ConsoleWindowClass"))) {
 			InitKeyboardProc(FALSE);
 			ShowKeyboardHookState();
 		}
-		break;
-	}
-	default:
-		break;
 	}
 	return CallNextHookEx( m_hHookShell, nCode, wParam, lParam );
 }
