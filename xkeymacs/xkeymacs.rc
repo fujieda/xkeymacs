@@ -65,7 +65,7 @@ BEGIN
     LTEXT           "Copyright (C) 2001-200x",IDC_LEGAL_COPYRIGHT,40,25,119,
                     8
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
-    LTEXT           "http://www.cam.hi-ho.ne.jp/oishi/",IDC_URL,40,40,108,8,
+    LTEXT           "http://sourceforge.jp/projects/xkeymacs/",IDC_URL,40,40,148,8,
                     SS_NOTIFY
 END
 
@@ -1678,7 +1678,7 @@ BEGIN
     LTEXT           "Copyright (C) 2001-200x",IDC_LEGAL_COPYRIGHT,40,25,119,
                     8
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
-    LTEXT           "http://www.cam.hi-ho.ne.jp/oishi/indexen.html",IDC_URL,
+    LTEXT           "http://sourceforge.jp/projects/xkeymacs/",IDC_URL,
                     40,40,148,8,SS_NOTIFY
 END
 
@@ -2675,8 +2675,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,48,0,0
- PRODUCTVERSION 3,48,0,0
+ FILEVERSION 4,0,0,0
+ PRODUCTVERSION 4,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -2694,14 +2694,14 @@ BEGIN
             VALUE "Comments", "\0"
             VALUE "CompanyName", "\0"
             VALUE "FileDescription", "XKeymacs MFC Application\0"
-            VALUE "FileVersion", "3, 48, 0, 0\0"
+            VALUE "FileVersion", "4, 0, 0, 0\0"
             VALUE "InternalName", "xkeymacs\0"
-            VALUE "LegalCopyright", "Copyright (C) 2001-2008\0"
+            VALUE "LegalCopyright", "Copyright (C) 2001-2011\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "xkeymacs.exe\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "XKeymacs Application\0"
-            VALUE "ProductVersion", "3, 48, 0, 0\0"
+            VALUE "ProductVersion", "4, 0, 0, 0\0"
             VALUE "SpecialBuild", "\0"
         END
     END
