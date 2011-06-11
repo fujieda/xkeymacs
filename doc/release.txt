@@ -3,6 +3,22 @@
 ======================================================================
 
 --- History ---
+2011/06/xx 4.0
+- Support 64bit versions of Windows.
+- Fix a bug where a text area on Internet Explorer 7 or later is
+  handled as a dialog.
+- Fix a bug where console applications can't be handled properly on
+  Windows 7
+- Fix a bug where C-g releases Ctrl on Visual Studio.
+- Fix a bug where incremental searches on it don't work.
+- Fix a bug where deactivating the mark don't work on it.
+- Fix a bug where M-v and M-f don't work at first time on Visual
+  Studio 2010.
+- Fix a bug where M-d don't work on Internet Explorer.
+- Fix a bug where the choice of the default setting for an
+  application can't be saved once you choose the setting specific to it.
+- Some features don't work on Windows 7 yet.
+
 2008/07/27 version 3.48
 - Fixed the problem that C-s and C-r did not work well on Firefox 3.
 - Support Fn key as shortcut key.
