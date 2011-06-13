@@ -8,6 +8,7 @@
 #include <afxdllx.h>
 #include <math.h>
 #include <Imm.h>
+#include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -31,8 +32,9 @@ static const Modifier Modifiers[] = {
 	{ _T("Alt+"), WIN_ALT },
 	{ _T("Win+"), WIN_WIN },
 };
+static const int MAX_MODIFIER = _countof(Modifiers);
 
-static const KeyName ControlCharacters[] = {
+static const KeyName KeyNames[] = {
 //	{ VK_LBUTTON,		_T("mouse-1") },				// does not work well
 //	{ VK_RBUTTON,		_T("mouse-3") },				// does not work well
 	{ VK_CANCEL,		_T("break") },
@@ -127,6 +129,7 @@ static const KeyName ControlCharacters[] = {
 	{ 0xb6,				_T("launch-1") },				// VK_LAUNCH_APP1
 	{ 0xb7,				_T("launch-2") },				// VK_LAUNCH_APP2
 };
+static const int MAX_KEYNAME = _countof(KeyNames);
 
 static AFX_EXTENSION_MODULE XkeymacsdllDLL = { NULL, NULL };
 
@@ -1404,154 +1407,140 @@ void CXkeymacsDll::ClearFunctionDefinition()
 
 void CXkeymacsDll::SetFunctionDefinition(int nFunctionID, CString szDefinition)
 {
-	if (nFunctionID < 0 || MAX_FUNCTION <= nFunctionID) {
+	if (nFunctionID < 0 || nFunctionID >= MAX_FUNCTION)
 		return;
-	}
-
 	memset(m_Config.szFunctionDefinition[nFunctionID], 0, sizeof(m_Config.szFunctionDefinition[nFunctionID]));
-	_stprintf_s(m_Config.szFunctionDefinition[nFunctionID], _T("%s"), szDefinition);
-
+	_tcscpy_s(m_Config.szFunctionDefinition[nFunctionID], szDefinition);
 	return;
-
 }
 
 // call an original command which is defined in dot.xkeymacs
 void CXkeymacsDll::CallFunction(int nFunctionID)
 {
-	CArray<KeyBind, KeyBind> keybinds;
-
-	if (nFunctionID < 0 || MAX_FUNCTION <= nFunctionID || !_tcslen(m_Config.szFunctionDefinition[nFunctionID])) {
+	if (nFunctionID < 0 || nFunctionID >= MAX_FUNCTION)
 		return;
-	}
-
-	UINT before = GetModifierState(FALSE);
-
-	if (m_Config.szFunctionDefinition[nFunctionID][0] == _T('"') && m_Config.szFunctionDefinition[nFunctionID][_tcslen(m_Config.szFunctionDefinition[nFunctionID]) - 1] == _T('"')) {
-		for (unsigned int i = 1; i < _tcslen(m_Config.szFunctionDefinition[nFunctionID]) - 1; ++i) {	// skip '"'
-			keybinds.Add(ParseKey(nFunctionID, i));
-		}
-	} else if (m_Config.szFunctionDefinition[nFunctionID][0] == _T('[') && m_Config.szFunctionDefinition[nFunctionID][_tcslen(m_Config.szFunctionDefinition[nFunctionID]) - 1] == _T(']')) {
-		for (unsigned int i = 1; i < _tcslen(m_Config.szFunctionDefinition[nFunctionID]) - 1; ++i) {	// skip '[' and ']'
-			if (m_Config.szFunctionDefinition[nFunctionID][i] == _T('?')) {	// [?f ?o ?o]
-				++i;
-				keybinds.Add(ParseKey(nFunctionID, i));
-			} else {												// [ControlCharacter]
-				for (int nKeyID = 0; nKeyID < sizeof(ControlCharacters) / sizeof(ControlCharacters[0]); ++nKeyID) {
-					if (!_tcsncmp(m_Config.szFunctionDefinition[nFunctionID] + i, ControlCharacters[nKeyID].name, _tcslen(ControlCharacters[nKeyID].name))) {
-						KeyBind keybind = {NONE, ControlCharacters[nKeyID].bVk};
-						keybinds.Add(keybind);
-						i += _tcslen(ControlCharacters[nKeyID].name);
-						break;
-					}
+	LPCTSTR def = m_Config.szFunctionDefinition[nFunctionID];
+	if (!def[0])
+		return;
+	std::vector<KeyBind> keybinds;
+	const LPCTSTR last = def + _tcslen(def) - 1;
+	if (*def == _T('"') && *last == _T('"')) {
+		def++; // skip '"'
+		while (def < last)
+			keybinds.push_back(ParseKey(def));
+	} else if (*def == _T('[') && *last == _T(']')) {
+		while (++def < last) { // skip '[', ']', and ' '
+			if (*def == _T('?')) { // [?f ?o ?o]
+				keybinds.push_back(ParseKey(++def));
+				continue;
+			}
+			// [VK]
+			for (int i = 0; i < MAX_KEYNAME; i++) {
+				size_t keylen = _tcslen(KeyNames[i].name);
+				if (!_tcsncmp(def, KeyNames[i].name, keylen)) {
+					KeyBind keybind = {NONE, KeyNames[i].bVk};
+					keybinds.push_back(keybind);
+					def += keylen;
+					break;
 				}
 			}
 		}
-	} else {
+	} else
 		return;
-	}
 
 	BOOL bM_x = FALSE;
 	TCHAR szPath[MAX_PATH] = {'\0'};
 	unsigned int index = 0;
 	BOOL bInitialized = FALSE;
+	UINT before = GetModifierState(FALSE);
 
-	for (int i = 0; i < keybinds.GetSize(); ++i) {
-		const int nCommandType = keybinds.GetAt(i).nCommandType;
-		const BYTE bVk = keybinds.GetAt(i).bVk;
-
-		if (nCommandType < MAX_COMMAND_TYPE && Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][bVk]].fCommand) {
-			if (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][bVk]].fCommand == CCommands::ExecuteExtendedCommand) {
+	for (auto p = keybinds.begin(); p != keybinds.end(); p++) {
+		const int nCommandType = p->nCommandType;
+		const BYTE bVk = p->bVk;
+		int (*fCommand)() = nCommandType < MAX_COMMAND_TYPE ? Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][bVk]].fCommand : NULL;
+		if (fCommand) {
+			if (fCommand == CCommands::ExecuteExtendedCommand)
 				bM_x = TRUE;
-			} else if (!bInitialized) {
+			else if (!bInitialized) {
 				SetModifierState(0, before);
 				bInitialized = TRUE;
 			}
 //			CUtils::Log("CallFunction: Command Name: %s", Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][bVk]].szCommandName);
-			while (Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][bVk]].fCommand() == GOTO_RECURSIVE) {
+			while (fCommand() == GOTO_RECURSIVE)
 				;
-			}
-		} else if (bM_x) {
-			if (bVk == VK_RETURN) {
+			continue;
+		}
+		if (bM_x) {
+			if (bVk == VK_RETURN)
 				InvokeM_x(szPath);
-			} else {
-				for (TCHAR nAscii = 1; nAscii != 0; ++nAscii) { // repeat until overflow
-					if (bVk != 0 && a2v(nAscii) == bVk && ((nCommandType & SHIFT) != 0) == IsShift(nAscii)) {
+			else if (bVk != 0) {
+				TCHAR nAscii = 0;
+				do { // 1-127
+					if (a2v(++nAscii) == bVk && ((nCommandType & SHIFT) != 0) == IsShift(nAscii)) {
 //						CUtils::Log("M-x: %#X (%c), %#X (%c)", bVk, bVk, nAscii, nAscii);
 						szPath[index++] = nAscii;
 						break;
 					}
-				}
+				} while (nAscii != 127);
 			}
-		} else {
-			if (!bInitialized) {
-				SetModifierState(0, before);
-				bInitialized = TRUE;
-			}
-			if (nCommandType & WIN_WIN)
-				DepressKey(VK_LWIN);
-			if (nCommandType & WIN_CTRL)
-				DepressKey(VK_CONTROL);
-			if (nCommandType & WIN_ALT)
-				DepressKey(VK_MENU);
-			if (nCommandType & SHIFT)
-				DepressKey(VK_SHIFT);
-
-			Kdu(bVk);
-
-			if (nCommandType & SHIFT && (keybinds.GetSize() <= i + 1 || !(keybinds.GetAt(i + 1).nCommandType & SHIFT)))
-				ReleaseKey(VK_SHIFT);
-			if (nCommandType & WIN_ALT && (keybinds.GetSize() <= i + 1 || !(keybinds.GetAt(i + 1).nCommandType & WIN_ALT)))
-				ReleaseKey(VK_MENU);
-			if (nCommandType & WIN_CTRL && (keybinds.GetSize() <= i + 1 || !(keybinds.GetAt(i + 1).nCommandType & WIN_CTRL)))
-				ReleaseKey(VK_CONTROL);
-			if (nCommandType & WIN_WIN && (keybinds.GetSize() <= i + 1 || !(keybinds.GetAt(i + 1).nCommandType & WIN_WIN)))
-				ReleaseKey(VK_LWIN);
+			continue;
 		}
+		if (!bInitialized) {
+			SetModifierState(0, before);
+			bInitialized = TRUE;
+		}
+		if (nCommandType & WIN_WIN)
+			DepressKey(VK_LWIN);
+		if (nCommandType & WIN_CTRL)
+			DepressKey(VK_CONTROL);
+		if (nCommandType & WIN_ALT)
+			DepressKey(VK_MENU);
+		if (nCommandType & SHIFT)
+			DepressKey(VK_SHIFT);
+		Kdu(bVk);
+		const int nNextType = (p + 1) != keybinds.end() ? (p + 1)->nCommandType : 0;
+		if (nCommandType & SHIFT && !(nNextType & SHIFT))
+			ReleaseKey(VK_SHIFT);
+		if (nCommandType & WIN_ALT && !(nNextType & WIN_ALT))
+			ReleaseKey(VK_MENU);
+		if (nCommandType & WIN_CTRL && !(nNextType & WIN_CTRL))
+			ReleaseKey(VK_CONTROL);
+		if (nCommandType & WIN_WIN && !(nNextType & WIN_WIN))
+			ReleaseKey(VK_LWIN);
 	}
 
-	keybinds.RemoveAll();
-
 	if (bInitialized)
-		// If these lines are invoked at M-x, a window transition does not work well.
+		// If this lines is invoked on M-x, a window transition does not work well.
 		SetModifierState(before, 0);
 	return;
 }
 
-KeyBind CXkeymacsDll::ParseKey(const int nFunctionID, unsigned int &i)
+KeyBind CXkeymacsDll::ParseKey(LPCTSTR& def)
 {
 	KeyBind keybind = {NONE};
-
-	if (m_Config.szFunctionDefinition[nFunctionID][i] == _T('\\')) {
-		++i;
-		BOOL bFound = FALSE;
-		do {
-			bFound = FALSE;
-			for (int ModifierID = 0; ModifierID < sizeof(Modifiers) / sizeof(Modifiers[0]); ++ModifierID) {
-				if (!_tcsncmp(m_Config.szFunctionDefinition[nFunctionID] + i, Modifiers[ModifierID].name, _tcslen(Modifiers[ModifierID].name))
-				 && _tcslen(Modifiers[ModifierID].name) < _tcslen(m_Config.szFunctionDefinition[nFunctionID] + i)) {
-					keybind.nCommandType |= Modifiers[ModifierID].id;
-					i+= _tcslen(Modifiers[ModifierID].name);
-					bFound = TRUE;
-				}
+	if (*def == _T('\\')) { // set modifiers
+		def++;
+	LOOP:
+		for (int i = 0; i < MAX_MODIFIER; i++) {
+			size_t len = _tcslen(Modifiers[i].name);
+			if (!_tcsncmp(def, Modifiers[i].name, len)) {
+				keybind.nCommandType |= Modifiers[i].id;
+				def += len;
+				goto LOOP;
 			}
-		} while (bFound);
+		}
 	}
-	if (IsShift(m_Config.szFunctionDefinition[nFunctionID][i]) && !(keybind.nCommandType & (WIN_CTRL | WIN_ALT | WIN_WIN))) {
+	if (IsShift(*def) && !(keybind.nCommandType & (WIN_CTRL | WIN_ALT | WIN_WIN)))
 		keybind.nCommandType |= SHIFT;
-	}
-
-	for (int nKeyID = 0; nKeyID < sizeof(ControlCharacters) / sizeof(ControlCharacters[0]); ++nKeyID) {
-		if (!_tcsncmp(m_Config.szFunctionDefinition[nFunctionID] + i, ControlCharacters[nKeyID].name, _tcslen(ControlCharacters[nKeyID].name))) {
-			i += _tcslen(ControlCharacters[nKeyID].name);
+	int i = 0;
+	for (; i < MAX_KEYNAME; i++) {
+		size_t len = _tcslen(KeyNames[i].name);
+		if (!_tcsncmp(def, KeyNames[i].name, len)) {
+			def += len;
 			break;
 		}
 	}
-	if (nKeyID < sizeof(ControlCharacters) / sizeof(ControlCharacters[0])) {
-		keybind.bVk = ControlCharacters[nKeyID].bVk;
-	} else {
-		keybind.bVk = a2v(m_Config.szFunctionDefinition[nFunctionID][i]);
-	}
-
+	keybind.bVk = i < MAX_KEYNAME ? KeyNames[i].bVk : a2v(*def++);
 	return keybind;
 }
 

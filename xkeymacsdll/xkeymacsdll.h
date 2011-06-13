@@ -136,7 +136,7 @@ private:
 	static LRESULT CALLBACK CallWndProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK ShellProc(int nCode, WPARAM wParam, LPARAM lParam);
-	static KeyBind ParseKey(const int nFunctionID, unsigned int &i);
+	static KeyBind ParseKey(LPCTSTR& def);
 	static BYTE a2v(TCHAR nAscii);
 	static BOOL IsShift(TCHAR nAscii);
 	static void CallFunction(int nFunctionID);
