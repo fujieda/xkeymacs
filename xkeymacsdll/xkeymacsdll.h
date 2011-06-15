@@ -9,6 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include <list>
 #include "ClipboardSnap.h"
 
 enum { MAX_APP = 64 };
@@ -144,7 +145,7 @@ private:
 	static BOOL IsDepressedShiftKeyOnly(BYTE nKey);
 	static BOOL IsDepressedModifier(int Modifier(), BOOL bPhysicalKey = TRUE);
 	static BOOL IsValidKey(BYTE bVk);
-	static CList<KbdMacro, KbdMacro&> m_Macro;
+	static std::list<KbdMacro> m_Macro;
 	static BOOL m_bRecordingMacro;
 	static BOOL m_bDown[MAX_KEY];
 	static void SetOriginal(UINT nCommandType, BYTE bVk);

@@ -246,7 +246,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 #pragma data_seg()
 BOOL CXkeymacsDll::m_bRecordingMacro = FALSE;
 BOOL CXkeymacsDll::m_bDown[MAX_KEY] = {0};
-CList<KbdMacro, KbdMacro&> CXkeymacsDll::m_Macro;
+std::list<KbdMacro> CXkeymacsDll::m_Macro;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -1035,24 +1035,11 @@ RECURSIVE_COMMAND:
 
 DO_NOTHING:
 	SetModifierIcons();
-	if (m_bRecordingMacro) {
-		if (!(lParam & BEING_RELEASED) || m_bDown[wParam]) {
-			try {
-				KbdMacro m;
-				m.nCode = nCode;
-				m.wParam = wParam;
-				m.lParam = lParam;
-				m.bOriginal = TRUE;
-				m_Macro.AddTail(m);
-			} catch (CMemoryException* e) {
-				e->Delete();
-//				CUtils::Log("KeyboardProc: 'new' threw an exception");
-			}
-			if (!(lParam & BEING_RELEASED))
-				m_bDown[wParam] = TRUE;
-		}
+	if (m_bRecordingMacro && (!(lParam & BEING_RELEASED) || m_bDown[wParam])) {
+		KbdMacro m = { nCode, wParam, lParam, TRUE };
+		m_Macro.push_back(m);
+		m_bDown[wParam] |= !(lParam & BEING_RELEASED);
 	}
-
 	return CallNextHookEx(g_hHookKeyboard, nCode, wParam, lParam);
 
 RECURSIVE:
@@ -1308,21 +1295,21 @@ BOOL CXkeymacsDll::GetEnableCUA()
 
 void CXkeymacsDll::StartRecordMacro()
 {
-	m_bRecordingMacro = TRUE;
 	if (CCommands::bC_u())
 		CallMacro();
-	m_Macro.RemoveAll();
+	m_bRecordingMacro = TRUE;
+	m_Macro.erase(m_Macro.begin(), m_Macro.end());
 	ZeroMemory(m_bDown, MAX_KEY);
 }
 
 void CXkeymacsDll::EndRecordMacro()
 {
 	m_bRecordingMacro = FALSE;
-	while (!m_Macro.IsEmpty()) { // remove not released push
-		KbdMacro& m = m_Macro.GetTail();
+	while (!m_Macro.empty()) { // remove not released push
+		const KbdMacro& m = m_Macro.back();
 		if (m.lParam & BEING_RELEASED)
 			break;
-		m_Macro.RemoveTail();
+		m_Macro.pop_back();
 	}
 }
 
@@ -1332,35 +1319,13 @@ void CXkeymacsDll::CallMacro()
 		m_bRecordingMacro = FALSE;
 	UINT before = GetModifierState(FALSE);
 	SetModifierState(0, before);
-	for (POSITION pos = m_Macro.GetHeadPosition(); pos; ) {
-		KbdMacro& m = m_Macro.GetNext(pos);
-		if (m.lParam & BEING_RELEASED)
-			ReleaseKey((BYTE)m.wParam);
+	for (auto m = m_Macro.begin(); m != m_Macro.end(); m++)
+		if (m->lParam & BEING_RELEASED)
+			ReleaseKey(static_cast<BYTE>(m->wParam));
 		else
-			DepressKey((BYTE)m.wParam, m.bOriginal);
-	}
+			DepressKey(static_cast<BYTE>(m->wParam), m->bOriginal);
 	SetModifierState(before, 0);
 }
-
-/*
-void CXkeymacsDll::CallMacro()	// for debug
-{
-	CString sz;
-	for (POSITION pos = m_Macro.GetHeadPosition(); pos; ) {
-		KbdMacro m = m_Macro.GetNext(pos);
-		if (m.lParam & BEING_RELEASED) {
-			CString t;
-			t.Format(_T("0x%xu "), m.wParam);
-			sz += t;
-		} else {
-			CString t;
-			t.Format(_T("0x%xd "), m.wParam);
-			sz += t;
-		}
-	}
-//	CUtils::Log(sz);
-}
-*/
 
 void CXkeymacsDll::Set106Keyboard(BOOL b106Keyboard)
 {
