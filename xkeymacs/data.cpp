@@ -62,7 +62,6 @@ int CData::GetCommandID(int nCommandType, int nKey)
 void CData::ClearAll()
 {
 	ZeroMemory(m_nCommandID, sizeof(m_nCommandID));
-	ZeroMemory(m_bAtIbeamCursorOnly, sizeof(m_bAtIbeamCursorOnly));
 	m_strApplicationName.Empty();
 }
 

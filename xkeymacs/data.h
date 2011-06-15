@@ -48,7 +48,6 @@ private:
 	CString m_strApplicationTitle;
 	CString m_strApplicationName;
 	int m_nCommandID[MAX_COMMAND_TYPE][MAX_KEY];
-	BOOL m_bAtIbeamCursorOnly[MAX_COMMAND_TYPE][MAX_KEY];
 };
 
 #endif // DATA_H_INCLUDED
