@@ -88,7 +88,7 @@ BOOL CProperties::OnInitDialog()
 
 	InitApplicationList();
 
-	CProfile::LoadRegistryData();
+	CProfile::LoadData();
 	m_szCurrentApplication.LoadString(IDS_DEFAULT);
 	SetDialogData(m_szCurrentApplication);
 	EnableUseDefaultButton(FALSE);
@@ -288,7 +288,7 @@ void CProperties::OnOK()
 
 void CProperties::OnCancel() 
 {
-	CProfile::LoadRegistryData();
+	CProfile::LoadData();
 
 	CDialog::OnCancel();
 }
@@ -296,7 +296,7 @@ void CProperties::OnCancel()
 void CProperties::OnApply() 
 {
 	GetDialogData();
-	CProfile::SaveRegistryData();
+	CProfile::SaveData();
 }
 
 void CProperties::OnLoadDefault() 

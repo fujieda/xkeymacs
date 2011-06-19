@@ -415,7 +415,7 @@ void CPropertiesAdvanced::OnRemove()
 
 void CPropertiesAdvanced::OnResetAll() 
 {
-	CProfile::LoadRegistryData();
+	CProfile::LoadData();
 	InitCommandIDs();
 	SetCurrentKeys();
 }

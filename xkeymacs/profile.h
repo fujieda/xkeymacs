@@ -61,8 +61,8 @@ public:
 	static int GetSavedSettingCount();
 	static void ClearData(CString szCurrentApplication);
 	static void InitDllData();
-	static void SaveRegistryData();
-	static void LoadRegistryData();
+	static void SaveData();
+	static void LoadData();
 	CProfile();
 	virtual ~CProfile();
 
@@ -82,7 +82,7 @@ private:
 	static BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam);
 	static BOOL IsTheString(CString sz, UINT nID);
 	static void SetDllData();
-	static CData m_XkeymacsData[MAX_APP];
+	static CData m_Data[MAX_APP];
 	static void DeleteAllRegistryData();
 	static TASK_LIST m_TaskList[MAX_TASKS];
 	static DWORD m_dwTasks;
