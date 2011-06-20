@@ -579,18 +579,8 @@ void CProfile::LoadRegistory()
 		m_Data[nAppID].SetKillRingMax(AfxGetApp()->GetProfileInt(appName, entry, 1));
 		entry.LoadString(IDS_REG_ENTRY_USE_DIALOG_SETTING);
 		m_Data[nAppID].SetUseDialogSetting(AfxGetApp()->GetProfileInt(appName, entry, 1));
-		
-		int nSettingStyle = SETTING_DEFAULT;
-		HKEY hKey;
 		entry.LoadString(IDS_REG_ENTRY_DISABLE_XKEYMACS);
-		if (AfxGetApp()->GetProfileInt(appName, entry, 0))
-			nSettingStyle = SETTING_DISABLE;
-		else if (RegOpenKeyEx(HKEY_CURRENT_USER, regApp, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
-			RegCloseKey(hKey);
-			nSettingStyle = SETTING_SPECIFIC;
-		}
-		m_Data[nAppID].SetSettingStyle(nSettingStyle);
-
+		m_Data[nAppID].SetSettingStyle(AfxGetApp()->GetProfileInt(appName, entry, 0) ? SETTING_DISABLE : SETTING_SPECIFIC);
 		entry.LoadString(IDC_REG_ENTRY_IGNORE_META_CTRL);
 		m_Data[nAppID].SetIgnoreUndefinedMetaCtrl(AfxGetApp()->GetProfileInt(appName, entry, 0));
 		entry.LoadString(IDC_REG_ENTRY_IGNORE_C_X);
@@ -607,10 +597,13 @@ void CProfile::SaveRegistory()
 	const CString section(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION));	
 	for (int nAppID = 0; nAppID < MAX_APP; nAppID++) {
 		const CString& appName = m_Data[nAppID].GetApplicationName();
-		if (appName.IsEmpty())
-			continue;
 		CString entry;
 		entry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
+		if (appName.IsEmpty()) {
+			if (!AfxGetApp()->GetProfileString(section, entry).IsEmpty())
+				AfxGetApp()->WriteProfileString(section, entry, _T(""));
+			continue;
+		}
 		AfxGetApp()->WriteProfileString(section, entry, appName);
 
 		entry.LoadString(IDS_REG_ENTRY_APPLICATOIN_TITLE);
