@@ -61,8 +61,8 @@ public:
 	static int GetSavedSettingCount();
 	static void ClearData(CString szCurrentApplication);
 	static void InitDllData();
-	static void SaveData();
 	static void LoadData();
+	static void SaveData();
 	CProfile();
 	virtual ~CProfile();
 
@@ -91,7 +91,8 @@ private:
 	static int KeyBind2Key(LPCTSTR szKey);
 	static int KeyBind2CommandType(LPCTSTR szKeyBind);
 	static CString WriteKeyBind(int nCommandType, int nKey);
-	static void UpdateRegistryData(BOOL bSaveAndValidate);
+	static void LoadRegistory();
+	static void SaveRegistory();
 };
 
 #endif // !defined(AFX_PROFILE_H__9415254D_4656_484B_A730_E02580D8A221__INCLUDED_)

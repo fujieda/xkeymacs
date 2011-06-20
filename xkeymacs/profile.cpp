@@ -489,260 +489,168 @@ CProfile::~CProfile()
 
 }
 
-// This method initializes data in the registry, or retrieves and validates registry data.
-// bSaveAndValidate specifies a flag that indicates 
-// whether registry data is being initialized (FALSE) or data is being retrieved (TRUE). 
-void CProfile::UpdateRegistryData(const BOOL bSaveAndValidate)
+struct {
+	int type;
+	CString cstr;
+} WindowTextTypes[] = {
+	{ IDS_WINDOW_TEXT_MATCH, CString(MAKEINTRESOURCE(IDS_WINDOW_TEXT_MATCH)) },
+	{ IDS_WINDOW_TEXT_MATCH_FORWARD, CString(MAKEINTRESOURCE(IDS_WINDOW_TEXT_MATCH_FORWARD)) },
+	{ IDS_WINDOW_TEXT_MATCH_BACKWARD, CString(MAKEINTRESOURCE(IDS_WINDOW_TEXT_MATCH_BACKWARD)) },
+};
+
+inline int WindowTextType(const CString& cstr) {
+	for (int i = 0; i < _countof(WindowTextTypes); i++)
+		if (WindowTextTypes[i].cstr == cstr)
+			return WindowTextTypes[i].type;
+	return IDS_WINDOW_TEXT_IGNORE;
+}
+
+void CProfile::LoadRegistory()
 {
-	CString szEntry;
-	CString szApplicationName;
-	CString szApplicationTitle;
-	CString szWindowText;
-	CString szWindowTextType;
+	bool bDialog = false;
+	const CString section(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION));	
+	for (int nAppID = 0; nAppID < MAX_APP; nAppID++) {
+		CString entry;
+		entry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
+		CString appName = AfxGetApp()->GetProfileString(section, entry);
+		if (appName.IsEmpty())  {
+			if (nAppID) {
+				if (bDialog)
+					continue;
+				appName.LoadString(IDS_DIALOG);
+				bDialog = true;
+			} else
+				appName.LoadString(IDS_DEFAULT);
+		} else if (appName == CString(MAKEINTRESOURCE(IDS_DIALOG)))
+			bDialog = true;
+		m_Data[nAppID].SetApplicationName(appName);
 
-	BOOL bUseDialogSetting = FALSE;
-
-	for (int nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
-		// application name
-		CString szSection(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION));
-		szEntry.Format(IDS_REG_ENTRY_APPLICATION, nApplicationID);
-		if (bSaveAndValidate) {	// retrieve
-			m_Data[nApplicationID].ClearAll();
-			szApplicationName = AfxGetApp()->GetProfileString(szSection, szEntry);
-			if (szApplicationName.IsEmpty()) {
-				if (nApplicationID) {
-					if (!bUseDialogSetting) {
-						szApplicationName.LoadString(IDS_DIALOG);
-						bUseDialogSetting = TRUE;
-					} else {
-						continue;
-					}
-				} else {
-					szApplicationName.LoadString(IDS_DEFAULT);
-				}
-			} else {
-				if (szApplicationName == CString(MAKEINTRESOURCE(IDS_DIALOG))) {
-					bUseDialogSetting = TRUE;
-				}
-			}
-			m_Data[nApplicationID].SetApplicationName(szApplicationName);
-		} else {				// initialize
-			szApplicationName = m_Data[nApplicationID].GetApplicationName();
-			if (szApplicationName.IsEmpty()) {
-				continue;
-			}
-			AfxGetApp()->WriteProfileString(szSection, szEntry, szApplicationName);
-		}
-
-		// application title
-		szEntry.LoadString(IDS_REG_ENTRY_APPLICATOIN_TITLE);
-		if (bSaveAndValidate) {	// retrieve
-			szApplicationTitle = AfxGetApp()->GetProfileString(szApplicationName, szEntry);
-			m_Data[nApplicationID].SetApplicationTitle(szApplicationTitle);
-		} else {				// initialize
-			szApplicationTitle = m_Data[nApplicationID].GetApplicationTitle();
-			while (!szApplicationTitle.IsEmpty() && szApplicationTitle.GetAt(0) == _T(' ')) {
-				szApplicationTitle.Delete(0);
-			}
-			AfxGetApp()->WriteProfileString(szApplicationName, szEntry, szApplicationTitle);
-		}
-
-		// window text
-		szEntry.LoadString(IDS_REG_ENTRY_WINDOW_TEXT);
-		if (bSaveAndValidate) {	// retrieve
-			szWindowText = AfxGetApp()->GetProfileString(szApplicationName, szEntry, _T("*"));
-			if (szWindowText.IsEmpty()) {
-				szWindowText = _T('*');
-			}
-			m_Data[nApplicationID].SetWindowText(szWindowText);
-		} else {				// initialize
-			szWindowText = m_Data[nApplicationID].GetWindowText();
-			AfxGetApp()->WriteProfileString(szApplicationName, szEntry, szWindowText);
-		}
-
-		// window text type
-		szEntry.LoadString(IDS_REG_ENTRY_WINDOW_TEXT_TYPE);
-		if (bSaveAndValidate) {	// retrieve
-			szWindowTextType = AfxGetApp()->GetProfileString(szApplicationName, szEntry);
-
-			int nWindowTextType = IDS_WINDOW_TEXT_IGNORE;
-			if (szWindowTextType == CString(MAKEINTRESOURCE(IDS_WINDOW_TEXT_MATCH))) {
-				nWindowTextType = IDS_WINDOW_TEXT_MATCH;
-			} else if (szWindowTextType == CString(MAKEINTRESOURCE(IDS_WINDOW_TEXT_MATCH_FORWARD))) {
-				nWindowTextType = IDS_WINDOW_TEXT_MATCH_FORWARD;
-			} else if (szWindowTextType == CString(MAKEINTRESOURCE(IDS_WINDOW_TEXT_MATCH_BACKWARD))) {
-				nWindowTextType = IDS_WINDOW_TEXT_MATCH_BACKWARD;
-			} else if (szWindowTextType == CString(MAKEINTRESOURCE(IDS_WINDOW_TEXT_MATCH_FULL))) {
-				nWindowTextType = IDS_WINDOW_TEXT_MATCH_FULL;
-			}
-
-			m_Data[nApplicationID].SetWindowTextType(nWindowTextType);
-		} else {				// initialize
-			szWindowTextType.LoadString(m_Data[nApplicationID].GetWindowTextType());
-			AfxGetApp()->WriteProfileString(szApplicationName, szEntry, szWindowTextType);
-		}
+		entry.LoadString(IDS_REG_ENTRY_APPLICATOIN_TITLE);
+		m_Data[nAppID].SetApplicationTitle(AfxGetApp()->GetProfileString(appName, entry));
+		entry.LoadString(IDS_REG_ENTRY_WINDOW_TEXT);
+		m_Data[nAppID].SetWindowText(AfxGetApp()->GetProfileString(appName, entry, _T("*")));
+		entry.LoadString(IDS_REG_ENTRY_WINDOW_TEXT_TYPE);
+		m_Data[nAppID].SetWindowTextType(WindowTextType(AfxGetApp()->GetProfileString(appName, entry)));
 
 		CString regApp(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
-		regApp += _T("\\") + szApplicationName;
-		// on/off
-		if (bSaveAndValidate) {	// retrieve
-			for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-				szEntry = CCommands::GetCommandName(nCommandID);
-				if (szEntry.IsEmpty()) {
-					break;
-				}
-				HKEY hKey = NULL;
-				CString regKey = regApp + _T("\\") + szEntry;
-				if (RegOpenKeyEx(HKEY_CURRENT_USER, regKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
-					// Use registry data
-					TCHAR szKeyBind[128] = {'\0'};
-					DWORD dwKeyBind = sizeof(szKeyBind);
-					FILETIME ft = {'\0'};	// not use
-					for (DWORD dwIndex = 0;
-						 RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, &ft) == ERROR_SUCCESS;
-						 ++dwIndex) {
-						int nCommandType = 0;
-						int nKey = 0;
-						ReadKeyBind(&nCommandType, &nKey, szKeyBind);
-						m_Data[nApplicationID].SetCommandID(nCommandType, nKey, nCommandID);
-						memset(szKeyBind, 0, sizeof(szKeyBind));
-						dwKeyBind = sizeof(szKeyBind);
-					}
-					RegCloseKey(hKey);
-				} else {
-					// Use default setting
-					for (int i = 0; ; ++i) {
-						if (CCommands::GetDefaultControlID(nCommandID, i) == IDC_CO2) {
-							continue;
-						}
-
-						int nCommandType = CCommands::GetDefaultCommandType(nCommandID, i);
-						int nKey = CCommands::GetDefaultCommandKey(nCommandID, i);
-						if (nKey == 0) {
-							break;
-						}
-						m_Data[nApplicationID].SetCommandID(nCommandType, nKey, nCommandID);
-					}
-				}
-			}
-			for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); ++nFunctionID) {
-				HKEY hKey = NULL;
-				CString regKey = regApp + _T("\\") + CDotXkeymacs::GetFunctionSymbol(nFunctionID);
-				if (RegOpenKeyEx(HKEY_CURRENT_USER, regKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
-					// Use registry data
-					CDotXkeymacs::ClearKey(nFunctionID, nApplicationID);
-					TCHAR szKeyBind[128] = {'\0'};
-					DWORD dwKeyBind = sizeof(szKeyBind);
-					FILETIME ft = {'\0'};	// not use
-					for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, &ft) == ERROR_SUCCESS; ++dwIndex) {
-						int nCommandType = 0;
-						int nKey = 0;
-						ReadKeyBind(&nCommandType, &nKey, szKeyBind);
-						CDotXkeymacs::SetKey(nFunctionID, nApplicationID, nCommandType, nKey);
-
-						memset(szKeyBind, 0, sizeof(szKeyBind));
-						dwKeyBind = sizeof(szKeyBind);
-					}
-					RegCloseKey(hKey);
-				}
-			}
-		} else {				// initialize
-			// create all commands
-			for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-				szEntry = CCommands::GetCommandName(nCommandID);
-				if (szEntry.IsEmpty()) {
-					break;
-				}
-
-				SaveCommand(szApplicationName, nCommandID);
-			}
-			for (int nCommandType = 0; nCommandType < MAX_COMMAND_TYPE; ++nCommandType) {
-				for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-					int nCommandID = m_Data[nApplicationID].GetCommandID(nCommandType, nKey);
-					SaveKeyBind(szApplicationName, nCommandID, nCommandType, nKey);
-				}
-			}
-			for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); ++nFunctionID) {
-				for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nFunctionID, nApplicationID); ++nKeyID) {
-					int nCommandType = 0;
-					int nKey = 0;
-					CDotXkeymacs::GetKey(nFunctionID, nApplicationID, nKeyID, &nCommandType, &nKey);
-					SaveKeyBind(szApplicationName, CDotXkeymacs::GetFunctionSymbol(nFunctionID), nCommandType, nKey);
-				}
-			}
-		}
-
-		// kill-ring-max
-		szEntry.LoadString(IDS_REG_ENTRY_KILL_RING_MAX);
-		if (bSaveAndValidate) {	// retrieve
-			int nKillRingMax = AfxGetApp()->GetProfileInt(szApplicationName, szEntry, 1);
-			m_Data[nApplicationID].SetKillRingMax(nKillRingMax);
-		} else {				// initialize
-			int nKillRingMax = m_Data[nApplicationID].GetKillRingMax();
-			AfxGetApp()->WriteProfileInt(szApplicationName, szEntry, nKillRingMax);
-		}
-
-		// Use Dialog Setting
-		szEntry.LoadString(IDS_REG_ENTRY_USE_DIALOG_SETTING);
-		if (bSaveAndValidate) {	// retrieve
-			BOOL bUseDialogSetting = AfxGetApp()->GetProfileInt(szApplicationName,szEntry, 1);
-			m_Data[nApplicationID].SetUseDialogSetting(bUseDialogSetting);
-		} else {				// initialize
-			BOOL bUseDialogSetting = m_Data[nApplicationID].GetUseDialogSetting();
-			AfxGetApp()->WriteProfileInt(szApplicationName, szEntry, bUseDialogSetting);
-		}
-
-		// Setting Style
-		szEntry.LoadString(IDS_REG_ENTRY_DISABLE_XKEYMACS);
-		if (bSaveAndValidate) {	// retrieve
-			int nSettingStyle = SETTING_DEFAULT;
+		regApp += _T("\\") + appName;
+		for (int nCommandID = 1; nCommandID < MAX_COMMAND; nCommandID++) {
+			entry = CCommands::GetCommandName(nCommandID);
 			HKEY hKey;
-			if (AfxGetApp()->GetProfileInt(szApplicationName, szEntry, 0) != 0) {
-				nSettingStyle = SETTING_DISABLE;
-			} else if (RegOpenKeyEx(HKEY_CURRENT_USER, regApp, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
+			const CString& regKey = regApp + _T("\\") + entry;
+			if (RegOpenKeyEx(HKEY_CURRENT_USER, regKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
+				TCHAR szKeyBind[128];
+				DWORD dwKeyBind = _countof(szKeyBind);
+				for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; dwIndex++) {
+					int nCommandType, nKey;
+					ReadKeyBind(&nCommandType, &nKey, szKeyBind);
+					m_Data[nAppID].SetCommandID(nCommandType, nKey, nCommandID);
+					dwKeyBind = _countof(szKeyBind);
+				}
 				RegCloseKey(hKey);
-				nSettingStyle = SETTING_SPECIFIC;
+			} else {
+				// Set the default assignment
+				for (int i = 0; const int nKey = CCommands::GetDefaultCommandKey(nCommandID, i); i++) {
+					if (CCommands::GetDefaultControlID(nCommandID, i) == IDC_CO2)
+						continue;
+					const int nCommandType = CCommands::GetDefaultCommandType(nCommandID, i);
+					m_Data[nAppID].SetCommandID(nCommandType, nKey, nCommandID);
+				}
 			}
-			m_Data[nApplicationID].SetSettingStyle(nSettingStyle);
-		} else {				// initialize
-			BOOL bDisableXkeymacs = FALSE;
-			if (m_Data[nApplicationID].GetSettingStyle() == SETTING_DISABLE) {
-				bDisableXkeymacs = TRUE;
+		}
+		for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); nFunctionID++) {
+			HKEY hKey;
+			const CString regKey = regApp + _T("\\") + CDotXkeymacs::GetFunctionSymbol(nFunctionID);
+			if (RegOpenKeyEx(HKEY_CURRENT_USER, regKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
+				CDotXkeymacs::ClearKey(nFunctionID, nAppID);
+				TCHAR szKeyBind[128];
+				DWORD dwKeyBind = _countof(szKeyBind);
+				for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; dwIndex++) {
+					int nCommandType, nKey;
+					ReadKeyBind(&nCommandType, &nKey, szKeyBind);
+					CDotXkeymacs::SetKey(nFunctionID, nAppID, nCommandType, nKey);
+					dwKeyBind = _countof(szKeyBind);
+				}
+				RegCloseKey(hKey);
 			}
-			AfxGetApp()->WriteProfileInt(szApplicationName, szEntry, bDisableXkeymacs);
 		}
 
-		// Ignore Meta Ctrl+? when it is undefined.
-		szEntry.LoadString(IDC_REG_ENTRY_IGNORE_META_CTRL);
-		if (bSaveAndValidate) {	// retrieve
-			m_Data[nApplicationID].SetIgnoreUndefinedMetaCtrl(AfxGetApp()->GetProfileInt(szApplicationName, szEntry, 0));
-		} else {				// initialize
-			AfxGetApp()->WriteProfileInt(szApplicationName, szEntry, m_Data[nApplicationID].GetIgnoreUndefinedMetaCtrl());
+		entry.LoadString(IDS_REG_ENTRY_KILL_RING_MAX);
+		m_Data[nAppID].SetKillRingMax(AfxGetApp()->GetProfileInt(appName, entry, 1));
+		entry.LoadString(IDS_REG_ENTRY_USE_DIALOG_SETTING);
+		m_Data[nAppID].SetUseDialogSetting(AfxGetApp()->GetProfileInt(appName, entry, 1));
+		
+		int nSettingStyle = SETTING_DEFAULT;
+		HKEY hKey;
+		entry.LoadString(IDS_REG_ENTRY_DISABLE_XKEYMACS);
+		if (AfxGetApp()->GetProfileInt(appName, entry, 0))
+			nSettingStyle = SETTING_DISABLE;
+		else if (RegOpenKeyEx(HKEY_CURRENT_USER, regApp, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
+			RegCloseKey(hKey);
+			nSettingStyle = SETTING_SPECIFIC;
 		}
+		m_Data[nAppID].SetSettingStyle(nSettingStyle);
 
-		// Ignore C-x ? when it is undefined.
-		szEntry.LoadString(IDC_REG_ENTRY_IGNORE_C_X);
-		if (bSaveAndValidate) {	// retrieve
-			m_Data[nApplicationID].SetIgnoreUndefinedC_x(AfxGetApp()->GetProfileInt(szApplicationName, szEntry, 0));
-		} else {				// initialize
-			AfxGetApp()->WriteProfileInt(szApplicationName, szEntry, m_Data[nApplicationID].GetIgnoreUndefinedC_x());
-		}
+		entry.LoadString(IDC_REG_ENTRY_IGNORE_META_CTRL);
+		m_Data[nAppID].SetIgnoreUndefinedMetaCtrl(AfxGetApp()->GetProfileInt(appName, entry, 0));
+		entry.LoadString(IDC_REG_ENTRY_IGNORE_C_X);
+		m_Data[nAppID].SetIgnoreUndefinedC_x(AfxGetApp()->GetProfileInt(appName, entry, 0));
+		entry.LoadString(IDC_REG_ENTRY_ENABLE_CUA);
+		m_Data[nAppID].SetEnableCUA(AfxGetApp()->GetProfileInt(appName, entry, 0));
+		entry.LoadString(IDS_REG_ENTRY_326_COMPATIBLE);
+		m_Data[nAppID].Set326Compatible(AfxGetApp()->GetProfileInt(appName, entry, 0));
+	}
+}
 
-		// Enable CUA-mode
-		szEntry.LoadString(IDC_REG_ENTRY_ENABLE_CUA);
-		if (bSaveAndValidate) {	// retrieve
-			m_Data[nApplicationID].SetEnableCUA(AfxGetApp()->GetProfileInt(szApplicationName, szEntry, 0));
-		} else {				// initialize
-			AfxGetApp()->WriteProfileInt(szApplicationName, szEntry, m_Data[nApplicationID].GetEnableCUA());
-		}
+void CProfile::SaveRegistory()
+{
+	const CString section(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION));	
+	for (int nAppID = 0; nAppID < MAX_APP; nAppID++) {
+		const CString& appName = m_Data[nAppID].GetApplicationName();
+		if (appName.IsEmpty())
+			continue;
+		CString entry;
+		entry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
+		AfxGetApp()->WriteProfileString(section, entry, appName);
 
-		// Version 3.26 compatible mode
-		szEntry.LoadString(IDS_REG_ENTRY_326_COMPATIBLE);
-		if (bSaveAndValidate) {	// retrieve
-			m_Data[nApplicationID].Set326Compatible(AfxGetApp()->GetProfileInt(szApplicationName, szEntry, 0));
-		} else {				// initialize
-			AfxGetApp()->WriteProfileInt(szApplicationName, szEntry, m_Data[nApplicationID].Get326Compatible());
-		}
+		entry.LoadString(IDS_REG_ENTRY_APPLICATOIN_TITLE);
+		CString appTitle = m_Data[nAppID].GetApplicationTitle();
+		appTitle.TrimLeft(_T(' '));
+		AfxGetApp()->WriteProfileString(appName, entry, appTitle);
+		entry.LoadString(IDS_REG_ENTRY_WINDOW_TEXT);
+		AfxGetApp()->WriteProfileString(appName, entry, m_Data[nAppID].GetWindowText());
+		entry.LoadString(IDS_REG_ENTRY_WINDOW_TEXT_TYPE);
+		AfxGetApp()->WriteProfileString(appName, entry, CString(MAKEINTRESOURCE(m_Data[nAppID].GetWindowTextType())));
+
+		CString regApp(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
+		regApp += _T("\\") + appName;
+		// Create all commands
+		for (int nCommandID = 1; nCommandID < MAX_COMMAND; nCommandID++)
+			SaveCommand(appName, nCommandID);
+		for (int nCommandType = 0; nCommandType < MAX_COMMAND_TYPE; nCommandType++)
+			for (int nKey = 0; nKey < MAX_KEY; nKey++)
+				SaveKeyBind(appName, m_Data[nAppID].GetCommandID(nCommandType, nKey), nCommandType, nKey);
+		for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); nFunctionID++)
+			for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nFunctionID, nAppID); nKeyID++) {
+				int nCommandType, nKey;
+				CDotXkeymacs::GetKey(nFunctionID, nAppID, nKeyID, &nCommandType, &nKey);
+				SaveKeyBind(appName, CDotXkeymacs::GetFunctionSymbol(nFunctionID), nCommandType, nKey);
+			}
+
+		entry.LoadString(IDS_REG_ENTRY_KILL_RING_MAX);
+		AfxGetApp()->WriteProfileInt(appName, entry, m_Data[nAppID].GetKillRingMax());
+		entry.LoadString(IDS_REG_ENTRY_USE_DIALOG_SETTING);
+		AfxGetApp()->WriteProfileInt(appName, entry, m_Data[nAppID].GetUseDialogSetting());
+		entry.LoadString(IDS_REG_ENTRY_DISABLE_XKEYMACS);
+		AfxGetApp()->WriteProfileInt(appName, entry, m_Data[nAppID].GetSettingStyle() == SETTING_DISABLE);
+		entry.LoadString(IDC_REG_ENTRY_IGNORE_META_CTRL);
+		AfxGetApp()->WriteProfileInt(appName, entry, m_Data[nAppID].GetIgnoreUndefinedMetaCtrl());
+		entry.LoadString(IDC_REG_ENTRY_IGNORE_C_X);
+		AfxGetApp()->WriteProfileInt(appName, entry, m_Data[nAppID].GetIgnoreUndefinedC_x());
+		entry.LoadString(IDC_REG_ENTRY_ENABLE_CUA);
+		AfxGetApp()->WriteProfileInt(appName, entry, m_Data[nAppID].GetEnableCUA());
+		entry.LoadString(IDS_REG_ENTRY_326_COMPATIBLE);
+		AfxGetApp()->WriteProfileInt(appName, entry, m_Data[nAppID].Get326Compatible());
 	}
 }
 
@@ -750,13 +658,13 @@ void CProfile::LoadData()
 {
 	CDotXkeymacs::Load();
 	LevelUp();
-	UpdateRegistryData(TRUE);
+	LoadRegistory();
 }
 
 void CProfile::SaveData()
 {
 	DeleteAllRegistryData();
-	UpdateRegistryData(FALSE);
+	SaveRegistory();
 	SetDllData();
 }
 
