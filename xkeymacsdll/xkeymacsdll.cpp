@@ -417,7 +417,7 @@ LRESULT CALLBACK CXkeymacsDll::GetMsgProc(int nCode, WPARAM wParam, LPARAM lPara
 	const MSG *msg = reinterpret_cast<MSG *>(lParam);
 	if (msg->message == g_ImeManipulationMessage) {
 		if (wParam)
-			CCommands::DoSetInputMethodOpenStatus((INPUT_METHOD_OPEN_STATUS)msg->wParam, msg->lParam);
+			CCommands::DoSetInputMethodOpenStatus(static_cast<INPUT_METHOD_OPEN_STATUS>(msg->wParam), static_cast<BOOL>(msg->lParam));
 		return 1;
 	}
 	switch (msg->message) {
