@@ -220,7 +220,7 @@ CDotXkeymacs::~CDotXkeymacs()
 void CDotXkeymacs::Load(LPCTSTR lpszFileName)
 {
 	CStdioFile oDotXkeymacs;
-	if (oDotXkeymacs.Open(lpszFileName, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeRead | CFile::shareDenyWrite | CFile::typeText)) {
+	if (oDotXkeymacs.Open(lpszFileName, CFile::modeRead | CFile::shareDenyWrite | CFile::typeText)) {
 		CString szRead;
 		while (oDotXkeymacs.ReadString(szRead)) {
 			if (IsFunctionDefinition(szRead)) {
@@ -257,10 +257,6 @@ void CDotXkeymacs::LoadMainData(LPCTSTR lpszFileName)
 	_tmakepath_s(szOldPath, szDrive, szDir, lpszFileName, m_szExt);
 
 	PathAppend(szDir, _T("etc"));
-	TCHAR szEtc[MAX_PATH] = {'\0'};
-	_tmakepath_s(szEtc, szDrive, szDir, NULL, NULL);
-	(void)_tmkdir(szEtc);	// make etc directory if needed
-
 	TCHAR szPath[MAX_PATH] = {'\0'};
 	_tmakepath_s(szPath, szDrive, szDir, lpszFileName, m_szExt);
 
