@@ -370,7 +370,7 @@ BOOL CXkeymacsDll::IsKeyboardHook()
 LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	if (nCode < 0)
-		CallNextHookEx(m_hHookCallWnd, nCode, wParam, lParam);
+		return CallNextHookEx(m_hHookCallWnd, nCode, wParam, lParam);
 	const CWPSTRUCT *cwps = reinterpret_cast<CWPSTRUCT *>(lParam);
 	switch (cwps->message) {
 	case WM_IME_STARTCOMPOSITION:
