@@ -98,7 +98,7 @@ public:
 	static CClipboardSnap* GetKillRing(CClipboardSnap *pSnap, BOOL bForce = TRUE);
 	static void IncreaseKillRingIndex(int nKillRing = 1);
 	static UINT GetModifierState(BOOL bPhysicalKey = TRUE);
-	static void SetModifierState(UINT before, UINT after);
+	static void SetModifierState(const UINT before, const UINT after);
 	static BOOL IsDown(BYTE bVk, BOOL bPhysicalKey = TRUE);
 	static void Kdu(BYTE bVk, DWORD n = 1, BOOL bOriginal = TRUE);
 	static void ReleaseKey(BYTE bVk);

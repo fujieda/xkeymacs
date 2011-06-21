@@ -456,7 +456,7 @@ UINT CXkeymacsDll::GetModifierState(BOOL bPhysicalKey)
 	return result;
 }
 
-void CXkeymacsDll::SetModifierState(UINT after, UINT before)
+void CXkeymacsDll::SetModifierState(const UINT after, const UINT before)
 {
 	if (after & SHIFT && !(before & SHIFT))
 		DepressKey(VK_SHIFT);
@@ -471,7 +471,7 @@ void CXkeymacsDll::SetModifierState(UINT after, UINT before)
 		UpdateKeyboardState(VK_CONTROL, 0);
 	}
 
-	BOOL bHookApp = CUtils::IsVisualCpp() || CUtils::IsFirefox() || CUtils::IsVisualStudio() || CUtils::IsInternetExplorer();
+	const BOOL bHookApp = CUtils::IsVisualCpp() || CUtils::IsFirefox() || CUtils::IsVisualStudio() || CUtils::IsInternetExplorer();
 	if (after & META && !(before & META)) {
 		if (bHookApp)
 			m_nHookAltRelease |= HOOK_ALT_LATER;
