@@ -137,6 +137,7 @@ private:
 	static LRESULT CALLBACK CallWndProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK ShellProc(int nCode, WPARAM wParam, LPARAM lParam);
+	static int GetAppID(const LPCSTR szName, const int fallback);
 	static KeyBind ParseKey(LPCTSTR& def);
 	static BYTE a2v(TCHAR nAscii);
 	static BOOL IsShift(TCHAR nAscii);

@@ -573,64 +573,31 @@ void CXkeymacsDll::Kdu(BYTE bVk, DWORD n, BOOL bOriginal)
 
 void CXkeymacsDll::InitKeyboardProc(BOOL bImeComposition)
 {
-	if (CUtils::IsFindDialog()) {
-		static BOOL bImeCompositionOld = FALSE;
-		if (!bImeComposition
-		 && bImeCompositionOld) {
-			DepressKey(VK_END);
-			ReleaseKey(VK_END);
-		}
-		bImeCompositionOld = bImeComposition;
-	}
-
 	CUtils::SetApplicationName(bImeComposition);
-
 	if (_tcsnicmp(m_Config.szSpecialApp[m_nApplicationID], CUtils::GetApplicationName(), 0xF) || !IsMatchWindowText(m_Config.szWindowText[m_nApplicationID])) {	// PROCESSENTRY32 has only 0xF bytes of Name
 		m_nApplicationID = -1;
-
-		for (int nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
-			if (!_tcsnicmp(m_Config.szSpecialApp[nApplicationID], CUtils::GetApplicationName(), 0xF) && IsMatchWindowText(m_Config.szWindowText[nApplicationID])) {
-
-				if (m_nApplicationID < 0
-				 || CUtils::GetWindowTextType(m_Config.szWindowText[m_nApplicationID]) < CUtils::GetWindowTextType(m_Config.szWindowText[nApplicationID])
-				 || CUtils::GetWindowTextType(m_Config.szWindowText[m_nApplicationID]) == CUtils::GetWindowTextType(m_Config.szWindowText[nApplicationID])
-				 && _tcscmp(m_Config.szWindowText[m_nApplicationID], m_Config.szWindowText[nApplicationID]) <= 0) {
-					m_nApplicationID = nApplicationID;
-				}
+		for (int nAppID = 0; nAppID < MAX_APP; nAppID++) {
+			if (_tcsnicmp(m_Config.szSpecialApp[nAppID], CUtils::GetApplicationName(), 0xF) || !IsMatchWindowText(m_Config.szWindowText[nAppID]))
+				continue;
+			if (m_nApplicationID < 0)
+				m_nApplicationID = nAppID;
+			else {
+				const LPCSTR curText = m_Config.szWindowText[m_nApplicationID];
+				const LPCSTR newText = m_Config.szWindowText[nAppID];
+				const int curType = CUtils::GetWindowTextType(curText);
+				const int newType = CUtils::GetWindowTextType(newText);
+				if (curType < newType || curType == newType && _tcscmp(curText, newText) <= 0)
+					m_nApplicationID = nAppID;
 			}
 		}
-
-		if (m_nApplicationID < 0) {
-			for (int nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
-				if (!_tcsicmp(m_Config.szSpecialApp[nApplicationID], _T("Default"))) {
-					m_nApplicationID = nApplicationID;
-					break;
-				}
-			}
-
-			if (m_nApplicationID < 0) {
-				m_nApplicationID = 0;
-			}
-		}
+		if (m_nApplicationID < 0)
+			m_nApplicationID = GetAppID(_T("Default"), 0);
 	}
-
-	if (m_Config.nSettingStyle[m_nApplicationID] != SETTING_DISABLE
-	 && (_tcsicmp(m_Config.szSpecialApp[m_nApplicationID], _T("Default")) || !CUtils::IsDefaultIgnoreApplication())
-	 && !bImeComposition
-	 && CUtils::IsDialog()) {
+	if (m_Config.nSettingStyle[m_nApplicationID] != SETTING_DISABLE &&
+			(_tcsicmp(m_Config.szSpecialApp[m_nApplicationID], _T("Default")) || !CUtils::IsDefaultIgnoreApplication()) &&
+			!bImeComposition && CUtils::IsDialog() && m_Config.bUseDialogSetting[m_nApplicationID])
 		// Use Dialog Setting
-		if (m_Config.bUseDialogSetting[m_nApplicationID]) {
-			int nOriginalApplicationID = m_nApplicationID;
-			for (m_nApplicationID = 0; m_nApplicationID < MAX_APP; ++m_nApplicationID) {
-				if (!_tcsicmp(m_Config.szSpecialApp[m_nApplicationID], _T("Dialog"))) {
-					break;
-				}
-			}
-			if (m_nApplicationID == MAX_APP) {
-				m_nApplicationID = nOriginalApplicationID;
-			}
-		}
-	}
+		m_nApplicationID = GetAppID(_T("Dialog"), m_nApplicationID);
 
 	ICONMSG msg[3] = {
 		{CX_ICON, OFF_ICON, ""},
@@ -643,7 +610,14 @@ void CXkeymacsDll::InitKeyboardProc(BOOL bImeComposition)
 	CCommands::Reset();
 }
 
-// emulate emacs	// cf virtual-key code
+int CXkeymacsDll::GetAppID(const LPCSTR szName, const int fallback)
+{
+	for (int i = 0; i < MAX_APP; i++)
+		if (!_tcsicmp(m_Config.szSpecialApp[i], szName))
+			return i;
+	return fallback;
+}
+
 LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	ASSERT(0 <= wParam && wParam <= UCHAR_MAX);
