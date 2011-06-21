@@ -140,7 +140,8 @@ HHOOK g_hHookKeyboard = NULL;
 HHOOK g_hHookDummy = NULL;
 #pragma data_seg()
 
-inline bool IsWow64(HANDLE mod) {
+inline bool IsWow64(HANDLE mod)
+{
 	typedef BOOL (WINAPI *pfnIsWow64Process_t)(HANDLE, PBOOL);
 	if (const pfnIsWow64Process_t IsWow64Process = (pfnIsWow64Process_t)GetProcAddress(GetModuleHandle(_T("kernel32")), "IsWow64Process")) {
 		BOOL b;
@@ -149,19 +150,22 @@ inline bool IsWow64(HANDLE mod) {
 	return false;
 }
 
-inline bool Is64System() {
+inline bool Is64System()
+{
 	SYSTEM_INFO info;
 	GetNativeSystemInfo(&info);
 	return info.wProcessorArchitecture != PROCESSOR_ARCHITECTURE_INTEL;
 }
 
-inline bool Is64Process(HANDLE mod) {
+inline bool Is64Process(HANDLE mod)
+{
 	return Is64System() && !IsWow64(mod);
 }
 
 const bool IsDll64 = sizeof(void *) == 8;
 
-inline bool Is64ProcessHwnd(HWND hwnd) {
+inline bool Is64ProcessHwnd(HWND hwnd)
+{
 	DWORD pid;
 	GetWindowThreadProcessId(hwnd, &pid);
 	HANDLE hmod = OpenProcess(PROCESS_ALL_ACCESS, 0, pid);
