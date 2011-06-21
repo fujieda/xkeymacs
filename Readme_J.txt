@@ -23,6 +23,7 @@ XKeymacsはWindows上のアプリケーションでEmacsのようなキー操作を実現し
 1. XKeymacsを終了します(後述)。
 2. ディレクトリxkeymacs???を削除します。
 3. レジストリエディタで次の値を削除します。
+HKEY_CURRENT_USER\Software\oishi\XKeymacs
 HKEY_CURRENT_USER\Software\oishi\XKeymacs2
 HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run\XKeymacs
 
@@ -92,7 +93,7 @@ Readme_J.txtを表示します。
 
 --- サポート ---
 ウェブサイト
-http://sourceforge.jp/projects/xkeymacs/simple/
+http://sourceforge.jp/projects/xkeymacs/
 https://github.com/fujieda/xkeymacs
 
 メーリングリスト

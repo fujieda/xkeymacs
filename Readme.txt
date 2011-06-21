@@ -14,7 +14,7 @@ on Windows. You can configure key assignments per application.
 - Microsoft Visual C++ 2010 Redistributable Package (x64)
   http://tinyurl.com/vc2010x64
 2. Get xkeymacs???.zip from the following site(??? is a version number). 
-   http://sourceforge.jp/users/fujieda/pf/xkeymacs/
+   http://sourceforge.jp/projects/xkeymacs/releases/
 3. Unzip xkeymacs???.zip and get xkeymacs??? directory.
 4. Move the directory in an appropriate directory.
 5. Run xkeymacs.exe in xkeymacs??? directory.
@@ -23,6 +23,7 @@ on Windows. You can configure key assignments per application.
 1. Exit XKeymacs as mentioned below.
 2. Delete the xkeymacs??? directory.
 3. Run regedit and delete the following values:
+HKEY_CURRENT_USER\Software\oishi\XKeymacs
 HKEY_CURRENT_USER\Software\oishi\XKeymacs2
 HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run\XKeymacs
 
@@ -72,7 +73,7 @@ HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\Scancode Map
 
 --- Support ---
 Web site
-http://sourceforge.jp/projects/xkeymacs/simple/
+http://sourceforge.jp/projects/xkeymacs/
 https://github.com/fujieda/xkeymacs
 
 Mailing list

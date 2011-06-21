@@ -3,7 +3,7 @@
 ======================================================================
 
 --- History ---
-2011/06/xx 4.0
+2011/xx/xx 4.0
 - Support 64bit versions of Windows.
 - Fix a bug where a text area on Internet Explorer 7 or later is
   handled as a dialog.
@@ -15,8 +15,13 @@
 - Fix a bug where M-v and M-f don't work at first time on Visual
   Studio 2010.
 - Fix a bug where M-d don't work on Internet Explorer.
-- Fix a bug where the choice of the default setting for an
-  application can't be saved once you choose the setting specific to it.
+- Fix a bug where reverting to the default setting mode for an
+  application on the properties dialog can't be saved.
+- Fix a bug where original commands defined with enclosed '"' don't
+  work well.
+- Fix a bug where VK_END is wrongly pressed on find dialogs after
+  input with IME.
+- Make XKeymacs not create the "etc" directory and empty files.
 - Some features don't work on Windows 7 yet.
 
 2008/07/27 version 3.48
