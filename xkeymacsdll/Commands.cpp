@@ -4043,8 +4043,8 @@ int CCommands::GetToolTipID(int nCommandID)
 
 int CCommands::GetDefaultCommandType(int nCommandID, int nIndex)
 {
-	if (nCommandID < 0 || sizeof(Commands) / sizeof(Commands[0]) <= nCommandID
-	 || nIndex < 0 || sizeof(Commands[nCommandID].keybind) / sizeof(Commands[nCommandID].keybind[0]) <= nIndex) {
+	if (nCommandID < 0 || MAX_COMMAND <= nCommandID
+	 || nIndex < 0 || MAX_KEY_BIND <= nIndex) {
 		ASSERT(0);
 		return NONE;
 	}
@@ -4084,8 +4084,8 @@ int CCommands::GetDefaultCommandType(int nCommandID, int nIndex)
 
 int CCommands::GetDefaultCommandKey(int nCommandID, int nIndex)
 {
-	if (nCommandID < 0 || sizeof(Commands) / sizeof(Commands[0]) <= nCommandID
-	 || nIndex < 0 || sizeof(Commands[nCommandID].keybind) / sizeof(Commands[nCommandID].keybind[0]) <= nIndex) {
+	if (nCommandID < 0 || MAX_COMMAND <= nCommandID
+	 || nIndex < 0 || MAX_KEY_BIND <= nIndex) {
 		ASSERT(0);
 		return 0;
 	}
@@ -4155,8 +4155,8 @@ int CCommands::GetDefaultCommandKey(int nCommandID, int nIndex)
 
 int CCommands::GetDefaultControlID(int nCommandID, int nIndex)
 {
-	if (nCommandID < 0 || sizeof(Commands) / sizeof(Commands[0]) <= nCommandID
-	 || nIndex < 0 || sizeof(Commands[nCommandID].keybind) / sizeof(Commands[nCommandID].keybind[0]) <= nIndex) {
+	if (nCommandID < 0 || MAX_COMMAND <= nCommandID
+	 || nIndex < 0 || MAX_KEY_BIND <= nIndex) {
 		ASSERT(0);
 		return 0;
 	}

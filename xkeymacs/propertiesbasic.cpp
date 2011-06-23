@@ -228,7 +228,7 @@ void CPropertiesBasic::UpdateDialogData(CString szApplicationName, BOOL bSaveAnd
 
 void CPropertiesBasic::InitChanged(BOOL bChanged)
 {
-	for (int i = 0; i < sizeof(m_bChanged)/sizeof(m_bChanged[0]); ++i) {
+	for (int i = 0; i < MAX_COMMAND; ++i) {
 		if (CCommands::GetDefaultControlID(i, 0) || !bChanged) {
 			m_bChanged[i] = bChanged;
 		}

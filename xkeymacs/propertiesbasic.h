@@ -122,7 +122,7 @@ private:
 	CToolTipCtrl m_ToolTip;
 	void Changed(int nObjectID);
 	CProperties* m_pProperties;
-	BOOL m_bChanged[sizeof(Commands)/sizeof(Commands[0])];
+	BOOL m_bChanged[MAX_COMMAND];
 	void UpdateDialogData(CString szApplicationName, BOOL bSaveAndValidate = TRUE);
 };
 
