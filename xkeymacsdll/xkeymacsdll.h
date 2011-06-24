@@ -109,8 +109,7 @@ public:
 	static void ToggleKeyboardHookState();
 	static void ShowKeyboardHookState();
 	static BOOL SendIconMessage(ICONMSG *pMsg, DWORD num);
-	CXkeymacsDll();
-	virtual ~CXkeymacsDll();
+
 private:
 	static DWORD m_nHookAltRelease;
 	static TCHAR m_M_xTip[128];

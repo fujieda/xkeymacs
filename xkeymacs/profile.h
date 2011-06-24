@@ -63,8 +63,6 @@ public:
 	static void InitDllData();
 	static void LoadData();
 	static void SaveData();
-	CProfile();
-	virtual ~CProfile();
 
 private:
 	static void SaveKeyBind(CString szApplicationName, CString szCommandName, int nCommandType, int nKey);

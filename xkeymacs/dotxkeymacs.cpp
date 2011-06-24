@@ -203,20 +203,6 @@ CObList		CDotXkeymacs::m_oFunctionDefinition;
 int			CDotXkeymacs::m_nIndex[MAX_APP][MAX_COMMAND_TYPE][MAX_KEY] = {'\0'};
 const TCHAR	CDotXkeymacs::m_szExt[] = _T("xkeymacs");
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CDotXkeymacs::CDotXkeymacs()
-{
-
-}
-
-CDotXkeymacs::~CDotXkeymacs()
-{
-
-}
-
 void CDotXkeymacs::Load(LPCTSTR lpszFileName)
 {
 	CStdioFile oDotXkeymacs;

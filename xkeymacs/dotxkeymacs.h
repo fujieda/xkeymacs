@@ -25,8 +25,6 @@ public:
 	static CString GetFunctionSymbol(int nIndex);
 	static int GetFunctionNumber();
 	static void Load();
-	CDotXkeymacs();
-	virtual ~CDotXkeymacs();
 
 private:
 	static LPCTSTR GetLanguage();

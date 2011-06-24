@@ -290,21 +290,6 @@ OriginalWindowPosition CCommands::m_OriginalWindowPosition[MAX_WINDOW] = {'\0'};
 BOOL CCommands::m_bIsSu = FALSE;
 #pragma data_seg()
 
-
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CCommands::CCommands()
-{
-
-}
-
-CCommands::~CCommands()
-{
-
-}
-
 void CCommands::DepressKey(BYTE bVk)
 {
 	CXkeymacsDll::DepressKey(bVk);

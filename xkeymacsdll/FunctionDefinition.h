@@ -23,9 +23,7 @@ public:
 	CString GetSymbol();
 	void SetDefinition(CString szDefinition);
 	void SetSymbol(CString szSymbol);
-	CFunctionDefinition();
 	CFunctionDefinition(CString szSymbol, CString szDefinition);
-	virtual ~CFunctionDefinition();
 
 private:
 	CObList m_oKey[MAX_APP];

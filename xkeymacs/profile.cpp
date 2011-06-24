@@ -475,20 +475,6 @@ BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CProfile::CProfile()
-{
-
-}
-
-CProfile::~CProfile()
-{
-
-}
-
 struct {
 	int type;
 	CString cstr;

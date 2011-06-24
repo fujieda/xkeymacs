@@ -252,20 +252,6 @@ BOOL CXkeymacsDll::m_bRecordingMacro = FALSE;
 BOOL CXkeymacsDll::m_bDown[MAX_KEY] = {0};
 std::list<KbdMacro> CXkeymacsDll::m_Macro;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CXkeymacsDll::CXkeymacsDll()
-{
-
-}
-
-CXkeymacsDll::~CXkeymacsDll()
-{
-
-}
-
 BOOL CXkeymacsDll::SaveConfig()
 {
 	TCHAR szTmp[MAX_PATH];

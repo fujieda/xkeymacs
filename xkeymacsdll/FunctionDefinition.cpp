@@ -7,24 +7,10 @@
 #include "Commands.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CFunctionDefinition::CFunctionDefinition()
-{
-
-}
-
 CFunctionDefinition::CFunctionDefinition(CString szSymbol, CString szDefinition)
 {
 	SetSymbol(szSymbol);
 	SetDefinition(szDefinition);
-}
-
-CFunctionDefinition::~CFunctionDefinition()
-{
-
 }
 
 void CFunctionDefinition::SetSymbol(CString szSymbol)

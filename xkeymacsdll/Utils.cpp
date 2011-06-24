@@ -12,20 +12,6 @@ TCHAR CUtils::m_szIMEName[MAX_PATH] = _T("IME");	// IDS_IME_FILE_NAME
 OSVERSIONINFO CUtils::m_OsVersionInfo = {sizeof(OSVERSIONINFO)};
 #pragma data_seg()
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CUtils::CUtils()
-{
-
-}
-
-CUtils::~CUtils()
-{
-
-}
-
 BOOL CUtils::GetFindDialogTitle(CString *szDialogTitle)
 {
 	{
