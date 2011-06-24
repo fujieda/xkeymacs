@@ -137,7 +137,6 @@
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>C:\WinDDK\7600.16385.1\inc\mfc42</AdditionalIncludeDirectories>
-      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
       <Optimization>MaxSpeed</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>

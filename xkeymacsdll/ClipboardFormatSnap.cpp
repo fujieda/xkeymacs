@@ -421,8 +421,8 @@ const int CClipboardFormatSnap::GetTextLength( const int nSizeOfNullTerminator )
 const int CClipboardFormatSnap::GetRTFBodyHead() const
 {
 	int nBra = 0;
-
-	for( int i = 0; i < m_oData.GetSize(); ++i )
+	int i;
+	for( i = 0; i < m_oData.GetSize(); ++i )
 	{
 		BOOL bBody = FALSE;
 
@@ -610,7 +610,8 @@ void CClipboardFormatSnap::Add( const char *const pAddedString, const BOOL bTop,
 
 	if( bTop )
 	{
-		for( int i = nOffset + nSizeOfNullTerminator - 1; 0 <= i ; --i )
+		int i;
+		for( i = nOffset + nSizeOfNullTerminator - 1; 0 <= i ; --i )
 		{
 			m_oData[ nSizeOfNullTerminator * strlen(pAddedString) + i ] = m_oData[ i ];
 		}
@@ -624,7 +625,8 @@ void CClipboardFormatSnap::Add( const char *const pAddedString, const BOOL bTop,
 	}
 	else
 	{
-		for( unsigned int i = 0; i < strlen( pAddedString ); ++i )
+		unsigned int i;
+		for( i = 0; i < strlen( pAddedString ); ++i )
 		{
 			for( int j = 0; j < nSizeOfNullTerminator; ++j )
 			{

@@ -125,7 +125,8 @@ const CClipboardSnap& CClipboardSnap::operator+=( const CClipboardSnap& rhs )
 		{
 			if( rhs.m_oFormatSnaps[ nRHS ]->IsMergeableFormat() )
 			{
-				for( int i = 0; i < nMergeableClipboardFormatNumber; ++i )
+				int i;
+				for( i = 0; i < nMergeableClipboardFormatNumber; ++i )
 				{
 					if( ( pMergeableClipboardFormatPosition + i )->m_nLHS < 0 ) continue;
 					if( rhs.m_oFormatSnaps[ nRHS ]->IsSameFormat( lhs.m_oFormatSnaps[ ( pMergeableClipboardFormatPosition + i )->m_nLHS ] ) ) break;

@@ -420,7 +420,8 @@ BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
 	// Get Process Name
 	DWORD dwProcessId = 0;
 	GetWindowThreadProcessId(hWnd, &dwProcessId);
-	for (DWORD i = 0; i < CProfile::m_dwTasks; ++i) {
+	DWORD i;
+	for (i = 0; i < CProfile::m_dwTasks; ++i) {
 		if (pTask[i].dwProcessId == dwProcessId) {
 
 			// Get Application Name
@@ -818,7 +819,8 @@ void CProfile::SaveCommand(const CString szApplicationName, const int nCommandID
 
 void CProfile::AddKeyBind2C_(const CString szApplicationName, const BYTE bVk)
 {
-	for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
+	int nCommandID;
+	for (nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
 		if (Commands[nCommandID].fCommand == CCommands::C_) {
 			break;
 		}
@@ -955,7 +957,8 @@ void CProfile::InitDllData()
 
 void CProfile::ClearData(const CString szCurrentApplication)
 {
-	for (int nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
+	int nApplicationID;
+	for (nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
 		if (m_Data[nApplicationID].GetApplicationName() == szCurrentApplication) {
 			break;
 		}
