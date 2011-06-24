@@ -1957,9 +1957,6 @@ int CCommands::TransposeChars()
 				nStep = 5;
 				return Reset(GOTO_RECURSIVE);
 			}
-
-			nStep = 7;
-			return Reset(GOTO_RECURSIVE);
 		}
 	case 4:		// Paste the cut character
 		nStep = 0;
