@@ -83,7 +83,7 @@ static const KeyName KeyNames[] = {
 	{ VK_DECIMAL,		_T("kp-decimal") },
 	{ VK_DIVIDE,		_T("kp-divide") },
 //	{ VK_F1,			_T("f1") },						// FIXME
-//	{ VK_F2,			_T("f2") },						// Move at the end of definition of funcgtion keys to keep away confliction f1/f2 and f1?/f2? by _tcsncmp() i.e. strncmp()
+//	{ VK_F2,			_T("f2") },						// Move at the end of definition of function keys to keep away confliction f1/f2 and f1?/f2? by _tcsncmp() i.e. strncmp()
 	{ VK_F3,			_T("f3") },
 	{ VK_F4,			_T("f4") },
 	{ VK_F5,			_T("f5") },

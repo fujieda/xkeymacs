@@ -934,7 +934,7 @@ BOOL CUtils::IsCorelDRAW()
 	return !_tcsicmp(m_szApplicationName, _T("CorelDrw.exe"));
 }
 
-// If Clipboard data is empty, return ture.
+// If Clipboard data is empty, return true.
 // You must CopyNextCharacter in previous step.
 // Clipboard data is destroyed.
 BOOL CUtils::IsEOF()
