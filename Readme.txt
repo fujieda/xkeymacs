@@ -85,6 +85,7 @@ derived from XKeymacs 3.48.
 The following developers have the copyrights of their contributions.
 Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 Tomohiro Kashiwada <kikairoya@gmail.com>
+Harold Bamford <hbamford@users.sourceforge.net>
 
 --- License ---
 This program is free software; you can redistribute it and/or
