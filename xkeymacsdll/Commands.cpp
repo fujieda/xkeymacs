@@ -2981,7 +2981,6 @@ BYTE CCommands::GetDirectionForwardKey()
 	 || CUtils::IsOpenJane()
 	 || CUtils::IsStoryEditor()
 	 || CUtils::IsVisualBasicEditor()
-	 || CUtils::IsVisualStudio()
 	 || CUtils::IsWordpad()) {
 		bDirectionForward = 0;
 	} else if (CUtils::IsLotusNotes()
