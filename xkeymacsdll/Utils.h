@@ -100,6 +100,7 @@ public:
 	static BOOL IsOutlook();
 	static BOOL IsOpera();
 	static BOOL IsNotepad();
+	static BOOL IsNotepadPP();
 	static BOOL IsNetscape();
 	static BOOL IsMuleForWin32();
 	static BOOL IsMozilla();

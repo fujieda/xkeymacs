@@ -140,6 +140,11 @@ BOOL CUtils::IsNotepad()
 	return !_tcsicmp(m_szApplicationName, _T("notepad.exe"));
 }
 
+BOOL CUtils::IsNotepadPP()
+{
+	return !_tcsicmp(m_szApplicationName, _T("notepad++.exe"));
+}
+
 BOOL CUtils::IsOpera()
 {
 	return !_tcsicmp(m_szApplicationName, _T("opera.exe"));
@@ -793,6 +798,9 @@ BOOL CUtils::IsVisualBasicEditor()
 
 BOOL CUtils::IsEclipse()
 {
+	if (!_tcsicmp(m_szApplicationName, _T("eclipse.exe")))
+		return TRUE;
+
 	TCHAR szWindowText[WINDOW_TEXT_LENGTH] = {'\0'};
 	GetWindowText(GetForegroundWindow(), szWindowText, sizeof(szWindowText));
 

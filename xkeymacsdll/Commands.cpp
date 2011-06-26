@@ -392,6 +392,16 @@ void CCommands::AdSdKduSuAu(BYTE bVk1)
 	CXkeymacsDll::SetModifierState(before, SHIFT | META);
 }
 
+void CCommands::AdCdKduCuAu(BYTE bVk1)
+{
+	UINT before = CXkeymacsDll::GetModifierState();
+	CXkeymacsDll::SetModifierState(CONTROL | META, before);
+
+	CXkeymacsDll::Kdu(bVk1, m_nNumericArgument);
+
+	CXkeymacsDll::SetModifierState(before, CONTROL | META);
+}
+
 // C-a: Home
 int CCommands::BeginningOfLine()
 {
@@ -2373,7 +2383,16 @@ int CCommands::Search(SEARCH_DIRECTION direction)
 		}
 
 		m_SearchDirection = direction;
-		OpenFindDialog();
+		if (CUtils::IsNotepadPP()) {
+			if (direction == FORWARD) // only forward incremental search supported
+				AdCdKduCuAu('I');
+		} else if (CUtils::IsEclipse()) {
+			if (direction == FORWARD)
+				CdKduCu('J');
+			else
+				CdSdKduSuCu('J');
+		} else
+			OpenFindDialog();
 	} else {
 //		CUtils::Log(_T("Find Dialog is opened."));
 
