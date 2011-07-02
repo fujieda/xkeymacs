@@ -3,8 +3,8 @@
 ======================================================================
 
 --- Abstract ---
-XKeymacs provides key operations like Emacs for applications running
-on Windows. You can configure key assignments per application.
+XKeymacs provides key bindings like Emacs for applications running on
+Microsoft Windows. You can also configure bindings for each application.
 
 --- Install ---
 1. Install the following runtime libraries. The latter is necessary
