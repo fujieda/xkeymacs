@@ -168,7 +168,7 @@ inline bool Is64ProcessHwnd(HWND hwnd)
 {
 	DWORD pid;
 	GetWindowThreadProcessId(hwnd, &pid);
-	HANDLE hmod = OpenProcess(PROCESS_ALL_ACCESS, 0, pid);
+	HANDLE hmod = OpenProcess(PROCESS_QUERY_INFORMATION, 0, pid);
 	bool b = Is64Process(hmod);
 	CloseHandle(hmod);
 	return b;
