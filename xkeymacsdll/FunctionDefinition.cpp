@@ -33,23 +33,23 @@ CString CFunctionDefinition::GetDefinition()
 	return m_szDefinition;
 }
 
-void CFunctionDefinition::ClearKey(int nApplicationID)
+void CFunctionDefinition::ClearKey(int nAppID)
 {
-	if (nApplicationID < 0 || MAX_APP <= nApplicationID) {
+	if (nAppID < 0 || MAX_APP <= nAppID) {
 		return;
 	}
 
-	while (!m_oKey[nApplicationID].IsEmpty()) {
-		KeyBind *pKeyBind = (KeyBind *)m_oKey[nApplicationID].GetHead();
+	while (!m_oKey[nAppID].IsEmpty()) {
+		KeyBind *pKeyBind = (KeyBind *)m_oKey[nAppID].GetHead();
 		delete pKeyBind;
 		pKeyBind = NULL;
-		m_oKey[nApplicationID].RemoveHead();
+		m_oKey[nAppID].RemoveHead();
 	}
 }
 
-void CFunctionDefinition::SetKey(int nApplicationID, int nCommandType, int nKey)
+void CFunctionDefinition::SetKey(int nAppID, int nType, int nKey)
 {
-	if (nApplicationID < 0 || MAX_APP <= nApplicationID) {
+	if (nAppID < 0 || MAX_APP <= nAppID) {
 		return;
 	}
 
@@ -57,11 +57,11 @@ void CFunctionDefinition::SetKey(int nApplicationID, int nCommandType, int nKey)
 		KeyBind *pKeyBind = new KeyBind;
 
 		if (pKeyBind) {
-			pKeyBind->nCommandType = nCommandType;
+			pKeyBind->nType = nType;
 			pKeyBind->bVk = (BYTE)nKey;
 			pKeyBind->nControlID = 0;
 
-			m_oKey[nApplicationID].AddTail((CObject *)pKeyBind);
+			m_oKey[nAppID].AddTail((CObject *)pKeyBind);
 		}
 	}
 	catch (CMemoryException* e) {
@@ -70,45 +70,45 @@ void CFunctionDefinition::SetKey(int nApplicationID, int nCommandType, int nKey)
 	}
 }
 
-int CFunctionDefinition::GetKeyNumber(int nApplicationID)
+int CFunctionDefinition::GetKeyNumber(int nAppID)
 {
-	if (nApplicationID < 0 || MAX_APP <= nApplicationID) {
+	if (nAppID < 0 || MAX_APP <= nAppID) {
 		return 0;
 	}
 
-	return m_oKey[nApplicationID].GetCount();
+	return m_oKey[nAppID].GetCount();
 }
 
-void CFunctionDefinition::GetKey(int nApplicationID, int nKeyID, int *pCommandType, int *pKey)
+void CFunctionDefinition::GetKey(int nAppID, int nKeyID, int *pCommandType, int *pKey)
 {
 	*pCommandType = 0;
 	*pKey = 0;
 
-	if (nApplicationID < 0 || MAX_APP <= nApplicationID) {
+	if (nAppID < 0 || MAX_APP <= nAppID) {
 		return;
 	}
-	if (nKeyID < 0 || m_oKey[nApplicationID].GetCount() <= nKeyID) {
+	if (nKeyID < 0 || m_oKey[nAppID].GetCount() <= nKeyID) {
 		return;
 	}
 
-	KeyBind *pKeyBind = (KeyBind *)m_oKey[nApplicationID].GetAt(m_oKey[nApplicationID].FindIndex(nKeyID));
-	*pCommandType = pKeyBind->nCommandType;
+	KeyBind *pKeyBind = (KeyBind *)m_oKey[nAppID].GetAt(m_oKey[nAppID].FindIndex(nKeyID));
+	*pCommandType = pKeyBind->nType;
 	*pKey = pKeyBind->bVk;
 }
 
-void CFunctionDefinition::RemoveKey(int nApplicationID, int nCommandType, int nKey)
+void CFunctionDefinition::RemoveKey(int nAppID, int nType, int nKey)
 {
-	if (nApplicationID < 0 || MAX_APP <= nApplicationID) {
+	if (nAppID < 0 || MAX_APP <= nAppID) {
 		return;
 	}
 
-	for (POSITION pos = m_oKey[nApplicationID].GetHeadPosition(); pos; ) {
+	for (POSITION pos = m_oKey[nAppID].GetHeadPosition(); pos; ) {
 		POSITION currentPos = pos;
-		KeyBind *pKeyBind = (KeyBind *)m_oKey[nApplicationID].GetNext(pos);
-		if (pKeyBind->nCommandType == nCommandType && pKeyBind->bVk == nKey) {
+		KeyBind *pKeyBind = (KeyBind *)m_oKey[nAppID].GetNext(pos);
+		if (pKeyBind->nType == nType && pKeyBind->bVk == nKey) {
 			delete pKeyBind;
 			pKeyBind = NULL;
-			m_oKey[nApplicationID].RemoveAt(currentPos);
+			m_oKey[nAppID].RemoveAt(currentPos);
 			break;
 		}
 	}

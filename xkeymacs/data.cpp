@@ -45,18 +45,18 @@ CString CData::GetApplicationName()
 	return m_strApplicationName;
 }
 
-void CData::SetCommandID(int nCommandType, int nKey, int nCommandID)
+void CData::SetCommandID(int nType, int nKey, int nComID)
 {
-	ASSERT(nCommandType >= 0 || nCommandType < MAX_COMMAND_TYPE);
+	ASSERT(nType >= 0 || nType < MAX_COMMAND_TYPE);
 	ASSERT(nKey <= 0 || nKey < MAX_KEY);
-	m_nCommandID[nCommandType][nKey] = nCommandID;
+	m_nCommandID[nType][nKey] = nComID;
 }
 
-int CData::GetCommandID(int nCommandType, int nKey)
+int CData::GetCommandID(int nType, int nKey)
 {
-	ASSERT(nCommandType >= 0 || nCommandType < MAX_COMMAND_TYPE);
+	ASSERT(nType >= 0 || nType < MAX_COMMAND_TYPE);
 	ASSERT(nKey <= 0 || nKey < MAX_KEY);
-	return m_nCommandID[nCommandType][nKey];
+	return m_nCommandID[nType][nKey];
 }
 
 void CData::ClearAll()

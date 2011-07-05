@@ -179,12 +179,12 @@ void CPropertiesAdvanced::InitCategoryList()
 
 	// get all category type
 	m_cCategory.ResetContent();
-	for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-		CString szCommandName = CCommands::GetCommandName(nCommandID);
+	for (int nComID = 1; nComID < MAX_COMMAND; ++nComID) {
+		CString szCommandName = CCommands::GetCommandName(nComID);
 		if (szCommandName.IsEmpty()) {
 			break;
 		}
-		int nCategoryID = CCommands::GetCategoryID(nCommandID);
+		int nCategoryID = CCommands::GetCategoryID(nComID);
 		if (!nCategoryID) {
 			continue;
 		}
@@ -229,32 +229,32 @@ void CPropertiesAdvanced::SetCommands()
 	CString szCategory;
 	m_cCategory.GetLBText(m_cCategory.GetCurSel(), szCategory);
 	if (szCategory.Compare(CString(MAKEINTRESOURCE(IDS_ORIGINAL)))) {
-		for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-			CString szCommandName = CCommands::GetCommandName(nCommandID);
+		for (int nComID = 1; nComID < MAX_COMMAND; ++nComID) {
+			CString szCommandName = CCommands::GetCommandName(nComID);
 			if (szCommandName.IsEmpty()) {
 				break;
 			}
 
-			if (szCategory == CString(MAKEINTRESOURCE(CCommands::GetCategoryID(nCommandID)))) {
+			if (szCategory == CString(MAKEINTRESOURCE(CCommands::GetCategoryID(nComID)))) {
 				m_cCommands.AddString(szCommandName);
 			}
 		}
 	} else {
-		for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); ++nFunctionID) {
+		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID) {
 			BOOL bOriginal = TRUE;
-			for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-				CString szCommandName = CCommands::GetCommandName(nCommandID);
+			for (int nComID = 1; nComID < MAX_COMMAND; ++nComID) {
+				CString szCommandName = CCommands::GetCommandName(nComID);
 				if (szCommandName.IsEmpty()) {
 					break;
 				}
 
-				if (szCommandName == CDotXkeymacs::GetFunctionSymbol(nFunctionID)) {
+				if (szCommandName == CDotXkeymacs::GetFunctionSymbol(nFuncID)) {
 					bOriginal = FALSE;	// overwriting build-in keybindings
 					break;
 				}
 			}
 			if (bOriginal) {
-				m_cCommands.AddString(CDotXkeymacs::GetFunctionSymbol(nFunctionID));
+				m_cCommands.AddString(CDotXkeymacs::GetFunctionSymbol(nFuncID));
 			}
 		}
 	}
@@ -275,24 +275,24 @@ void CPropertiesAdvanced::SetCurrentKeys()
 	m_cCommands.GetText(m_cCommands.GetCurSel(), szCurrentCommandName);
 
 	if (szCategory.Compare(CString(MAKEINTRESOURCE(IDS_ORIGINAL)))) {
-		for (int nCommandType = 0; nCommandType < MAX_COMMAND_TYPE; ++nCommandType) {
+		for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType) {
 			for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-				if (CCommands::GetCommandName(CProfile::GetCommandID(m_nApplicationID, nCommandType, nKey)) == szCurrentCommandName) {
+				if (CCommands::GetCommandName(CProfile::GetCommandID(m_nApplicationID, nType, nKey)) == szCurrentCommandName) {
 					CString sz;
-					sz.Format(_T("%s%s"), CProfile::CommandType2String(nCommandType), CProfile::Key2String(nKey));
+					sz.Format(_T("%s%s"), CProfile::CommandType2String(nType), CProfile::Key2String(nKey));
 					m_cCurrentKeys.AddString(sz);
 				}
 			}
 		}
 
 		CString szCommandName;
-		for (int nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
-			szCommandName = CCommands::GetCommandName(nCommandID);
+		for (int nComID = 0; nComID < MAX_COMMAND; ++nComID) {
+			szCommandName = CCommands::GetCommandName(nComID);
 			if (szCommandName.IsEmpty()) {
 				break;
 			}
 			if (szCommandName == szCurrentCommandName) {
-				m_nCommandID = nCommandID;
+				m_nCommandID = nComID;
 				break;
 			}
 		}
@@ -300,8 +300,8 @@ void CPropertiesAdvanced::SetCurrentKeys()
 		m_cDescription.SetWindowText(CString(MAKEINTRESOURCE(CCommands::GetDescriptionID(m_nCommandID))));
 
 		// overwrite by original command's description if needed
-		for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); ++nFunctionID) {
-			if (szCommandName == CDotXkeymacs::GetFunctionSymbol(nFunctionID)) {
+		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID) {
+			if (szCommandName == CDotXkeymacs::GetFunctionSymbol(nFuncID)) {
 				m_cDescription.SetWindowText(CDotXkeymacs::GetFunctionDefinition(szCurrentCommandName));
 				break;
 			}
@@ -309,12 +309,12 @@ void CPropertiesAdvanced::SetCurrentKeys()
 	} else {
 		const int nIndex = CDotXkeymacs::GetIndex(szCurrentCommandName);
 		for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nIndex, m_nApplicationID); ++nKeyID) {
-			int nCommandType = 0;
+			int nType = 0;
 			int nKey = 0;
-			CDotXkeymacs::GetKey(nIndex, m_nApplicationID, nKeyID, &nCommandType, &nKey);
+			CDotXkeymacs::GetKey(nIndex, m_nApplicationID, nKeyID, &nType, &nKey);
 
 			CString sz;
-			sz.Format(_T("%s%s"), CProfile::CommandType2String(nCommandType), CProfile::Key2String(nKey));
+			sz.Format(_T("%s%s"), CProfile::CommandType2String(nType), CProfile::Key2String(nKey));
 			m_cCurrentKeys.AddString(sz);
 		}
 
@@ -473,26 +473,26 @@ LRESULT CALLBACK CPropertiesAdvanced::KeyboardProc(int code, WPARAM wParam, LPAR
 void CPropertiesAdvanced::SetNewKey()
 {
 	CString szNewKey;
-	int nCommandType = NONE;
+	int nType = NONE;
 
 	if (m_bC_x) {
 		szNewKey += _T("Ctrl+X ");
-		nCommandType += CONTROLX;
+		nType += CONTROLX;
 	}
 	if (IsCtrlDown()) {
 		szNewKey += _T("Ctrl+");
-		nCommandType += CONTROL;
+		nType += CONTROL;
 	}
 	if (IsMetaDown()) {
 		szNewKey += _T("Meta+");
-		nCommandType += META;
+		nType += META;
 	}
 	if (IsShiftDown()) {
 		szNewKey += _T("Shift+");
-		nCommandType += SHIFT;
+		nType += SHIFT;
 	}
 
-	m_nAssignCommandType = nCommandType;
+	m_nAssignCommandType = nType;
 
 	szNewKey += CProfile::Key2String(m_nAssignKey);
 	if (m_pNewKey) {
@@ -520,12 +520,12 @@ void CPropertiesAdvanced::SetNewKey()
 	}
 }
 
-void CPropertiesAdvanced::SetCommandID(int nCommandType, int nKey, int nCommandID)
+void CPropertiesAdvanced::SetCommandID(int nType, int nKey, int nComID)
 {
-	m_nCommandIDs[nCommandType][nKey] = nCommandID;
+	m_nCommandIDs[nType][nKey] = nComID;
 
 	// Set C-x if it is needed.
-	if ((nCommandType & CONTROLX)) {
+	if ((nType & CONTROLX)) {
 		// Get CommandID of C-x.
 		int nCommandIDofC_x;
 		for (nCommandIDofC_x = 0; nCommandIDofC_x < MAX_COMMAND; ++nCommandIDofC_x) {
@@ -534,7 +534,7 @@ void CPropertiesAdvanced::SetCommandID(int nCommandType, int nKey, int nCommandI
 			}
 		}
 
-		if (nCommandID) {
+		if (nComID) {
 			m_nCommandIDs[CONTROL]['X'] = nCommandIDofC_x;
 		} else {
 			for (int i = 0; i < MAX_COMMAND_TYPE; ++i) {	// i is command-type.
@@ -555,9 +555,9 @@ void CPropertiesAdvanced::SetCommandID(int nCommandType, int nKey, int nCommandI
 
 void CPropertiesAdvanced::InitCommandIDs()
 {
-	for (int nCommandType = 0; nCommandType < MAX_COMMAND_TYPE; ++nCommandType) {
+	for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType) {
 		for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-			SetCommandID(nCommandType, nKey, CProfile::GetCommandID(m_nApplicationID, nCommandType, nKey));
+			SetCommandID(nType, nKey, CProfile::GetCommandID(m_nApplicationID, nType, nKey));
 		}
 	}
 }

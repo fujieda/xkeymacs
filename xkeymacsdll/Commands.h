@@ -169,13 +169,13 @@ public:
 	static int BackwardChar();
 	static int BeginningOfLine();
 	static int ForwardChar();
-	static CString GetCommandName(int nCommandID);
-	static int GetCategoryID(int nCommandID);
-	static int GetDescriptionID(int nCommandID);
-	static int GetToolTipID(int nCommandID);
-	static int GetDefaultCommandType(int nCommandID, int nIndex);
-	static int GetDefaultCommandKey(int nCommandID, int nIndex);
-	static int GetDefaultControlID(int nCommandID, int nIndex);
+	static CString GetCommandName(int nComID);
+	static int GetCategoryID(int nComID);
+	static int GetDescriptionID(int nComID);
+	static int GetToolTipID(int nComID);
+	static int GetDefaultCommandType(int nComID, int nIndex);
+	static int GetDefaultCommandKey(int nComID, int nIndex);
+	static int GetDefaultControlID(int nComID, int nIndex);
 	static void DoSetInputMethodOpenStatus(INPUT_METHOD_OPEN_STATUS status, BOOL isComplete = FALSE);
 
 private:

@@ -2675,9 +2675,9 @@ int CCommands::KillBuffer()
 
 BOOL CCommands::IsKillCommand(int (*nFunctionPointer)())
 {
-	for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-		if (Commands[nCommandID].fCommand == nFunctionPointer) {
-			return !_tcsncmp(Commands[nCommandID].szCommandName, _T("kill-"), 5);
+	for (int nComID = 1; nComID < MAX_COMMAND; ++nComID) {
+		if (Commands[nComID].fCommand == nFunctionPointer) {
+			return !_tcsncmp(Commands[nComID].szCommandName, _T("kill-"), 5);
 		}
 	}
 	return FALSE;
@@ -3468,9 +3468,9 @@ BOOL CCommands::IsEmptyClipboardData(const int nID)
 
 void CCommands::PrintFunctionName(int (*nFunctionPointer)())
 {
-	for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-		if (Commands[nCommandID].fCommand == nFunctionPointer) {
-			CUtils::Log(_T("m_LastCommand: %s"), Commands[nCommandID].szCommandName);
+	for (int nComID = 1; nComID < MAX_COMMAND; ++nComID) {
+		if (Commands[nComID].fCommand == nFunctionPointer) {
+			CUtils::Log(_T("m_LastCommand: %s"), Commands[nComID].szCommandName);
 		}
 	}
 }
@@ -4020,46 +4020,46 @@ int CCommands::ExecuteExtendedCommand()
 	return Reset(GOTO_HOOKX);
 }
 
-CString CCommands::GetCommandName(int nCommandID)
+CString CCommands::GetCommandName(int nComID)
 {
-	CString szCommandName(Commands[nCommandID].szCommandName);
+	CString szCommandName(Commands[nComID].szCommandName);
 	return szCommandName;
 }
 
-int CCommands::GetCategoryID(int nCommandID)
+int CCommands::GetCategoryID(int nComID)
 {
-	return Commands[nCommandID].nCategoryID;
+	return Commands[nComID].nCategoryID;
 }
 
-int CCommands::GetDescriptionID(int nCommandID)
+int CCommands::GetDescriptionID(int nComID)
 {
-	return Commands[nCommandID].nDescriptionID;
+	return Commands[nComID].nDescriptionID;
 }
 
-int CCommands::GetToolTipID(int nCommandID)
+int CCommands::GetToolTipID(int nComID)
 {
-	return Commands[nCommandID].nToolTipID;
+	return Commands[nComID].nToolTipID;
 }
 
-int CCommands::GetDefaultCommandType(int nCommandID, int nIndex)
+int CCommands::GetDefaultCommandType(int nComID, int nIndex)
 {
-	if (nCommandID < 0 || MAX_COMMAND <= nCommandID
+	if (nComID < 0 || MAX_COMMAND <= nComID
 	 || nIndex < 0 || MAX_KEY_BIND <= nIndex) {
 		ASSERT(0);
 		return NONE;
 	}
 
-	int nCommandType	= Commands[nCommandID].keybind[nIndex].nCommandType;
-	int bVk				= Commands[nCommandID].keybind[nIndex].bVk;
+	int nType	= Commands[nComID].keybind[nIndex].nType;
+	int bVk				= Commands[nComID].keybind[nIndex].bVk;
 
 	if (CXkeymacsDll::Is106Keyboard()) {
-		if (nCommandType & SHIFT) {	// Shift
+		if (nType & SHIFT) {	// Shift
 			switch (bVk) {
 			case '2':
 			case '6':
 			case 0xBA:		// VK_OEM_1		Used for miscellaneous characters; it can vary by keyboard. 
 							//				Windows 2000/XP: For the US standard keyboard, the ';:' key
-				nCommandType &= ~SHIFT;
+				nType &= ~SHIFT;
 				break;
 			default:
 				break;
@@ -4071,7 +4071,7 @@ int CCommands::GetDefaultCommandType(int nCommandID, int nIndex)
 							//				Windows 2000/XP: For the US standard keyboard, the '`~' key
 			case 0xDE:		// VK_OEM_7		Used for miscellaneous characters; it can vary by keyboard. 
 							//				Windows 2000/XP: For the US standard keyboard, the 'single-quote/double-quote' key
-				nCommandType |= SHIFT;
+				nType |= SHIFT;
 				break;
 			default:
 				break;
@@ -4079,22 +4079,22 @@ int CCommands::GetDefaultCommandType(int nCommandID, int nIndex)
 		}
 	}
 
-	return nCommandType;
+	return nType;
 }
 
-int CCommands::GetDefaultCommandKey(int nCommandID, int nIndex)
+int CCommands::GetDefaultCommandKey(int nComID, int nIndex)
 {
-	if (nCommandID < 0 || MAX_COMMAND <= nCommandID
+	if (nComID < 0 || MAX_COMMAND <= nComID
 	 || nIndex < 0 || MAX_KEY_BIND <= nIndex) {
 		ASSERT(0);
 		return 0;
 	}
 
-	int nCommandType	= Commands[nCommandID].keybind[nIndex].nCommandType;
-	int bVk				= Commands[nCommandID].keybind[nIndex].bVk;
+	int nType	= Commands[nComID].keybind[nIndex].nType;
+	int bVk				= Commands[nComID].keybind[nIndex].bVk;
 
 	if (CXkeymacsDll::Is106Keyboard()) {
-		if (nCommandType & SHIFT) {	// Shift
+		if (nType & SHIFT) {	// Shift
 			switch (bVk) {
 			case '0':
 				bVk = '9';
@@ -4153,13 +4153,13 @@ int CCommands::GetDefaultCommandKey(int nCommandID, int nIndex)
 	return bVk;
 }
 
-int CCommands::GetDefaultControlID(int nCommandID, int nIndex)
+int CCommands::GetDefaultControlID(int nComID, int nIndex)
 {
-	if (nCommandID < 0 || MAX_COMMAND <= nCommandID
+	if (nComID < 0 || MAX_COMMAND <= nComID
 	 || nIndex < 0 || MAX_KEY_BIND <= nIndex) {
 		ASSERT(0);
 		return 0;
 	}
 
-	return Commands[nCommandID].keybind[nIndex].nControlID;
+	return Commands[nComID].keybind[nIndex].nControlID;
 }

@@ -14,11 +14,11 @@
 class AFX_EXT_CLASS CFunctionDefinition
 {
 public:
-	void RemoveKey(int nApplicationID, int nCommandType, int nKey);
-	void GetKey(int nApplicationID, int nKeyID, int *pCommandType, int *pKey);
-	int GetKeyNumber(int nApplicationID);
-	void SetKey(int nApplicationID, int nCommandType, int nKey);
-	void ClearKey(int nApplicationID);
+	void RemoveKey(int nAppID, int nType, int nKey);
+	void GetKey(int nAppID, int nKeyID, int *pCommandType, int *pKey);
+	int GetKeyNumber(int nAppID);
+	void SetKey(int nAppID, int nType, int nKey);
+	void ClearKey(int nAppID);
 	CString GetDefinition();
 	CString GetSymbol();
 	void SetDefinition(CString szDefinition);

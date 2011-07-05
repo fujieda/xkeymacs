@@ -29,8 +29,8 @@ public:
 	int GetKillRingMax();
 	CString GetApplicationTitle();
 	void SetApplicationTitle(LPCTSTR lpszApplicationTitle);
-	int GetCommandID(int nCommandType, int nKey);
-	void SetCommandID(int nCommandType, int nKey, int nCommandID);
+	int GetCommandID(int nType, int nKey);
+	void SetCommandID(int nType, int nKey, int nComID);
 	CString GetApplicationName();
 	void SetApplicationName(LPCTSTR lpszApplicationName);
 	CData();

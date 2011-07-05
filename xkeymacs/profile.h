@@ -29,10 +29,10 @@ class CProfile
 {
 public:
 	static int GetKeyboardSpeed(void);
-	static CString GetWindowText(int nApplicationID);
-	static void SetWindowText(int nApplicationID, CString szWindowText);
-	static void SetEnableCUA(int nApplicationID, BOOL bEnableCUA);
-	static BOOL GetEnableCUA(int nApplicationID);
+	static CString GetWindowText(int nAppID);
+	static void SetWindowText(int nAppID, CString szWindowText);
+	static void SetEnableCUA(int nAppID, BOOL bEnableCUA);
+	static BOOL GetEnableCUA(int nAppID);
 	static void ImportProperties();
 	static void ExportProperties();
 	static void RestartComputer();
@@ -41,19 +41,19 @@ public:
 	static void LoadScanCodeMap(HKEY_TYPE hkeyType);
 	static BOOL Is106Keyboard();
 	static BOOL IsDialog(CString sz);
-	static BOOL GetUseDialogSetting(int nApplicationID);
-	static void SetUseDialogSetting(int nApplicationID, BOOL bUseDialogSetting);
+	static BOOL GetUseDialogSetting(int nAppID);
+	static void SetUseDialogSetting(int nAppID, BOOL bUseDialogSetting);
 	static int GetApplicationIndex(CString szApplicationName);
 	static void CopyData(CString szDestinationApplication, CString szSourceApplication);
 	static void ReadKeyBind(int *pnCommandType, int *pnKey, LPCTSTR szKeyBind);
 	static LPCTSTR Key2String(int nKey);
-	static LPCTSTR CommandType2String(int nCommandType);
+	static LPCTSTR CommandType2String(int nType);
 	static int GetCurrentApplicationID(CComboBox *cApplicationList, CString szCurrentApplication);
-	static int GetKillRingMax(int nApplicationID);
-	static void SetKillRingMax(int nApplicationID, int nKillRingMax);
-	static int GetCommandID(int nApplicationID, int nCommandType, int nKey);
-	static void SetCommandID(int nApplicationID, int nCommandType, int nKey, int nCommandID);
-	static void UpdateApplicationTitle(CComboBox *cApplicationList, CString szCurrentApplication, int nApplicationID, BOOL bSaveAndValidate);
+	static int GetKillRingMax(int nAppID);
+	static void SetKillRingMax(int nAppID, int nKillRingMax);
+	static int GetCommandID(int nAppID, int nType, int nKey);
+	static void SetCommandID(int nAppID, int nType, int nKey, int nComID);
+	static void UpdateApplicationTitle(CComboBox *cApplicationList, CString szCurrentApplication, int nAppID, BOOL bSaveAndValidate);
 	static void GetApplicationTitle(CComboBox *cApplicationList, CString &rList, int nIndex = -1);
 	static BOOL IsDefault(CString sz);
 	static int GetApplicationIndex(CString szApplicationName, BOOL bSaveAndValidate, int *nSettingStyle);
@@ -65,11 +65,11 @@ public:
 	static void SaveData();
 
 private:
-	static void SaveKeyBind(CString szApplicationName, CString szCommandName, int nCommandType, int nKey);
+	static void SaveKeyBind(CString szApplicationName, CString szCommandName, int nType, int nKey);
 	static BOOL DiableTokenPrivileges();
 	static BOOL AdjustTokenPrivileges(LPCTSTR lpName);
-	static void SaveCommand(CString szApplicationName, int nCommandID);
-	static void SaveKeyBind(CString szApplicationName, int nCommandID, int nCommandType, int nKey);
+	static void SaveCommand(CString szApplicationName, int nComID);
+	static void SaveKeyBind(CString szApplicationName, int nComID, int nType, int nKey);
 	static void AddKeyBind2C_(CString szApplicationName, BYTE bVk);
 	static void LevelUp();
 	static void Item2AppName(CString *sz);
@@ -85,10 +85,10 @@ private:
 	static TASK_LIST m_TaskList[MAX_TASKS];
 	static DWORD m_dwTasks;
 	static void GetTaskList();
-	static BOOL IsCommandType(int nCommandType, LPCTSTR szKeyBind);
+	static BOOL IsCommandType(int nType, LPCTSTR szKeyBind);
 	static int KeyBind2Key(LPCTSTR szKey);
 	static int KeyBind2CommandType(LPCTSTR szKeyBind);
-	static CString WriteKeyBind(int nCommandType, int nKey);
+	static CString WriteKeyBind(int nType, int nKey);
 	static void LoadRegistry();
 	static void SaveRegistry();
 	static void AddIMEInfo(CComboBox *cApplicationList);

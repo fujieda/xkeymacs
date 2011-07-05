@@ -12,15 +12,15 @@
 class CDotXkeymacs  
 {
 public:
-	static void RemoveKey(const int nApplicationID, const int nCommandType, const int nKey);
-	static void RemoveKey(const int nIndex, const int nApplicationID, const int nCommandType, const int nKey);
+	static void RemoveKey(const int nAppID, const int nType, const int nKey);
+	static void RemoveKey(const int nIndex, const int nAppID, const int nType, const int nKey);
 	static CString GetFunctionDefinition(int nIndex);
-	static int GetIndex(int nApplicationID, int nCommandType, int nKey);
-	static void GetKey(int nIndex, int nApplicationID, int nKeyID, int *pCommandType, int *pKey);
-	static int GetKeyNumber(int nIndex, int nApplicationID);
+	static int GetIndex(int nAppID, int nType, int nKey);
+	static void GetKey(int nIndex, int nAppID, int nKeyID, int *pCommandType, int *pKey);
+	static int GetKeyNumber(int nIndex, int nAppID);
 	static int GetIndex(CString szSymbol);
-	static void SetKey(int nIndex, int nApplicationID, int nCommandType, int nKey);
-	static void ClearKey(int nIndex, int nApplicationID);
+	static void SetKey(int nIndex, int nAppID, int nType, int nKey);
+	static void ClearKey(int nIndex, int nAppID);
 	static CString GetFunctionDefinition(CString szSymbol);
 	static CString GetFunctionSymbol(int nIndex);
 	static int GetFunctionNumber();

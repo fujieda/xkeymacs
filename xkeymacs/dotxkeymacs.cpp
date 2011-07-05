@@ -345,34 +345,34 @@ CString CDotXkeymacs::GetFunctionDefinition(CString szSymbol)
 	return CString(_T("Undefined Command"));
 }
 
-void CDotXkeymacs::ClearKey(int nIndex, int nApplicationID)
+void CDotXkeymacs::ClearKey(int nIndex, int nAppID)
 {
 	if (nIndex < 0 || m_oFunctionDefinition.GetCount() <= nIndex) {
 		return;
 	}
 
 	if (CFunctionDefinition *pFunctionDefinition = (CFunctionDefinition *)m_oFunctionDefinition.GetAt(m_oFunctionDefinition.FindIndex(nIndex))) {
-		pFunctionDefinition->ClearKey(nApplicationID);
+		pFunctionDefinition->ClearKey(nAppID);
 	}
 
-	for (int nCommandType = 0; nCommandType < MAX_COMMAND_TYPE; ++nCommandType) {
+	for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType) {
 		for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-			if (m_nIndex[nApplicationID][nCommandType][nKey] == nIndex) {
-				m_nIndex[nApplicationID][nCommandType][nKey] = -1;
+			if (m_nIndex[nAppID][nType][nKey] == nIndex) {
+				m_nIndex[nAppID][nType][nKey] = -1;
 			}
 		}
 	}
 }
 
-void CDotXkeymacs::SetKey(int nIndex, int nApplicationID, int nCommandType, int nKey)
+void CDotXkeymacs::SetKey(int nIndex, int nAppID, int nType, int nKey)
 {
 	if (nIndex < 0 || m_oFunctionDefinition.GetCount() <= nIndex) {
 		return;
 	}
 
 	if (CFunctionDefinition *pFunctionDefinition = (CFunctionDefinition *)m_oFunctionDefinition.GetAt(m_oFunctionDefinition.FindIndex(nIndex))) {
-		pFunctionDefinition->SetKey(nApplicationID, nCommandType, nKey);
-		m_nIndex[nApplicationID][nCommandType][nKey] = nIndex;
+		pFunctionDefinition->SetKey(nAppID, nType, nKey);
+		m_nIndex[nAppID][nType][nKey] = nIndex;
 	}
 }
 
@@ -388,32 +388,32 @@ int CDotXkeymacs::GetIndex(CString szSymbol)
 	return -1;
 }
 
-int CDotXkeymacs::GetKeyNumber(int nIndex, int nApplicationID)
+int CDotXkeymacs::GetKeyNumber(int nIndex, int nAppID)
 {
 	if (nIndex < 0 || m_oFunctionDefinition.GetCount() <= nIndex) {
 		return 0;
 	}
 
 	CFunctionDefinition *pFunctionDefinition = (CFunctionDefinition *)m_oFunctionDefinition.GetAt(m_oFunctionDefinition.FindIndex(nIndex));
-	return pFunctionDefinition->GetKeyNumber(nApplicationID);
+	return pFunctionDefinition->GetKeyNumber(nAppID);
 }
 
-void CDotXkeymacs::GetKey(int nIndex, int nApplicationID, int nKeyID, int *pCommandType, int *pKey)
+void CDotXkeymacs::GetKey(int nIndex, int nAppID, int nKeyID, int *pCommandType, int *pKey)
 {
 	if (nIndex < 0 || m_oFunctionDefinition.GetCount() <= nIndex) {
 		return;
 	}
 
 	CFunctionDefinition *pFunctionDefinition = (CFunctionDefinition *)m_oFunctionDefinition.GetAt(m_oFunctionDefinition.FindIndex(nIndex));
-	pFunctionDefinition->GetKey(nApplicationID, nKeyID, pCommandType, pKey);
+	pFunctionDefinition->GetKey(nAppID, nKeyID, pCommandType, pKey);
 }
 
-int CDotXkeymacs::GetIndex(int nApplicationID, int nCommandType, int nKey)
+int CDotXkeymacs::GetIndex(int nAppID, int nType, int nKey)
 {
-	return m_nIndex[nApplicationID][nCommandType][nKey];
+	return m_nIndex[nAppID][nType][nKey];
 }
 
-void CDotXkeymacs::RemoveKey(const int nIndex, const int nApplicationID, const int nCommandType, const int nKey)
+void CDotXkeymacs::RemoveKey(const int nIndex, const int nAppID, const int nType, const int nKey)
 {
 	if (nIndex < 0 || m_oFunctionDefinition.GetCount() <= nIndex) {
 		return;
@@ -421,14 +421,14 @@ void CDotXkeymacs::RemoveKey(const int nIndex, const int nApplicationID, const i
 
 	CFunctionDefinition *pFunctionDefinition = (CFunctionDefinition *)m_oFunctionDefinition.GetAt(m_oFunctionDefinition.FindIndex(nIndex));
 	if (pFunctionDefinition) {
-		pFunctionDefinition->RemoveKey(nApplicationID, nCommandType, nKey);
+		pFunctionDefinition->RemoveKey(nAppID, nType, nKey);
 	}
 }
 
-void CDotXkeymacs::RemoveKey(const int nApplicationID, const int nCommandType, const int nKey)
+void CDotXkeymacs::RemoveKey(const int nAppID, const int nType, const int nKey)
 {
 	for (int nIndex = 0; nIndex < m_oFunctionDefinition.GetCount(); ++nIndex) {
-		RemoveKey(nIndex, nApplicationID, nCommandType, nKey);
+		RemoveKey(nIndex, nAppID, nType, nKey);
 	}
 }
 

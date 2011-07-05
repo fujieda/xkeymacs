@@ -20,8 +20,8 @@ static char THIS_FILE[]=__FILE__;
 
 struct CommandTypeName
 {
-	int nCommandType;
-	LPCTSTR szCommandTypeName;
+	int nType;
+	LPCTSTR szName;
 };
 
 static const CommandTypeName CommandTypes[] = {
@@ -521,41 +521,41 @@ void CProfile::LoadRegistry()
 
 		CString regApp(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
 		regApp += _T("\\") + appName;
-		for (int nCommandID = 1; nCommandID < MAX_COMMAND; nCommandID++) {
-			entry = CCommands::GetCommandName(nCommandID);
+		for (int nComID = 1; nComID < MAX_COMMAND; nComID++) {
+			entry = CCommands::GetCommandName(nComID);
 			HKEY hKey;
 			const CString& regKey = regApp + _T("\\") + entry;
 			if (RegOpenKeyEx(HKEY_CURRENT_USER, regKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
 				TCHAR szKeyBind[128];
 				DWORD dwKeyBind = _countof(szKeyBind);
 				for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; dwIndex++) {
-					int nCommandType, nKey;
-					ReadKeyBind(&nCommandType, &nKey, szKeyBind);
-					m_Data[nAppID].SetCommandID(nCommandType, nKey, nCommandID);
+					int nType, nKey;
+					ReadKeyBind(&nType, &nKey, szKeyBind);
+					m_Data[nAppID].SetCommandID(nType, nKey, nComID);
 					dwKeyBind = _countof(szKeyBind);
 				}
 				RegCloseKey(hKey);
 			} else {
 				// Set the default assignment
-				for (int i = 0; const int nKey = CCommands::GetDefaultCommandKey(nCommandID, i); i++) {
-					if (CCommands::GetDefaultControlID(nCommandID, i) == IDC_CO2)
+				for (int i = 0; const int nKey = CCommands::GetDefaultCommandKey(nComID, i); i++) {
+					if (CCommands::GetDefaultControlID(nComID, i) == IDC_CO2)
 						continue;
-					const int nCommandType = CCommands::GetDefaultCommandType(nCommandID, i);
-					m_Data[nAppID].SetCommandID(nCommandType, nKey, nCommandID);
+					const int nType = CCommands::GetDefaultCommandType(nComID, i);
+					m_Data[nAppID].SetCommandID(nType, nKey, nComID);
 				}
 			}
 		}
-		for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); nFunctionID++) {
+		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); nFuncID++) {
 			HKEY hKey;
-			const CString regKey = regApp + _T("\\") + CDotXkeymacs::GetFunctionSymbol(nFunctionID);
+			const CString regKey = regApp + _T("\\") + CDotXkeymacs::GetFunctionSymbol(nFuncID);
 			if (RegOpenKeyEx(HKEY_CURRENT_USER, regKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
-				CDotXkeymacs::ClearKey(nFunctionID, nAppID);
+				CDotXkeymacs::ClearKey(nFuncID, nAppID);
 				TCHAR szKeyBind[128];
 				DWORD dwKeyBind = _countof(szKeyBind);
 				for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; dwIndex++) {
-					int nCommandType, nKey;
-					ReadKeyBind(&nCommandType, &nKey, szKeyBind);
-					CDotXkeymacs::SetKey(nFunctionID, nAppID, nCommandType, nKey);
+					int nType, nKey;
+					ReadKeyBind(&nType, &nKey, szKeyBind);
+					CDotXkeymacs::SetKey(nFuncID, nAppID, nType, nKey);
 					dwKeyBind = _countof(szKeyBind);
 				}
 				RegCloseKey(hKey);
@@ -605,16 +605,16 @@ void CProfile::SaveRegistry()
 		CString regApp(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
 		regApp += _T("\\") + appName;
 		// Create all commands
-		for (int nCommandID = 1; nCommandID < MAX_COMMAND; nCommandID++)
-			SaveCommand(appName, nCommandID);
-		for (int nCommandType = 0; nCommandType < MAX_COMMAND_TYPE; nCommandType++)
+		for (int nComID = 1; nComID < MAX_COMMAND; nComID++)
+			SaveCommand(appName, nComID);
+		for (int nType = 0; nType < MAX_COMMAND_TYPE; nType++)
 			for (int nKey = 0; nKey < MAX_KEY; nKey++)
-				SaveKeyBind(appName, m_Data[nAppID].GetCommandID(nCommandType, nKey), nCommandType, nKey);
-		for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); nFunctionID++)
-			for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nFunctionID, nAppID); nKeyID++) {
-				int nCommandType, nKey;
-				CDotXkeymacs::GetKey(nFunctionID, nAppID, nKeyID, &nCommandType, &nKey);
-				SaveKeyBind(appName, CDotXkeymacs::GetFunctionSymbol(nFunctionID), nCommandType, nKey);
+				SaveKeyBind(appName, m_Data[nAppID].GetCommandID(nType, nKey), nType, nKey);
+		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); nFuncID++)
+			for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nFuncID, nAppID); nKeyID++) {
+				int nType, nKey;
+				CDotXkeymacs::GetKey(nFuncID, nAppID, nKeyID, &nType, &nKey);
+				SaveKeyBind(appName, CDotXkeymacs::GetFunctionSymbol(nFuncID), nType, nKey);
 			}
 
 		entry.LoadString(IDS_REG_ENTRY_KILL_RING_MAX);
@@ -651,52 +651,52 @@ void CProfile::SaveData()
 void CProfile::SetDllData()
 {
 	CXkeymacsDll::ClearFunctionDefinition();
-	for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); ++nFunctionID) {
-		CXkeymacsDll::SetFunctionDefinition(nFunctionID, CDotXkeymacs::GetFunctionDefinition(nFunctionID));
+	for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID) {
+		CXkeymacsDll::SetFunctionDefinition(nFuncID, CDotXkeymacs::GetFunctionDefinition(nFuncID));
 	}
 
-	for (int nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
+	for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
 
-		CString szApplicationName = m_Data[nApplicationID].GetApplicationName();
+		CString szApplicationName = m_Data[nAppID].GetApplicationName();
 
 		if (szApplicationName.IsEmpty()) {
-			CXkeymacsDll::Clear(nApplicationID);
+			CXkeymacsDll::Clear(nAppID);
 			continue;
 		}
 
-		CXkeymacsDll::SetApplicationName(nApplicationID, szApplicationName);
-		CXkeymacsDll::SetWindowText(nApplicationID, m_Data[nApplicationID].GetWindowText());
-		CXkeymacsDll::SetCommandID(nApplicationID, CONTROL, 'X', 0);
+		CXkeymacsDll::SetApplicationName(nAppID, szApplicationName);
+		CXkeymacsDll::SetWindowText(nAppID, m_Data[nAppID].GetWindowText());
+		CXkeymacsDll::SetCommandID(nAppID, CONTROL, 'X', 0);
 
-		for (int nCommandType = 0; nCommandType < MAX_COMMAND_TYPE; ++nCommandType) {
+		for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType) {
 			for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-				const int nCommandID = m_Data[nApplicationID].GetCommandID(nCommandType, nKey);
-				CXkeymacsDll::SetCommandID(nApplicationID, nCommandType, nKey, nCommandID);
-				if ((nCommandType & CONTROLX) && nCommandID) {
-					CXkeymacsDll::SetCommandID(nApplicationID, CONTROL, 'X', 1);			// Commands[1] is C-x
+				const int nComID = m_Data[nAppID].GetCommandID(nType, nKey);
+				CXkeymacsDll::SetCommandID(nAppID, nType, nKey, nComID);
+				if ((nType & CONTROLX) && nComID) {
+					CXkeymacsDll::SetCommandID(nAppID, CONTROL, 'X', 1);			// Commands[1] is C-x
 				}
 			}
 		}
 
-		for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); ++nFunctionID) {
-			for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nFunctionID, nApplicationID); ++nKeyID) {
-				int nCommandType = 0;
+		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID) {
+			for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nFuncID, nAppID); ++nKeyID) {
+				int nType = 0;
 				int nKey = 0;
-				CDotXkeymacs::GetKey(nFunctionID, nApplicationID, nKeyID, &nCommandType, &nKey);
-				CXkeymacsDll::SetFunctionKey(nFunctionID, nApplicationID, nCommandType, nKey);
-				if (nCommandType & CONTROLX) {
-					CXkeymacsDll::SetCommandID(nApplicationID, CONTROL, 'X', 1);			// Commands[1] is C-x
+				CDotXkeymacs::GetKey(nFuncID, nAppID, nKeyID, &nType, &nKey);
+				CXkeymacsDll::SetFunctionKey(nFuncID, nAppID, nType, nKey);
+				if (nType & CONTROLX) {
+					CXkeymacsDll::SetCommandID(nAppID, CONTROL, 'X', 1);			// Commands[1] is C-x
 				}
 			}
 		}
 
-		CXkeymacsDll::SetKillRingMax(nApplicationID, m_Data[nApplicationID].GetKillRingMax());
-		CXkeymacsDll::SetUseDialogSetting(nApplicationID, m_Data[nApplicationID].GetUseDialogSetting());
-		CXkeymacsDll::SetSettingStyle(nApplicationID, m_Data[nApplicationID].GetSettingStyle());
-		CXkeymacsDll::SetIgnoreUndefinedMetaCtrl(nApplicationID, m_Data[nApplicationID].GetIgnoreUndefinedMetaCtrl());
-		CXkeymacsDll::SetIgnoreUndefinedC_x(nApplicationID, m_Data[nApplicationID].GetIgnoreUndefinedC_x());
-		CXkeymacsDll::SetEnableCUA(nApplicationID, m_Data[nApplicationID].GetEnableCUA());
-		CXkeymacsDll::Set326Compatible(nApplicationID, m_Data[nApplicationID].Get326Compatible());
+		CXkeymacsDll::SetKillRingMax(nAppID, m_Data[nAppID].GetKillRingMax());
+		CXkeymacsDll::SetUseDialogSetting(nAppID, m_Data[nAppID].GetUseDialogSetting());
+		CXkeymacsDll::SetSettingStyle(nAppID, m_Data[nAppID].GetSettingStyle());
+		CXkeymacsDll::SetIgnoreUndefinedMetaCtrl(nAppID, m_Data[nAppID].GetIgnoreUndefinedMetaCtrl());
+		CXkeymacsDll::SetIgnoreUndefinedC_x(nAppID, m_Data[nAppID].GetIgnoreUndefinedC_x());
+		CXkeymacsDll::SetEnableCUA(nAppID, m_Data[nAppID].GetEnableCUA());
+		CXkeymacsDll::Set326Compatible(nAppID, m_Data[nAppID].Get326Compatible());
 	}
 	CXkeymacsApp *pApp = static_cast<CXkeymacsApp *>(AfxGetApp());
 	if (!pApp->IsWow64())
@@ -712,18 +712,18 @@ void CProfile::ReadKeyBind(int *const pnCommandType, int *const pnKey, LPCTSTR s
 	*pnKey = KeyBind2Key(szKeyBind + _tcslen(CommandType2String(*pnCommandType)));
 }
 
-CString CProfile::WriteKeyBind(const int nCommandType, const int nKey)
+CString CProfile::WriteKeyBind(const int nType, const int nKey)
 {
 	CString szKeyBind;
-	szKeyBind.Format(_T("%s%s"), CommandType2String(nCommandType), Key2String(nKey));
+	szKeyBind.Format(_T("%s%s"), CommandType2String(nType), Key2String(nKey));
 	return szKeyBind;
 }
 
 int CProfile::KeyBind2CommandType(LPCTSTR szKeyBind)
 {
-	for (int nCommandType = MAX_COMMAND_TYPE - 1; nCommandType; --nCommandType) {
-		if (IsCommandType(nCommandType, szKeyBind)) {
-			return nCommandType;
+	for (int nType = MAX_COMMAND_TYPE - 1; nType; --nType) {
+		if (IsCommandType(nType, szKeyBind)) {
+			return nType;
 		}
 	}
 	return NONE;
@@ -739,13 +739,13 @@ int CProfile::KeyBind2Key(LPCTSTR szKey)
 	return 0;
 }
 
-LPCTSTR CProfile::CommandType2String(int nCommandType)
+LPCTSTR CProfile::CommandType2String(int nType)
 {
-	if (nCommandType < 0 || sizeof(CommandTypes) / sizeof(CommandTypes[0]) <= nCommandType) {
+	if (nType < 0 || sizeof(CommandTypes) / sizeof(CommandTypes[0]) <= nType) {
 		ASSERT(0);
-		nCommandType = NONE;
+		nType = NONE;
 	}
-	return CommandTypes[nCommandType].szCommandTypeName;
+	return CommandTypes[nType].szName;
 }
 
 LPCTSTR CProfile::Key2String(int nKey)
@@ -772,9 +772,9 @@ LPCTSTR CProfile::Key2String(int nKey)
 	return KeyNames[nKey].name;
 }
 
-BOOL CProfile::IsCommandType(const int nCommandType, LPCTSTR szKeyBind)
+BOOL CProfile::IsCommandType(const int nType, LPCTSTR szKeyBind)
 {
-	LPCTSTR szCommandType = CommandType2String(nCommandType);
+	LPCTSTR szCommandType = CommandType2String(nType);
 
 	if (!_tcsnicmp(szKeyBind, szCommandType, _tcslen(szCommandType))) {
 		return TRUE;
@@ -783,23 +783,23 @@ BOOL CProfile::IsCommandType(const int nCommandType, LPCTSTR szKeyBind)
 	return FALSE;
 }
 
-void CProfile::SaveKeyBind(const CString szApplicationName, const int nCommandID, const int nCommandType, const int nKey)
+void CProfile::SaveKeyBind(const CString szApplicationName, const int nComID, const int nType, const int nKey)
 {
-	if (!nCommandID) {
+	if (!nComID) {
 		return;
 	}
 
-	CString szCommandName = CCommands::GetCommandName(nCommandID);
+	CString szCommandName = CCommands::GetCommandName(nComID);
 	if (szCommandName.IsEmpty()) {
 		return;
 	}
 
-	SaveKeyBind(szApplicationName, szCommandName, nCommandType, nKey);
+	SaveKeyBind(szApplicationName, szCommandName, nType, nKey);
 }
 
-void CProfile::SaveKeyBind(const CString szApplicationName, const CString szCommandName, const int nCommandType, const int nKey)
+void CProfile::SaveKeyBind(const CString szApplicationName, const CString szCommandName, const int nType, const int nKey)
 {
-	CString szKeyBind = WriteKeyBind(nCommandType, nKey);
+	CString szKeyBind = WriteKeyBind(nType, nKey);
 	CString szSubKey(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
 	szSubKey += _T("\\") + szApplicationName + _T("\\") + szCommandName;
 	if (!szKeyBind.IsEmpty()) {
@@ -812,21 +812,21 @@ void CProfile::SaveKeyBind(const CString szApplicationName, const CString szComm
 	}
 }
 
-void CProfile::SaveCommand(const CString szApplicationName, const int nCommandID)
+void CProfile::SaveCommand(const CString szApplicationName, const int nComID)
 {
-	SaveKeyBind(szApplicationName, nCommandID, 0, 0);
+	SaveKeyBind(szApplicationName, nComID, 0, 0);
 }
 
 void CProfile::AddKeyBind2C_(const CString szApplicationName, const BYTE bVk)
 {
-	int nCommandID;
-	for (nCommandID = 0; nCommandID < MAX_COMMAND; ++nCommandID) {
-		if (Commands[nCommandID].fCommand == CCommands::C_) {
+	int nComID;
+	for (nComID = 0; nComID < MAX_COMMAND; ++nComID) {
+		if (Commands[nComID].fCommand == CCommands::C_) {
 			break;
 		}
 	}
 
-	SaveKeyBind(szApplicationName, nCommandID, NONE, bVk);
+	SaveKeyBind(szApplicationName, nComID, NONE, bVk);
 }
 
 void CProfile::LevelUp()
@@ -841,9 +841,9 @@ void CProfile::LevelUp()
 	switch (AfxGetApp()->GetProfileInt(szSection, szEntry, nDefalutLevel)) {
 	case nDefalutLevel:
 		{
-			for (int nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
+			for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
 				CString szEntry;
-				szEntry.Format(IDS_REG_ENTRY_APPLICATION, nApplicationID);
+				szEntry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
 
 				CString szApplicationName;
 				szApplicationName = AfxGetApp()->GetProfileString(CString(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION)), szEntry);
@@ -858,9 +858,9 @@ void CProfile::LevelUp()
 		// Do NOT write break; here.
 	case 1:
 		{
-			for (int nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
+			for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
 				CString szEntry;
-				szEntry.Format(IDS_REG_ENTRY_APPLICATION, nApplicationID);
+				szEntry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
 
 				CString szApplicationName;
 				szApplicationName = AfxGetApp()->GetProfileString(CString(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION)), szEntry);
@@ -877,9 +877,9 @@ void CProfile::LevelUp()
 		// Do NOT write break; here.
 	case 2:
 		{
-			for (int nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
+			for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
 				CString szEntry;
-				szEntry.Format(IDS_REG_ENTRY_APPLICATION, nApplicationID);
+				szEntry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
 
 				CString szApplicationName;
 				szApplicationName = AfxGetApp()->GetProfileString(CString(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION)), szEntry);
@@ -903,9 +903,9 @@ void CProfile::LevelUp()
 		// Do NOT write break; here.
 	case 3:
 		{
-			for (int nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
+			for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
 				CString szEntry;
-				szEntry.Format(IDS_REG_ENTRY_APPLICATION, nApplicationID);
+				szEntry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
 
 				CString szApplicationName;
 				szApplicationName = AfxGetApp()->GetProfileString(CString(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION)), szEntry);
@@ -914,20 +914,20 @@ void CProfile::LevelUp()
 				}
 
 				// rename original function to remove IDS_REG_ORIGINAL_PREFIX
-				for (int nFunctionID = 0; nFunctionID < CDotXkeymacs::GetFunctionNumber(); ++nFunctionID) {
+				for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID) {
 					HKEY hKey = NULL;
 					CString szSubKey(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
-					szSubKey += _T("\\") + szApplicationName + _T("\\") + CString(MAKEINTRESOURCE(IDS_REG_ORIGINAL_PREFIX)) + CDotXkeymacs::GetFunctionSymbol(nFunctionID);
+					szSubKey += _T("\\") + szApplicationName + _T("\\") + CString(MAKEINTRESOURCE(IDS_REG_ORIGINAL_PREFIX)) + CDotXkeymacs::GetFunctionSymbol(nFuncID);
 					if (RegOpenKeyEx(HKEY_CURRENT_USER, szSubKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
 						// Use registry data
 						TCHAR szKeyBind[128] = {'\0'};
 						DWORD dwKeyBind = sizeof(szKeyBind);
 						FILETIME ft = {'\0'};	// not use
 						for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, &ft) == ERROR_SUCCESS; ++dwIndex) {
-							int nCommandType = 0;
+							int nType = 0;
 							int nKey = 0;
-							ReadKeyBind(&nCommandType, &nKey, szKeyBind);
-							SaveKeyBind(szApplicationName, CDotXkeymacs::GetFunctionSymbol(nFunctionID), nCommandType, nKey);
+							ReadKeyBind(&nType, &nKey, szKeyBind);
+							SaveKeyBind(szApplicationName, CDotXkeymacs::GetFunctionSymbol(nFuncID), nType, nKey);
 
 							memset(szKeyBind, 0, sizeof(szKeyBind));
 							dwKeyBind = sizeof(szKeyBind);
@@ -957,14 +957,14 @@ void CProfile::InitDllData()
 
 void CProfile::ClearData(const CString szCurrentApplication)
 {
-	int nApplicationID;
-	for (nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
-		if (m_Data[nApplicationID].GetApplicationName() == szCurrentApplication) {
+	int nAppID;
+	for (nAppID = 0; nAppID < MAX_APP; ++nAppID) {
+		if (m_Data[nAppID].GetApplicationName() == szCurrentApplication) {
 			break;
 		}
 	}
-	if (nApplicationID < MAX_APP) {
-		m_Data[nApplicationID].ClearAll();
+	if (nAppID < MAX_APP) {
+		m_Data[nAppID].ClearAll();
 	}
 }
 
@@ -973,9 +973,9 @@ int CProfile::GetSavedSettingCount()
 {
 	int nSavedSetting = 0;
 
-	for (int nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
+	for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
 		CString szApplicationName;
-		szApplicationName = m_Data[nApplicationID].GetApplicationName();
+		szApplicationName = m_Data[nAppID].GetApplicationName();
 		if (!szApplicationName.IsEmpty()) {
 			++nSavedSetting;
 		}
@@ -1065,42 +1065,42 @@ int CProfile::GetApplicationIndex(const CString szApplicationName, const BOOL bS
 		*nSettingStyle = SETTING_UNDEFINED;
 	}
 
-	int nApplicationID = GetApplicationIndex(szApplicationName);
+	int nAppID = GetApplicationIndex(szApplicationName);
 
-	if (nApplicationID == MAX_APP) {
+	if (nAppID == MAX_APP) {
 		if (bSaveAndValidate) {	// GetDialogData
-			for (nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
-				CString sz = m_Data[nApplicationID].GetApplicationName();
+			for (nAppID = 0; nAppID < MAX_APP; ++nAppID) {
+				CString sz = m_Data[nAppID].GetApplicationName();
 				if (sz.IsEmpty()) {
-					m_Data[nApplicationID].SetApplicationName(szApplicationName);
+					m_Data[nAppID].SetApplicationName(szApplicationName);
 					break;
 				}
 			}
-			if (nApplicationID == MAX_APP) {
-				return nApplicationID;
+			if (nAppID == MAX_APP) {
+				return nAppID;
 			}
 		} else {				// SetDialogData
-			for (nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
-				if (IsDefault(m_Data[nApplicationID].GetApplicationName())) {
+			for (nAppID = 0; nAppID < MAX_APP; ++nAppID) {
+				if (IsDefault(m_Data[nAppID].GetApplicationName())) {
 					*nSettingStyle = SETTING_DEFAULT;
 					break;
 				}
 			}
-			if (nApplicationID == MAX_APP) {
-				return nApplicationID;
+			if (nAppID == MAX_APP) {
+				return nAppID;
 			}
 		}
 	}
 
 	if (bSaveAndValidate) {	// GetDialogData
-		m_Data[nApplicationID].SetSettingStyle(*nSettingStyle);
+		m_Data[nAppID].SetSettingStyle(*nSettingStyle);
 	} else {				// SetDialogData
 		if (*nSettingStyle == SETTING_UNDEFINED) {	// It means that *nSettingStyle != SETTING_DEFAULT.
-			*nSettingStyle = m_Data[nApplicationID].GetSettingStyle();
+			*nSettingStyle = m_Data[nAppID].GetSettingStyle();
 		}
 	}
 
-	return nApplicationID;
+	return nAppID;
 }
 
 BOOL CProfile::Is106Keyboard()
@@ -1171,12 +1171,12 @@ void CProfile::GetApplicationTitle(CComboBox *const cApplicationList, CString &r
 	return;
 }
 
-void CProfile::UpdateApplicationTitle(CComboBox *const cApplicationList, const CString szCurrentApplication, const int nApplicationID, const BOOL bSaveAndValidate)
+void CProfile::UpdateApplicationTitle(CComboBox *const cApplicationList, const CString szCurrentApplication, const int nAppID, const BOOL bSaveAndValidate)
 {
 	static CString szApplicationTitle;
 	if (bSaveAndValidate) {	// GetDialogData
 		if (!CProfile::IsDefault(szCurrentApplication)) {
-			m_Data[nApplicationID].SetApplicationTitle(szApplicationTitle);
+			m_Data[nAppID].SetApplicationTitle(szApplicationTitle);
 		}
 		szApplicationTitle.Empty();
 	} else {				// SetDialogData
@@ -1189,61 +1189,61 @@ void CProfile::UpdateApplicationTitle(CComboBox *const cApplicationList, const C
 	}
 }
 
-void CProfile::SetCommandID(const int nApplicationID, const int nCommandType, const int nKey, int nCommandID)
+void CProfile::SetCommandID(const int nAppID, const int nType, const int nKey, int nComID)
 {
-	if (nKey == 0xf0 && Commands[nCommandID].fCommand == CCommands::C_) {
+	if (nKey == 0xf0 && Commands[nComID].fCommand == CCommands::C_) {
 		// Change CommandID C_Eisu
-		for (nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-			if (Commands[nCommandID].fCommand == CCommands::C_Eisu) {
+		for (nComID = 1; nComID < MAX_COMMAND; ++nComID) {
+			if (Commands[nComID].fCommand == CCommands::C_Eisu) {
 				break;
 			}
 		}
 	}
-	m_Data[nApplicationID].SetCommandID(nCommandType, nKey, nCommandID);
+	m_Data[nAppID].SetCommandID(nType, nKey, nComID);
 }
 
-int CProfile::GetCommandID(const int nApplicationID, const int nCommandType, const int nKey)
+int CProfile::GetCommandID(const int nAppID, const int nType, const int nKey)
 {
-	int nCommandID = m_Data[nApplicationID].GetCommandID(nCommandType, nKey);
-	if (nKey == 0xf0 && Commands[nCommandID].fCommand == CCommands::C_Eisu) {
+	int nComID = m_Data[nAppID].GetCommandID(nType, nKey);
+	if (nKey == 0xf0 && Commands[nComID].fCommand == CCommands::C_Eisu) {
 		// Change CommandID C_
-		for (nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-			if (Commands[nCommandID].fCommand == CCommands::C_) {
+		for (nComID = 1; nComID < MAX_COMMAND; ++nComID) {
+			if (Commands[nComID].fCommand == CCommands::C_) {
 				break;
 			}
 		}
 	}
-	return nCommandID;
+	return nComID;
 }
 
-void CProfile::SetKillRingMax(const int nApplicationID, const int nKillRingMax)
+void CProfile::SetKillRingMax(const int nAppID, const int nKillRingMax)
 {
-	m_Data[nApplicationID].SetKillRingMax(nKillRingMax);
+	m_Data[nAppID].SetKillRingMax(nKillRingMax);
 }
 
-int CProfile::GetKillRingMax(const int nApplicationID)
+int CProfile::GetKillRingMax(const int nAppID)
 {
-	return m_Data[nApplicationID].GetKillRingMax();
+	return m_Data[nAppID].GetKillRingMax();
 }
 
-void CProfile::SetUseDialogSetting(const int nApplicationID, const BOOL bUseDialogSetting)
+void CProfile::SetUseDialogSetting(const int nAppID, const BOOL bUseDialogSetting)
 {
-	m_Data[nApplicationID].SetUseDialogSetting(bUseDialogSetting);
+	m_Data[nAppID].SetUseDialogSetting(bUseDialogSetting);
 }
 
-BOOL CProfile::GetUseDialogSetting(const int nApplicationID)
+BOOL CProfile::GetUseDialogSetting(const int nAppID)
 {
-	return m_Data[nApplicationID].GetUseDialogSetting();
+	return m_Data[nAppID].GetUseDialogSetting();
 }
 
-void CProfile::SetWindowText(const int nApplicationID, const CString szWindowText)
+void CProfile::SetWindowText(const int nAppID, const CString szWindowText)
 {
-	m_Data[nApplicationID].SetWindowText(szWindowText);
+	m_Data[nAppID].SetWindowText(szWindowText);
 }
 
-CString CProfile::GetWindowText(const int nApplicationID)
+CString CProfile::GetWindowText(const int nAppID)
 {
-	return m_Data[nApplicationID].GetWindowText();
+	return m_Data[nAppID].GetWindowText();
 }
 
 void CProfile::DeleteAllRegistryData()
@@ -1251,7 +1251,7 @@ void CProfile::DeleteAllRegistryData()
 	HKEY hkey = NULL;
 	if (RegOpenKeyEx(HKEY_CURRENT_USER, CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)), 0, KEY_ALL_ACCESS, &hkey) == ERROR_SUCCESS) {
 		// I am sure that I have to do only one time, but...
-		for (int nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
+		for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
 			DWORD dwIndex = 0;
 			TCHAR szName[SUB_KEY_NAME_LENGTH] = {'\0'};
 			DWORD dwName = sizeof(szName);
@@ -1308,13 +1308,13 @@ void CProfile::CopyData(const CString szDestinationApplication, const CString sz
 // if there is NOT the application in the data, return MAX_APP
 int CProfile::GetApplicationIndex(const CString szApplicationName)
 {
-	int nApplicationID = 0;
-	for (nApplicationID = 0; nApplicationID < MAX_APP; ++nApplicationID) {
-		if (m_Data[nApplicationID].GetApplicationName() == szApplicationName) {
+	int nAppID = 0;
+	for (nAppID = 0; nAppID < MAX_APP; ++nAppID) {
+		if (m_Data[nAppID].GetApplicationName() == szApplicationName) {
 			break;
 		}
 	}
-	return nApplicationID;
+	return nAppID;
 }
 
 // Return True if Windows Vista or later.
@@ -1416,14 +1416,14 @@ void CProfile::ImportProperties()
 	return;
 }
 
-BOOL CProfile::GetEnableCUA(const int nApplicationID)
+BOOL CProfile::GetEnableCUA(const int nAppID)
 {
-	return m_Data[nApplicationID].GetEnableCUA();
+	return m_Data[nAppID].GetEnableCUA();
 }
 
-void CProfile::SetEnableCUA(const int nApplicationID, const BOOL bEnableCUA)
+void CProfile::SetEnableCUA(const int nAppID, const BOOL bEnableCUA)
 {
-	m_Data[nApplicationID].SetEnableCUA(bEnableCUA);
+	m_Data[nAppID].SetEnableCUA(bEnableCUA);
 }
 
 int CProfile::GetKeyboardSpeed()

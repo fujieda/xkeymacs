@@ -40,7 +40,7 @@ enum { BEING_RELEASED = 0x80000000 };
 
 struct KeyBind
 {
-	int nCommandType;
+	int nType;
 	BYTE bVk;
 	int nControlID;
 };
@@ -68,26 +68,26 @@ public:
 	static BOOL LoadConfig();
 	static void SetM_xTip(const TCHAR *const szPath);
 	static BOOL Get326Compatible();
-	static void Set326Compatible(int nApplicationID, BOOL b326Compatible);
+	static void Set326Compatible(int nAppID, BOOL b326Compatible);
 	static void SetCursorData(HCURSOR hEnable, HCURSOR hDisableTMP, HCURSOR hDisableWOCQ, HICON hDisable, BOOL bEnable);
 	static unsigned int GetMaxKeyInterval(void);
 	static void SetKeyboardSpeed(int nKeyboardSpeed);
 	static int GetAccelerate(void);
 	static void SetAccelerate(int nAccelerate);
-	static void SetWindowText(int nApplicationID, CString szWindowText);
-	static void SetKillRingMax(int nApplicationID, int nKillRingMax);
-	static void Clear(int nApplicationID);
+	static void SetWindowText(int nAppID, CString szWindowText);
+	static void SetKillRingMax(int nAppID, int nKillRingMax);
+	static void Clear(int nAppID);
 	static BOOL IsKeyboardHook();
-	static void SetCommandID(int nApplicationID, int nCommandType, int nKey, int nCommandID);
-	static void SetApplicationName(int nApplicationID, CString szApplicationName);
+	static void SetCommandID(int nAppID, int nType, int nKey, int nComID);
+	static void SetApplicationName(int nAppID, CString szApplicationName);
 	static void ReleaseHooks();
-	static void SetEnableCUA(int nApplicationID, BOOL bEnableCUA);
-	static void SetIgnoreUndefinedC_x(int nApplicationID, BOOL bIgnoreUndefinedC_x);
-	static void SetIgnoreUndefinedMetaCtrl(int nApplicationID, BOOL bIgnoreUndefinedMetaCtrl);
+	static void SetEnableCUA(int nAppID, BOOL bEnableCUA);
+	static void SetIgnoreUndefinedC_x(int nAppID, BOOL bIgnoreUndefinedC_x);
+	static void SetIgnoreUndefinedMetaCtrl(int nAppID, BOOL bIgnoreUndefinedMetaCtrl);
 	static void SetHooks();
 	static void ResetHooks();
-	static void SetSettingStyle(int nApplicationID, int nSettingStyle);
-	static void SetUseDialogSetting(int nApplicationID, BOOL bUseDialogSetting);
+	static void SetSettingStyle(int nAppID, int nSettingStyle);
+	static void SetUseDialogSetting(int nAppID, BOOL bUseDialogSetting);
 	static void AddKillRing(BOOL bNewData = TRUE);
 	static void CallMacro();
 	static void ClearFunctionDefinition();
@@ -102,8 +102,8 @@ public:
 	static BOOL IsDown(BYTE bVk, BOOL bPhysicalKey = TRUE);
 	static void Kdu(BYTE bVk, DWORD n = 1, BOOL bOriginal = TRUE);
 	static void ReleaseKey(BYTE bVk);
-	static void SetFunctionDefinition(int nFunctionID, CString szDefinition);
-	static void SetFunctionKey(int nFunctionID, int nApplicationID, int nCommandType, int nKey);
+	static void SetFunctionDefinition(int nFuncID, CString szDefinition);
+	static void SetFunctionKey(int nFuncID, int nAppID, int nType, int nKey);
 	static BOOL Is106Keyboard();
 	static void Set106Keyboard(BOOL b106Keyboard);
 	static void ToggleKeyboardHookState();
@@ -140,7 +140,7 @@ private:
 	static KeyBind ParseKey(LPCTSTR& def);
 	static BYTE a2v(TCHAR nAscii);
 	static BOOL IsShift(TCHAR nAscii);
-	static void CallFunction(int nFunctionID);
+	static void CallFunction(int nFuncID);
 	static int IsPassThrough(BYTE nKey);
 	static BOOL IsDepressedShiftKeyOnly(BYTE nKey);
 	static BOOL IsDepressedModifier(int Modifier(), BOOL bPhysicalKey = TRUE);
@@ -148,8 +148,8 @@ private:
 	static std::list<KbdMacro> m_Macro;
 	static BOOL m_bRecordingMacro;
 	static BOOL m_bDown[MAX_KEY];
-	static void SetOriginal(UINT nCommandType, BYTE bVk);
-	static int CheckOriginal(UINT nCommandType, BYTE bVk);
+	static void SetOriginal(UINT nType, BYTE bVk);
+	static int CheckOriginal(UINT nType, BYTE bVk);
 	static void InitKeyboardProc(BOOL bImeComposition);
 	static int m_nApplicationID;
 	static int m_nOriginal[MAX_COMMAND_TYPE][MAX_KEY];

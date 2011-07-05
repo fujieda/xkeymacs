@@ -75,23 +75,23 @@ void CPropertiesList::UpdateDialogData(CString szApplicationName, BOOL bSaveAndV
 		m_nCommandWidth = 0;
 		m_nKeyWidth = 0;
 
-		for (int nCommandID = 1; nCommandID < MAX_COMMAND; ++nCommandID) {
-			CString szCommandName = CCommands::GetCommandName(nCommandID);
+		for (int nComID = 1; nComID < MAX_COMMAND; ++nComID) {
+			CString szCommandName = CCommands::GetCommandName(nComID);
 			if (szCommandName.IsEmpty()) {
 				break;
 			}
 
-			CString szCategory(MAKEINTRESOURCE(CCommands::GetCategoryID(nCommandID)));
+			CString szCategory(MAKEINTRESOURCE(CCommands::GetCategoryID(nComID)));
 			if (szCategory.IsEmpty()) {
 				continue;
 			}
 
 			BOOL bInserted = FALSE;
-			for (int nCommandType = 0; nCommandType < MAX_COMMAND_TYPE; ++nCommandType) {
+			for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType) {
 				for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-					if (nCommandID == CProfile::GetCommandID(m_pProperties->GetApplicationID(), nCommandType, nKey)) {
+					if (nComID == CProfile::GetCommandID(m_pProperties->GetApplicationID(), nType, nKey)) {
 						CString szKey;
-						szKey.Format(_T("%s%s"), CProfile::CommandType2String(nCommandType), CProfile::Key2String(nKey));
+						szKey.Format(_T("%s%s"), CProfile::CommandType2String(nType), CProfile::Key2String(nKey));
 
 						InsertItem(szCategory, szCommandName, szKey);
 
