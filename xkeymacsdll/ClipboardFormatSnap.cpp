@@ -38,7 +38,7 @@ m_nFormat( 0 ), m_oData()
 	m_oData.RemoveAll();
 	m_oData.SetSize( nLen );
 
-	for( int i = 0; i < nLen; i++ )
+	for( int i = 0; i < nLen; ++i )
 	{
 		m_oData[ i ] = rhs.m_oData[ i ];
 	}
@@ -71,7 +71,7 @@ const CClipboardFormatSnap& CClipboardFormatSnap::operator=( const CClipboardFor
 	m_oData.RemoveAll();
 	m_oData.SetSize( nLen );
 
-	for( int i = 0; i < nLen; i++ )
+	for( int i = 0; i < nLen; ++i )
 	{
 		m_oData[ i ] = rhs.m_oData[ i ];
 	}

@@ -37,7 +37,7 @@ CClipboardSnap::CClipboardSnap( const CClipboardSnap& rhs ) : m_oFormatSnaps()
 	ClearFormatSnaps();
 	m_oFormatSnaps.SetSize( nLen );
 
-	for( int i = 0; i < nLen; i++ )
+	for( int i = 0; i < nLen; ++i )
 	{
 		try {
 			m_oFormatSnaps[ i ]  = new CClipboardFormatSnap;
@@ -76,7 +76,7 @@ const CClipboardSnap& CClipboardSnap::operator=( const CClipboardSnap& rhs )
 	ClearFormatSnaps();
 	m_oFormatSnaps.SetSize( nLen );
 
-	for( int i = 0; i < nLen; i++ )
+	for( int i = 0; i < nLen; ++i )
 	{
 		try {
 			m_oFormatSnaps[ i ]  = new CClipboardFormatSnap;
@@ -198,7 +198,7 @@ BOOL CClipboardSnap::Capture( const BOOL bTextOnly )
 	int nFormat = 0;
 	int nFormatCount = CountClipboardFormats();
 
-	for( int i = 0; i < nFormatCount; i++ )
+	for( int i = 0; i < nFormatCount; ++i )
 	{
 		nFormat = EnumClipboardFormats( nFormat );
 		if( nFormat == 0 ) break;
@@ -238,7 +238,7 @@ BOOL CClipboardSnap::Restore()
 	if( !CUtils::OpenClipboard() ) return FALSE;
 	EmptyClipboard();
 
-	for( int i = 0; i < m_oFormatSnaps.GetSize(); i++ )
+	for( int i = 0; i < m_oFormatSnaps.GetSize(); ++i )
 	{
 		m_oFormatSnaps[ i ]->Restore();
 	}
@@ -249,7 +249,7 @@ BOOL CClipboardSnap::Restore()
 
 void CClipboardSnap::ClearFormatSnaps()
 {
-	for( int i = 0; i < m_oFormatSnaps.GetSize(); i++ )
+	for( int i = 0; i < m_oFormatSnaps.GetSize(); ++i )
 	{
 		delete m_oFormatSnaps[ i ];
 	}

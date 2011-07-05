@@ -468,7 +468,7 @@ void CXkeymacsDll::SetModifierState(const UINT after, const UINT before)
 		DepressKey(VK_MENU);
 	} else if (!(after & META) && before & META) {
 		if (bHookApp)
-			m_nHookAltRelease++;
+			++m_nHookAltRelease;
 		ReleaseKey(VK_MENU);
 	}
 }
@@ -566,7 +566,7 @@ void CXkeymacsDll::InitKeyboardProc(BOOL bImeComposition)
 	CUtils::SetApplicationName(bImeComposition);
 	if (_tcsnicmp(m_Config.szSpecialApp[m_nApplicationID], CUtils::GetApplicationName(), 0xF) || !IsMatchWindowText(m_Config.szWindowText[m_nApplicationID])) {	// PROCESSENTRY32 has only 0xF bytes of Name
 		m_nApplicationID = -1;
-		for (int nAppID = 0; nAppID < MAX_APP; nAppID++) {
+		for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
 			if (_tcsnicmp(m_Config.szSpecialApp[nAppID], CUtils::GetApplicationName(), 0xF) || !IsMatchWindowText(m_Config.szWindowText[nAppID]))
 				continue;
 			if (m_nApplicationID < 0)
@@ -602,7 +602,7 @@ void CXkeymacsDll::InitKeyboardProc(BOOL bImeComposition)
 
 int CXkeymacsDll::GetAppID(const LPCSTR szName, const int fallback)
 {
-	for (int i = 0; i < MAX_APP; i++)
+	for (int i = 0; i < MAX_APP; ++i)
 		if (!_tcsicmp(m_Config.szSpecialApp[i], szName))
 			return i;
 	return fallback;
@@ -698,7 +698,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		case VK_LWIN:
 		case VK_RWIN:
 		case VK_APPS:
-			for (int i = 0; i < MAX_COMMAND_TYPE; i++) {
+			for (int i = 0; i < MAX_COMMAND_TYPE; ++i) {
 				int (*func)() = Commands[m_Config.nCommandID[m_nApplicationID][i][nKey]].fCommand;
 				if (func && !(nOrigKey == VK_MENU && func == CCommands::MetaAlt))
 					goto HOOK;
@@ -1285,7 +1285,7 @@ void CXkeymacsDll::CallMacro()
 		m_bRecordingMacro = FALSE;
 	UINT before = GetModifierState(FALSE);
 	SetModifierState(0, before);
-	for (std::list<KbdMacro>::const_iterator m = m_Macro.begin(); m != m_Macro.end(); m++)
+	for (std::list<KbdMacro>::const_iterator m = m_Macro.begin(); m != m_Macro.end(); ++m)
 		if (m->lParam & BEING_RELEASED)
 			ReleaseKey(static_cast<BYTE>(m->wParam));
 		else
@@ -1356,7 +1356,7 @@ void CXkeymacsDll::CallFunction(int nFuncID)
 	std::vector<KeyBind> keybinds;
 	const LPCTSTR last = def + _tcslen(def) - 1;
 	if (*def == _T('"') && *last == _T('"')) {
-		def++; // skip '"'
+		++def; // skip '"'
 		while (def < last)
 			keybinds.push_back(ParseKey(def));
 	} else if (*def == _T('[') && *last == _T(']')) {
@@ -1366,7 +1366,7 @@ void CXkeymacsDll::CallFunction(int nFuncID)
 				continue;
 			}
 			// [VK]
-			for (int i = 0; i < MAX_KEYNAME; i++) {
+			for (int i = 0; i < MAX_KEYNAME; ++i) {
 				size_t keylen = _tcslen(KeyNames[i].name);
 				if (!_tcsncmp(def, KeyNames[i].name, keylen)) {
 					KeyBind keybind = {NONE, KeyNames[i].bVk};
@@ -1385,7 +1385,7 @@ void CXkeymacsDll::CallFunction(int nFuncID)
 	BOOL bInitialized = FALSE;
 	UINT before = GetModifierState(FALSE);
 
-	for (std::vector<KeyBind>::const_iterator p = keybinds.begin(); p != keybinds.end(); p++) {
+	for (std::vector<KeyBind>::const_iterator p = keybinds.begin(); p != keybinds.end(); ++p) {
 		const int nType = p->nType;
 		const BYTE bVk = p->bVk;
 		int (*fCommand)() = nType < MAX_COMMAND_TYPE ? Commands[m_Config.nCommandID[m_nApplicationID][nType][bVk]].fCommand : NULL;
@@ -1450,9 +1450,9 @@ KeyBind CXkeymacsDll::ParseKey(LPCTSTR& def)
 {
 	KeyBind keybind = {NONE};
 	if (*def == _T('\\')) { // set modifiers
-		def++;
+		++def;
 	LOOP:
-		for (int i = 0; i < MAX_MODIFIER; i++) {
+		for (int i = 0; i < MAX_MODIFIER; ++i) {
 			size_t len = _tcslen(Modifiers[i].name);
 			if (!_tcsncmp(def, Modifiers[i].name, len)) {
 				keybind.nType |= Modifiers[i].id;
@@ -1464,7 +1464,7 @@ KeyBind CXkeymacsDll::ParseKey(LPCTSTR& def)
 	if (IsShift(*def) && !(keybind.nType & (WIN_CTRL | WIN_ALT | WIN_WIN)))
 		keybind.nType |= SHIFT;
 	int i = 0;
-	for (; i < MAX_KEYNAME; i++) {
+	for (; i < MAX_KEYNAME; ++i) {
 		size_t len = _tcslen(KeyNames[i].name);
 		if (!_tcsncmp(def, KeyNames[i].name, len)) {
 			def += len;

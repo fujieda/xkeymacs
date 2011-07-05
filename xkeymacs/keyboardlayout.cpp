@@ -370,7 +370,7 @@ void CKeyboardLayout::SaveScanCodeMap(const HKEY_TYPE hkeyType)
 
 int CKeyboardLayout::GetControlID(const ScanCode scancode, const BOOL bBase)
 {
-	for (int i = 0; i < MAX_KEYBOARD_LAYOUT; i++)
+	for (int i = 0; i < MAX_KEYBOARD_LAYOUT; ++i)
 		if (m_KeyboardLayouts[i].scancode.nPrefix == scancode.nPrefix &&
 				m_KeyboardLayouts[i].scancode.nScanCode == scancode.nScanCode) {
 			if (bBase)
@@ -452,8 +452,8 @@ DWORD CKeyboardLayout::GetScanCodeLength(const HKEY_TYPE hkeyType)
 	dwScanCodeLength += 4;	// Header: Version Information
 	dwScanCodeLength += 4;	// Header: Flags
 	dwScanCodeLength += 4;	// Header: Number of Mappings
-	for (int nID = 0; nID < 3; nID++)
-		for (int nScanCode = 0; nScanCode < 256; nScanCode++)
+	for (int nID = 0; nID < 3; ++nID)
+		for (int nScanCode = 0; nScanCode < 256; ++nScanCode)
 			if (m_ScanCodeMap[hkeyType][nID][nScanCode].nScanCode)
 				dwScanCodeLength += 4;	// Individual Mappings
 	dwScanCodeLength += 4;	// Null Terminator (0x00000000)
@@ -462,8 +462,8 @@ DWORD CKeyboardLayout::GetScanCodeLength(const HKEY_TYPE hkeyType)
 
 BOOL CKeyboardLayout::ChangedKeyboardLayout(const HKEY_TYPE hkeyType)
 {
-	for (int nID = 0; nID < 3; nID++)
-		for (int nScanCode = 0; nScanCode < 256; nScanCode++)
+	for (int nID = 0; nID < 3; ++nID)
+		for (int nScanCode = 0; nScanCode < 256; ++nScanCode)
 			if (m_ScanCodeMap[hkeyType][nID][nScanCode].nPrefix !=
 					m_CurrentScanCodeMap[hkeyType][nID][nScanCode].nPrefix ||
 					m_ScanCodeMap[hkeyType][nID][nScanCode].nScanCode !=

@@ -1095,13 +1095,13 @@ int CCommands::Maximize()
 
 OriginalWindowPosition* CCommands::GetOriginalWindowPosition(HWND hWnd)
 {
-	for (int i = 0; i < MAX_WINDOW; i++) {
+	for (int i = 0; i < MAX_WINDOW; ++i) {
 		if (m_OriginalWindowPosition[i].hWnd == hWnd) {
 			return &m_OriginalWindowPosition[i];
 		}
 	}
 
-	for (int j = 0; j < MAX_WINDOW; j++) {
+	for (int j = 0; j < MAX_WINDOW; ++j) {
 		if (m_OriginalWindowPosition[j].hWnd == 0) {
 			m_OriginalWindowPosition[j].hWnd = hWnd;
 			memset(&m_OriginalWindowPosition[(j + 1) % MAX_WINDOW], 0, sizeof(OriginalWindowPosition));

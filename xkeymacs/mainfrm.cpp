@@ -247,7 +247,7 @@ DWORD WINAPI CMainFrame::PollIconMessage(LPVOID lpParam)
 			break;
 		if (!pThis->m_bPollIconMessage)
 			break;
-		for (DWORD i = 0; i < read / sizeof(ICONMSG); i++) {
+		for (DWORD i = 0; i < read / sizeof(ICONMSG); ++i) {
 			pThis->m_stNtfyIcon[msg[i].nType].hIcon = pThis->m_hIcon[msg[i].nType][msg[i].nState];
 			if (msg[i].nType == MX_ICON && msg[i].szTip[0] != 0)
 				memcpy(pThis->m_stNtfyIcon[MX_ICON].szTip, msg[i].szTip, 128);

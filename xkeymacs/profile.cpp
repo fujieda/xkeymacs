@@ -486,7 +486,7 @@ struct {
 };
 
 inline int WindowTextType(const CString& cstr) {
-	for (int i = 0; i < _countof(WindowTextTypes); i++)
+	for (int i = 0; i < _countof(WindowTextTypes); ++i)
 		if (WindowTextTypes[i].cstr == cstr)
 			return WindowTextTypes[i].type;
 	return IDS_WINDOW_TEXT_IGNORE;
@@ -496,7 +496,7 @@ void CProfile::LoadRegistry()
 {
 	bool bDialog = false;
 	const CString section(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION));	
-	for (int nAppID = 0; nAppID < MAX_APP; nAppID++) {
+	for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
 		CString entry;
 		entry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
 		CString appName = AfxGetApp()->GetProfileString(section, entry);
@@ -521,14 +521,14 @@ void CProfile::LoadRegistry()
 
 		CString regApp(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
 		regApp += _T("\\") + appName;
-		for (int nComID = 1; nComID < MAX_COMMAND; nComID++) {
+		for (int nComID = 1; nComID < MAX_COMMAND; ++nComID) {
 			entry = CCommands::GetCommandName(nComID);
 			HKEY hKey;
 			const CString& regKey = regApp + _T("\\") + entry;
 			if (RegOpenKeyEx(HKEY_CURRENT_USER, regKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
 				TCHAR szKeyBind[128];
 				DWORD dwKeyBind = _countof(szKeyBind);
-				for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; dwIndex++) {
+				for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; ++dwIndex) {
 					int nType, nKey;
 					ReadKeyBind(&nType, &nKey, szKeyBind);
 					m_Data[nAppID].SetCommandID(nType, nKey, nComID);
@@ -537,7 +537,7 @@ void CProfile::LoadRegistry()
 				RegCloseKey(hKey);
 			} else {
 				// Set the default assignment
-				for (int i = 0; const int nKey = CCommands::GetDefaultCommandKey(nComID, i); i++) {
+				for (int i = 0; const int nKey = CCommands::GetDefaultCommandKey(nComID, i); ++i) {
 					if (CCommands::GetDefaultControlID(nComID, i) == IDC_CO2)
 						continue;
 					const int nType = CCommands::GetDefaultCommandType(nComID, i);
@@ -545,14 +545,14 @@ void CProfile::LoadRegistry()
 				}
 			}
 		}
-		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); nFuncID++) {
+		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID) {
 			HKEY hKey;
 			const CString regKey = regApp + _T("\\") + CDotXkeymacs::GetFunctionSymbol(nFuncID);
 			if (RegOpenKeyEx(HKEY_CURRENT_USER, regKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
 				CDotXkeymacs::ClearKey(nFuncID, nAppID);
 				TCHAR szKeyBind[128];
 				DWORD dwKeyBind = _countof(szKeyBind);
-				for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; dwIndex++) {
+				for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; ++dwIndex) {
 					int nType, nKey;
 					ReadKeyBind(&nType, &nKey, szKeyBind);
 					CDotXkeymacs::SetKey(nFuncID, nAppID, nType, nKey);
@@ -582,7 +582,7 @@ void CProfile::LoadRegistry()
 void CProfile::SaveRegistry()
 {
 	const CString section(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION));	
-	for (int nAppID = 0; nAppID < MAX_APP; nAppID++) {
+	for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
 		const CString& appName = m_Data[nAppID].GetApplicationName();
 		CString entry;
 		entry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
@@ -605,13 +605,13 @@ void CProfile::SaveRegistry()
 		CString regApp(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
 		regApp += _T("\\") + appName;
 		// Create all commands
-		for (int nComID = 1; nComID < MAX_COMMAND; nComID++)
+		for (int nComID = 1; nComID < MAX_COMMAND; ++nComID)
 			SaveCommand(appName, nComID);
-		for (int nType = 0; nType < MAX_COMMAND_TYPE; nType++)
-			for (int nKey = 0; nKey < MAX_KEY; nKey++)
+		for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType)
+			for (int nKey = 0; nKey < MAX_KEY; ++nKey)
 				SaveKeyBind(appName, m_Data[nAppID].GetCommandID(nType, nKey), nType, nKey);
-		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); nFuncID++)
-			for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nFuncID, nAppID); nKeyID++) {
+		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID)
+			for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nFuncID, nAppID); ++nKeyID) {
 				int nType, nKey;
 				CDotXkeymacs::GetKey(nFuncID, nAppID, nKeyID, &nType, &nKey);
 				SaveKeyBind(appName, CDotXkeymacs::GetFunctionSymbol(nFuncID), nType, nKey);
