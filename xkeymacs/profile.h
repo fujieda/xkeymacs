@@ -91,6 +91,7 @@ private:
 	static CString WriteKeyBind(int nCommandType, int nKey);
 	static void LoadRegistory();
 	static void SaveRegistory();
+	static void GetIMEInfo(const LPTSTR szFilename, const LPTSTR szDescription);
 };
 
 #endif // !defined(AFX_PROFILE_H__9415254D_4656_484B_A730_E02580D8A221__INCLUDED_)

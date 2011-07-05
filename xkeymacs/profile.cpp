@@ -10,7 +10,7 @@
 #include <Imm.h>
 #include <Shlwapi.h>
 #include <TlHelp32.h>
-
+#include <msctf.h>
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -992,11 +992,12 @@ void CProfile::InitApplicationList(CComboBox *const cApplicationList)
 
 	EnumWindows(EnumWindowsProc, (LPARAM)cApplicationList);
 
+	CString szListItem;
 	for (int i = 0; i < MAX_APP; ++i) {
 		CString szApplicationName	= m_Data[i].GetApplicationName();
 		CString szApplicationTitle	= m_Data[i].GetApplicationTitle();
-
-		CString szListItem;
+		if (szApplicationName == _T("IME")) // IDS_IME_FILE_NAME
+			continue;
 		szListItem.Format(IDS_APPLICATION_LIST_ITEM, szApplicationTitle, szApplicationName);
 		if (IsNotSameString(cApplicationList, szListItem)
 		 && !IsDefault(szApplicationName)
@@ -1006,42 +1007,12 @@ void CProfile::InitApplicationList(CComboBox *const cApplicationList)
 		}
 	}
 
-	// Add IME
-	HKL hKL = GetKeyboardLayout(0);
-	if (ImmIsIME(hKL)) {
-		LPTSTR szIMEDescription = NULL;
-		UINT nIMEDescription = ImmGetDescription(hKL, NULL, 0);
-		if (nIMEDescription) {
-			nIMEDescription += sizeof(TCHAR);	// for NULL
-			if ((szIMEDescription = new TCHAR[nIMEDescription]) != NULL) {
-				ImmGetDescription(hKL, szIMEDescription, nIMEDescription);
-			}
-//			CUtils::Log(_T("nIMEDescription = %d, szIMEDescription = _%s_"), nIMEDescription, szIMEDescription);
-		}
-
-		LPTSTR szIMEFileName = NULL;
-		UINT nIMEFileName = ImmGetIMEFileName(hKL, NULL, 0);
-		if (nIMEFileName) {
-			nIMEFileName += sizeof(TCHAR);
-			if ((szIMEFileName = new TCHAR[nIMEFileName]) != NULL) {
-				ImmGetIMEFileName(hKL, szIMEFileName, nIMEFileName);
-			}
-//			CUtils::Log(_T("nIMEFileName = %d, szIMEFileName = _%s_"), nIMEFileName, szIMEFileName);
-		}
-
-		CString szIMETitle;
-		CString szIME(MAKEINTRESOURCE(IDS_IME_FILE_NAME));
-		szIMETitle.Format(IDS_APPLICATION_LIST_ITEM, szIMEDescription ? szIMEDescription : szIME, szIMEFileName ? szIMEFileName : szIME);
-//		CUtils::Log(_T("szIMETitle = _%s_, szIMEDescription = _%s_, szIMEFileName = _%s_"), szIMETitle, szIMEDescription, szIMEFileName);
-		if (IsNotSameString(cApplicationList, szIMETitle)) {
-			cApplicationList->AddString(szIMETitle);
-		}
-
-		delete[] szIMEDescription;
-		szIMEDescription = NULL;
-		delete[] szIMEFileName;
-		szIMEFileName = NULL;
-	}
+	TCHAR szFilename[MAX_PATH];
+	TCHAR szDescription[WINDOW_TEXT_LENGTH];
+	GetIMEInfo(szFilename, szDescription);
+	szListItem.Format(IDS_APPLICATION_LIST_ITEM, szDescription, szFilename);
+	if (IsNotSameString(cApplicationList, szListItem))
+		cApplicationList->AddString(szListItem);
 
 	// Add Dialog
 	cApplicationList->InsertString(0, CString(MAKEINTRESOURCE(IDS_DIALOG_TITLE)));
@@ -1049,6 +1020,48 @@ void CProfile::InitApplicationList(CComboBox *const cApplicationList)
 	// Add Default
 	cApplicationList->InsertString( 0, CString(MAKEINTRESOURCE(IDS_DEFAULT_TITLE)));
 	cApplicationList->SelectString(-1, CString(MAKEINTRESOURCE(IDS_DEFAULT_TITLE)));
+}
+
+void CProfile::GetIMEInfo(const LPTSTR szFilename, const LPTSTR szDescription)
+{
+	_tcscpy_s(szFilename, MAX_PATH, _T("IME")); // IDS_IME_FILE_NAME;
+	_tcscpy_s(szDescription, WINDOW_TEXT_LENGTH, _T("Input Method Editor"));
+	HKL hKL = GetKeyboardLayout(0);
+	if (!ImmIsIME(hKL))
+		return;
+	TCHAR buf[MAX_PATH]; // larger than WINDOW_TEXT_LENGTH
+	if (ImmGetDescription(hKL, buf, WINDOW_TEXT_LENGTH)) {
+		_tcscpy_s(szDescription, WINDOW_TEXT_LENGTH, buf);
+		goto filename;
+	}
+	// try TSF
+	CoInitialize(NULL);
+	HRESULT hr;
+	ITfInputProcessorProfiles *pProfiles;
+	hr = CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_ITfInputProcessorProfiles, reinterpret_cast<LPVOID*>(&pProfiles));
+	if (SUCCEEDED(hr)) {
+		const LANGID langid = GetUserDefaultLangID();
+		CLSID clsid;
+		GUID guid;
+		hr = pProfiles->GetDefaultLanguageProfile(langid, GUID_TFCAT_TIP_KEYBOARD, &clsid, &guid);
+		if (SUCCEEDED(hr)) {
+			BSTR bstr;
+			hr = pProfiles->GetLanguageProfileDescription(clsid, langid, guid, &bstr);
+			if (SUCCEEDED(hr)) {
+#ifdef _MBCS
+				WideCharToMultiByte(CP_ACP, 0, bstr, -1, szDescription, MAX_PATH, NULL, NULL);
+#else
+				wcscpy_s(szDescription, WINDOW_TEXT_LENGTH, bstr);
+#endif
+				SysFreeString(bstr);
+			}
+		}
+		pProfiles->Release();
+	}
+	CoUninitialize();
+filename:
+	if (ImmGetIMEFileName(hKL, buf, MAX_PATH))
+		_tcscpy_s(szFilename, MAX_PATH, buf);
 }
 
 void CProfile::GetTaskList()
