@@ -12,7 +12,6 @@ struct ICONMSG {
 };
 
 struct CONFIG {
-	int nMessage;
 	BOOL b326Compatible[MAX_APP];
 	TCHAR szWindowText[MAX_APP][WINDOW_TEXT_LENGTH];
 	TCHAR szFunctionDefinition[MAX_FUNCTION][MAX_DEFINITION];
@@ -25,7 +24,6 @@ struct CONFIG {
 	int nKillRingMax[MAX_APP];
 	TCHAR szSpecialApp[MAX_APP][CLASS_NAME_LENGTH];
 	int nCommandID[MAX_APP][MAX_COMMAND_TYPE][MAX_KEY];
-	BOOL bAtIbeamCursorOnly[MAX_APP][MAX_COMMAND_TYPE][MAX_KEY];
 	BOOL b106Keyboard;
 };
 
