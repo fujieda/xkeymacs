@@ -11,8 +11,6 @@ public:
 	void ClearAll();
 	void Set326Compatible(BOOL b326Compatible);
 	BOOL Get326Compatible();
-	int GetWindowTextType();
-	void SetWindowTextType(int nWindowTextType);
 	CString GetWindowText();
 	void SetWindowText(LPCTSTR lpszWindowText);
 	void SetUseDialogSetting(BOOL bUseDialogSetting);

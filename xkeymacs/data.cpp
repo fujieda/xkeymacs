@@ -25,16 +25,6 @@ CString CData::GetWindowText()
 	return m_strWindowText;
 }
 
-void CData::SetWindowTextType(int nWindowTextType)
-{
-	m_nWindowTextType = nWindowTextType;
-}
-
-int CData::GetWindowTextType()
-{
-	return m_nWindowTextType;
-}
-
 void CData::SetApplicationName(LPCTSTR lpszApplicationName)
 {
 	m_strApplicationName.Format(lpszApplicationName);

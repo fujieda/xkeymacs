@@ -476,22 +476,6 @@ BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
 	return TRUE;
 }
 
-struct {
-	int type;
-	CString cstr;
-} WindowTextTypes[] = {
-	{ IDS_WINDOW_TEXT_MATCH, CString(MAKEINTRESOURCE(IDS_WINDOW_TEXT_MATCH)) },
-	{ IDS_WINDOW_TEXT_MATCH_FORWARD, CString(MAKEINTRESOURCE(IDS_WINDOW_TEXT_MATCH_FORWARD)) },
-	{ IDS_WINDOW_TEXT_MATCH_BACKWARD, CString(MAKEINTRESOURCE(IDS_WINDOW_TEXT_MATCH_BACKWARD)) },
-};
-
-inline int WindowTextType(const CString& cstr) {
-	for (int i = 0; i < _countof(WindowTextTypes); ++i)
-		if (WindowTextTypes[i].cstr == cstr)
-			return WindowTextTypes[i].type;
-	return IDS_WINDOW_TEXT_IGNORE;
-}
-
 void CProfile::LoadRegistry()
 {
 	bool bDialog = false;
@@ -517,7 +501,6 @@ void CProfile::LoadRegistry()
 		entry.LoadString(IDS_REG_ENTRY_WINDOW_TEXT);
 		m_Data[nAppID].SetWindowText(AfxGetApp()->GetProfileString(appName, entry, _T("*")));
 		entry.LoadString(IDS_REG_ENTRY_WINDOW_TEXT_TYPE);
-		m_Data[nAppID].SetWindowTextType(WindowTextType(AfxGetApp()->GetProfileString(appName, entry)));
 
 		CString regApp(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
 		regApp += _T("\\") + appName;
@@ -599,8 +582,6 @@ void CProfile::SaveRegistry()
 		AfxGetApp()->WriteProfileString(appName, entry, appTitle);
 		entry.LoadString(IDS_REG_ENTRY_WINDOW_TEXT);
 		AfxGetApp()->WriteProfileString(appName, entry, m_Data[nAppID].GetWindowText());
-		entry.LoadString(IDS_REG_ENTRY_WINDOW_TEXT_TYPE);
-		AfxGetApp()->WriteProfileString(appName, entry, CString(MAKEINTRESOURCE(m_Data[nAppID].GetWindowTextType())));
 
 		CString regApp(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
 		regApp += _T("\\") + appName;
@@ -1294,14 +1275,12 @@ void CProfile::CopyData(const CString szDestinationApplication, const CString sz
 	CString szApplicationName = m_Data[nDestinationApplication].GetApplicationName();
 	CString szApplicationTitle = m_Data[nDestinationApplication].GetApplicationTitle();
 	CString szWindowText = m_Data[nDestinationApplication].GetWindowText();
-	int nWindowTextType = m_Data[nDestinationApplication].GetWindowTextType();
 
 	m_Data[nDestinationApplication] = m_Data[nSourceApplication];
 
 	m_Data[nDestinationApplication].SetApplicationName(szApplicationName);
 	m_Data[nDestinationApplication].SetApplicationTitle(szApplicationTitle);
 	m_Data[nDestinationApplication].SetWindowText(szWindowText);
-	m_Data[nDestinationApplication].SetWindowTextType(nWindowTextType);
 }
 
 // return application index
