@@ -142,7 +142,7 @@ private:
 	static BOOL IsShift(TCHAR nAscii);
 	static void CallFunction(int nFuncID);
 	static int IsPassThrough(BYTE nKey);
-	static BOOL IsDepressedShiftKeyOnly(BYTE nKey);
+	static void CancelMarkWithShift(BYTE nKey, bool bRelease);
 	static BOOL IsDepressedModifier(int Modifier(), BOOL bPhysicalKey = TRUE);
 	static BOOL IsValidKey(BYTE bVk);
 	static std::list<KbdMacro> m_Macro;

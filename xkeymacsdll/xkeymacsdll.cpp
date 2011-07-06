@@ -610,81 +610,52 @@ int CXkeymacsDll::GetAppID(const LPCSTR szName, const int fallback)
 
 LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-	ASSERT(0 <= wParam && wParam <= UCHAR_MAX);
-
-	UINT nType = NONE;
-	BYTE nOrigKey = (BYTE)wParam;
+	const BYTE nOrigKey = static_cast<BYTE>(wParam);
+	const bool bRelease = (lParam & BEING_RELEASED) != 0;
+	const bool bExtended = (lParam & EXTENDED_KEY) != 0;
 
 	static BOOL bLocked = FALSE;
 	static const BYTE RECURSIVE_KEY = 0x07;
-	static int (*fCommand)() = NULL;
+	static int (*fLastCommand)() = NULL;
 	static BYTE nOneShotModifier[MAX_KEY] = {'\0'};
 	static BOOL bCherryOneShotModifier = FALSE;
 
-//	CUtils::Log(_T("nCode = %#x, nKey = %#x, lParam = %p, %d, %d"), nOrigCode, nKey, lParam, IsDll64, Is64ProcessHwnd(GetForegroundWindow()));
+//	CUtils::Log(_T("nCode = %#x, nKey = %#x, lParam = %p, %d, %d"), nCode, nOrigKey, lParam, IsDll64, Is64ProcessHwnd(GetForegroundWindow()));
 
-	if (Is64ProcessHwnd(GetForegroundWindow()) != IsDll64 || CUtils::IsXkeymacs())
+	if (Is64ProcessHwnd(GetForegroundWindow()) != IsDll64 || CUtils::IsXkeymacs() ||
+			nCode < 0 || nCode == HC_NOREMOVE)
 		return CallNextHookEx(g_hHookKeyboard, nCode, wParam, lParam);
-
-	if (nCode < 0 || nCode == HC_NOREMOVE) {
-		goto DO_NOTHING;
-	}
 
 //	CUtils::Log(_T("nKey = %#x, ext = %d, rel = %d, pre = %d, %#hx, %#hx"), nOrigKey,
 //		(lParam & EXTENDED_KEY) ? 1 : 0, (lParam & BEING_RELEASED) ? 1 : 0, (lParam & REPEATED_KEY) ? 1 : 0,
 //		GetKeyState(nOrigKey), GetAsyncKeyState(nOrigKey));
 
 	if (nOrigKey == RECURSIVE_KEY) {
-		if (lParam & BEING_RELEASED) {
+		if (bRelease)
 			goto HOOK_RECURSIVE_KEY;
-		} else {
+		else
 			goto RECURSIVE_COMMAND;
-		}
 	}
 
-	{
-		static BOOL bShift = FALSE;
-		if (IsDepressedShiftKeyOnly(nOrigKey)) {
-			if (lParam & BEING_RELEASED) {
-				if (bShift) {
-					CCommands::SetMark(FALSE);
-				}
-			} else {
-				bShift = TRUE;
-			}
-		} else {
-			bShift = FALSE;
-		}
-	}
+	CancelMarkWithShift(nOrigKey, bRelease);
 
 	BYTE nKey = nOrigKey;
 	switch (nKey) {
 	case VK_CONTROL:
-		if (lParam & EXTENDED_KEY) {
-			nKey = VK_RCONTROL;
-		} else {
-			nKey = VK_LCONTROL;
-		}
+		nKey = bExtended ? VK_RCONTROL : VK_LCONTROL;
 		break;
 	case VK_MENU:
-		if (lParam & EXTENDED_KEY) {
-			nKey = VK_RMENU;
-		} else {
-			nKey = VK_LMENU;
-		}
+		nKey = bExtended ? VK_RMENU : VK_LMENU;
 		break;
 	case VK_SHIFT:
-		if (lParam & EXTENDED_KEY) {
-			nKey = VK_RSHIFT;
-		} else {
-			nKey = VK_LSHIFT;
-		}
-		break;
-	default:
+		nKey = bExtended ? VK_RSHIFT : VK_LSHIFT;
 		break;
 	}
 
-	if (lParam & BEING_RELEASED) {
+#define fCommand(type) (Commands[m_Config.nCommandID[m_nApplicationID][(type)][nKey]].fCommand)
+#define nFunctionID (m_Config.nFunctionID[m_nApplicationID][nType][nKey])
+
+	if (bRelease) {
 		switch (nOrigKey) {
 		case VK_MENU:
 			if (m_nHookAltRelease) {
@@ -699,15 +670,14 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		case VK_RWIN:
 		case VK_APPS:
 			for (int i = 0; i < MAX_COMMAND_TYPE; ++i) {
-				int (*func)() = Commands[m_Config.nCommandID[m_nApplicationID][i][nKey]].fCommand;
-				if (func && !(nOrigKey == VK_MENU && func == CCommands::MetaAlt))
+				int (*const fCommand)() = fCommand(i);
+				if (fCommand && !(nOrigKey == VK_MENU && fCommand == CCommands::MetaAlt))
 					goto HOOK;
 			}
 		}
 		if (nOneShotModifier[nKey]) {
 			ReleaseKey(nOneShotModifier[nKey]);
 			nOneShotModifier[nKey] = 0;
-
 			if (bCherryOneShotModifier) {
 				bCherryOneShotModifier = FALSE;
 				Kdu(nKey);
@@ -716,15 +686,12 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		goto DO_NOTHING;
 	}
 
-	if (m_Config.nSettingStyle[m_nApplicationID] == SETTING_DISABLE) {
+	if (m_Config.nSettingStyle[m_nApplicationID] == SETTING_DISABLE)
 		goto DO_NOTHING;
-	}
 
 	// Do Nothing for Meadow, Mule for Win32, ... if those use default setting.
-	if (!_tcsicmp(m_Config.szSpecialApp[m_nApplicationID], _T("Default"))
-	 && CUtils::IsDefaultIgnoreApplication()) {
+	if (!_tcsicmp(m_Config.szSpecialApp[m_nApplicationID], _T("Default")) && CUtils::IsDefaultIgnoreApplication())
 		goto DO_NOTHING;
-	}
 
 	switch (IsPassThrough(nKey)) {
 	case GOTO_DO_NOTHING:
@@ -733,35 +700,25 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		goto HOOK;
 	case CONTINUE:
 		break;
-	default:
-		ASSERT(0);
-		break;
 	}
 
 	// set command type
-	nType = IsDown(VK_SHIFT) * SHIFT | IsControl() * CONTROL | IsMeta() * META | CCommands::bC_x() * CONTROLX;
+	int nType = IsDown(VK_SHIFT) * SHIFT | IsControl() * CONTROL | IsMeta() * META | CCommands::bC_x() * CONTROLX;
 	// Ignore undefined C-x ?
-	if (nType & CONTROLX) {
-		if (Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == NULL
-		 && m_Config.nFunctionID[m_nApplicationID][nType][nKey] < 0) {
-			if (m_Config.bIgnoreUndefinedC_x[m_nApplicationID]) {
-				CCommands::Reset(GOTO_HOOK);
-				goto HOOK;
-			}
-			nType &= ~CONTROLX;
+	if (nType & CONTROLX && fCommand(nType) == NULL && nFunctionID < 0) {
+		if (m_Config.bIgnoreUndefinedC_x[m_nApplicationID]) {
+			CCommands::Reset(GOTO_HOOK);
+			goto HOOK;
 		}
+		nType &= ~CONTROLX;
 	}
 	// Ignore undefined Meta Ctrl+?
-	if (CCommands::bM_() && (nType & CONTROL)) {
-		if (Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == NULL
-		 && m_Config.nFunctionID[m_nApplicationID][nType][nKey] < 0) {
-			if (m_Config.bIgnoreUndefinedMetaCtrl[m_nApplicationID]) {
-				if (CheckOriginal(CONTROL, nKey)) {
-					goto DO_NOTHING;
-				}
-				CCommands::Reset(GOTO_HOOK);
-				goto HOOK;
-			}
+	if (CCommands::bM_() && nType & CONTROL && fCommand(nType) == NULL && nFunctionID < 0) {
+		if (m_Config.bIgnoreUndefinedMetaCtrl[m_nApplicationID]) {
+			if (CheckOriginal(CONTROL, nKey))
+				goto DO_NOTHING;
+			CCommands::Reset(GOTO_HOOK);
+			goto HOOK;
 			nType &= ~META;
 		}
 	}
@@ -775,172 +732,128 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		goto DO_NOTHING;
 	}
 
-	if (Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == CCommands::EnableOrDisableXKeymacs) {
+	int (*const fCommand)() = fCommand(nType);
+	if (fCommand == CCommands::EnableOrDisableXKeymacs) {
 		ToggleKeyboardHookState();
 		goto HOOK;
 	}
-	if (Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == CCommands::EnableXKeymacs) {
-		if (!m_bHook) {
+	if (fCommand == CCommands::EnableXKeymacs) {
+		if (!m_bHook)
 			ToggleKeyboardHookState();
-		}
 		goto HOOK;
 	}
-	if (Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == CCommands::DisableXKeymacs) {
-		if (m_bHook) {
+	if (fCommand == CCommands::DisableXKeymacs) {
+		if (m_bHook)
 			ToggleKeyboardHookState();
-		}
 		goto HOOK;
 	}
-	if (!m_bHook) {
+	if (!m_bHook)
 		goto DO_NOTHING;
-	}
 
-	if (CCommands::bM_x()) {
-		static unsigned int index = 0;
+	if (CCommands::bM_x() && !bRelease) {
+		static size_t index = 0;
 		static TCHAR szPath[MAX_PATH] = {'\0'};
-
-		if (lParam & BEING_RELEASED) {
-			// ignore
-		} else if (Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == CCommands::BackwardChar) {
-			if (index) {
+		if (fCommand == CCommands::BackwardChar) {
+			if (index)
 				--index;
-			}
 			goto HOOKX;
-		} else if (Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == CCommands::BeginningOfLine) {
+		} else if (fCommand == CCommands::BeginningOfLine) {
 			index = 0;
 			goto HOOKX;
-		} else if (Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == CCommands::DeleteBackwardChar) {
+		} else if (fCommand == CCommands::DeleteBackwardChar) {
 			if (index) {
 				--index;
-				memmove(&szPath[index], &szPath[index + 1], _tcslen(szPath) - index);
+				memmove(szPath + index, szPath + index + 1, MAX_PATH - index);
 				SetM_xTip(szPath);
 			}
 			goto HOOKX;
-		} else if (Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == CCommands::DeleteChar) {
+		} else if (fCommand == CCommands::DeleteChar) {
 			if (index < _tcslen(szPath)) {
-				memmove(&szPath[index], &szPath[index + 1], _tcslen(szPath) - index);
+				memmove(szPath + index, szPath + index + 1, MAX_PATH - index);
 				SetM_xTip(szPath);
 			}
 			goto HOOKX;
-		} else if (Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == CCommands::EndOfLine) {
+		} else if (fCommand == CCommands::EndOfLine) {
 			index = _tcslen(szPath);
 			goto HOOKX;
-		} else if (Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == CCommands::ForwardChar) {
-			if (index < _tcslen(szPath)) {
+		} else if (fCommand == CCommands::ForwardChar) {
+			if (index < _tcslen(szPath))
 				++index;
-			}
 			goto HOOKX;
-		} else if (Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == CCommands::KeyboardQuit) {
+		} else if (fCommand == CCommands::KeyboardQuit) {
 			CCommands::bM_x(FALSE);
 			index = 0;
 			memset(szPath, 0, sizeof(szPath));
 			goto HOOK;
-		} else if (nKey == VK_RETURN
-				|| Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == CCommands::Newline) {
+		} else if (nKey == VK_RETURN || fCommand == CCommands::Newline) {
 			InvokeM_x(szPath);
-
 			CCommands::bM_x(FALSE);
 			index = 0;
 			memset(szPath, 0, sizeof(szPath));
 			goto HOOK;
-		} else if (index < MAX_PATH - 1) {
+		} else if (nKey && index < MAX_PATH - 1) {
 			const BOOL bIsShiftDown = IsDown(VK_SHIFT, FALSE);
-			for (TCHAR nAscii = 1; nAscii != 0; ++nAscii) { // repeat until overflow
-				if (nKey != 0 && a2v(nAscii) == nKey && bIsShiftDown == IsShift(nAscii)) {
+			TCHAR nAscii = 0;
+			do { // 1-127
+				if (a2v(++nAscii) == nKey && bIsShiftDown == IsShift(nAscii)) {
 //					CUtils::Log("M-x: %#X (%c), %#X (%c)", nKey, nKey, nAscii, nAscii);
-					if (index < _tcslen(szPath)) {
-						memmove(&szPath[index + 1], &szPath[index], __min(_tcslen(szPath) - index, MAX_PATH - (index + 1) - 1));
-					}
+					if (index < _tcslen(szPath))
+						memmove(szPath + index + 1, szPath + index, MAX_PATH - index - 1);
 					szPath[index++] = nAscii;
 //					CUtils::Log("M-x: %c(%#04x)", nAscii, nAscii);
 					SetM_xTip(szPath);
 					goto HOOKX;
 				}
-			}
+			} while (nAscii != 127);
 		}
 	}
 
-	if (CCommands::bC_u()) {
-		if ((nType == NONE) && ('0' <= nKey) && (nKey <= '9')) {
+	if (CCommands::bC_u() && nType == NONE) {
+		if ('0' <= nKey && nKey <= '9') {
 			CCommands::NumericArgument(nKey - '0');
 			goto HOOK0_9;
 		}
-		if ((nType == NONE) && (nKey == 0xBD)) {
+		if (nKey == VK_OEM_MINUS) {
 			CCommands::NumericArgumentMinus();
 			goto HOOK0_9;
 		}
 	}
 
-	if (Commands[m_Config.nCommandID[m_nApplicationID][nType & ~CONTROL][nKey]].fCommand == CCommands::OneShotModifierCtrl) {
-		nOneShotModifier[nKey] = VK_CONTROL;
-		DepressKey(VK_CONTROL);
-		bCherryOneShotModifier = TRUE;
-		goto HOOK;
-	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == CCommands::OneShotModifierCtrlRepeat) {
-		nOneShotModifier[nKey] = VK_CONTROL;
-		DepressKey(VK_CONTROL);
-		bCherryOneShotModifier = TRUE;
-		goto HOOK;
-	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nType & ~CONTROL][nKey]].fCommand == CCommands::OneShotModifierCtrlRepeat) {
-		ReleaseKey(VK_CONTROL);
-		bCherryOneShotModifier = FALSE;
-		Kdu(nKey);
-		goto HOOK;
-	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nType & ~META][nKey]].fCommand == CCommands::OneShotModifierAlt) {
-		nOneShotModifier[nKey] = VK_MENU;
-		DepressKey(VK_MENU);
-		bCherryOneShotModifier = TRUE;
-		goto HOOK;
-	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == CCommands::OneShotModifierAltRepeat) {
-		nOneShotModifier[nKey] = VK_MENU;
-		DepressKey(VK_MENU);
-		bCherryOneShotModifier = TRUE;
-		goto HOOK;
-	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nType & ~META][nKey]].fCommand == CCommands::OneShotModifierAltRepeat) {
-		ReleaseKey(VK_MENU);
-		bCherryOneShotModifier = FALSE;
-		Kdu(nKey);
-		goto HOOK;
-	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nType & ~SHIFT][nKey]].fCommand == CCommands::OneShotModifierShift) {
-		nOneShotModifier[nKey] = VK_SHIFT;
-		DepressKey(VK_SHIFT);
-		bCherryOneShotModifier = TRUE;
-		goto HOOK;
-	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand == CCommands::OneShotModifierShiftRepeat) {
-		nOneShotModifier[nKey] = VK_SHIFT;
-		DepressKey(VK_SHIFT);
-		bCherryOneShotModifier = TRUE;
-		goto HOOK;
-	} else if (Commands[m_Config.nCommandID[m_nApplicationID][nType & ~SHIFT][nKey]].fCommand == CCommands::OneShotModifierShiftRepeat) {
-		ReleaseKey(VK_SHIFT);
-		bCherryOneShotModifier = FALSE;
-		Kdu(nKey);
-		goto HOOK;
-	} else {
-		int i;
-		for (i = 0; i < MAX_KEY; ++i) {
-			if (nOneShotModifier[i] == nKey) {
-				break;
-			}
-		}
-		if (i == MAX_KEY) {
-			bCherryOneShotModifier = FALSE;
-		}
+#define OneShotModifier(type, vk, mod) \
+	if (fCommand(nType & ~type) == CCommands::OneShotModifier ## mod || \
+			fCommand(nType) == CCommands::OneShotModifier ## mod ## Repeat) { \
+		nOneShotModifier[nKey] = vk; \
+		DepressKey(vk); \
+		bCherryOneShotModifier = TRUE; \
+		goto HOOK; \
+	} else if (fCommand(nType & ~CONTROL) == CCommands::OneShotModifier ## mod ## Repeat) { \
+		ReleaseKey(vk); \
+		bCherryOneShotModifier = FALSE; \
+		Kdu(nKey); \
+		goto HOOK; \
 	}
 
-	if (0 <= m_Config.nFunctionID[m_nApplicationID][nType][nKey]
-	 && m_Config.nFunctionID[m_nApplicationID][nType][nKey] < MAX_FUNCTION
-	 && _tcslen(m_Config.szFunctionDefinition[m_Config.nFunctionID[m_nApplicationID][nType][nKey]])) {
-		CallFunction(m_Config.nFunctionID[m_nApplicationID][nType][nKey]);
+	OneShotModifier(CONTROL, VK_CONTROL, Ctrl);
+	OneShotModifier(META, VK_MENU, Alt);
+	OneShotModifier(SHIFT, VK_SHIFT, Shift);
+	int i;
+	for (i = 0; i < MAX_KEY; ++i)
+		if (nOneShotModifier[i] == nOrigKey)
+			break;
+	if (i == MAX_KEY)
+		bCherryOneShotModifier = FALSE;
+
+	if (0 <= nFunctionID && nFunctionID < MAX_FUNCTION && m_Config.szFunctionDefinition[nFunctionID][0]) {
+		CallFunction(nFunctionID);
 		CCommands::Reset(GOTO_HOOK);
 		goto HOOK;
 	}
+#undef fCommand
+#undef nFunctionID
 
-	if (!Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand) {
-		if (nOrigKey == VK_CONTROL || nOrigKey == VK_MENU || nOrigKey == VK_SHIFT) {
+	if (!fCommand) {
+		if (nOrigKey == VK_CONTROL || nOrigKey == VK_MENU || nOrigKey == VK_SHIFT)
 			goto DO_NOTHING;
-		}
-
 		if (!(nType & SHIFT)) {
 			if (CCommands::IsSetMark()) {
 				if (CCommands::MoveCaret(nKey, nType & CONTROL) != CONTINUE) {
@@ -950,18 +863,15 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 				CCommands::SetMark(FALSE);
 			}
 		}
-
 		if (1 < CCommands::GetNumericArgument()) {
 			Kdu(nKey, CCommands::GetNumericArgument());
 			CCommands::ClearNumericArgument();
 			goto HOOK;
 		}
-
 		goto DO_NOTHING;
 	}
 
-	if (CCommands::IsTemporarilyDisableXKeymacs()
-	 && Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand != CCommands::KeyboardQuit) {
+	if (CCommands::IsTemporarilyDisableXKeymacs()  && fCommand != CCommands::KeyboardQuit) {
 		CCommands::SetTemporarilyDisableXKeymacs(FALSE);
 		goto DO_NOTHING;
 	}
@@ -970,40 +880,34 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	m_bRightAlt = IsDown(VK_RMENU, FALSE);
 	m_bRightShift = IsDown(VK_RSHIFT, FALSE);
 
-	if (!bLocked) {
-		bLocked = TRUE;
-		fCommand = Commands[m_Config.nCommandID[m_nApplicationID][nType][nKey]].fCommand;
-RECURSIVE_COMMAND:
-		switch (fCommand()) {
-		case GOTO_DO_NOTHING:
-			bLocked = FALSE;
-			goto DO_NOTHING;
-		case GOTO_HOOK:
-			bLocked = FALSE;
-			goto HOOK;
-		case GOTO_RECURSIVE:
-			goto RECURSIVE;
-		case GOTO_HOOKX:
-			bLocked = FALSE;
-			goto HOOKX;
-		case GOTO_HOOK0_9:
-			bLocked = FALSE;
-			goto HOOK0_9;
-		default:
-			ASSERT(0);
-			bLocked = FALSE;
-			goto DO_NOTHING;
-		}
-	} else {
+	if (bLocked)
 		goto HOOK_RECURSIVE_KEY;
+	bLocked = TRUE;
+	fLastCommand = fCommand;
+RECURSIVE_COMMAND:
+	switch (fLastCommand()) {
+	case GOTO_DO_NOTHING:
+		bLocked = FALSE;
+		goto DO_NOTHING;
+	case GOTO_HOOK:
+		bLocked = FALSE;
+		goto HOOK;
+	case GOTO_RECURSIVE:
+		goto RECURSIVE;
+	case GOTO_HOOKX:
+		bLocked = FALSE;
+		goto HOOKX;
+		case GOTO_HOOK0_9:
+		bLocked = FALSE;
+		goto HOOK0_9;
 	}
 
 DO_NOTHING:
 	SetModifierIcons();
-	if (m_bRecordingMacro && (!(lParam & BEING_RELEASED) || m_bDown[wParam])) {
+	if (m_bRecordingMacro && (!bRelease || m_bDown[wParam])) {
 		KbdMacro m = { nCode, wParam, lParam, TRUE };
 		m_Macro.push_back(m);
-		m_bDown[wParam] |= !(lParam & BEING_RELEASED);
+		m_bDown[wParam] |= !bRelease;
 	}
 	return CallNextHookEx(g_hHookKeyboard, nCode, wParam, lParam);
 
@@ -1104,27 +1008,27 @@ BOOL CXkeymacsDll::IsDepressedModifier(int (__cdecl *Modifier)(void), BOOL bPhys
 	return FALSE;
 }
 
-BOOL CXkeymacsDll::IsDepressedShiftKeyOnly(BYTE nKey)
+void CXkeymacsDll::CancelMarkWithShift(BYTE nKey, bool bRelease)
 {
-	if (nKey != VK_SHIFT
-	 && nKey != VK_LSHIFT
-	 && nKey != VK_RSHIFT) {
-		return FALSE;
-	}
-
+	static bool bShift;
+	if (nKey != VK_SHIFT)
+		goto exit;
 	BYTE bVk = 0;
 	do {
-		if (bVk == VK_SHIFT
-		 || bVk == VK_LSHIFT
-		 || bVk == VK_RSHIFT) {
+		if (bVk == VK_SHIFT || VK_LSHIFT || VK_RSHIFT)
 			continue;
-		}
-
-		if (IsDown(bVk, FALSE)) {
-			return FALSE;
-		}
+		if (IsDown(bVk, FALSE))
+			goto exit;
 	} while (++bVk);
-	return TRUE;
+	if (!bRelease) {
+		bShift = TRUE;
+		return;
+	}
+	if (bShift)
+		CCommands::SetMark(FALSE);
+exit:
+	bShift = FALSE;
+	return;
 }
 
 BOOL CXkeymacsDll::IsControl()
