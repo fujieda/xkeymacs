@@ -284,6 +284,11 @@ BOOL CXkeymacsDll::LoadConfig()
 	return res;
 }
 
+void CXkeymacsDll::SetConfig(const CONFIG& config)
+{
+	m_Config = config;
+}
+
 // set hooks
 LRESULT WINAPI DummyProc(int code, WPARAM wp, LPARAM lp) {
 	return CallNextHookEx(0, code, wp, lp);
@@ -938,33 +943,6 @@ void CXkeymacsDll::SetModifierIcons()
 	SendIconMessage(msg, 6);
 }
 
-void CXkeymacsDll::SetApplicationName(int nAppID, CString szApplicationName)
-{
-	ZeroMemory(m_Config.szSpecialApp[nAppID], CLASS_NAME_LENGTH);
-	_tcsncpy_s(m_Config.szSpecialApp[nAppID], szApplicationName, _TRUNCATE);
-}
-
-void CXkeymacsDll::SetWindowText(int nAppID, CString szWindowText)
-{
-	ZeroMemory(m_Config.szWindowText[nAppID], WINDOW_TEXT_LENGTH);
-	_tcsncpy_s(m_Config.szWindowText[nAppID], szWindowText, _TRUNCATE);
-}
-
-void CXkeymacsDll::SetCommandID(int nAppID, int nType, int nKey, int nComID)
-{
-	m_Config.nCommandID[nAppID][nType][nKey] = nComID;
-}
-
-void CXkeymacsDll::SetKillRingMax(int nAppID, int nKillRingMax)
-{
-	m_Config.nKillRingMax[nAppID] = nKillRingMax;
-}
-
-void CXkeymacsDll::SetUseDialogSetting(int nAppID, BOOL bUseDialogSetting)
-{
-	m_Config.bUseDialogSetting[nAppID] = bUseDialogSetting;
-}
-
 // Clear data of nAppID
 void CXkeymacsDll::Clear(int nAppID)
 {
@@ -1138,26 +1116,6 @@ void CXkeymacsDll::IncreaseKillRingIndex(int nKillRing)
 	m_nKillRing += nKillRing;
 }
 
-void CXkeymacsDll::SetSettingStyle(int nAppID, int nSettingStyle)
-{
-	m_Config.nSettingStyle[nAppID] = nSettingStyle;
-}
-
-void CXkeymacsDll::SetIgnoreUndefinedMetaCtrl(int nAppID, BOOL bIgnoreUndefinedMetaCtrl)
-{
-	m_Config.bIgnoreUndefinedMetaCtrl[nAppID] = bIgnoreUndefinedMetaCtrl;
-}
-
-void CXkeymacsDll::SetIgnoreUndefinedC_x(int nAppID, BOOL bIgnoreUndefinedC_x)
-{
-	m_Config.bIgnoreUndefinedC_x[nAppID] = bIgnoreUndefinedC_x;
-}
-
-void CXkeymacsDll::SetEnableCUA(int nAppID, BOOL bEnableCUA)
-{
-	m_Config.bEnableCUA[nAppID] = bEnableCUA;
-}
-
 BOOL CXkeymacsDll::GetEnableCUA()
 {
 	return m_Config.bEnableCUA[m_nApplicationID];
@@ -1197,11 +1155,6 @@ void CXkeymacsDll::CallMacro()
 	SetModifierState(before, 0);
 }
 
-void CXkeymacsDll::Set106Keyboard(BOOL b106Keyboard)
-{
-	m_Config.b106Keyboard = b106Keyboard;
-}
-
 BOOL CXkeymacsDll::Is106Keyboard()
 {
 	return m_Config.b106Keyboard;
@@ -1221,32 +1174,6 @@ int CXkeymacsDll::IsPassThrough(BYTE nKey)
 		}
 	} while (++bVk);
 	return CONTINUE;
-}
-
-void CXkeymacsDll::SetFunctionKey(int nFuncID, int nAppID, int nType, int nKey)
-{
-	if (nAppID	< 0 || MAX_APP			<= nAppID
-	 || nType	< 0 || MAX_COMMAND_TYPE	<= nType
-	 || nKey			< 0 || MAX_KEY			<= nKey) {
-		return;
-	}
-
-	m_Config.nFunctionID[nAppID][nType][nKey] = nFuncID;
-}
-
-void CXkeymacsDll::ClearFunctionDefinition()
-{
-	memset(m_Config.nFunctionID, -1, sizeof(m_Config.nFunctionID));
-	memset(m_Config.szFunctionDefinition, 0, sizeof(m_Config.szFunctionDefinition));
-}
-
-void CXkeymacsDll::SetFunctionDefinition(int nFuncID, CString szDefinition)
-{
-	if (nFuncID < 0 || nFuncID >= MAX_FUNCTION)
-		return;
-	memset(m_Config.szFunctionDefinition[nFuncID], 0, sizeof(m_Config.szFunctionDefinition[nFuncID]));
-	_tcscpy_s(m_Config.szFunctionDefinition[nFuncID], szDefinition);
-	return;
 }
 
 // call an original command which is defined in dot.xkeymacs
@@ -1604,11 +1531,6 @@ void CXkeymacsDll::DoSetCursor()
 	if (m_bCursor && m_hCurrentCursor) {
 		::SetCursor(m_hCurrentCursor);
 	}
-}
-
-void CXkeymacsDll::Set326Compatible(int nAppID, BOOL b326Compatible)
-{
-	m_Config.b326Compatible[nAppID] = b326Compatible;
 }
 
 BOOL CXkeymacsDll::Get326Compatible()

@@ -11,7 +11,6 @@
 
 #include <winperf.h>   // for Windows NT
 #include "resource.h"
-#include "data.h"
 
 struct TASK_LIST {
     DWORD dwProcessId;
@@ -80,7 +79,8 @@ private:
 	static BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam);
 	static BOOL IsTheString(CString sz, UINT nID);
 	static void SetDllData();
-	static CData m_Data[MAX_APP];
+	static CONFIG m_Config;
+	static TCHAR m_szAppTitle[MAX_APP][WINDOW_TEXT_LENGTH];
 	static void DeleteAllRegistryData();
 	static TASK_LIST m_TaskList[MAX_TASKS];
 	static DWORD m_dwTasks;
