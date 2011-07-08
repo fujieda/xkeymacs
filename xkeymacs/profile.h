@@ -89,8 +89,8 @@ private:
 	static int KeyBind2Key(LPCTSTR szKey);
 	static int KeyBind2CommandType(LPCTSTR szKeyBind);
 	static CString WriteKeyBind(int nCommandType, int nKey);
-	static void LoadRegistory();
-	static void SaveRegistory();
+	static void LoadRegistry();
+	static void SaveRegistry();
 	static void GetIMEInfo(const LPTSTR szFilename, const LPTSTR szDescription);
 };
 

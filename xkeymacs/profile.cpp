@@ -492,7 +492,7 @@ inline int WindowTextType(const CString& cstr) {
 	return IDS_WINDOW_TEXT_IGNORE;
 }
 
-void CProfile::LoadRegistory()
+void CProfile::LoadRegistry()
 {
 	bool bDialog = false;
 	const CString section(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION));	
@@ -579,7 +579,7 @@ void CProfile::LoadRegistory()
 	}
 }
 
-void CProfile::SaveRegistory()
+void CProfile::SaveRegistry()
 {
 	const CString section(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION));	
 	for (int nAppID = 0; nAppID < MAX_APP; nAppID++) {
@@ -638,13 +638,13 @@ void CProfile::LoadData()
 {
 	CDotXkeymacs::Load();
 	LevelUp();
-	LoadRegistory();
+	LoadRegistry();
 }
 
 void CProfile::SaveData()
 {
 	DeleteAllRegistryData();
-	SaveRegistory();
+	SaveRegistry();
 	SetDllData();
 }
 
