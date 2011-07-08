@@ -84,17 +84,17 @@ END_MESSAGE_MAP()
 BOOL CPropertiesAdvanced::OnSetActive() 
 {
 	m_pProperties->EnableControl(ADVANCED_TAB);
-	SetDialogData(m_pProperties->GetCurrentApplication());
+	SetDialogData();
 
 	return CPropertyPage::OnSetActive();
 }
 
-void CPropertiesAdvanced::SetDialogData(CString szApplicationName)
+void CPropertiesAdvanced::SetDialogData()
 {
-	UpdateDialogData(szApplicationName, FALSE);
+	UpdateDialogData(FALSE);
 }
 
-void CPropertiesAdvanced::UpdateDialogData(CString szApplicationName, BOOL bSaveAndValidate)
+void CPropertiesAdvanced::UpdateDialogData(BOOL bSaveAndValidate)
 {
 	m_nApplicationID = m_pProperties->GetApplicationID();
 
@@ -120,7 +120,7 @@ void CPropertiesAdvanced::UpdateDialogData(CString szApplicationName, BOOL bSave
 
 void CPropertiesAdvanced::GetDialogData()
 {
-	UpdateDialogData(m_pProperties->GetCurrentApplication(), TRUE);
+	UpdateDialogData(TRUE);
 }
 
 int CPropertiesAdvanced::OnCreate(LPCREATESTRUCT lpCreateStruct) 
@@ -162,7 +162,7 @@ BOOL CPropertiesAdvanced::OnInitDialog()
 	InitCategoryList();
 	SetCommands();
 
-	SetDialogData(m_pProperties->GetCurrentApplication());
+	SetDialogData();
 
 	m_cAssign.EnableWindow(FALSE);
 	m_cRemove.EnableWindow(FALSE);

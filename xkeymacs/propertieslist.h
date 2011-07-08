@@ -21,7 +21,7 @@ class CPropertiesList : public CPropertyPage
 public:
 	void EnableControl();
 	void GetDialogData();
-	void SetDialogData(CString szApplicationName);
+	void SetDialogData();
 	CPropertiesList();
 	~CPropertiesList();
 
@@ -65,7 +65,7 @@ private:
 	static int CALLBACK SortCommand(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 	static int CALLBACK SortCategory(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 	CProperties* m_pProperties;
-	void UpdateDialogData(CString szApplicationName, BOOL bSaveAndValidate = TRUE);
+	void UpdateDialogData(BOOL bSaveAndValidate = TRUE);
 };
 
 //{{AFX_INSERT_LOCATION}}

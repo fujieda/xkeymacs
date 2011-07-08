@@ -90,7 +90,7 @@ BOOL CProperties::OnInitDialog()
 
 	CProfile::LoadData();
 	m_szCurrentApplication.LoadString(IDS_DEFAULT);
-	SetDialogData(m_szCurrentApplication);
+	SetDialogData();
 	EnableUseDefaultButton(FALSE);
 	EnableLoadDefaultButton(FALSE);
 
@@ -111,7 +111,7 @@ void CProperties::OnDropdownApplication()
 		GetDialogData();
 		m_szCurrentApplication.LoadString(IDS_DEFAULT_TITLE);
 		m_cApplication.SelectString(-1, m_szCurrentApplication);
-		SetDialogData(m_szCurrentApplication);
+		SetDialogData();
 	}
 }
 
@@ -127,7 +127,7 @@ void CProperties::OnSelchangeApplication()
 			m_szCurrentApplication.Mid(nStart, m_szCurrentApplication.GetLength() - nStart - 1);
 	}
 
-	SetDialogData(m_szCurrentApplication);
+	SetDialogData();
 	EnableControl(ACTIVE_TAB);
 }
 
@@ -146,7 +146,7 @@ void CProperties::GetDialogData()
 	if (m_nSettingStyle == SETTING_DEFAULT) {
 		CProfile::ClearData(m_szCurrentApplication);
 	} else {
-		UpdateDialogData(m_szCurrentApplication, TRUE);
+		UpdateDialogData(TRUE);
 
 		if (m_sheet.GetActivePage() == &m_basic) {			// FIXME
 			m_basic.GetDialogData();
@@ -160,31 +160,31 @@ void CProperties::GetDialogData()
 	}
 }
 
-void CProperties::SetDialogData(CString szApplicationName)
+void CProperties::SetDialogData()
 {
-	UpdateDialogData(szApplicationName, FALSE);
+	UpdateDialogData(FALSE);
 
 	if (m_sheet.GetActivePage() == &m_basic) {			// FIXME
-		m_basic.SetDialogData(szApplicationName);
+		m_basic.SetDialogData();
 	} else if (m_sheet.GetActivePage() == &m_advanced) {
-		m_advanced.SetDialogData(szApplicationName);
+		m_advanced.SetDialogData();
 	} else if (m_sheet.GetActivePage() ==  &m_list) {
-		m_list.SetDialogData(szApplicationName);
+		m_list.SetDialogData();
 	} else {
 		ASSERT(0);
 	}
 }
 
-void CProperties::UpdateDialogData(CString szApplicationName, BOOL bSaveAndValidate)
+void CProperties::UpdateDialogData(BOOL bSaveAndValidate)
 {
 	if (bSaveAndValidate) {	// GetDialogData
 		UpdateData();
 	}
 
-	m_nApplicationID = CProfile::GetApplicationIndex(szApplicationName, bSaveAndValidate, &m_nSettingStyle);
+	m_nApplicationID = CProfile::GetApplicationIndex(m_szCurrentApplication, bSaveAndValidate, &m_nSettingStyle);
 
-	if (CProfile::IsDefault(szApplicationName)
-	 || CProfile::IsDialog(szApplicationName)) {
+	if (CProfile::IsDefault(m_szCurrentApplication)
+	 || CProfile::IsDialog(m_szCurrentApplication)) {
 		EnableUseDefaultButton(FALSE);
 	} else {
 		EnableUseDefaultButton(TRUE);
@@ -302,7 +302,7 @@ void CProperties::OnApply()
 void CProperties::OnLoadDefault() 
 {
 	CProfile::CopyData(m_szCurrentApplication, CString(MAKEINTRESOURCE(IDS_DEFAULT)));
-	SetDialogData(m_szCurrentApplication);
+	SetDialogData();
 }
 
 void CProperties::OnSelectAll() 
@@ -344,7 +344,7 @@ void CProperties::OnSettingSpecific()
 
 	if (CProfile::GetApplicationIndex(m_szCurrentApplication) == MAX_APP) {
 		CProfile::CopyData(m_szCurrentApplication, CString(MAKEINTRESOURCE(IDS_DEFAULT)));
-		SetDialogData(m_szCurrentApplication);
+		SetDialogData();
 	}
 }
 

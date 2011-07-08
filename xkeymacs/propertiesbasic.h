@@ -20,7 +20,7 @@ public:
 	void EnableControl();
 	void GetDialogData();
 	void InitChanged(BOOL bChanged);
-	void SetDialogData(CString szApplicationName);
+	void SetDialogData();
 	void SetAllDialogData(UINT nCheck, BOOL bChanged);
 	CPropertiesBasic();
 	~CPropertiesBasic();
@@ -123,7 +123,7 @@ private:
 	void Changed(int nObjectID);
 	CProperties* m_pProperties;
 	BOOL m_bChanged[MAX_COMMAND];
-	void UpdateDialogData(CString szApplicationName, BOOL bSaveAndValidate = TRUE);
+	void UpdateDialogData(BOOL bSaveAndValidate = TRUE);
 };
 
 //{{AFX_INSERT_LOCATION}}

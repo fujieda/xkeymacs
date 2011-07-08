@@ -18,7 +18,7 @@ class CPropertiesAdvanced : public CPropertyPage
 public:
 	void EnableControl();
 	void GetDialogData();
-	void SetDialogData(CString szApplicationName);
+	void SetDialogData();
 	CPropertiesAdvanced();
 	~CPropertiesAdvanced();
 
@@ -96,7 +96,7 @@ private:
 	void SetCommands();
 	void InitCategoryList();
 	CProperties* m_pProperties;
-	void UpdateDialogData(CString szApplicationName, BOOL bSaveAndValidate = TRUE);
+	void UpdateDialogData(BOOL bSaveAndValidate = TRUE);
 };
 
 //{{AFX_INSERT_LOCATION}}

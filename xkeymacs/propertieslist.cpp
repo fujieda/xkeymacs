@@ -53,17 +53,17 @@ END_MESSAGE_MAP()
 BOOL CPropertiesList::OnSetActive() 
 {
 	m_pProperties->EnableControl(LIST_TAB);
-	SetDialogData(m_pProperties->GetCurrentApplication());
+	SetDialogData();
 
 	return CPropertyPage::OnSetActive();
 }
 
-void CPropertiesList::SetDialogData(CString szApplicationName)
+void CPropertiesList::SetDialogData()
 {
-	UpdateDialogData(szApplicationName, FALSE);
+	UpdateDialogData(FALSE);
 }
 
-void CPropertiesList::UpdateDialogData(CString szApplicationName, BOOL bSaveAndValidate)
+void CPropertiesList::UpdateDialogData(BOOL bSaveAndValidate)
 {
 	if (bSaveAndValidate) {	// GetDialogData
 		UpdateData();
@@ -117,7 +117,7 @@ void CPropertiesList::UpdateDialogData(CString szApplicationName, BOOL bSaveAndV
 
 void CPropertiesList::GetDialogData()
 {
-	UpdateDialogData(m_pProperties->GetCurrentApplication(), TRUE);
+	UpdateDialogData(TRUE);
 }
 
 int CPropertiesList::OnCreate(LPCREATESTRUCT lpCreateStruct) 

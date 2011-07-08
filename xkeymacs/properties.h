@@ -80,8 +80,8 @@ private:
 	int GetCurrentApplicationID();
 	void GetDialogData();
 	void InitApplicationList();
-	void SetDialogData(CString szApplicationName);
-	void UpdateDialogData(CString szApplicationName, BOOL bSaveAndValidate = TRUE);
+	void SetDialogData();
+	void UpdateDialogData(BOOL bSaveAndValidate = TRUE);
 };
 
 //{{AFX_INSERT_LOCATION}}

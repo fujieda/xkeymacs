@@ -117,7 +117,7 @@ END_MESSAGE_MAP()
 BOOL CPropertiesBasic::OnSetActive() 
 {
 	m_pProperties->EnableControl(BASIC_TAB);
-	SetDialogData(m_pProperties->GetCurrentApplication());
+	SetDialogData();
 
 	return CPropertyPage::OnSetActive();
 }
@@ -144,12 +144,12 @@ void CPropertiesBasic::SetAllDialogData(UINT nCheck, BOOL bChanged)
 	InitChanged(bChanged);
 }
 
-void CPropertiesBasic::SetDialogData(CString szApplicationName)
+void CPropertiesBasic::SetDialogData()
 {
-	UpdateDialogData(szApplicationName, FALSE);
+	UpdateDialogData(FALSE);
 }
 
-void CPropertiesBasic::UpdateDialogData(CString szApplicationName, BOOL bSaveAndValidate)
+void CPropertiesBasic::UpdateDialogData(BOOL bSaveAndValidate)
 {
 	if (bSaveAndValidate) {	// GetDialogData
 		UpdateData();
@@ -247,7 +247,7 @@ int CPropertiesBasic::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CPropertiesBasic::GetDialogData()
 {
-	UpdateDialogData(m_pProperties->GetCurrentApplication(), TRUE);
+	UpdateDialogData(TRUE);
 }
 
 void CPropertiesBasic::OnAlt() 
