@@ -511,7 +511,7 @@ void CProfile::LoadRegistry()
 				DWORD dwKeyBind = _countof(szKeyBind);
 				for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; ++dwIndex) {
 					int nType, nKey;
-					ReadKeyBind(&nType, &nKey, szKeyBind);
+					ReadKeyBind(nType, nKey, szKeyBind);
 					m_Config.nCommandID[nAppID][nType][nKey] = nComID;
 					dwKeyBind = _countof(szKeyBind);
 				}
@@ -535,7 +535,7 @@ void CProfile::LoadRegistry()
 				DWORD dwKeyBind = _countof(szKeyBind);
 				for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; ++dwIndex) {
 					int nType, nKey;
-					ReadKeyBind(&nType, &nKey, szKeyBind);
+					ReadKeyBind(nType, nKey, szKeyBind);
 					CDotXkeymacs::SetKey(nFuncID, nAppID, nType, nKey);
 					dwKeyBind = _countof(szKeyBind);
 				}
@@ -657,10 +657,10 @@ void CProfile::SetDllData()
 	pApp->SendIPCMessage(XKEYMACS_RELOAD);
 }
 
-void CProfile::ReadKeyBind(int *const pnCommandType, int *const pnKey, LPCTSTR szKeyBind)
+void CProfile::ReadKeyBind(int& nCommandType, int& nKey, const LPCTSTR szKeyBind)
 {
-	*pnCommandType = KeyBind2CommandType(szKeyBind);
-	*pnKey = KeyBind2Key(szKeyBind + _tcslen(CommandType2String(*pnCommandType)));
+	nCommandType = KeyBind2CommandType(szKeyBind);
+	nKey = KeyBind2Key(szKeyBind + _tcslen(CommandType2String(nCommandType)));
 }
 
 CString CProfile::WriteKeyBind(const int nType, const int nKey)
@@ -864,9 +864,8 @@ void CProfile::LevelUp()
 						DWORD dwKeyBind = sizeof(szKeyBind);
 						FILETIME ft = {'\0'};	// not use
 						for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, &ft) == ERROR_SUCCESS; ++dwIndex) {
-							int nType = 0;
-							int nKey = 0;
-							ReadKeyBind(&nType, &nKey, szKeyBind);
+							int nType, nKey;
+							ReadKeyBind(nType, nKey, szKeyBind);
 							SaveKeyBind(szApplicationName, CDotXkeymacs::GetFunctionSymbol(nFuncID), nType, nKey);
 
 							memset(szKeyBind, 0, sizeof(szKeyBind));

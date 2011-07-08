@@ -351,7 +351,7 @@ void CPropertiesAdvanced::OnSelchangeCurrentKeys()
 {
 	TCHAR szKeyBind[128] = {'\0'};
 	m_cCurrentKeys.GetText(m_cCurrentKeys.GetCurSel(), szKeyBind);
-	CProfile::ReadKeyBind(&m_nRemoveCommandType, &m_nRemoveKey, szKeyBind);
+	CProfile::ReadKeyBind(m_nRemoveCommandType, m_nRemoveKey, szKeyBind);
 	m_cRemove.EnableWindow();
 }
 

@@ -44,7 +44,7 @@ public:
 	static void SetUseDialogSetting(int nAppID, BOOL bUseDialogSetting);
 	static int GetApplicationIndex(CString szApplicationName);
 	static void CopyData(CString szDestinationApplication, CString szSourceApplication);
-	static void ReadKeyBind(int *pnCommandType, int *pnKey, LPCTSTR szKeyBind);
+	static void ReadKeyBind(int& pnCommandType, int& pnKey, LPCTSTR szKeyBind);
 	static LPCTSTR Key2String(int nKey);
 	static LPCTSTR CommandType2String(int nType);
 	static int GetCurrentApplicationID(CComboBox *cApplicationList, CString szCurrentApplication);
