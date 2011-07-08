@@ -64,12 +64,12 @@ public:
 	static void SaveData();
 
 private:
-	static void SaveKeyBind(CString szApplicationName, CString szCommandName, int nType, int nKey);
+	static void SaveKeyBind(const LPCSTR szAppName, const LPCSTR szComName, int nType, int nKey);
 	static BOOL DiableTokenPrivileges();
 	static BOOL AdjustTokenPrivileges(LPCTSTR lpName);
-	static void SaveCommand(CString szApplicationName, int nComID);
-	static void SaveKeyBind(CString szApplicationName, int nComID, int nType, int nKey);
-	static void AddKeyBind2C_(CString szApplicationName, BYTE bVk);
+	static void SaveCommand(const LPCSTR szAppName, int nComID);
+	static void SaveKeyBind(const LPCSTR szAppName, int nComID, int nType, int nKey);
+	static void AddKeyBind2C_(const LPCSTR szApplicationName, BYTE bVk);
 	static void LevelUp();
 	static void Item2AppName(CString *sz);
 	static int IsNotSameString(CComboBox *pApplication, CString szListItem);
@@ -86,8 +86,8 @@ private:
 	static DWORD m_dwTasks;
 	static void GetTaskList();
 	static BOOL IsCommandType(int nType, LPCTSTR szKeyBind);
-	static int KeyBind2Key(LPCTSTR szKey);
-	static int KeyBind2CommandType(LPCTSTR szKeyBind);
+	static int KeyBind2Key(const LPCTSTR szKey);
+	static int KeyBind2CommandType(const LPCTSTR szKeyBind);
 	static CString WriteKeyBind(int nType, int nKey);
 	static void LoadRegistry();
 	static void SaveRegistry();

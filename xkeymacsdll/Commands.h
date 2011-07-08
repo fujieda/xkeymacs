@@ -169,7 +169,7 @@ public:
 	static int BackwardChar();
 	static int BeginningOfLine();
 	static int ForwardChar();
-	static CString GetCommandName(int nComID);
+	static LPCSTR GetCommandName(int nComID);
 	static int GetCategoryID(int nComID);
 	static int GetDescriptionID(int nComID);
 	static int GetToolTipID(int nComID);

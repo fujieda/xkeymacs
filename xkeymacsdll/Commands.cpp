@@ -4020,10 +4020,9 @@ int CCommands::ExecuteExtendedCommand()
 	return Reset(GOTO_HOOKX);
 }
 
-CString CCommands::GetCommandName(int nComID)
+LPCSTR CCommands::GetCommandName(int nComID)
 {
-	CString szCommandName(Commands[nComID].szCommandName);
-	return szCommandName;
+	return Commands[nComID].szCommandName;
 }
 
 int CCommands::GetCategoryID(int nComID)

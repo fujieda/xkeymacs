@@ -734,50 +734,39 @@ BOOL CProfile::IsCommandType(const int nType, LPCTSTR szKeyBind)
 	return FALSE;
 }
 
-void CProfile::SaveKeyBind(const CString szApplicationName, const int nComID, const int nType, const int nKey)
+void CProfile::SaveKeyBind(const LPCSTR szAppName, const int nComID, const int nType, const int nKey)
 {
-	if (!nComID) {
+	if (!nComID)
 		return;
-	}
-
-	CString szCommandName = CCommands::GetCommandName(nComID);
-	if (szCommandName.IsEmpty()) {
+	const LPCSTR szComName = CCommands::GetCommandName(nComID);
+	if (!szComName[0])
 		return;
-	}
-
-	SaveKeyBind(szApplicationName, szCommandName, nType, nKey);
+	SaveKeyBind(szAppName, szComName, nType, nKey);
 }
 
-void CProfile::SaveKeyBind(const CString szApplicationName, const CString szCommandName, const int nType, const int nKey)
+void CProfile::SaveKeyBind(const LPCSTR szAppName, const LPCSTR szComName, const int nType, const int nKey)
 {
-	CString szKeyBind = WriteKeyBind(nType, nKey);
-	CString szSubKey(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
-	szSubKey += _T("\\") + szApplicationName + _T("\\") + szCommandName;
-	if (!szKeyBind.IsEmpty()) {
+	const CString szKeyBind = WriteKeyBind(nType, nKey);
+	CString szSubKey = CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)) + _T("\\") + szAppName + _T("\\") + szComName;
+	if (!szKeyBind.IsEmpty())
 		szSubKey += _T("\\") + szKeyBind;
-	}
-
 	HKEY hKey = NULL;
-	if (RegCreateKeyEx(HKEY_CURRENT_USER, szSubKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, NULL) == ERROR_SUCCESS) {
+	if (RegCreateKeyEx(HKEY_CURRENT_USER, szSubKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, NULL) == ERROR_SUCCESS)
 		RegCloseKey(hKey);
-	}
 }
 
-void CProfile::SaveCommand(const CString szApplicationName, const int nComID)
+void CProfile::SaveCommand(const LPCSTR szAppName, const int nComID)
 {
-	SaveKeyBind(szApplicationName, nComID, 0, 0);
+	SaveKeyBind(szAppName, nComID, 0, 0);
 }
 
-void CProfile::AddKeyBind2C_(const CString szApplicationName, const BYTE bVk)
+void CProfile::AddKeyBind2C_(const LPCSTR szAppName, const BYTE bVk)
 {
 	int nComID;
-	for (nComID = 0; nComID < MAX_COMMAND; ++nComID) {
-		if (Commands[nComID].fCommand == CCommands::C_) {
+	for (nComID = 0; nComID < MAX_COMMAND; ++nComID)
+		if (Commands[nComID].fCommand == CCommands::C_)
 			break;
-		}
-	}
-
-	SaveKeyBind(szApplicationName, nComID, NONE, bVk);
+	SaveKeyBind(szAppName, nComID, NONE, bVk);
 }
 
 void CProfile::LevelUp()
