@@ -501,8 +501,7 @@ void CProfile::LoadRegistry()
 		entry.LoadString(IDS_REG_ENTRY_WINDOW_TEXT);
 		_tcsncpy_s(m_Config.szWindowText[nAppID], AfxGetApp()->GetProfileString(appName, entry, _T("*")), _TRUNCATE);
 
-		CString regApp(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
-		regApp += _T("\\") + appName;
+		const CString regApp = CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)) + _T("\\") + appName;
 		for (int nComID = 1; nComID < MAX_COMMAND; ++nComID) {
 			entry = CCommands::GetCommandName(nComID);
 			HKEY hKey;
@@ -565,51 +564,51 @@ void CProfile::SaveRegistry()
 {
 	const CString section(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION));	
 	for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
-		const LPCTSTR appName = m_Config.szSpecialApp[nAppID];
+		const LPCTSTR szAppName = m_Config.szSpecialApp[nAppID];
 		CString entry;
 		entry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
-		if (!appName[0]) {
+		if (!szAppName[0]) {
 			if (!AfxGetApp()->GetProfileString(section, entry).IsEmpty())
 				AfxGetApp()->WriteProfileString(section, entry, _T(""));
 			continue;
 		}
-		AfxGetApp()->WriteProfileString(section, entry, appName);
+		AfxGetApp()->WriteProfileString(section, entry, szAppName);
 
 		entry.LoadString(IDS_REG_ENTRY_APPLICATOIN_TITLE);
 		CString appTitle = m_szAppTitle[nAppID];
 		appTitle.TrimLeft(_T(' '));
-		AfxGetApp()->WriteProfileString(appName, entry, appTitle);
+		AfxGetApp()->WriteProfileString(szAppName, entry, appTitle);
 		entry.LoadString(IDS_REG_ENTRY_WINDOW_TEXT);
-		AfxGetApp()->WriteProfileString(appName, entry, m_Config.szWindowText[nAppID]);
+		AfxGetApp()->WriteProfileString(szAppName, entry, m_Config.szWindowText[nAppID]);
 
-		const CString regApp = CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)) + _T("\\") + appName;
+		const CString regApp = CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)) + _T("\\") + szAppName;
 		// Create all commands
 		for (int nComID = 1; nComID < MAX_COMMAND; ++nComID)
-			SaveCommand(appName, nComID);
+			SaveCommand(szAppName, nComID);
 		for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType)
 			for (int nKey = 0; nKey < MAX_KEY; ++nKey)
-				SaveKeyBind(appName, m_Config.nCommandID[nAppID][nType][nKey], nType, nKey);
+				SaveKeyBind(szAppName, m_Config.nCommandID[nAppID][nType][nKey], nType, nKey);
 		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID)
 			for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nFuncID, nAppID); ++nKeyID) {
 				int nType, nKey;
 				CDotXkeymacs::GetKey(nFuncID, nAppID, nKeyID, &nType, &nKey);
-				SaveKeyBind(appName, CDotXkeymacs::GetFunctionSymbol(nFuncID), nType, nKey);
+				SaveKeyBind(szAppName, CDotXkeymacs::GetFunctionSymbol(nFuncID), nType, nKey);
 			}
 
 		entry.LoadString(IDS_REG_ENTRY_KILL_RING_MAX);
-		AfxGetApp()->WriteProfileInt(appName, entry, m_Config.nKillRingMax[nAppID]);
+		AfxGetApp()->WriteProfileInt(szAppName, entry, m_Config.nKillRingMax[nAppID]);
 		entry.LoadString(IDS_REG_ENTRY_USE_DIALOG_SETTING);
-		AfxGetApp()->WriteProfileInt(appName, entry, m_Config.bUseDialogSetting[nAppID]);
+		AfxGetApp()->WriteProfileInt(szAppName, entry, m_Config.bUseDialogSetting[nAppID]);
 		entry.LoadString(IDS_REG_ENTRY_DISABLE_XKEYMACS);
-		AfxGetApp()->WriteProfileInt(appName, entry, m_Config.nSettingStyle[nAppID] == SETTING_DISABLE);
+		AfxGetApp()->WriteProfileInt(szAppName, entry, m_Config.nSettingStyle[nAppID] == SETTING_DISABLE);
 		entry.LoadString(IDC_REG_ENTRY_IGNORE_META_CTRL);
-		AfxGetApp()->WriteProfileInt(appName, entry, m_Config.bIgnoreUndefinedMetaCtrl[nAppID]);
+		AfxGetApp()->WriteProfileInt(szAppName, entry, m_Config.bIgnoreUndefinedMetaCtrl[nAppID]);
 		entry.LoadString(IDC_REG_ENTRY_IGNORE_C_X);
-		AfxGetApp()->WriteProfileInt(appName, entry, m_Config.bIgnoreUndefinedC_x[nAppID]);
+		AfxGetApp()->WriteProfileInt(szAppName, entry, m_Config.bIgnoreUndefinedC_x[nAppID]);
 		entry.LoadString(IDC_REG_ENTRY_ENABLE_CUA);
-		AfxGetApp()->WriteProfileInt(appName, entry, m_Config.bEnableCUA[nAppID]);
+		AfxGetApp()->WriteProfileInt(szAppName, entry, m_Config.bEnableCUA[nAppID]);
 		entry.LoadString(IDS_REG_ENTRY_326_COMPATIBLE);
-		AfxGetApp()->WriteProfileInt(appName, entry, m_Config.b326Compatible[nAppID]);
+		AfxGetApp()->WriteProfileInt(szAppName, entry, m_Config.b326Compatible[nAppID]);
 	}
 }
 
