@@ -91,36 +91,18 @@ BOOL CPropertiesAdvanced::OnSetActive()
 
 void CPropertiesAdvanced::SetDialogData()
 {
-	UpdateDialogData(FALSE);
-}
-
-void CPropertiesAdvanced::UpdateDialogData(BOOL bSaveAndValidate)
-{
 	m_nApplicationID = m_pProperties->GetApplicationID();
-
-	if (bSaveAndValidate) {	// GetDialogData
-		UpdateData();
-	}
-
-	if (m_nApplicationID == MAX_APP) {	// FIXME
+	if (m_nApplicationID == MAX_APP)
 		return;
-	}
-
 	InitCommandIDs();
 	m_bEnableCUA = CProfile::GetEnableCUA(m_nApplicationID);
-
-	if (!bSaveAndValidate) {	// SetDialogData
-		SetCurrentKeys();
-	}
-
-	if (!bSaveAndValidate) {	// SetDialogData
-		UpdateData(FALSE);
-	}
+	SetCurrentKeys();
+	UpdateData(FALSE);
 }
 
 void CPropertiesAdvanced::GetDialogData()
 {
-	UpdateDialogData(TRUE);
+	UpdateData();
 }
 
 int CPropertiesAdvanced::OnCreate(LPCREATESTRUCT lpCreateStruct) 

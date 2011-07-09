@@ -143,82 +143,43 @@ int CProperties::GetCurrentApplicationID()
 
 void CProperties::GetDialogData()
 {
+	UpdateData();
 	if (m_nSettingStyle == SETTING_DEFAULT) {
 		CProfile::ClearData(m_szCurrentApplication);
-	} else {
-		UpdateDialogData(TRUE);
-
-		if (m_sheet.GetActivePage() == &m_basic) {			// FIXME
-			m_basic.GetDialogData();
-		} else if (m_sheet.GetActivePage() == &m_advanced) {
-			m_advanced.GetDialogData();
-		} else if (m_sheet.GetActivePage() ==  &m_list) {
-			m_list.GetDialogData();
-		} else {
-			ASSERT(0);
-		}
+		return;
 	}
+	m_nApplicationID = CProfile::GetApplicationIndex(m_szCurrentApplication, TRUE, &m_nSettingStyle);
+	CProfile::UpdateApplicationTitle(&m_cApplication, m_szCurrentApplication, m_nApplicationID, TRUE);
+	CProfile::SetKillRingMax(m_nApplicationID, m_nKillRingMax);
+	CProfile::SetUseDialogSetting(m_nApplicationID, m_cUseDialogSetting.GetCheck() == BST_CHECKED);
+	CString szWindowText;
+	m_cWindowText.GetWindowText(szWindowText);
+	CProfile::SetWindowText(m_nApplicationID, szWindowText);
+
+	if (m_sheet.GetActivePage() == &m_basic) // FIXME
+		m_basic.GetDialogData();
+	else if (m_sheet.GetActivePage() == &m_advanced)
+		m_advanced.GetDialogData();
+	else if (m_sheet.GetActivePage() ==  &m_list)
+		m_list.GetDialogData();
 }
 
 void CProperties::SetDialogData()
 {
-	UpdateDialogData(FALSE);
+	m_nApplicationID = CProfile::GetApplicationIndex(m_szCurrentApplication, FALSE, &m_nSettingStyle);
+	EnableUseDefaultButton(!CProfile::IsDefault(m_szCurrentApplication) && !CProfile::IsDialog(m_szCurrentApplication));
+	CProfile::UpdateApplicationTitle(&m_cApplication, m_szCurrentApplication, m_nApplicationID, FALSE);
+	m_nKillRingMax = CProfile::GetKillRingMax(m_nApplicationID);
+	m_cUseDialogSetting.SetCheck(CProfile::GetUseDialogSetting(m_nApplicationID) ? BST_CHECKED : BST_UNCHECKED);
+	m_cWindowText.SetWindowText(CProfile::GetWindowText(m_nApplicationID));
+	UpdateData(FALSE);
 
-	if (m_sheet.GetActivePage() == &m_basic) {			// FIXME
+	if (m_sheet.GetActivePage() == &m_basic) // FIXME
 		m_basic.SetDialogData();
-	} else if (m_sheet.GetActivePage() == &m_advanced) {
+	else if (m_sheet.GetActivePage() == &m_advanced)
 		m_advanced.SetDialogData();
-	} else if (m_sheet.GetActivePage() ==  &m_list) {
+	else if (m_sheet.GetActivePage() ==  &m_list)
 		m_list.SetDialogData();
-	} else {
-		ASSERT(0);
-	}
-}
-
-void CProperties::UpdateDialogData(BOOL bSaveAndValidate)
-{
-	if (bSaveAndValidate) {	// GetDialogData
-		UpdateData();
-	}
-
-	m_nApplicationID = CProfile::GetApplicationIndex(m_szCurrentApplication, bSaveAndValidate, &m_nSettingStyle);
-
-	if (CProfile::IsDefault(m_szCurrentApplication)
-	 || CProfile::IsDialog(m_szCurrentApplication)) {
-		EnableUseDefaultButton(FALSE);
-	} else {
-		EnableUseDefaultButton(TRUE);
-	}
-
-	// application title
-	CProfile::UpdateApplicationTitle(&m_cApplication, m_szCurrentApplication, m_nApplicationID, bSaveAndValidate);
-
-	// kill-ring-max
-	if (bSaveAndValidate) {	// GetDialogData
-		CProfile::SetKillRingMax(m_nApplicationID, m_nKillRingMax);
-	} else {				// SetDialogData
-		m_nKillRingMax = CProfile::GetKillRingMax(m_nApplicationID);
-	}
-
-	// Use Dialog Setting
-	if (bSaveAndValidate) {	// GetDialogData
-		CProfile::SetUseDialogSetting(m_nApplicationID, m_cUseDialogSetting.GetCheck() == BST_CHECKED);
-	} else {				// SetDialogData
-		m_cUseDialogSetting.SetCheck(CProfile::GetUseDialogSetting(m_nApplicationID) ? BST_CHECKED : BST_UNCHECKED);
-	}
-
-	// Check Window Title
-	if (bSaveAndValidate) {	// GetDialogData
-		CString szWindowText;
-		m_cWindowText.GetWindowText(szWindowText);
-		CProfile::SetWindowText(m_nApplicationID, szWindowText);
-	} else {				// SetDialogData
-		m_cWindowText.SetWindowText(CProfile::GetWindowText(m_nApplicationID));
-	}
-
-	if (!bSaveAndValidate) {	// SetDialogData
-		UpdateData(FALSE);
-	}
 }
 
 void CProperties::EnableControl(TAB_NAME tab)

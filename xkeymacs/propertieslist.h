@@ -65,7 +65,6 @@ private:
 	static int CALLBACK SortCommand(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 	static int CALLBACK SortCategory(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 	CProperties* m_pProperties;
-	void UpdateDialogData(BOOL bSaveAndValidate = TRUE);
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -81,7 +81,6 @@ private:
 	void GetDialogData();
 	void InitApplicationList();
 	void SetDialogData();
-	void UpdateDialogData(BOOL bSaveAndValidate = TRUE);
 };
 
 //{{AFX_INSERT_LOCATION}}

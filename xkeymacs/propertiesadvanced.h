@@ -96,7 +96,6 @@ private:
 	void SetCommands();
 	void InitCategoryList();
 	CProperties* m_pProperties;
-	void UpdateDialogData(BOOL bSaveAndValidate = TRUE);
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -146,84 +146,23 @@ void CPropertiesBasic::SetAllDialogData(UINT nCheck, BOOL bChanged)
 
 void CPropertiesBasic::SetDialogData()
 {
-	UpdateDialogData(FALSE);
-}
-
-void CPropertiesBasic::UpdateDialogData(BOOL bSaveAndValidate)
-{
-	if (bSaveAndValidate) {	// GetDialogData
-		UpdateData();
-	}
-
-	if (m_pProperties->GetApplicationID() == MAX_APP) {
-		if (!bSaveAndValidate) {
-			SetAllDialogData(1, FALSE);	// FIXME
-		}
+	SetAllDialogData(1, FALSE);
+	CheckDlgButton(IDC_CO2, BST_CHECKED);
+	const int nAppID = m_pProperties->GetApplicationID();
+	if (nAppID == MAX_APP)
 		return;
-	}
-
-	// on/off
-	if (!bSaveAndValidate) {	// SetDialogData
-		SetAllDialogData(1, FALSE);
-		CheckDlgButton(IDC_CO2, BST_CHECKED);
-	}
 	for (int nComID = 0; nComID < MAX_COMMAND; ++nComID) {
-		CString szCommandName = CCommands::GetCommandName(nComID);
-		if (szCommandName.IsEmpty()) {
-			break;
-		}
-
-		for (int i = 0; ; ++i) {
-			int nType = CCommands::GetDefaultCommandType(nComID, i);
-			int nKey = CCommands::GetDefaultCommandKey(nComID, i);
-			int nControlID = CCommands::GetDefaultControlID(nComID, i);
-			if (nKey == 0) {
-				break;
-			}
-			if (bSaveAndValidate) {	// GetDialogData
-				if (nControlID == IDC_CO2) {
-					continue;
-				}
-				if (!m_bChanged[nComID]) {
-					continue;
-				}
-				if (IsDlgButtonChecked(nControlID)) {
-					CProfile::SetCommandID(m_pProperties->GetApplicationID(), nType, nKey, nComID);
-					CDotXkeymacs::RemoveKey(m_pProperties->GetApplicationID(), nType, nKey);
-				} else {
-					CProfile::SetCommandID(m_pProperties->GetApplicationID(), nType, nKey, 0);
-				}
-			} else {				// SetDialogData
-				if (nComID != CProfile::GetCommandID(m_pProperties->GetApplicationID(), nType, nKey)) {
-					CheckDlgButton(nControlID, BST_UNCHECKED);
-				}
-			}
+		const LPCSTR szComName = CCommands::GetCommandName(nComID);
+		if (!szComName[0])
+			return;
+		for (int i = 0; const int nKey = CCommands::GetDefaultCommandKey(nComID, i); ++i) {
+			const int nType = CCommands::GetDefaultCommandType(nComID, i);
+			const int nControlID = CCommands::GetDefaultControlID(nComID, i);
+			if (nComID != CProfile::GetCommandID(nAppID, nType, nKey))
+				CheckDlgButton(nControlID, BST_UNCHECKED);
 		}
 	}
-	// only for Toggle Imput Method Editor C-o: Canna mode
-	if (bSaveAndValidate) {	// GetDialogData
-		int nType = CONTROL;
-		int nKey = 'O';
-		if (CProfile::GetCommandID(m_pProperties->GetApplicationID(), nType, nKey) == 0) {
-			if (IsDlgButtonChecked(IDC_CO2)) {
-				for (int nComID = 0; nComID < MAX_COMMAND; ++nComID) {
-					CString szCommandName = CCommands::GetCommandName(nComID);
-					if (szCommandName.IsEmpty()) {
-						break;
-					}
-					if (!szCommandName.CompareNoCase(_T("toggle-input-method"))) {
-						CProfile::SetCommandID(m_pProperties->GetApplicationID(), nType, nKey, nComID);
-						CProfile::SetCommandID(m_pProperties->GetApplicationID(), CONTROL+SHIFT, nKey, nComID);
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	if (!bSaveAndValidate) {	// SetDialogData
-		UpdateData(FALSE);
-	}
+	UpdateData(FALSE);
 }
 
 void CPropertiesBasic::InitChanged(BOOL bChanged)
@@ -247,7 +186,26 @@ int CPropertiesBasic::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CPropertiesBasic::GetDialogData()
 {
-	UpdateDialogData(TRUE);
+	UpdateData();
+	const int nAppID = m_pProperties->GetApplicationID();
+	if (nAppID == MAX_APP)
+		return;
+	for (int nComID = 0; nComID < MAX_COMMAND; ++nComID) {
+		const LPCSTR szComName = CCommands::GetCommandName(nComID);
+		if (!szComName[0])
+			return;
+		for (int i = 0; const int nKey = CCommands::GetDefaultCommandKey(nComID, i); ++i) {
+			const int nType = CCommands::GetDefaultCommandType(nComID, i);
+			const int nControlID = CCommands::GetDefaultControlID(nComID, i);
+			if (!m_bChanged[nComID])
+				continue;
+			if (IsDlgButtonChecked(nControlID)) {
+				CProfile::SetCommandID(nAppID, nType, nKey, nComID);
+				CDotXkeymacs::RemoveKey(nAppID, nType, nKey);
+			} else if (nControlID != IDC_CO2)
+				CProfile::SetCommandID(nAppID, nType, nKey, 0);
+		}
+	}
 }
 
 void CPropertiesBasic::OnAlt() 

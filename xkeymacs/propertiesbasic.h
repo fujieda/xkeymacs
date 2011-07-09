@@ -123,7 +123,6 @@ private:
 	void Changed(int nObjectID);
 	CProperties* m_pProperties;
 	BOOL m_bChanged[MAX_COMMAND];
-	void UpdateDialogData(BOOL bSaveAndValidate = TRUE);
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -60,64 +60,43 @@ BOOL CPropertiesList::OnSetActive()
 
 void CPropertiesList::SetDialogData()
 {
-	UpdateDialogData(FALSE);
-}
+	m_cPropertiesList.DeleteAllItems();
+	m_nCategoryWidth = 0;
+	m_nCommandWidth = 0;
+	m_nKeyWidth = 0;
 
-void CPropertiesList::UpdateDialogData(BOOL bSaveAndValidate)
-{
-	if (bSaveAndValidate) {	// GetDialogData
-		UpdateData();
-	}
-
-	if (!bSaveAndValidate) {	// SetDialogData
-		m_cPropertiesList.DeleteAllItems();
-		m_nCategoryWidth = 0;
-		m_nCommandWidth = 0;
-		m_nKeyWidth = 0;
-
-		for (int nComID = 1; nComID < MAX_COMMAND; ++nComID) {
-			CString szCommandName = CCommands::GetCommandName(nComID);
-			if (szCommandName.IsEmpty()) {
-				break;
-			}
-
-			CString szCategory(MAKEINTRESOURCE(CCommands::GetCategoryID(nComID)));
-			if (szCategory.IsEmpty()) {
-				continue;
-			}
-
-			BOOL bInserted = FALSE;
-			for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType) {
-				for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-					if (nComID == CProfile::GetCommandID(m_pProperties->GetApplicationID(), nType, nKey)) {
-						CString szKey;
-						szKey.Format(_T("%s%s"), CProfile::CommandType2String(nType), CProfile::Key2String(nKey));
-
-						InsertItem(szCategory, szCommandName, szKey);
-
-						bInserted = TRUE;
-					}
+	const int nAppID = m_pProperties->GetApplicationID();
+	for (int nComID = 1; nComID < MAX_COMMAND; ++nComID) {
+		const LPCSTR szComName = CCommands::GetCommandName(nComID);
+		if (!szComName[0])
+			break;
+		const CString category(MAKEINTRESOURCE(CCommands::GetCategoryID(nComID)));
+		if (category.IsEmpty())
+			continue;
+		bool bInserted = false;
+		for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType) {
+			for (int nKey = 0; nKey < MAX_KEY; ++nKey)
+				if (nComID == CProfile::GetCommandID(nAppID, nType, nKey)) {
+					CString key;
+					key.Format(_T("%s%s"), CProfile::CommandType2String(nType), CProfile::Key2String(nKey));
+					InsertItem(category, szComName, key);
+					bInserted = true;
 				}
-			}
-			if (!bInserted) {
-				InsertItem(szCategory, szCommandName, _T(""));
-			}
 		}
-
-		SortItem(m_nSelectedColumn);
-		m_cPropertiesList.SetColumnWidth(0, m_nCategoryWidth + 0x20);
-		m_cPropertiesList.SetColumnWidth(1, m_nCommandWidth + 0x20);
-		m_cPropertiesList.SetColumnWidth(2, m_nKeyWidth + 0x20);
+		if (!bInserted)
+			InsertItem(category, szComName, _T(""));
 	}
+	SortItem(m_nSelectedColumn);
+	m_cPropertiesList.SetColumnWidth(0, m_nCategoryWidth + 0x20);
+	m_cPropertiesList.SetColumnWidth(1, m_nCommandWidth + 0x20);
+	m_cPropertiesList.SetColumnWidth(2, m_nKeyWidth + 0x20);
 
-	if (!bSaveAndValidate) {	// SetDialogData
-		UpdateData(FALSE);
-	}
+	UpdateData(FALSE);
 }
 
 void CPropertiesList::GetDialogData()
 {
-	UpdateDialogData(TRUE);
+	UpdateData(TRUE);
 }
 
 int CPropertiesList::OnCreate(LPCREATESTRUCT lpCreateStruct) 
