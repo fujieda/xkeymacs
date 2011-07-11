@@ -983,40 +983,40 @@ void CProfile::GetTaskList()
 	CloseHandle(hProcessSnap);
 }
 
-// return application index
-// and update setting style
-// if there is NOT the application in the data, this function takes care of it.
-int CProfile::GetApplicationIndex(const CString szApplicationName, const BOOL bSaveAndValidate, int *const nSettingStyle)
+int CProfile::DefaultAppID()
 {
-	if (!bSaveAndValidate) // SetDialogData
-		*nSettingStyle = SETTING_UNDEFINED;
-	int nAppID = GetAppID(szApplicationName);
-	if (nAppID == MAX_APP) {
-		if (bSaveAndValidate) { // GetDialogData
-			for (nAppID = 0; nAppID < MAX_APP; ++nAppID)
-				if (!m_Config.szSpecialApp[nAppID][0]) {
-					_tcsncpy_s(m_Config.szSpecialApp[nAppID], szApplicationName, _TRUNCATE);
-					break;
-				}
-			if (nAppID == MAX_APP)
-				return nAppID;
-		} else { // SetDialogData
-			for (nAppID = 0; nAppID < MAX_APP; ++nAppID)
-				if (IsDefault(m_Config.szSpecialApp[nAppID])) {
-					*nSettingStyle = SETTING_DEFAULT;
-					break;
-				}
-			if (nAppID == MAX_APP)
-				return nAppID;
+	const CString name(MAKEINTRESOURCE(IDS_DEFAULT));
+	for(int nAppID = 0; nAppID < MAX_APP; ++nAppID)
+		if (name == m_Config.szSpecialApp[nAppID])
+			return nAppID;
+	return MAX_APP;
+}
+
+int CProfile::AssignAppID(const LPCSTR szAppName)
+{
+	int nAppID = GetAppID(szAppName);
+	if (nAppID != MAX_APP)
+		return nAppID;
+	for (nAppID = 0; nAppID < MAX_APP; ++nAppID)
+		if (!m_Config.szSpecialApp[nAppID][0]) {
+			_tcsncpy_s(m_Config.szSpecialApp[nAppID], szAppName, _TRUNCATE);
+			return nAppID;
 		}
-	}
-	if (bSaveAndValidate) // GetDialogData
-		m_Config.nSettingStyle[nAppID] = *nSettingStyle;
-	else { // SetDialogData
-		if (*nSettingStyle == SETTING_UNDEFINED) // It means that *nSettingStyle != SETTING_DEFAULT.
-			*nSettingStyle = m_Config.nSettingStyle[nAppID];
-	}
 	return nAppID;
+}
+
+int CProfile::GetSettingStyle(const int nAppID)
+{
+	if (nAppID == MAX_APP)
+		return SETTING_DEFAULT;
+	return m_Config.nSettingStyle[nAppID];
+}
+
+void CProfile::SetSettingStyle(int nAppID, int nSettingStyle)
+{
+	if (nAppID == MAX_APP)
+		return;
+	m_Config.nSettingStyle[nAppID] = nSettingStyle;
 }
 
 BOOL CProfile::Is106Keyboard()
@@ -1198,9 +1198,11 @@ int CProfile::GetCurrentApplicationID(CComboBox *const cApplicationList, const C
 
 void CProfile::CopyData(const CString szDstApp, const CString szSrcApp)
 {
-	int nSettingStyle = SETTING_SPECIFIC;
-	const int nDstApp = GetApplicationIndex(szDstApp, TRUE, &nSettingStyle);
+	const int nDstApp = AssignAppID(szDstApp);
 	const int nSrcApp = GetAppID(szSrcApp);
+	if (nDstApp == MAX_APP || nSrcApp == MAX_APP)
+		return;
+	SetSettingStyle(nDstApp, SETTING_SPECIFIC);
 
 #define CopyMember(member) CopyMemory(&m_Config. ## member ## [nDstApp], &m_Config. ## member ## [nSrcApp], sizeof(m_Config. ## member ## [nSrcApp]))
 	CopyMember(b326Compatible);

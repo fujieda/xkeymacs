@@ -55,7 +55,10 @@ public:
 	static void UpdateApplicationTitle(CComboBox *cApplicationList, CString szCurrentApplication, int nAppID, BOOL bSaveAndValidate);
 	static void GetApplicationTitle(CComboBox *cApplicationList, CString &rList, int nIndex = -1);
 	static BOOL IsDefault(CString sz);
-	static int GetApplicationIndex(CString szApplicationName, BOOL bSaveAndValidate, int *nSettingStyle);
+	static int DefaultAppID();
+	static int AssignAppID(const LPCSTR szAppName);
+	static int GetSettingStyle(const int nAppID);
+	static void SetSettingStyle(const int nAppID, const int nSettingStyle);
 	static void InitApplicationList(CComboBox *cApplicationList);
 	static int GetSavedSettingCount();
 	static void ClearData(CString szCurrentApplication);

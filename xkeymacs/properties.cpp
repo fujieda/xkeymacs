@@ -148,7 +148,8 @@ void CProperties::GetDialogData()
 		CProfile::ClearData(m_szCurrentApplication);
 		return;
 	}
-	m_nApplicationID = CProfile::GetApplicationIndex(m_szCurrentApplication, TRUE, &m_nSettingStyle);
+	m_nApplicationID = CProfile::AssignAppID(m_szCurrentApplication);
+	CProfile::SetSettingStyle(m_nApplicationID, m_nSettingStyle);
 	CProfile::UpdateApplicationTitle(&m_cApplication, m_szCurrentApplication, m_nApplicationID, TRUE);
 	CProfile::SetKillRingMax(m_nApplicationID, m_nKillRingMax);
 	CProfile::SetUseDialogSetting(m_nApplicationID, m_cUseDialogSetting.GetCheck() == BST_CHECKED);
@@ -166,7 +167,10 @@ void CProperties::GetDialogData()
 
 void CProperties::SetDialogData()
 {
-	m_nApplicationID = CProfile::GetApplicationIndex(m_szCurrentApplication, FALSE, &m_nSettingStyle);
+	m_nApplicationID = CProfile::GetAppID(m_szCurrentApplication);
+	m_nSettingStyle = CProfile::GetSettingStyle(m_nApplicationID);
+	if (m_nApplicationID == MAX_APP)
+		m_nApplicationID = CProfile::DefaultAppID(); // fall back to the default
 	EnableUseDefaultButton(!CProfile::IsDefault(m_szCurrentApplication) && !CProfile::IsDialog(m_szCurrentApplication));
 	CProfile::UpdateApplicationTitle(&m_cApplication, m_szCurrentApplication, m_nApplicationID, FALSE);
 	m_nKillRingMax = CProfile::GetKillRingMax(m_nApplicationID);
