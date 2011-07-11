@@ -76,9 +76,7 @@ private:
 	static void LevelUp();
 	static void Item2AppName(CString *sz);
 	static int IsNotSameString(CComboBox *pApplication, CString szListItem);
-	static int CountSeparator(CString szMainString, CString szSeparator);
-	static void GetNthString(CString *szAppName, CString szWindowName, CString szSeparator, int n);
-	static void GetAppName(CString *szAppName, LPCTSTR pWindowName);
+	static bool GetAppTitle(CString& appTitle, const CString& windowName, int nth = 1000);
 	static BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam);
 	static BOOL IsTheString(CString sz, UINT nID);
 	static void SetDllData();

@@ -348,60 +348,22 @@ int CProfile::IsNotSameString(CComboBox *const pApplication, const CString szLis
 	return 1;
 }
 
-int CProfile::CountSeparator(const CString szMainString, const CString szSeparator)
+// This function returns the nth string in a window name separated by " - ".
+// If there aren't a sufficient number of strings, it returns the last string
+// appropriate for the title.
+bool CProfile::GetAppTitle(CString& appTitle, const CString& windowName, int nth)
 {
-	int index	= 0;
-	int counter	= 0;
-
-	while ((index = szMainString.Find(szSeparator, index)) != -1) {
-		++index;
-		++counter;
+	const CString sep(MAKEINTRESOURCE(IDS_SEPARATE_WINDOWTITLE));
+	const int nSep = windowName.Find(sep);
+	if (nSep < 0) {
+		appTitle = windowName;
+		return false;
 	}
-
-	return counter;
-}
-
-void CProfile::GetNthString(CString *const szAppName, const CString szWindowName, const CString szSeparator, int n)
-{
-	int index = -1;
-
-	while (--n) {
-		index = szWindowName.Find(szSeparator, index + 1);
-	}
-
-	int nStart;
-	if (index != -1) {
-		nStart = index + szSeparator.GetLength();
-	} else {
-		nStart = 0;
-	}
-
-	int nEnd = szWindowName.Find(szSeparator, nStart);
-	if (nEnd == -1) {
-		nEnd = szWindowName.GetLength();
-	}
-
-	*szAppName = szWindowName.Mid(nStart, nEnd - nStart);
-}
-
-void CProfile::GetAppName(CString *const szAppName, LPCTSTR pWindowName)
-{
-	CString szWindowName(pWindowName);
-	CString szSeparator(MAKEINTRESOURCE(IDS_SEPARATE_WINDOWTITLE));
-	int nWord = CountSeparator(szWindowName, szSeparator) + 1;
-
-	while (nWord) {
-		GetNthString(szAppName, szWindowName, szSeparator, nWord);
-		if (szAppName->GetAt(0) == _T('[')
-		 || szAppName->Find(_T('.'), 0) != -1		// for Microsoft Project
-		 || szAppName->Find(_T(']'), 0) != -1) {	// for the file name like [foo - bar]
-			--nWord;
-		} else {
-			return;
-		}
-	}
-
-	*szAppName = szWindowName;
+	if (GetAppTitle(appTitle, windowName.Right(windowName.GetLength() - nSep - sep.GetLength()), --nth) ||
+			!nth || nth > 0 && appTitle.GetAt(0) != _T('[') && appTitle.FindOneOf(_T(".]")) == -1)
+		return true;
+	appTitle = windowName.Left(nSep);
+	return false;
 }
 
 BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
@@ -417,7 +379,7 @@ BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
 	::GetWindowText(hWnd, szWindowName, sizeof(szWindowName));
 	GetClassName(hWnd, szClassName, sizeof(szClassName));
 
-	CString szAppName;
+	CString appTitle;
 	// Get Process Name
 	DWORD dwProcessId = 0;
 	GetWindowThreadProcessId(hWnd, &dwProcessId);
@@ -430,34 +392,34 @@ BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
 				continue;
 			}
 			if (!_tcsnicmp(pTask[i].ProcessName, CString(MAKEINTRESOURCE(IDS_B2)), sizeof(pTask[i].ProcessName))) {
-				szAppName.LoadString(IDS_BECKY);
+				appTitle.LoadString(IDS_BECKY);
 			} else if (!_tcsnicmp(pTask[i].ProcessName, CString(MAKEINTRESOURCE(IDS_EXPLORER)), sizeof(pTask[i].ProcessName))) {
-				szAppName.LoadString(IDS_PROGRAM_MANAGER);
+				appTitle.LoadString(IDS_PROGRAM_MANAGER);
 			} else if (!_tcsnicmp(pTask[i].ProcessName, CString(MAKEINTRESOURCE(IDS_MSIMN)), sizeof(pTask[i].ProcessName))) {
-				szAppName.LoadString(IDS_OUTLOOK_EXPRESS);
+				appTitle.LoadString(IDS_OUTLOOK_EXPRESS);
 			} else if (!_tcsnicmp(pTask[i].ProcessName, CString(MAKEINTRESOURCE(IDS_PROJECT)), sizeof(pTask[i].ProcessName))
 					|| !_tcsnicmp(pTask[i].ProcessName, CString(MAKEINTRESOURCE(IDS_EXCEL)), sizeof(pTask[i].ProcessName))
 					|| !_tcsnicmp(pTask[i].ProcessName, _T("psp.exe"), sizeof(pTask[i].ProcessName))) {
-				GetNthString(&szAppName, szWindowName, CString(MAKEINTRESOURCE(IDS_SEPARATE_WINDOWTITLE)), 1);
+				GetAppTitle(appTitle, szWindowName, 1);
 			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("sakura.exe"), sizeof(pTask[i].ProcessName))) {
-				GetNthString(&szAppName, szWindowName, CString(MAKEINTRESOURCE(IDS_SEPARATE_WINDOWTITLE)), 2);	// '.' is included, so...
+				GetAppTitle(appTitle, szWindowName, 2); // '.' is included, so...
 			} else if (!_tcsnicmp(pTask[i].ProcessName, CString(MAKEINTRESOURCE(IDS_MSDN)), sizeof(pTask[i].ProcessName))) {
-				szAppName = szWindowName;
+				appTitle = szWindowName;
 			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("devenv.exe"), sizeof(pTask[i].ProcessName))) {
-				szAppName.Format(_T("Microsoft Visual Studio .NET"));
+				appTitle.Format(_T("Microsoft Visual Studio .NET"));
 			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("vb6.exe"), sizeof(pTask[i].ProcessName))) {
-				szAppName.Format(_T("Microsoft Visual Basic"));
+				appTitle.Format(_T("Microsoft Visual Basic"));
 			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("ssexp.exe"), sizeof(pTask[i].ProcessName))) {
-				szAppName.LoadString(IDS_VISUAL_SOURCESAFE_EXPLORER);
+				appTitle.LoadString(IDS_VISUAL_SOURCESAFE_EXPLORER);
 			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("sh.exe"), sizeof(pTask[i].ProcessName))) {
-				szAppName.Format(_T("MKS Korn Shell"));
+				appTitle.Format(_T("MKS Korn Shell"));
 			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("csh.exe"), sizeof(pTask[i].ProcessName))) {
-				szAppName.Format(_T("C Shell"));
+				appTitle.Format(_T("C Shell"));
 			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("vim.exe"), sizeof(pTask[i].ProcessName))) {
-				szAppName.Format(_T("VIM"));
+				appTitle.Format(_T("VIM"));
 			} else {
 				CUtils::SetCorrectApplicationName(pTask[i].ProcessName, szWindowName);
-				GetAppName(&szAppName, szWindowName);
+				GetAppTitle(appTitle, szWindowName);
 			}
 			break;
 		}
@@ -469,7 +431,7 @@ BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
 	 && (lstrlen(szWindowName) > 0)								// Have caption?
 	 && (pApplication->FindString(-1, szClassName) == CB_ERR)) {// Is not same string?
 		CString szListItem;
-		szListItem.Format(IDS_APPLICATION_LIST_ITEM, szAppName, pTask[i].ProcessName);
+		szListItem.Format(IDS_APPLICATION_LIST_ITEM, appTitle, pTask[i].ProcessName);
 		if (IsNotSameString(pApplication, szListItem)) {
 			pApplication->AddString(szListItem);
 		}
