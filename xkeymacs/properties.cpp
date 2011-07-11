@@ -303,7 +303,7 @@ void CProperties::OnSettingSpecific()
 	UpdateData();
 	EnableControl(ACTIVE_TAB);
 
-	if (CProfile::GetApplicationIndex(m_szCurrentApplication) == MAX_APP) {
+	if (CProfile::GetAppID(m_szCurrentApplication) == MAX_APP) {
 		CProfile::CopyData(m_szCurrentApplication, CString(MAKEINTRESOURCE(IDS_DEFAULT)));
 		SetDialogData();
 	}

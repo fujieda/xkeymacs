@@ -42,7 +42,7 @@ public:
 	static BOOL IsDialog(CString sz);
 	static BOOL GetUseDialogSetting(int nAppID);
 	static void SetUseDialogSetting(int nAppID, BOOL bUseDialogSetting);
-	static int GetApplicationIndex(CString szApplicationName);
+	static int GetAppID(const LPCSTR szAppName);
 	static void CopyData(CString szDestinationApplication, CString szSourceApplication);
 	static void ReadKeyBind(int& pnCommandType, int& pnKey, LPCTSTR szKeyBind);
 	static LPCTSTR Key2String(int nKey);

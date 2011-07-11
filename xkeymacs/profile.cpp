@@ -990,7 +990,7 @@ int CProfile::GetApplicationIndex(const CString szApplicationName, const BOOL bS
 {
 	if (!bSaveAndValidate) // SetDialogData
 		*nSettingStyle = SETTING_UNDEFINED;
-	int nAppID = GetApplicationIndex(szApplicationName);
+	int nAppID = GetAppID(szApplicationName);
 	if (nAppID == MAX_APP) {
 		if (bSaveAndValidate) { // GetDialogData
 			for (nAppID = 0; nAppID < MAX_APP; ++nAppID)
@@ -1200,7 +1200,7 @@ void CProfile::CopyData(const CString szDstApp, const CString szSrcApp)
 {
 	int nSettingStyle = SETTING_SPECIFIC;
 	const int nDstApp = GetApplicationIndex(szDstApp, TRUE, &nSettingStyle);
-	const int nSrcApp = GetApplicationIndex(szSrcApp);
+	const int nSrcApp = GetAppID(szSrcApp);
 
 #define CopyMember(member) CopyMemory(&m_Config. ## member ## [nDstApp], &m_Config. ## member ## [nSrcApp], sizeof(m_Config. ## member ## [nSrcApp]))
 	CopyMember(b326Compatible);
@@ -1216,11 +1216,11 @@ void CProfile::CopyData(const CString szDstApp, const CString szSrcApp)
 
 // return application index
 // if there is NOT the application in the data, return MAX_APP
-int CProfile::GetApplicationIndex(const CString szApplicationName)
+int CProfile::GetAppID(const LPCSTR szAppName)
 {
 	int nAppID = 0;
 	for (nAppID = 0; nAppID < MAX_APP; ++nAppID)
-		if (szApplicationName == m_Config.szSpecialApp[nAppID])
+		if (!_tcscmp(szAppName, m_Config.szSpecialApp[nAppID]))
 			break;
 	return nAppID;
 }
