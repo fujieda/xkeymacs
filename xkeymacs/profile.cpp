@@ -420,7 +420,7 @@ void CProfile::LoadRegistry()
 		_tcsncpy_s(m_Config.szWindowText[nAppID], AfxGetApp()->GetProfileString(appName, entry, _T("*")), _TRUNCATE);
 
 		const CString regApp = CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)) + _T("\\") + appName;
-		for (int nComID = 1; nComID < MAX_COMMAND; ++nComID) {
+		for (BYTE nComID = 1; nComID < MAX_COMMAND; ++nComID) {
 			entry = CCommands::GetCommandName(nComID);
 			HKEY hKey;
 			const CString regKey = regApp + _T("\\") + entry;
@@ -462,19 +462,20 @@ void CProfile::LoadRegistry()
 		}
 
 		entry.LoadString(IDS_REG_ENTRY_KILL_RING_MAX);
-		m_Config.nKillRingMax[nAppID] = AfxGetApp()->GetProfileInt(appName, entry, 1);
+		int n = AfxGetApp()->GetProfileInt(appName, entry, 1);
+		m_Config.nKillRingMax[nAppID] = static_cast<BYTE>(n > 255 ? 255 : n);
 		entry.LoadString(IDS_REG_ENTRY_USE_DIALOG_SETTING);
-		m_Config.bUseDialogSetting[nAppID] = AfxGetApp()->GetProfileInt(appName, entry, 1);
+		m_Config.bUseDialogSetting[nAppID] = static_cast<BYTE>(AfxGetApp()->GetProfileInt(appName, entry, 1));
 		entry.LoadString(IDS_REG_ENTRY_DISABLE_XKEYMACS);
-		m_Config.nSettingStyle[nAppID] = AfxGetApp()->GetProfileInt(appName, entry, 0) ? SETTING_DISABLE : SETTING_SPECIFIC;
+		m_Config.nSettingStyle[nAppID] = static_cast<BYTE>(AfxGetApp()->GetProfileInt(appName, entry, 0) ? SETTING_DISABLE : SETTING_SPECIFIC);
 		entry.LoadString(IDC_REG_ENTRY_IGNORE_META_CTRL);
-		m_Config.bIgnoreUndefinedMetaCtrl[nAppID] = AfxGetApp()->GetProfileInt(appName, entry, 0);
+		m_Config.bIgnoreUndefinedMetaCtrl[nAppID] = static_cast<BYTE>(AfxGetApp()->GetProfileInt(appName, entry, 0));
 		entry.LoadString(IDC_REG_ENTRY_IGNORE_C_X);
-		m_Config.bIgnoreUndefinedC_x[nAppID] = AfxGetApp()->GetProfileInt(appName, entry, 0);
+		m_Config.bIgnoreUndefinedC_x[nAppID] = static_cast<BYTE>(AfxGetApp()->GetProfileInt(appName, entry, 0));
 		entry.LoadString(IDC_REG_ENTRY_ENABLE_CUA);
-		m_Config.bEnableCUA[nAppID] = AfxGetApp()->GetProfileInt(appName, entry, 0);
+		m_Config.bEnableCUA[nAppID] = static_cast<BYTE>(AfxGetApp()->GetProfileInt(appName, entry, 0));
 		entry.LoadString(IDS_REG_ENTRY_326_COMPATIBLE);
-		m_Config.b326Compatible[nAppID] = AfxGetApp()->GetProfileInt(appName, entry, 0);
+		m_Config.b326Compatible[nAppID] = static_cast<BYTE>(AfxGetApp()->GetProfileInt(appName, entry, 0));
 	}
 }
 
@@ -556,7 +557,7 @@ void CProfile::SetDllData()
 			for (int nKey = 0; nKey < MAX_KEY; ++nKey)
 				if ((nType & CONTROLX) && m_Config.nCommandID[nAppID][nType][nKey])
 					m_Config.nCommandID[nAppID][CONTROL]['X'] = 1; // C-x is available.
-		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID)
+		for (BYTE nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID)
 			for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nFuncID, nAppID); ++nKeyID) {
 				int nType, nKey;
 				CDotXkeymacs::GetKey(nFuncID, nAppID, nKeyID, &nType, &nKey);
@@ -565,7 +566,7 @@ void CProfile::SetDllData()
 					m_Config.nCommandID[nAppID][CONTROL]['X'] = 1; // C-x is available.
 			}
 	}
-	m_Config.b106Keyboard = Is106Keyboard();
+	m_Config.b106Keyboard = static_cast<BYTE>(Is106Keyboard());
 	CXkeymacsDll::SetConfig(m_Config);
 	CXkeymacsApp *pApp = static_cast<CXkeymacsApp *>(AfxGetApp());
 	if (!pApp->IsWow64())
@@ -855,7 +856,7 @@ void CProfile::SetSettingStyle(int nAppID, int nSettingStyle)
 {
 	if (nAppID == MAX_APP)
 		return;
-	m_Config.nSettingStyle[nAppID] = nSettingStyle;
+	m_Config.nSettingStyle[nAppID] = static_cast<BYTE>(nSettingStyle);
 }
 
 BOOL CProfile::Is106Keyboard()
@@ -902,7 +903,7 @@ void CProfile::SetCommandID(const int nAppID, const int nType, const int nKey, i
 		for (nComID = 1; nComID < MAX_COMMAND; ++nComID)
 			if (Commands[nComID].fCommand == CCommands::C_Eisu)
 				break;
-	m_Config.nCommandID[nAppID][nType][nKey] = nComID;
+	m_Config.nCommandID[nAppID][nType][nKey] = static_cast<BYTE>(nComID);
 }
 
 int CProfile::GetCommandID(const int nAppID, const int nType, const int nKey)
@@ -918,7 +919,7 @@ int CProfile::GetCommandID(const int nAppID, const int nType, const int nKey)
 
 void CProfile::SetKillRingMax(const int nAppID, const int nKillRingMax)
 {
-	m_Config.nKillRingMax[nAppID] = nKillRingMax;
+	m_Config.nKillRingMax[nAppID] = static_cast<BYTE>(nKillRingMax > 255 ? 255 : nKillRingMax);
 }
 
 int CProfile::GetKillRingMax(const int nAppID)
@@ -928,7 +929,7 @@ int CProfile::GetKillRingMax(const int nAppID)
 
 void CProfile::SetUseDialogSetting(const int nAppID, const BOOL bUseDialogSetting)
 {
-	m_Config.bUseDialogSetting[nAppID] = bUseDialogSetting;
+	m_Config.bUseDialogSetting[nAppID] = static_cast<BYTE>(bUseDialogSetting);
 }
 
 BOOL CProfile::GetUseDialogSetting(const int nAppID)
@@ -1108,7 +1109,7 @@ BOOL CProfile::GetEnableCUA(const int nAppID)
 
 void CProfile::SetEnableCUA(const int nAppID, const BOOL bEnableCUA)
 {
-	m_Config.bEnableCUA[nAppID] = bEnableCUA;
+	m_Config.bEnableCUA[nAppID] = static_cast<BYTE>(bEnableCUA);
 }
 
 int CProfile::GetKeyboardSpeed()

@@ -238,7 +238,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	BOOL	CXkeymacsDll::m_bHook			= TRUE;
 	CList<CClipboardSnap *, CClipboardSnap *> CXkeymacsDll::m_oKillRing;
 	int		CXkeymacsDll::m_nKillRing = 0;
-	int		CXkeymacsDll::m_nOriginal[MAX_COMMAND_TYPE][MAX_KEY] = {'\0'};
+	BYTE	CXkeymacsDll::m_nOriginal[MAX_COMMAND_TYPE][MAX_KEY] = {'\0'};
 	int		CXkeymacsDll::m_nAppID = 0;
 	int		CXkeymacsDll::m_nAccelerate = 0;
 	int		CXkeymacsDll::m_nKeyboardSpeed = 31;

@@ -12,19 +12,19 @@ struct ICONMSG {
 };
 
 struct CONFIG {
-	BOOL b326Compatible[MAX_APP];
+	BYTE b326Compatible[MAX_APP];
 	TCHAR szWindowText[MAX_APP][WINDOW_TEXT_LENGTH];
 	TCHAR szFunctionDefinition[MAX_FUNCTION][MAX_DEFINITION];
-	int nFunctionID[MAX_APP][MAX_COMMAND_TYPE][MAX_KEY];
-	BOOL bEnableCUA[MAX_APP];
-	BOOL bUseDialogSetting[MAX_APP];
-	BOOL bIgnoreUndefinedC_x[MAX_APP];
-	BOOL bIgnoreUndefinedMetaCtrl[MAX_APP];
-	int nSettingStyle[MAX_APP];
-	int nKillRingMax[MAX_APP];
+	BYTE nFunctionID[MAX_APP][MAX_COMMAND_TYPE][MAX_KEY];
+	BYTE bEnableCUA[MAX_APP];
+	BYTE bUseDialogSetting[MAX_APP];
+	BYTE bIgnoreUndefinedC_x[MAX_APP];
+	BYTE bIgnoreUndefinedMetaCtrl[MAX_APP];
+	BYTE nSettingStyle[MAX_APP];
+	BYTE nKillRingMax[MAX_APP];
 	TCHAR szSpecialApp[MAX_APP][CLASS_NAME_LENGTH];
-	int nCommandID[MAX_APP][MAX_COMMAND_TYPE][MAX_KEY];
-	BOOL b106Keyboard;
+	BYTE nCommandID[MAX_APP][MAX_COMMAND_TYPE][MAX_KEY];
+	BYTE b106Keyboard;
 };
 
 enum XKEYMACS_IPC { XKEYMACS_EXIT, XKEYMACS_RELOAD, XKEYMACS_RESET };
