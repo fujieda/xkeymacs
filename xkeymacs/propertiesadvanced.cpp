@@ -16,7 +16,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPropertiesAdvanced property page
-int	CPropertiesAdvanced::m_nApplicationID = 0;
+int	CPropertiesAdvanced::m_nAppID = 0;
 int CPropertiesAdvanced::m_nCommandID = 0;
 CEdit * CPropertiesAdvanced::m_pNewKey = NULL;
 CButton * CPropertiesAdvanced::m_pAssign = NULL;
@@ -91,11 +91,11 @@ BOOL CPropertiesAdvanced::OnSetActive()
 
 void CPropertiesAdvanced::SetDialogData()
 {
-	m_nApplicationID = m_pProperties->GetApplicationID();
-	if (m_nApplicationID == MAX_APP)
+	m_nAppID = m_pProperties->GetApplicationID();
+	if (m_nAppID == MAX_APP)
 		return;
 	InitCommandIDs();
-	m_bEnableCUA = CProfile::GetEnableCUA(m_nApplicationID);
+	m_bEnableCUA = CProfile::GetEnableCUA(m_nAppID);
 	SetCurrentKeys();
 	UpdateData(FALSE);
 }
@@ -140,7 +140,7 @@ BOOL CPropertiesAdvanced::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
 
-	m_nApplicationID = m_pProperties->GetApplicationID();
+	m_nAppID = m_pProperties->GetApplicationID();
 	InitCategoryList();
 	SetCommands();
 
@@ -259,7 +259,7 @@ void CPropertiesAdvanced::SetCurrentKeys()
 	if (szCategory.Compare(CString(MAKEINTRESOURCE(IDS_ORIGINAL)))) {
 		for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType) {
 			for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-				if (CCommands::GetCommandName(CProfile::GetCommandID(m_nApplicationID, nType, nKey)) == szCurrentCommandName) {
+				if (CCommands::GetCommandName(CProfile::GetCommandID(m_nAppID, nType, nKey)) == szCurrentCommandName) {
 					CString sz;
 					sz.Format(_T("%s%s"), CProfile::CommandType2String(nType), CProfile::Key2String(nKey));
 					m_cCurrentKeys.AddString(sz);
@@ -290,10 +290,10 @@ void CPropertiesAdvanced::SetCurrentKeys()
 		}
 	} else {
 		const int nIndex = CDotXkeymacs::GetIndex(szCurrentCommandName);
-		for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nIndex, m_nApplicationID); ++nKeyID) {
+		for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nIndex, m_nAppID); ++nKeyID) {
 			int nType = 0;
 			int nKey = 0;
-			CDotXkeymacs::GetKey(nIndex, m_nApplicationID, nKeyID, &nType, &nKey);
+			CDotXkeymacs::GetKey(nIndex, m_nAppID, nKeyID, &nType, &nKey);
 
 			CString sz;
 			sz.Format(_T("%s%s"), CProfile::CommandType2String(nType), CProfile::Key2String(nKey));
@@ -351,9 +351,9 @@ void CPropertiesAdvanced::OnSetfocusNewKey()
 void CPropertiesAdvanced::OnAssign() 
 {
 	// Remove Current Setting
-	CProfile::SetCommandID(m_nApplicationID, m_nAssignCommandType, m_nAssignKey, 0);
+	CProfile::SetCommandID(m_nAppID, m_nAssignCommandType, m_nAssignKey, 0);
 	SetCommandID(m_nAssignCommandType, m_nAssignKey, 0);
-	CDotXkeymacs::RemoveKey(m_nApplicationID, m_nAssignCommandType, m_nAssignKey);
+	CDotXkeymacs::RemoveKey(m_nAppID, m_nAssignCommandType, m_nAssignKey);
 
 	// Assign New Setting
 	CString szItem;
@@ -363,12 +363,12 @@ void CPropertiesAdvanced::OnAssign()
 		m_cCategory.GetLBText(m_cCategory.GetCurSel(), szCategory);
 
 		if (szCategory.Compare(CString(MAKEINTRESOURCE(IDS_ORIGINAL)))) {
-			CProfile::SetCommandID(m_nApplicationID, m_nAssignCommandType, m_nAssignKey, m_nCommandID);
+			CProfile::SetCommandID(m_nAppID, m_nAssignCommandType, m_nAssignKey, m_nCommandID);
 			SetCommandID(m_nAssignCommandType, m_nAssignKey, m_nCommandID);
 		} else {
 			CString szCurrentCommandName;
 			m_cCommands.GetText(m_cCommands.GetCurSel(), szCurrentCommandName);
-			CDotXkeymacs::SetKey(CDotXkeymacs::GetIndex(szCurrentCommandName), m_nApplicationID, m_nAssignCommandType, m_nAssignKey);
+			CDotXkeymacs::SetKey(CDotXkeymacs::GetIndex(szCurrentCommandName), m_nAppID, m_nAssignCommandType, m_nAssignKey);
 		}
 		m_cCurrentKeys.AddString(szItem);
 	}
@@ -382,12 +382,12 @@ void CPropertiesAdvanced::OnRemove()
 	m_cCategory.GetLBText(m_cCategory.GetCurSel(), szCategory);
 
 	if (szCategory.Compare(CString(MAKEINTRESOURCE(IDS_ORIGINAL)))) {
-		CProfile::SetCommandID(m_nApplicationID, m_nRemoveCommandType, m_nRemoveKey, 0);
+		CProfile::SetCommandID(m_nAppID, m_nRemoveCommandType, m_nRemoveKey, 0);
 		SetCommandID(m_nRemoveCommandType, m_nRemoveKey, 0);
 	} else {
 		CString szCurrentCommandName;
 		m_cCommands.GetText(m_cCommands.GetCurSel(), szCurrentCommandName);
-		CDotXkeymacs::RemoveKey(CDotXkeymacs::GetIndex(szCurrentCommandName), m_nApplicationID, m_nRemoveCommandType, m_nRemoveKey);
+		CDotXkeymacs::RemoveKey(CDotXkeymacs::GetIndex(szCurrentCommandName), m_nAppID, m_nRemoveCommandType, m_nRemoveKey);
 	}
 
 	m_cCurrentKeys.DeleteString(m_cCurrentKeys.GetCurSel());
@@ -493,10 +493,10 @@ void CPropertiesAdvanced::SetNewKey()
 	if (m_pCurrentlyAssigned) {
 		CString szCurrentlyAssigned(_T("Currently assigned to:\n"));
 
-		if (m_nCommandIDs[m_nAssignCommandType][m_nAssignKey] || CDotXkeymacs::GetIndex(m_nApplicationID, m_nAssignCommandType, m_nAssignKey) == -1) {
+		if (m_nCommandIDs[m_nAssignCommandType][m_nAssignKey] || CDotXkeymacs::GetIndex(m_nAppID, m_nAssignCommandType, m_nAssignKey) == -1) {
 			szCurrentlyAssigned += CCommands::GetCommandName(m_nCommandIDs[m_nAssignCommandType][m_nAssignKey]);
 		} else {
-			szCurrentlyAssigned += CDotXkeymacs::GetFunctionSymbol(CDotXkeymacs::GetIndex(m_nApplicationID, m_nAssignCommandType, m_nAssignKey));
+			szCurrentlyAssigned += CDotXkeymacs::GetFunctionSymbol(CDotXkeymacs::GetIndex(m_nAppID, m_nAssignCommandType, m_nAssignKey));
 		}
 		m_pCurrentlyAssigned->SetWindowText(szCurrentlyAssigned);
 	}
@@ -539,7 +539,7 @@ void CPropertiesAdvanced::InitCommandIDs()
 {
 	for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType) {
 		for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-			SetCommandID(nType, nKey, CProfile::GetCommandID(m_nApplicationID, nType, nKey));
+			SetCommandID(nType, nKey, CProfile::GetCommandID(m_nAppID, nType, nKey));
 		}
 	}
 }
@@ -563,7 +563,7 @@ void CPropertiesAdvanced::OnKillfocusNewKey()
 void CPropertiesAdvanced::OnEnableCua() 
 {
 	UpdateData();
-	CProfile::SetEnableCUA(m_nApplicationID, m_bEnableCUA);
+	CProfile::SetEnableCUA(m_nAppID, m_bEnableCUA);
 }
 
 BOOL CPropertiesAdvanced::IsCtrlDown()

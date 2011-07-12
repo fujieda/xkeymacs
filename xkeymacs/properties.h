@@ -68,12 +68,12 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 private:
-	int m_nApplicationID;
+	int m_nAppID;
 	CPropertiesList m_list;
 	CPropertiesAdvanced m_advanced;
 	CPropertiesBasic m_basic;
 	CPropertySheet m_sheet;
-	CString m_szCurrentApplication;
+	CString m_appName;
 	void EnableLoadDefaultButton(BOOL bEnable);
 	void EnableUseDefaultButton(BOOL bEnable);
 	void EnableUseDialogSettingButton(BOOL bEnable);

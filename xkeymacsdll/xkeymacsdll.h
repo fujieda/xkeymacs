@@ -138,7 +138,7 @@ private:
 	static void SetOriginal(UINT nType, BYTE bVk);
 	static int CheckOriginal(UINT nType, BYTE bVk);
 	static void InitKeyboardProc(BOOL bImeComposition);
-	static int m_nApplicationID;
+	static int m_nAppID;
 	static int m_nOriginal[MAX_COMMAND_TYPE][MAX_KEY];
 	static int m_nKillRing;
 	static CList<CClipboardSnap *, CClipboardSnap *> m_oKillRing;

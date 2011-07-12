@@ -67,7 +67,7 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 private:
-	static int m_nApplicationID;
+	static int m_nAppID;
 	static BOOL IsFooDown(CString szCommandName);
 	static BOOL IsShiftDown();
 	static BOOL IsMetaDown();
