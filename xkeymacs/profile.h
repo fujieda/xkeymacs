@@ -11,6 +11,7 @@
 
 #include <winperf.h>   // for Windows NT
 #include "resource.h"
+#include "properties.h"
 
 struct TASK_LIST {
     DWORD dwProcessId;
@@ -39,7 +40,6 @@ public:
 	static void SaveScanCodeMap(HKEY_TYPE hkeyType);
 	static void LoadScanCodeMap(HKEY_TYPE hkeyType);
 	static BOOL Is106Keyboard();
-	static BOOL IsDialog(CString sz);
 	static BOOL GetUseDialogSetting(int nAppID);
 	static void SetUseDialogSetting(int nAppID, BOOL bUseDialogSetting);
 	static int GetAppID(const LPCSTR szAppName);
@@ -47,19 +47,16 @@ public:
 	static void ReadKeyBind(int& pnCommandType, int& pnKey, LPCTSTR szKeyBind);
 	static LPCTSTR Key2String(int nKey);
 	static LPCTSTR CommandType2String(int nType);
-	static int GetCurrentApplicationID(CComboBox *cApplicationList, CString szCurrentApplication);
 	static int GetKillRingMax(int nAppID);
 	static void SetKillRingMax(int nAppID, int nKillRingMax);
 	static int GetCommandID(int nAppID, int nType, int nKey);
 	static void SetCommandID(int nAppID, int nType, int nKey, int nComID);
-	static void UpdateApplicationTitle(CComboBox *cApplicationList, CString szCurrentApplication, int nAppID, BOOL bSaveAndValidate);
-	static void GetApplicationTitle(CComboBox *cApplicationList, CString &rList, int nIndex = -1);
-	static BOOL IsDefault(CString sz);
+	static void SetAppTitle(const int nAppID, const CString& appTitle);
 	static int DefaultAppID();
 	static int AssignAppID(const LPCSTR szAppName);
 	static int GetSettingStyle(const int nAppID);
 	static void SetSettingStyle(const int nAppID, const int nSettingStyle);
-	static void InitApplicationList(CComboBox *cApplicationList);
+	static void InitAppList(CProperties& cProperties);
 	static int GetSavedSettingCount();
 	static void ClearData(CString szCurrentApplication);
 	static void InitDllData();
@@ -74,11 +71,8 @@ private:
 	static void SaveKeyBind(const LPCSTR szAppName, int nComID, int nType, int nKey);
 	static void AddKeyBind2C_(const LPCSTR szApplicationName, BYTE bVk);
 	static void LevelUp();
-	static void Item2AppName(CString *sz);
-	static int IsNotSameString(CComboBox *pApplication, CString szListItem);
 	static bool GetAppTitle(CString& appTitle, const CString& windowName, int nth = 1000);
 	static BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam);
-	static BOOL IsTheString(CString sz, UINT nID);
 	static void SetDllData();
 	static CONFIG m_Config;
 	static TCHAR m_szAppTitle[MAX_APP][WINDOW_TEXT_LENGTH];
@@ -92,7 +86,7 @@ private:
 	static CString WriteKeyBind(int nType, int nKey);
 	static void LoadRegistry();
 	static void SaveRegistry();
-	static void AddIMEInfo(CComboBox *cApplicationList);
+	static void AddIMEInfo(CProperties& cProperties);
 };
 
 #endif // !defined(AFX_PROFILE_H__9415254D_4656_484B_A730_E02580D8A221__INCLUDED_)

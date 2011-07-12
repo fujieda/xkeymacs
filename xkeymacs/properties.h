@@ -31,7 +31,7 @@ public:
 	CButton	m_cSelectAll;
 	CButton	m_cClearAll;
 	CButton	m_cLoadDefault;
-	CComboBox	m_cApplication;
+	CComboBox	m_cAppList;
 	int		m_nSettingStyle;
 	int		m_nKillRingMax;
 	//}}AFX_DATA
@@ -50,6 +50,7 @@ public:
 	CString GetCurrentApplication();
 	int GetApplicationID();
 	void EnableControl(TAB_NAME tab = BASIC_TAB);
+	void AddItem(const CString& appTitle, const CString& appName);
 protected:
 	// Generated message map functions
 	//{{AFX_MSG(CProperties)
@@ -73,14 +74,15 @@ private:
 	CPropertiesAdvanced m_advanced;
 	CPropertiesBasic m_basic;
 	CPropertySheet m_sheet;
+	CString m_appTitle;
 	CString m_appName;
 	void EnableLoadDefaultButton(BOOL bEnable);
 	void EnableUseDefaultButton(BOOL bEnable);
 	void EnableUseDialogSettingButton(BOOL bEnable);
-	int GetCurrentApplicationID();
 	void GetDialogData();
-	void InitApplicationList();
+	void InitAppList();
 	void SetDialogData();
+	void GetAppTitleAndName(const int nSel, CString& appTitle, CString& appName);
 };
 
 //{{AFX_INSERT_LOCATION}}

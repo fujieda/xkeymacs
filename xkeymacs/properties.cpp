@@ -37,7 +37,7 @@ void CProperties::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SELECT_ALL, m_cSelectAll);
 	DDX_Control(pDX, IDC_CLEAR_ALL, m_cClearAll);
 	DDX_Control(pDX, IDC_LOAD_DEFAULT, m_cLoadDefault);
-	DDX_Control(pDX, IDC_APPLICATION, m_cApplication);
+	DDX_Control(pDX, IDC_APPLICATION, m_cAppList);
 	DDX_Radio(pDX, IDC_SETTING_DEFAULT, m_nSettingStyle);
 	DDX_Text(pDX, IDC_KILL_RING_MAX, m_nKillRingMax);
 	DDV_MinMaxInt(pDX, m_nKillRingMax, 0, 2147483647);
@@ -83,10 +83,9 @@ BOOL CProperties::OnInitDialog()
 	ScreenToClient(&rcSheet);
 	m_sheet.SetWindowPos(NULL, rcSheet.left - 11, rcSheet.top - 8, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
 
-
 	SetForegroundWindow();
 
-	InitApplicationList();
+	InitAppList();
 
 	CProfile::LoadData();
 	m_appName.LoadString(IDS_DEFAULT);
@@ -102,43 +101,37 @@ BOOL CProperties::OnInitDialog()
 
 void CProperties::OnDropdownApplication() 
 {
-	InitApplicationList();
-
-	int nID = GetCurrentApplicationID();
-	if (nID != CB_ERR) {
-		m_cApplication.SetCurSel(nID);
-	} else {
-		GetDialogData();
-		m_appName.LoadString(IDS_DEFAULT_TITLE);
-		m_cApplication.SelectString(-1, m_appName);
+	InitAppList();
+	int i;
+	for (i = 0; i < m_cAppList.GetCount(); ++i) {
+		CString appTitle, appName;
+		GetAppTitleAndName(i, appTitle, appName);
+		if (m_appName == appName)
+			m_cAppList.SetCurSel(i);
+	}
+	if (i == m_cAppList.GetCount()) {
+		m_appTitle.LoadString(IDS_DEFAULT_TITLE);
+		m_cAppList.SelectString(-1, m_appTitle);
 		SetDialogData();
 	}
 }
 
 void CProperties::OnSelchangeApplication() 
 {
-	GetDialogData();
-
-	CProfile::GetApplicationTitle(&m_cApplication, m_appName, m_cApplication.GetCurSel());
-	int nStart;
-	if ((nStart = m_appName.ReverseFind(_T('('))) != -1) {
-		++nStart;
-		m_appName =
-			m_appName.Mid(nStart, m_appName.GetLength() - nStart - 1);
-	}
-
+	GetAppTitleAndName(m_cAppList.GetCurSel(), m_appTitle, m_appName);
 	SetDialogData();
 	EnableControl(ACTIVE_TAB);
 }
 
-void CProperties::InitApplicationList()
+void CProperties::InitAppList()
 {
-	CProfile::InitApplicationList(&m_cApplication);
-}
-
-int CProperties::GetCurrentApplicationID()
-{
-	return CProfile::GetCurrentApplicationID(&m_cApplication, m_appName);
+	m_cAppList.ResetContent();
+	CProfile::InitAppList(*this);
+	// Add Dialog
+	m_cAppList.InsertString(0, CString(MAKEINTRESOURCE(IDS_DIALOG_TITLE)));
+	// Add Default
+	m_cAppList.InsertString( 0, CString(MAKEINTRESOURCE(IDS_DEFAULT_TITLE)));
+	m_cAppList.SelectString(-1, CString(MAKEINTRESOURCE(IDS_DEFAULT_TITLE)));
 }
 
 void CProperties::GetDialogData()
@@ -150,7 +143,7 @@ void CProperties::GetDialogData()
 	}
 	m_nAppID = CProfile::AssignAppID(m_appName);
 	CProfile::SetSettingStyle(m_nAppID, m_nSettingStyle);
-	CProfile::UpdateApplicationTitle(&m_cApplication, m_appName, m_nAppID, TRUE);
+	CProfile::SetAppTitle(m_nAppID, m_appTitle);
 	CProfile::SetKillRingMax(m_nAppID, m_nKillRingMax);
 	CProfile::SetUseDialogSetting(m_nAppID, m_cUseDialogSetting.GetCheck() == BST_CHECKED);
 	CString szWindowText;
@@ -171,8 +164,8 @@ void CProperties::SetDialogData()
 	m_nSettingStyle = CProfile::GetSettingStyle(m_nAppID);
 	if (m_nAppID == MAX_APP)
 		m_nAppID = CProfile::DefaultAppID(); // fall back to the default
-	EnableUseDefaultButton(!CProfile::IsDefault(m_appName) && !CProfile::IsDialog(m_appName));
-	CProfile::UpdateApplicationTitle(&m_cApplication, m_appName, m_nAppID, FALSE);
+	EnableUseDefaultButton(m_appName != CString(MAKEINTRESOURCE(IDS_DEFAULT)) &&
+							m_appName != CString(MAKEINTRESOURCE(IDS_DIALOG)));
 	m_nKillRingMax = CProfile::GetKillRingMax(m_nAppID);
 	m_cUseDialogSetting.SetCheck(CProfile::GetUseDialogSetting(m_nAppID) ? BST_CHECKED : BST_UNCHECKED);
 	m_cWindowText.SetWindowText(CProfile::GetWindowText(m_nAppID));
@@ -184,6 +177,44 @@ void CProperties::SetDialogData()
 		m_advanced.SetDialogData();
 	else if (m_sheet.GetActivePage() ==  &m_list)
 		m_list.SetDialogData();
+}
+
+void CProperties::AddItem(const CString& appTitle, const CString& appName)
+{
+	for (int i = 0; i < m_cAppList.GetCount(); ++i) {
+		CString tmpTitle, tmpName;
+		GetAppTitleAndName(i, tmpTitle, tmpName);
+		if (appName == tmpName)
+			return;
+	}
+	CString item;
+	item.Format(IDS_APPLICATION_LIST_ITEM, appTitle, appName);
+	m_cAppList.AddString(item);
+}
+
+void CProperties::GetAppTitleAndName(const int nSel, CString& appTitle, CString& appName)
+{
+	appTitle.Empty();
+	appName.Empty();
+	CString item;
+	if (nSel < 0)
+		m_cAppList.GetWindowText(item);
+	else
+		m_cAppList.GetLBText(nSel, item);
+
+	if (item == CString(MAKEINTRESOURCE(IDS_DEFAULT_TITLE))) {
+		appName.LoadString(IDS_DEFAULT);
+		return;
+	}
+	if (item == CString(MAKEINTRESOURCE(IDS_DIALOG_TITLE))) {
+		appName.LoadString(IDS_DIALOG);
+		return;
+	}
+	int nParen = item.ReverseFind(_T('('));
+	if (nParen < 0)
+		return;
+	appTitle = item.Left(nParen);
+	appName = item.Mid(nParen + 1, item.GetLength() - nParen -2);
 }
 
 void CProperties::EnableControl(TAB_NAME tab)
@@ -224,17 +255,15 @@ void CProperties::EnableControl(TAB_NAME tab)
 void CProperties::EnableUseDialogSettingButton(BOOL bEnable)
 {
 	m_cUseDialogSetting.EnableWindow(bEnable);
-	if (CProfile::IsDialog(m_appName)) {
+	if (m_appName == CString(MAKEINTRESOURCE(IDS_DIALOG)))
 		m_cUseDialogSetting.EnableWindow(FALSE);
-	}
 }
 
 void CProperties::EnableLoadDefaultButton(BOOL bEnable)
 {
 	m_cLoadDefault.EnableWindow(bEnable);
-	if (CProfile::IsDefault(m_appName)) {
+	if (m_appName == CString(MAKEINTRESOURCE(IDS_DEFAULT)))
 		m_cLoadDefault.EnableWindow(FALSE);
-	}
 }
 
 void CProperties::EnableUseDefaultButton(BOOL bEnable)

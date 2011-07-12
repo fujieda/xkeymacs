@@ -310,44 +310,6 @@ TCHAR CProfile::m_szAppTitle[MAX_APP][WINDOW_TEXT_LENGTH];
 TASK_LIST CProfile::m_TaskList[MAX_TASKS];
 DWORD CProfile::m_dwTasks;
 
-enum { INITIAL_SIZE	= 51200 };
-enum { EXTEND_SIZE	= 25600 };
-
-void CProfile::Item2AppName(CString *const sz)
-{
-	if (IsTheString(*sz, IDS_DEFAULT_TITLE)) {
-		sz->LoadString(IDS_DEFAULT);
-	}
-
-	if (IsTheString(*sz, IDS_DIALOG_TITLE)) {
-		sz->LoadString(IDS_DIALOG);
-	}
-
-	int nStart, nEnd, nCount;
-
-	nStart	= sz->ReverseFind(_T('(')) + 1;
-	nEnd	= sz->Find(_T(')'), nStart) - 1;
-	nCount	= (nEnd + 1) - nStart;
-	*sz		= sz->Mid(nStart, nCount);
-}
-
-int CProfile::IsNotSameString(CComboBox *const pApplication, const CString szListItem)
-{
-	CString szItem, szList;
-	szList = szListItem;
-	Item2AppName(&szList);
-
-	for (int i = 0; i < pApplication->GetCount(); ++i) {
-		pApplication->GetLBText(i, szItem);
-		Item2AppName(&szItem);
-		if (!_tcsicmp(szItem, szList)) {
-			return 0;
-		}
-	}
-
-	return 1;
-}
-
 // This function returns the nth string in a window name separated by " - ".
 // If there aren't a sufficient number of strings, it returns the last string
 // appropriate for the title.
@@ -368,8 +330,8 @@ bool CProfile::GetAppTitle(CString& appTitle, const CString& windowName, int nth
 
 BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
 {
-	CComboBox		*pApplication	= (CComboBox*)lParam;
-	PTASK_LIST		pTask			= CProfile::m_TaskList;
+	CProperties *pProperties = reinterpret_cast<CProperties*>(lParam);
+	PTASK_LIST pTask = CProfile::m_TaskList;
 	
 	TCHAR szWindowName[WINDOW_TEXT_LENGTH];
 	TCHAR szClassName[CLASS_NAME_LENGTH];
@@ -425,16 +387,10 @@ BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
 		}
 	}
 	
-	
-	if ((IsWindowVisible(hWnd))									// Is visible?
-	 && (GetWindow(hWnd, GW_OWNER) == NULL)						// Is top level window?
-	 && (lstrlen(szWindowName) > 0)								// Have caption?
-	 && (pApplication->FindString(-1, szClassName) == CB_ERR)) {// Is not same string?
-		CString szListItem;
-		szListItem.Format(IDS_APPLICATION_LIST_ITEM, appTitle, pTask[i].ProcessName);
-		if (IsNotSameString(pApplication, szListItem)) {
-			pApplication->AddString(szListItem);
-		}
+	if (IsWindowVisible(hWnd) && // Is visible?
+			GetWindow(hWnd, GW_OWNER) == NULL && // Is top level window?
+			lstrlen(szWindowName) > 0) { // Have caption?
+		pProperties->AddItem(appTitle, pTask[i].ProcessName);
 	}
 	return TRUE;
 }
@@ -813,53 +769,37 @@ int CProfile::GetSavedSettingCount()
 	return nSavedSetting;
 }
 
-void CProfile::InitApplicationList(CComboBox *const cApplicationList)
+void CProfile::InitAppList(CProperties& cProperties)
 {
-	cApplicationList->ResetContent();
-
 	GetTaskList();
 
-	EnumWindows(EnumWindowsProc, (LPARAM)cApplicationList);
+	EnumWindows(EnumWindowsProc, reinterpret_cast<LPARAM>(&cProperties));
 
-	CString szListItem;
 	for (int i = 0; i < MAX_APP; ++i) {
 		const LPCTSTR szAppName = m_Config.szSpecialApp[i];
 		const LPCTSTR szAppTitle = m_szAppTitle[i];
 		if (!szAppName[0] || !_tcscmp(szAppName, _T("IME")))
 			continue;
-		szListItem.Format(IDS_APPLICATION_LIST_ITEM, szAppTitle, szAppName);
-		if (IsNotSameString(cApplicationList, szListItem) &&
-				!IsDefault(szAppName) && !IsDialog(szAppName))
-			cApplicationList->AddString(szListItem);
+		if (CString(MAKEINTRESOURCE(IDS_DEFAULT)) == szAppName ||
+				CString(MAKEINTRESOURCE(IDS_DIALOG)) == szAppName)
+			continue;
+		cProperties.AddItem(szAppTitle, szAppName);
 	}
-
-	AddIMEInfo(cApplicationList);
-
-	// Add Dialog
-	cApplicationList->InsertString(0, CString(MAKEINTRESOURCE(IDS_DIALOG_TITLE)));
-
-	// Add Default
-	cApplicationList->InsertString( 0, CString(MAKEINTRESOURCE(IDS_DEFAULT_TITLE)));
-	cApplicationList->SelectString(-1, CString(MAKEINTRESOURCE(IDS_DEFAULT_TITLE)));
+	AddIMEInfo(cProperties);
 }
 
-void CProfile::AddIMEInfo(CComboBox *cApplicationList)
+void CProfile::AddIMEInfo(CProperties& cProperties)
 {
 	const UINT n = GetKeyboardLayoutList(0, NULL);
 	if (!n)
 		return;
 	std::vector<HKL> hkls(n);
 	GetKeyboardLayoutList(n, &hkls[0]);
-	TCHAR szFileName[MAX_PATH];
-	TCHAR szDescription[WINDOW_TEXT_LENGTH];
+	TCHAR szFileName[MAX_PATH], szDescription[WINDOW_TEXT_LENGTH];
 	for (std::vector<HKL>::const_iterator p = hkls.begin(); p != hkls.end(); ++p)
 		if (ImmGetDescription(*p, szDescription, WINDOW_TEXT_LENGTH) &&
-				ImmGetIMEFileName(*p, szFileName, MAX_PATH)) {
-			CString item;
-			item.Format(IDS_APPLICATION_LIST_ITEM, szDescription, szFileName);
-			if (IsNotSameString(cApplicationList, item))
-				cApplicationList->AddString(item);
-		}
+				ImmGetIMEFileName(*p, szFileName, MAX_PATH))
+			cProperties.AddItem(szDescription, szFileName);
 }
 
 void CProfile::GetTaskList()
@@ -950,56 +890,9 @@ BOOL CProfile::Is106Keyboard()
 	return keyboard == JAPANESE_KEYBOARD;
 }
 
-BOOL CProfile::IsTheString(const CString sz, const UINT nID)
+void CProfile::SetAppTitle(const int nAppID, const CString& appTitle)
 {
-	return sz == CString(MAKEINTRESOURCE(nID));
-}
-
-// if sz is "Default", return TRUE
-BOOL CProfile::IsDefault(const CString sz)
-{
-	return IsTheString(sz, IDS_DEFAULT);
-}
-
-// if sz is "Dialog", return TRUE
-BOOL CProfile::IsDialog(const CString sz)
-{
-	return IsTheString(sz, IDS_DIALOG);
-}
-
-void CProfile::GetApplicationTitle(CComboBox *const cApplicationList, CString &rList, const int nIndex)
-{
-	if (0 <= nIndex) {
-		cApplicationList->GetLBText(nIndex, rList);
-	} else {
-		cApplicationList->GetWindowText(rList);
-	}
-
-	if (IsTheString(rList, IDS_DEFAULT_TITLE)) {
-		rList.LoadString(IDS_DEFAULT);
-	}
-
-	if (IsTheString(rList, IDS_DIALOG_TITLE)) {
-		rList.LoadString(IDS_DIALOG);
-	}
-
-	return;
-}
-
-void CProfile::UpdateApplicationTitle(CComboBox *const cApplicationList, const CString szCurrentApplication, const int nAppID, const BOOL bSaveAndValidate)
-{
-	static CString szApplicationTitle;
-	if (bSaveAndValidate) {	// GetDialogData
-		if (!CProfile::IsDefault(szCurrentApplication))
-			_tcsncpy_s(m_szAppTitle[nAppID], szApplicationTitle, _TRUNCATE);
-		szApplicationTitle.Empty();
-	} else { // SetDialogData
-		CString szListItem;
-		CProfile::GetApplicationTitle(cApplicationList, szListItem);
-		const int nEndTitle = szListItem.ReverseFind(_T('('));
-		if (nEndTitle > 0)
-			szApplicationTitle = szListItem.Left(nEndTitle);
-	}
+	_tcsncpy_s(m_szAppTitle[nAppID], appTitle, _TRUNCATE);
 }
 
 void CProfile::SetCommandID(const int nAppID, const int nType, const int nKey, int nComID)
@@ -1076,23 +969,6 @@ void CProfile::DeleteAllRegistryData()
 		}
 		RegCloseKey(hkey);
 	}
-}
-
-int CProfile::GetCurrentApplicationID(CComboBox *const cApplicationList, const CString szCurrentApplication)
-{
-	int nCounter = cApplicationList->GetCount();
-	CString szListItem;
-	int nCurSel = cApplicationList->GetCurSel();
-
-	for (int i = 0; i < nCounter; ++i) {
-		cApplicationList->SetCurSel(i);
-		CProfile::GetApplicationTitle(cApplicationList, szListItem);
-		if (szListItem.Find(szCurrentApplication) != -1) {
-			cApplicationList->SetCurSel(nCurSel);
-			return i;
-		}
-	}
-	return -1;
 }
 
 void CProfile::CopyData(const CString szDstApp, const CString szSrcApp)
