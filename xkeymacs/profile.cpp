@@ -733,121 +733,58 @@ void CProfile::AddKeyBind2C_(const LPCSTR szAppName, const BYTE bVk)
 
 void CProfile::LevelUp()
 {
-	const int nDefalutLevel = 0;
-	const int nLatestLevel = 4;
-
-	CString szSection;
-	CString szEntry;
-	szEntry.Format(_T("Level"));
-
-	switch (AfxGetApp()->GetProfileInt(szSection, szEntry, nDefalutLevel)) {
-	case nDefalutLevel:
-		{
-			for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
-				CString szEntry;
-				szEntry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
-
-				CString szApplicationName;
-				szApplicationName = AfxGetApp()->GetProfileString(CString(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION)), szEntry);
-				if (szApplicationName.IsEmpty()) {
-					continue;
-				}
-
-				AddKeyBind2C_(szApplicationName, VK_LCONTROL);
-				AddKeyBind2C_(szApplicationName, VK_RCONTROL);
-			}
-		}
-		// Do NOT write break; here.
-	case 1:
-		{
-			for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
-				CString szEntry;
-				szEntry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
-
-				CString szApplicationName;
-				szApplicationName = AfxGetApp()->GetProfileString(CString(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION)), szEntry);
-				if (szApplicationName.IsEmpty()) {
-					continue;
-				}
-
-				// Set kill-ring-max 1 if it is 0.
-				if (!AfxGetApp()->GetProfileInt(szApplicationName, CString(MAKEINTRESOURCE(IDS_REG_ENTRY_KILL_RING_MAX)), 0)) {
-					AfxGetApp()->WriteProfileInt(szApplicationName, CString(MAKEINTRESOURCE(IDS_REG_ENTRY_KILL_RING_MAX)), 1);
-				}
-			}
-		}
-		// Do NOT write break; here.
-	case 2:
-		{
-			for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
-				CString szEntry;
-				szEntry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
-
-				CString szApplicationName;
-				szApplicationName = AfxGetApp()->GetProfileString(CString(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION)), szEntry);
-				if (szApplicationName.IsEmpty()) {
-					continue;
-				}
-
+	const int nCurrentLevel = AfxGetApp()->GetProfileInt(_T(""), _T("Level"), 0);
+	for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
+		CString entry;
+		entry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
+		const CString appName = AfxGetApp()->GetProfileString(CString(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION)), entry);
+		if (appName.IsEmpty())
+			continue;
+		switch (nCurrentLevel) {
+		case 0:
+			AddKeyBind2C_(appName, VK_LCONTROL);
+			AddKeyBind2C_(appName, VK_RCONTROL);
+		// fall through
+		case 1:
+			// Set kill-ring-max 1 if it is 0.
+			if (!AfxGetApp()->GetProfileInt(appName, CString(MAKEINTRESOURCE(IDS_REG_ENTRY_KILL_RING_MAX)), 0))
+				AfxGetApp()->WriteProfileInt(appName, CString(MAKEINTRESOURCE(IDS_REG_ENTRY_KILL_RING_MAX)), 1);
+		// fall through
+		case 2:
+			{
 				// Chaged a label from Enter to newline.
-				CString szSrcSubKey(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
-				szSrcSubKey += _T("\\") + szApplicationName + _T("\\") + _T("Enter");
-				CString szDestSubKey(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
-				szDestSubKey += _T("\\") + szApplicationName + _T("\\") + _T("newline");
-				HKEY hKeyDest = NULL;
-				if (RegCreateKeyEx(HKEY_CURRENT_USER, szDestSubKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKeyDest, NULL) == ERROR_SUCCESS) {
-					SHCopyKey(HKEY_CURRENT_USER, szSrcSubKey, hKeyDest, NULL);
-					SHDeleteKey(HKEY_CURRENT_USER, szSrcSubKey);
-					RegCloseKey(hKeyDest);
+				const CString subKey = CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)) + _T("\\") + appName;
+				const CString srcKey = subKey + _T("\\") + _T("Enter");
+				const CString dstKey = subKey + _T("\\") + _T("newline");
+				HKEY hDstKey = NULL;
+				if (RegCreateKeyEx(HKEY_CURRENT_USER, dstKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hDstKey, NULL) == ERROR_SUCCESS) {
+					SHCopyKey(HKEY_CURRENT_USER, srcKey, hDstKey, NULL);
+					SHDeleteKey(HKEY_CURRENT_USER, srcKey);
+					RegCloseKey(hDstKey);
 				}
 			}
-		}
-		// Do NOT write break; here.
-	case 3:
-		{
-			for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
-				CString szEntry;
-				szEntry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
-
-				CString szApplicationName;
-				szApplicationName = AfxGetApp()->GetProfileString(CString(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION)), szEntry);
-				if (szApplicationName.IsEmpty()) {
-					continue;
-				}
-
-				// rename original function to remove IDS_REG_ORIGINAL_PREFIX
-				for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID) {
-					HKEY hKey = NULL;
-					CString szSubKey(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA));
-					szSubKey += _T("\\") + szApplicationName + _T("\\") + CString(MAKEINTRESOURCE(IDS_REG_ORIGINAL_PREFIX)) + CDotXkeymacs::GetFunctionSymbol(nFuncID);
-					if (RegOpenKeyEx(HKEY_CURRENT_USER, szSubKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
-						// Use registry data
-						TCHAR szKeyBind[128] = {'\0'};
-						DWORD dwKeyBind = sizeof(szKeyBind);
-						FILETIME ft = {'\0'};	// not use
-						for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, &ft) == ERROR_SUCCESS; ++dwIndex) {
-							int nType, nKey;
-							ReadKeyBind(nType, nKey, szKeyBind);
-							SaveKeyBind(szApplicationName, CDotXkeymacs::GetFunctionSymbol(nFuncID), nType, nKey);
-
-							memset(szKeyBind, 0, sizeof(szKeyBind));
-							dwKeyBind = sizeof(szKeyBind);
-						}
-						RegCloseKey(hKey);
+		// fall through
+		case 3:
+			// rename original function to remove IDS_REG_ORIGINAL_PREFIX
+			for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID) {
+				HKEY hKey = NULL;
+				const CString subKey = CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)) + _T("\\") + appName + _T("\\") + CString(MAKEINTRESOURCE(IDS_REG_ORIGINAL_PREFIX)) + CDotXkeymacs::GetFunctionSymbol(nFuncID);
+				if (RegOpenKeyEx(HKEY_CURRENT_USER, subKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
+					// Use registry data
+					TCHAR szKeyBind[128];
+					DWORD dwKeyBind = sizeof(szKeyBind);
+					for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; ++dwIndex) {
+						int nType, nKey;
+						ReadKeyBind(nType, nKey, szKeyBind);
+						SaveKeyBind(appName, CDotXkeymacs::GetFunctionSymbol(nFuncID), nType, nKey);
+						dwKeyBind = sizeof(szKeyBind);
 					}
+					RegCloseKey(hKey);
 				}
 			}
 		}
-//	case 4:
-//		foo();
-//	...
-//	case nLatestLevel-1:
-//		bar();
-		AfxGetApp()->WriteProfileInt(szSection, szEntry, nLatestLevel);
-		break;
-	default:
-		break;
 	}
+	AfxGetApp()->WriteProfileInt(_T(""), _T("Level"), 4);
 }
 
 void CProfile::InitDllData()
