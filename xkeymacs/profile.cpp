@@ -10,7 +10,7 @@
 #include <Imm.h>
 #include <Shlwapi.h>
 #include <TlHelp32.h>
-#include <msctf.h>
+#include <vector>
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -1007,12 +1007,7 @@ void CProfile::InitApplicationList(CComboBox *const cApplicationList)
 		}
 	}
 
-	TCHAR szFilename[MAX_PATH];
-	TCHAR szDescription[WINDOW_TEXT_LENGTH];
-	GetIMEInfo(szFilename, szDescription);
-	szListItem.Format(IDS_APPLICATION_LIST_ITEM, szDescription, szFilename);
-	if (IsNotSameString(cApplicationList, szListItem))
-		cApplicationList->AddString(szListItem);
+	AddIMEInfo(cApplicationList);
 
 	// Add Dialog
 	cApplicationList->InsertString(0, CString(MAKEINTRESOURCE(IDS_DIALOG_TITLE)));
@@ -1022,46 +1017,23 @@ void CProfile::InitApplicationList(CComboBox *const cApplicationList)
 	cApplicationList->SelectString(-1, CString(MAKEINTRESOURCE(IDS_DEFAULT_TITLE)));
 }
 
-void CProfile::GetIMEInfo(const LPTSTR szFilename, const LPTSTR szDescription)
+void CProfile::AddIMEInfo(CComboBox *cApplicationList)
 {
-	_tcscpy_s(szFilename, MAX_PATH, _T("IME")); // IDS_IME_FILE_NAME;
-	_tcscpy_s(szDescription, WINDOW_TEXT_LENGTH, _T("Input Method Editor"));
-	HKL hKL = GetKeyboardLayout(0);
-	if (!ImmIsIME(hKL))
+	const UINT n = GetKeyboardLayoutList(0, NULL);
+	if (!n)
 		return;
-	TCHAR buf[MAX_PATH]; // larger than WINDOW_TEXT_LENGTH
-	if (ImmGetDescription(hKL, buf, WINDOW_TEXT_LENGTH)) {
-		_tcscpy_s(szDescription, WINDOW_TEXT_LENGTH, buf);
-		goto filename;
-	}
-	// try TSF
-	CoInitialize(NULL);
-	HRESULT hr;
-	ITfInputProcessorProfiles *pProfiles;
-	hr = CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_ITfInputProcessorProfiles, reinterpret_cast<LPVOID*>(&pProfiles));
-	if (SUCCEEDED(hr)) {
-		const LANGID langid = GetUserDefaultLangID();
-		CLSID clsid;
-		GUID guid;
-		hr = pProfiles->GetDefaultLanguageProfile(langid, GUID_TFCAT_TIP_KEYBOARD, &clsid, &guid);
-		if (SUCCEEDED(hr)) {
-			BSTR bstr;
-			hr = pProfiles->GetLanguageProfileDescription(clsid, langid, guid, &bstr);
-			if (SUCCEEDED(hr)) {
-#ifdef _MBCS
-				WideCharToMultiByte(CP_ACP, 0, bstr, -1, szDescription, MAX_PATH, NULL, NULL);
-#else
-				wcscpy_s(szDescription, WINDOW_TEXT_LENGTH, bstr);
-#endif
-				SysFreeString(bstr);
-			}
+	std::vector<HKL> hkls(n);
+	GetKeyboardLayoutList(n, &hkls[0]);
+	TCHAR szFileName[MAX_PATH];
+	TCHAR szDescription[WINDOW_TEXT_LENGTH];
+	for (std::vector<HKL>::const_iterator p = hkls.begin(); p != hkls.end(); ++p)
+		if (ImmGetDescription(*p, szDescription, WINDOW_TEXT_LENGTH) &&
+				ImmGetIMEFileName(*p, szFileName, MAX_PATH)) {
+			CString item;
+			item.Format(IDS_APPLICATION_LIST_ITEM, szDescription, szFileName);
+			if (IsNotSameString(cApplicationList, item))
+				cApplicationList->AddString(item);
 		}
-		pProfiles->Release();
-	}
-	CoUninitialize();
-filename:
-	if (ImmGetIMEFileName(hKL, buf, MAX_PATH))
-		_tcscpy_s(szFilename, MAX_PATH, buf);
 }
 
 void CProfile::GetTaskList()
