@@ -1285,7 +1285,7 @@ void CXkeymacsDll::CallMacro()
 		m_bRecordingMacro = FALSE;
 	UINT before = GetModifierState(FALSE);
 	SetModifierState(0, before);
-	for (auto m = m_Macro.begin(); m != m_Macro.end(); m++)
+	for (std::list<KbdMacro>::const_iterator m = m_Macro.begin(); m != m_Macro.end(); m++)
 		if (m->lParam & BEING_RELEASED)
 			ReleaseKey(static_cast<BYTE>(m->wParam));
 		else
@@ -1385,7 +1385,7 @@ void CXkeymacsDll::CallFunction(int nFunctionID)
 	BOOL bInitialized = FALSE;
 	UINT before = GetModifierState(FALSE);
 
-	for (auto p = keybinds.begin(); p != keybinds.end(); p++) {
+	for (std::vector<KeyBind>::const_iterator p = keybinds.begin(); p != keybinds.end(); p++) {
 		const int nCommandType = p->nCommandType;
 		const BYTE bVk = p->bVk;
 		int (*fCommand)() = nCommandType < MAX_COMMAND_TYPE ? Commands[m_Config.nCommandID[m_nApplicationID][nCommandType][bVk]].fCommand : NULL;
