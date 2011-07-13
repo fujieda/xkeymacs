@@ -125,7 +125,7 @@ BOOL CXkeymacsApp::SendIPCMessage(DWORD msg)
 	if (!m_bIsWow64)
 		return TRUE;
 	DWORD ack, read;
-	return CallNamedPipe(IPC_PIPE, &msg, sizeof(msg), &ack, sizeof(DWORD), &read, 10000);
+	return CallNamedPipe(IPC_PIPE, &msg, sizeof(msg), &ack, sizeof(DWORD), &read, NMPWAIT_WAIT_FOREVER);
 }
 
 int CXkeymacsApp::ExitInstance() 
