@@ -1,22 +1,14 @@
 #include "stdafx.h"
 #include "about.h"
+#include <vector>
 
 /////////////////////////////////////////////////////////////////////////////
 // CAboutDlg dialog used for App About
 
 CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
 {
-	//{{AFX_DATA_INIT(CAboutDlg)
-	m_szVersionInformation = _T("");
-	m_szLegalCopyright = _T("");
-	//}}AFX_DATA_INIT
-
-	m_szLegalCopyright.Format(_T("Copyright (C) 2001-2006"));	// rough
-
-	WORD wMajorVersion		= 0;
-	WORD wMinorVersion		= 0;
-	WORD wBuildVersion		= 0;
-	WORD wRevisionVersion	= 0;
+	int major, minor, build, revision;
+	major = minor = build = revision = 0;
 
 	TCHAR szFileName[MAX_PATH] = {'\0'};
 	GetModuleFileName(NULL, szFileName, sizeof(szFileName));
@@ -24,48 +16,26 @@ CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
 
 	DWORD dwLen = GetFileVersionInfoSize(szFileName, &dwHandle);
 	if (dwLen) {
-		LPVOID lpData = new BYTE[dwLen];
-		if (GetFileVersionInfo(szFileName, dwHandle, dwLen, lpData)) {
+		std::vector<BYTE> data(dwLen);
+		if (GetFileVersionInfo(szFileName, dwHandle, dwLen, &data[0])) {
 			VS_FIXEDFILEINFO *pInfo;
 			UINT uLen;
-			if (VerQueryValue(lpData, _T("\\"), (LPVOID *)&pInfo, &uLen)) {
-				wMajorVersion		= (WORD)((pInfo->dwProductVersionMS >> 16) & 0xffff);
-				wMinorVersion		= (WORD)((pInfo->dwProductVersionMS      ) & 0xffff);
-				wBuildVersion		= (WORD)((pInfo->dwProductVersionLS >> 16) & 0xffff);
-				wRevisionVersion	= (WORD)((pInfo->dwProductVersionLS      ) & 0xffff);
-			}
-
-			struct Translate {
-				WORD wLanguage;
-				WORD wCodePage;
-			} *lpTranslate = NULL;
-			UINT cbTranslate = 0;
-			if (VerQueryValue(lpData, _T("\\VarFileInfo\\Translation"), (LPVOID*)&lpTranslate, &cbTranslate) && sizeof(*lpTranslate) <= cbTranslate) {
-				LPVOID lpLegalCopyright = NULL;
-				UINT uLen = 0;
-				CString SubBlock;
-
-				SubBlock.Format(_T("\\StringFileInfo\\%04x%04x\\LegalCopyright"), lpTranslate->wLanguage, lpTranslate->wCodePage);
-				if (VerQueryValue(lpData, SubBlock.GetBuffer(SubBlock.GetLength()), (LPVOID *)&lpLegalCopyright, &uLen) && uLen) {
-					m_szLegalCopyright.Format(_T("%s"), lpLegalCopyright);
-				}
+			if (VerQueryValue(&data[0], _T("\\"), reinterpret_cast<LPVOID *>(&pInfo), &uLen)) {
+				major = pInfo->dwProductVersionMS >> 16;
+				minor = pInfo->dwProductVersionMS & 0xffff;
+				build = pInfo->dwProductVersionLS >> 16;
+				revision = pInfo->dwProductVersionLS & 0xffff;
 			}
 		}
-		delete[] lpData;
-		lpData = NULL;
 	}
-
-	m_szVersionInformation.Format(_T("%s Version %d.%d"), CString(MAKEINTRESOURCE(AFX_IDS_APP_TITLE)), wMajorVersion, wMinorVersion);
-
-	if (wBuildVersion) {
-		CString sz;
-		sz.Format(_T(".%d"), wBuildVersion);
-		m_szVersionInformation += sz;
-
-		if (wRevisionVersion) {
-			CString sz;
-			sz.Format(_T(".%d"), wRevisionVersion);
-			m_szVersionInformation += sz;
+	m_versionInfo.Format(_T("%s Version %d.%d"), CString(MAKEINTRESOURCE(AFX_IDS_APP_TITLE)), major, minor);
+	if (build) {
+		CString s;
+		s.Format(_T(".%d"), build);
+		m_versionInfo += s;
+		if (revision) {
+			s.Format(_T(".%d"), revision);
+			m_versionInfo += s;
 		}
 	}
 }
@@ -75,8 +45,7 @@ void CAboutDlg::DoDataExchange(CDataExchange *pDX)
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CAboutDlg)
 	DDX_Control(pDX, IDC_URL, m_cURL);
-	DDX_Text(pDX, IDC_VERSION_INFORMATION, m_szVersionInformation);
-	DDX_Text(pDX, IDC_LEGAL_COPYRIGHT, m_szLegalCopyright);
+	DDX_Text(pDX, IDC_VERSION_INFORMATION, m_versionInfo);
 	//}}AFX_DATA_MAP
 }
 

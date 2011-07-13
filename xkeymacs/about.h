@@ -19,8 +19,7 @@ public:
 	//{{AFX_DATA(CAboutDlg)
 	enum { IDD = IDD_ABOUTBOX };
 	CStatic	m_cURL;
-	CString	m_szVersionInformation;
-	CString	m_szLegalCopyright;
+	CString	m_versionInfo;
 	//}}AFX_DATA
 
 	// ClassWizard generated virtual function overrides

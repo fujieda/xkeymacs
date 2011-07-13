@@ -54,19 +54,17 @@ BEGIN
     PUSHBUTTON      "キャンセル",IDCANCEL,66,157,50,14
 END
 
-IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 150, 60
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "XKeymacs のバージョン情報"
 FONT 8, "MS Sans Serif"
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    ICON            IDR_MAINFRAME,IDC_STATIC,10,10,0,0
     LTEXT           "XKeymacs Version x.xx",IDC_VERSION_INFORMATION,40,10,
                     119,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2001-200x",IDC_LEGAL_COPYRIGHT,40,25,119,
-                    8
-    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
-    LTEXT           "http://sourceforge.jp/projects/xkeymacs/",IDC_URL,40,40,148,8,
+    LTEXT           "http://xkeymacs.sourceforge.jp/",IDC_URL,40,22,140,8,
                     SS_NOTIFY
+    DEFPUSHBUTTON   "OK",IDOK,50,40,50,14,WS_GROUP
 END
 
 IDD_104KEYBOARD DIALOG DISCARDABLE  0, 0, 362, 303
@@ -1667,19 +1665,17 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 150, 60
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About XKeymacs"
 FONT 8, "MS Sans Serif"
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    ICON            IDR_MAINFRAME,IDC_STATIC,10,10,0,0
     LTEXT           "XKeymacs Version x.xx",IDC_VERSION_INFORMATION,40,10,
                     119,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2001-200x",IDC_LEGAL_COPYRIGHT,40,25,119,
-                    8
-    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
-    LTEXT           "http://sourceforge.jp/projects/xkeymacs/",IDC_URL,
-                    40,40,148,8,SS_NOTIFY
+    LTEXT           "http://xkeymacs.sourceforge.jp/",IDC_URL,40,22,140,8,
+                    SS_NOTIFY
+    DEFPUSHBUTTON   "OK",IDOK,50,40,50,14,WS_GROUP
 END
 
 IDD_OPTIONS DIALOG DISCARDABLE  0, 0, 152, 251
@@ -2696,7 +2692,7 @@ BEGIN
             VALUE "FileDescription", "XKeymacs MFC Application\0"
             VALUE "FileVersion", "4, 0, 0, 0\0"
             VALUE "InternalName", "xkeymacs\0"
-            VALUE "LegalCopyright", "Copyright (C) 2001-2011\0"
+            VALUE "LegalCopyright", "\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "xkeymacs.exe\0"
             VALUE "PrivateBuild", "\0"
