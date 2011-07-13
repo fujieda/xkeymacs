@@ -73,8 +73,7 @@ HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\Scancode Map
 
 --- Support ---
 Web site
-http://sourceforge.jp/projects/xkeymacs/
-https://github.com/fujieda/xkeymacs
+http://xkeymacs.sourceforge.jp/
 
 Mailing list
 http://lists.sourceforge.jp/mailman/listinfo/xkeymacs-users-en

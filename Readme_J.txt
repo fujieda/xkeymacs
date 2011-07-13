@@ -93,8 +93,7 @@ Readme_J.txtを表示します。
 
 --- サポート ---
 ウェブサイト
-http://sourceforge.jp/projects/xkeymacs/
-https://github.com/fujieda/xkeymacs
+http://xkeymacs.sourceforge.jp/
 
 メーリングリスト
 http://lists.sourceforge.jp/mailman/listinfo/xkeymacs-users-ja
