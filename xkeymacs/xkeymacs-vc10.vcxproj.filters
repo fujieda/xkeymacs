@@ -66,6 +66,9 @@
     <ClCompile Include="xkeymacs64.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="imelist.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="104keyboard.h">
@@ -120,6 +123,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="xkeymacs64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imelist.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

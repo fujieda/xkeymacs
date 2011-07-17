@@ -7,11 +7,9 @@
 #include "Profile.h"
 #include "MainFrm.h"
 #include "DotXkeymacs.h"
-#include <Imm.h>
+#include "imelist.h"
 #include <Shlwapi.h>
 #include <TlHelp32.h>
-#include <msctf.h>
-#include <vector>
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -792,54 +790,9 @@ void CProfile::InitAppList(CProperties& cProperties)
 
 void CProfile::AddIMEInfo(CProperties& cProperties)
 {
-	const int n = GetKeyboardLayoutList(0, NULL);
-	if (!n)
-		return;
-	std::vector<HKL> hkls(n);
-	std::vector<std::vector<TCHAR>> descs;
-	GetKeyboardLayoutList(n, &hkls[0]);
-	TCHAR szFileName[MAX_PATH], szDescription[WINDOW_TEXT_LENGTH];
-	for (std::vector<HKL>::const_iterator p = hkls.begin(); p != hkls.end(); ++p)
-		if (ImmGetDescription(*p, szDescription, WINDOW_TEXT_LENGTH) &&
-				ImmGetIMEFileName(*p, szFileName, MAX_PATH)) {
-			cProperties.AddItem(szDescription, szFileName);
-			std::vector<TCHAR> desc(WINDOW_TEXT_LENGTH);
-			_tcscpy_s(&desc[0], WINDOW_TEXT_LENGTH, szDescription);
-			descs.push_back(desc);
-		}
-	// TSF
-	CoInitialize(NULL);
-	HRESULT hr;
-	ITfInputProcessorProfiles *pProfiles;
-	hr = CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_ITfInputProcessorProfiles, reinterpret_cast<LPVOID*>(&pProfiles));
-	if (SUCCEEDED(hr)) {
-		const LANGID langid = GetUserDefaultLangID();
-		IEnumTfLanguageProfiles *pEnum;
-		hr = pProfiles->EnumLanguageProfiles(langid, &pEnum);
-		if (SUCCEEDED(hr)) {
-			TF_LANGUAGEPROFILE prof;
-			ULONG fetch;
-			while (pEnum->Next(1, &prof, &fetch) == S_OK) {
-				BSTR bstr;
-				hr = pProfiles->GetLanguageProfileDescription(prof.clsid, langid, prof.guidProfile, &bstr);
-				if (FAILED(hr))
-					continue;
-#ifdef _MBCS
-				WideCharToMultiByte(CP_ACP, 0, bstr, -1, szDescription, MAX_PATH, NULL, NULL);
-#else
-				wcscpy_s(szDescription, WINDOW_TEXT_LENGTH, bstr);
-#endif
-				for (std::vector<std::vector<TCHAR>>::const_iterator p = descs.begin(); p != descs.end(); ++p) {
-					if (!_tcscmp(szDescription, &(*p)[0])) // already get via IMM
-						continue;
-					cProperties.AddItem(szDescription, _T("IME"));
-					break;
-				}
-			}
-		}
-		pProfiles->Release();
-	}
-	CoUninitialize();
+	IMEList imeList;
+	for (IMEListIterator p = imeList.begin(); p != imeList.end(); ++p)
+		cProperties.AddItem(p->szDescription, p->szFileName);
 }
 
 void CProfile::GetTaskList()

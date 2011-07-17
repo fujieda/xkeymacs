@@ -200,6 +200,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="imelist.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="key.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -258,6 +261,7 @@
     <ClInclude Include="109keyboard.h" />
     <ClInclude Include="about.h" />
     <ClInclude Include="dotxkeymacs.h" />
+    <ClInclude Include="imelist.h" />
     <ClInclude Include="key.h" />
     <ClInclude Include="keyboardlayout.h" />
     <ClInclude Include="mainfrm.h" />
