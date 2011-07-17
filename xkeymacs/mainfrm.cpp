@@ -35,6 +35,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_COMMAND(ID_HELP_FINDER, OnHelpFinder)
 	ON_COMMAND(IDC_KEYBOARD_ANY_USER, OnKeyboardAnyUser)
 	//}}AFX_MSG_MAP
+	ON_MESSAGE(WM_POWERBROADCAST, OnPowerBroadCast)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -592,4 +593,15 @@ void CMainFrame::OnHelpFinder()
 	}
 
 	ShellExecute(NULL, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
+}
+
+LRESULT CMainFrame::OnPowerBroadCast(WPARAM wParam, LPARAM)
+{
+	switch (wParam) {
+	case PBT_APMRESUMECRITICAL:
+	case PBT_APMRESUMESUSPEND:
+	case PBT_APMRESUMEAUTOMATIC:
+		CXkeymacsDll::ResetHooks();
+	}
+	return TRUE;
 }

@@ -64,6 +64,7 @@ protected:
 	afx_msg void OnHelpFinder();
 	afx_msg void OnKeyboardAnyUser();
 	//}}AFX_MSG
+	afx_msg LRESULT OnPowerBroadCast(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 private:
 	BOOL m_bKeyboardDlgExist[MAX_KEYBOARD_TYPE][MAX_HKEY_TYPE];
