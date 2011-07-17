@@ -24,7 +24,8 @@
 - Make XKeymacs not create the "etc" directory and empty files.
 - Support incremental search on Eclipse.
 - Support foward incremental search on Notepad++.
-- Fix a bug where the properties dialog doesn't show all available IMEs.
+- Make the properties dialog show all available IMEs based on IMM
+  and one of IMEs based of TSF.
 - Some features don't work on Windows 7 yet.
 
 2008/07/27 version 3.48
