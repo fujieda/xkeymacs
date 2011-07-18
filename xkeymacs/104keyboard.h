@@ -17,7 +17,6 @@ class C104Keyboard : public CKeyboardLayout
 {
 // Construction
 public:
-	CToolTipCtrl m_ToolTip;
 	C104Keyboard(HKEY_TYPE hkey_type, CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
@@ -25,26 +24,6 @@ public:
 	enum { IDD = IDD_104KEYBOARD };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
-
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(C104Keyboard)
-	public:
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
-protected:
-	// Generated message map functions
-	//{{AFX_MSG(C104Keyboard)
-	virtual BOOL OnInitDialog();
-	virtual void OnOK();
-	afx_msg void OnDestroy();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <Lmcons.h>
 #include "keyboardlayout.h"
 
 const int MAX_KEYBOARD_LAYOUT = 112;
@@ -130,13 +131,79 @@ CKeyboardLayout::~CKeyboardLayout()
 {
 }
 
+BEGIN_MESSAGE_MAP(CKeyboardLayout, CDialog)
+	ON_WM_DESTROY()
+END_MESSAGE_MAP()
+
+BOOL CKeyboardLayout::OnInitDialog() 
+{
+	CDialog::OnInitDialog();
+	
+	CString szWindowText;
+	CString szFor;
+	switch (m_HkeyType) {
+	case CURRENT_USER:
+		{
+			TCHAR szUserName[UNLEN + 1] = {'0'};
+			DWORD nSize = UNLEN + 1;
+			if (GetUserName(szUserName, &nSize)) {
+				szFor.Format(IDS_FOR, szUserName);
+			} else {
+				szFor.LoadString(IDS_FOR_LOGGED_ON_USER);
+			}
+		}
+		break;
+	case LOCAL_MACHINE:
+		szFor.LoadString(IDS_FOR_ANY_USER);
+		break;
+	default:
+		break;
+	}
+	this->GetWindowText(szWindowText);
+	this->SetWindowText(szWindowText + szFor);
+
+	m_ToolTip.Create(this, TTS_ALWAYSTIP | TTS_NOPREFIX);
+	m_ToolTip.SetMaxTipWidth(0x100);	// Enable multiline
+
+	InitKeyboardLayout();
+	
+	return TRUE;  // return TRUE unless you set the focus to a control
+	              // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void CKeyboardLayout::OnOK() 
+{
+	if (LostKeyWarning(m_HkeyType) != IDCANCEL) {
+		SaveScanCodeMap(m_HkeyType);
+		CDialog::OnOK();
+	}
+}
+
+void CKeyboardLayout::OnDestroy() 
+{
+	CDialog::OnDestroy();
+	DestroyKeyboardLayout();
+}
+
+BOOL CKeyboardLayout::PreTranslateMessage(MSG *pMsg) 
+{
+	switch (pMsg->message) {
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_MOUSEMOVE:
+		m_ToolTip.RelayEvent(pMsg);
+		break;
+	}
+	return CDialog::PreTranslateMessage(pMsg);
+}
+
 void CKeyboardLayout::InitKeyboardLayout()
 {
 	m_ToolTip.Create(this, TTS_ALWAYSTIP | TTS_NOPREFIX);
 	m_ToolTip.SetMaxTipWidth(0x100);	// Enable multiline
 
 	LoadScanCodeMap(m_HkeyType);
-		for (int i = 0; i < MAX_KEYBOARD_LAYOUT; ++i) {
+	for (int i = 0; i < MAX_KEYBOARD_LAYOUT; ++i) {
 		if (!GetDlgItem(m_KeyboardLayouts[i].nBaseControlID)
 		 || !GetDlgItem(m_KeyboardLayouts[i].nCurrentControlID)) {
 			continue;

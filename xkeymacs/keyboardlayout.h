@@ -42,8 +42,12 @@ private:
 	int Prefix2ID(BYTE nPrefix);
 	DWORD GetScanCodeLength(HKEY_TYPE hkeyType);
 	BOOL ChangedKeyboardLayout(HKEY_TYPE hkeyType);
+	virtual BOOL PreTranslateMessage(MSG *pMsg);
 protected:
 	HKEY_TYPE m_HkeyType;
+	virtual BOOL OnInitDialog();
+	virtual void OnOK();
+	afx_msg void OnDestroy();
 	void InitKeyboardLayout();
 	void CKeyboardLayout::DestroyKeyboardLayout();
 	BOOL GetScanCodeMap(HKEY_TYPE hkeyType, ScanCode original, ScanCode *current);
@@ -52,6 +56,7 @@ protected:
 	int LostKeyWarning(HKEY_TYPE hkeyType);
 	void SaveScanCodeMap(HKEY_TYPE hkeyType);
 	void LoadScanCodeMap(HKEY_TYPE hkeyType);
+	DECLARE_MESSAGE_MAP()
 public:
 	CToolTipCtrl *ToolTip();
 	KeyboardLayout *GetKeyboardLayout(int nKey, BOOL bBase = FALSE);
