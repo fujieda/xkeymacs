@@ -5,13 +5,14 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-struct ICONMSG {
+#pragma warning(disable: 4324)
+__declspec(align(8)) struct ICONMSG {
 	ICON_TYPE nType;
 	int nState;
 	TCHAR szTip[128];
 };
 
-struct CONFIG {
+__declspec(align(8)) struct CONFIG {
 	BYTE b326Compatible[MAX_APP];
 	TCHAR szWindowText[MAX_APP][WINDOW_TEXT_LENGTH];
 	TCHAR szFunctionDefinition[MAX_FUNCTION][MAX_DEFINITION];
@@ -26,6 +27,7 @@ struct CONFIG {
 	BYTE nCommandID[MAX_APP][MAX_COMMAND_TYPE][MAX_KEY];
 	BYTE b106Keyboard;
 };
+#pragma warning(default: 4223)
 
 enum XKEYMACS_IPC { XKEYMACS_EXIT, XKEYMACS_RELOAD, XKEYMACS_RESET };
 
