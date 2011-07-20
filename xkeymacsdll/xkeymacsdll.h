@@ -77,7 +77,9 @@ public:
 	static void Clear(int nAppID);
 	static BOOL IsKeyboardHook();
 	static void ReleaseHooks();
+	static void ReleaseKeyboardHook();
 	static void SetHooks();
+	static void SetKeyboardHook();
 	static void ResetHooks();
 	static void AddKillRing(BOOL bNewData = TRUE);
 	static void CallMacro();
@@ -98,6 +100,7 @@ public:
 	static BOOL SendIconMessage(ICONMSG *pMsg, DWORD num);
 
 private:
+	static bool m_bEnableKeyboardHook;
 	static DWORD m_nHookAltRelease;
 	static TCHAR m_M_xTip[128];
 	static void InvokeM_x(const TCHAR* const szPath);
@@ -148,7 +151,5 @@ private:
 	static BOOL m_bRightControl;
 	static CONFIG m_Config;
 };
-
-extern UINT g_ImeManipulationMessage;
 
 #endif // !defined(AFX_XKEYMACS_H__88552DEC_1233_4A0A_BE62_9EF7BC618EC6__INCLUDED_)

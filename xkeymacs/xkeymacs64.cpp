@@ -63,7 +63,7 @@ UINT PollIPCMessage(LPVOID lpParam)
 			CXkeymacsDll::LoadConfig();
 			break;
 		case XKEYMACS_RESET:
-			//CXkeymacsDll::ResetHooks();
+			CXkeymacsDll::ResetHooks();
 			break;
 		}
 	}

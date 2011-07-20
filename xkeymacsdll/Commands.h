@@ -176,7 +176,6 @@ public:
 	static int GetDefaultCommandType(int nComID, int nIndex);
 	static int GetDefaultCommandKey(int nComID, int nIndex);
 	static int GetDefaultControlID(int nComID, int nIndex);
-	static void DoSetInputMethodOpenStatus(INPUT_METHOD_OPEN_STATUS status, BOOL isComplete = FALSE);
 
 private:
 	static BOOL CutFollowingWord();

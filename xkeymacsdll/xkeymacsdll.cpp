@@ -133,46 +133,8 @@ static const int MAX_KEYNAME = _countof(KeyNames);
 
 static AFX_EXTENSION_MODULE XkeymacsdllDLL = { NULL, NULL };
 
-HINSTANCE g_hDllInst = NULL;
-UINT g_ImeManipulationMessage = 0;
-#pragma data_seg(".xkmcs")
-HHOOK g_hHookKeyboard = NULL;
-HHOOK g_hHookDummy = NULL;
-#pragma data_seg()
-
-inline bool IsWow64(HANDLE mod)
-{
-	typedef BOOL (WINAPI *pfnIsWow64Process_t)(HANDLE, PBOOL);
-	if (const pfnIsWow64Process_t IsWow64Process = (pfnIsWow64Process_t)GetProcAddress(GetModuleHandle(_T("kernel32")), "IsWow64Process")) {
-		BOOL b;
-		return IsWow64Process(mod, &b) && b;
-	}
-	return false;
-}
-
-inline bool Is64System()
-{
-	SYSTEM_INFO info;
-	GetNativeSystemInfo(&info);
-	return info.wProcessorArchitecture != PROCESSOR_ARCHITECTURE_INTEL;
-}
-
-inline bool Is64Process(HANDLE mod)
-{
-	return Is64System() && !IsWow64(mod);
-}
-
-const bool IsDll64 = sizeof(void *) == 8;
-
-inline bool Is64ProcessHwnd(HWND hwnd)
-{
-	DWORD pid;
-	GetWindowThreadProcessId(hwnd, &pid);
-	HANDLE hmod = OpenProcess(PROCESS_QUERY_INFORMATION, 0, pid);
-	bool b = Is64Process(hmod);
-	CloseHandle(hmod);
-	return b;
-}
+static HINSTANCE g_hDllInst = NULL;
+static __declspec(thread) HHOOK g_hHookKeyboard = NULL;
 
 extern "C" int APIENTRY
 DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
@@ -185,7 +147,6 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	switch (dwReason) {
 	case DLL_PROCESS_ATTACH:
 		TRACE0("XKEYMACSDLL.DLL Initializing!\n");
-		g_ImeManipulationMessage = RegisterWindowMessage(_T("XkManipulateIME"));
 
 		// Extension DLL one-time initialization
 		if (!AfxInitExtensionModule(XkeymacsdllDLL, hInstance)) {
@@ -216,6 +177,9 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 		TRACE0("XKEYMACSDLL.DLL Terminating!\n");
 		// Terminate the library before destructors are called
 		AfxTermExtensionModule(XkeymacsdllDLL);
+		// fall through
+	case DLL_THREAD_DETACH:
+		CXkeymacsDll::ReleaseKeyboardHook();
 		break;
 	}
 	return 1;   // ok
@@ -227,6 +191,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 
 #include "xkeymacsDll.h"
 #pragma data_seg(".xkmcs")
+	bool	CXkeymacsDll::m_bEnableKeyboardHook = false;
 	DWORD	CXkeymacsDll::m_nHookAltRelease	= 0;
 	HHOOK	CXkeymacsDll::m_hHookCallWnd = NULL;
 	HHOOK	CXkeymacsDll::m_hHookCallWndRet = NULL;
@@ -289,19 +254,19 @@ void CXkeymacsDll::SetConfig(const CONFIG& config)
 	m_Config = config;
 }
 
-// set hooks
-LRESULT WINAPI DummyProc(int code, WPARAM wp, LPARAM lp) {
-	return CallNextHookEx(0, code, wp, lp);
-}
-
 void CXkeymacsDll::SetHooks()
 {
 	m_hHookCallWnd = SetWindowsHookEx(WH_CALLWNDPROC, (HOOKPROC)CallWndProc, g_hDllInst, 0);
 	m_hHookCallWndRet = SetWindowsHookEx(WH_CALLWNDPROCRET, (HOOKPROC)CallWndRetProc, g_hDllInst, 0);
 	m_hHookGetMessage = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)GetMsgProc, g_hDllInst, 0);
 	m_hHookShell = SetWindowsHookEx(WH_SHELL, (HOOKPROC)ShellProc, g_hDllInst, 0);
-	g_hHookDummy = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)DummyProc, g_hDllInst, 0);
-	g_hHookKeyboard = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, g_hDllInst, 0);
+	m_bEnableKeyboardHook = true;
+}
+
+void CXkeymacsDll::SetKeyboardHook()
+{
+	if (!g_hHookKeyboard)
+		g_hHookKeyboard = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, g_hDllInst, GetCurrentThreadId());
 }
 
 inline void unhook(HHOOK &hh) {
@@ -316,15 +281,18 @@ void CXkeymacsDll::ResetHooks()
 	SetHooks();
 }
 
-// release hooks
 void CXkeymacsDll::ReleaseHooks()
 {
 	unhook(m_hHookCallWnd);
 	unhook(m_hHookCallWndRet);
 	unhook(m_hHookGetMessage);
 	unhook(m_hHookShell);
+	m_bEnableKeyboardHook = false;
+}
+
+void CXkeymacsDll::ReleaseKeyboardHook()
+{
 	unhook(g_hHookKeyboard);
-	unhook(g_hHookDummy);
 }
 
 void CXkeymacsDll::ToggleKeyboardHookState()
@@ -364,6 +332,7 @@ BOOL CXkeymacsDll::IsKeyboardHook()
 
 LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
+	SetKeyboardHook();
 	if (nCode < 0)
 		return CallNextHookEx(m_hHookCallWnd, nCode, wParam, lParam);
 	const CWPSTRUCT *cwps = reinterpret_cast<CWPSTRUCT *>(lParam);
@@ -410,11 +379,6 @@ LRESULT CALLBACK CXkeymacsDll::CallWndRetProc(int nCode, WPARAM wParam, LPARAM l
 LRESULT CALLBACK CXkeymacsDll::GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	const MSG *msg = reinterpret_cast<MSG *>(lParam);
-	if (msg->message == g_ImeManipulationMessage) {
-		if (wParam)
-			CCommands::DoSetInputMethodOpenStatus(static_cast<INPUT_METHOD_OPEN_STATUS>(msg->wParam), static_cast<BOOL>(msg->lParam));
-		return 1;
-	}
 	switch (msg->message) {
 	case WM_IME_STARTCOMPOSITION:
 		InitKeyboardProc(TRUE);
@@ -627,7 +591,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 
 //	CUtils::Log(_T("nCode = %#x, nKey = %#x, lParam = %p, %d, %d"), nCode, nOrigKey, lParam, IsDll64, Is64ProcessHwnd(GetForegroundWindow()));
 
-	if (Is64ProcessHwnd(GetForegroundWindow()) != IsDll64 || CUtils::IsXkeymacs() ||
+	if (!m_bEnableKeyboardHook || CUtils::IsXkeymacs() ||
 			nCode < 0 || nCode == HC_NOREMOVE)
 		return CallNextHookEx(g_hHookKeyboard, nCode, wParam, lParam);
 
