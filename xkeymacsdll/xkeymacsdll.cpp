@@ -884,7 +884,7 @@ RECURSIVE:
 	Kdu(RECURSIVE_KEY, 1, FALSE);
 	goto HOOKX;
 HOOK:
-	CCommands::SetLastCommand(fCommand);
+	CCommands::SetLastCommand(fLastCommand);
 HOOK0_9:
 HOOKX:
 	SetModifierIcons();
