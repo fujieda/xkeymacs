@@ -1261,7 +1261,7 @@ DWORD CCommands::DeactivateMark()
 		return ERROR_SUCCESS;	// i.e. return 0;
 	}
 	if (CUtils::IsFlash() || CUtils::IsInternetExplorer() || CUtils::IsMicrosoftPowerPoint() ||
-			CUtils::IsMicrosoftWord() || CUtils::IsSleipnir() || CUtils::IsThunderbird()) {
+			CUtils::IsMicrosoftWord() || CUtils::IsSleipnir() || CUtils::IsThunderbird() || CUtils::IsFirefox()) {
 		// GetCaretPos always returen (x,y) = (0,0) on M$ Word and Thunderbird, so ...
 		// GetCaretPos always returen start point on IE (and Sleipnir that uses IE), so ...
 		Kdu(VK_RIGHT);
