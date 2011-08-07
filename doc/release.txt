@@ -26,6 +26,7 @@
 - Support foward incremental search on Notepad++.
 - Make the properties dialog show all available IMEs based on IMM
   and one of IMEs based of TSF.
+- Fix a bug where deactivating the mark doesn't work well on Firefox.
 - Some features don't work on Windows 7 yet.
 
 2008/07/27 version 3.48
