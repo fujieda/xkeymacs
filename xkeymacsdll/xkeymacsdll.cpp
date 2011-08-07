@@ -134,12 +134,13 @@ static const int MAX_KEYNAME = _countof(KeyNames);
 static AFX_EXTENSION_MODULE XkeymacsdllDLL = { NULL, NULL };
 
 static HINSTANCE g_hDllInst = NULL;
-static __declspec(thread) HHOOK g_hHookKeyboard = NULL;
+static DWORD g_TlsIndex = NULL;
 
 extern "C" int APIENTRY
 DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 {
 	g_hDllInst = hInstance;
+	LPVOID lpData;
 	
 	// Remove this if you use lpReserved
 	UNREFERENCED_PARAMETER(lpReserved);
@@ -172,14 +173,27 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 			e->Delete();
 //			CUtils::Log("DllMain: 'new' threw an exception");
 		}
+
+		if ((g_TlsIndex = TlsAlloc()) == TLS_OUT_OF_INDEXES)
+			return FALSE;
+		// fall through
+	case DLL_THREAD_ATTACH:
+		if ((lpData = LocalAlloc(LPTR, sizeof(HHOOK))) != NULL)
+			TlsSetValue(g_TlsIndex, lpData);
 		break;
 	case DLL_PROCESS_DETACH:
 		TRACE0("XKEYMACSDLL.DLL Terminating!\n");
 		// Terminate the library before destructors are called
 		AfxTermExtensionModule(XkeymacsdllDLL);
-		// fall through
+		CXkeymacsDll::ReleaseKeyboardHook();
+		if ((lpData = TlsGetValue(g_TlsIndex)) != NULL)
+			LocalFree(lpData);
+		TlsFree(g_TlsIndex);
+		break;
 	case DLL_THREAD_DETACH:
 		CXkeymacsDll::ReleaseKeyboardHook();
+		if ((lpData = TlsGetValue(g_TlsIndex)) != NULL)
+			LocalFree(lpData);
 		break;
 	}
 	return 1;   // ok
@@ -265,11 +279,15 @@ void CXkeymacsDll::SetHooks()
 
 void CXkeymacsDll::SetKeyboardHook()
 {
-	if (!g_hHookKeyboard)
-		g_hHookKeyboard = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, g_hDllInst, GetCurrentThreadId());
+	HHOOK *phHook = reinterpret_cast<HHOOK *>(TlsGetValue(g_TlsIndex));
+	if (!phHook)
+		return;
+	if (!*phHook)
+		*phHook = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, g_hDllInst, GetCurrentThreadId());
 }
 
-inline void unhook(HHOOK &hh) {
+inline void unhook(HHOOK &hh)
+{
 	if (hh)
 		UnhookWindowsHookEx(hh);
 	hh = NULL;
@@ -292,7 +310,9 @@ void CXkeymacsDll::ReleaseHooks()
 
 void CXkeymacsDll::ReleaseKeyboardHook()
 {
-	unhook(g_hHookKeyboard);
+	HHOOK *phHook = reinterpret_cast<HHOOK *>(TlsGetValue(g_TlsIndex));
+	if (phHook)
+		unhook(*phHook);
 }
 
 void CXkeymacsDll::ToggleKeyboardHookState()
@@ -582,6 +602,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	const BYTE nOrigKey = static_cast<BYTE>(wParam);
 	const bool bRelease = (lParam & BEING_RELEASED) != 0;
 	const bool bExtended = (lParam & EXTENDED_KEY) != 0;
+	const HHOOK *phHook = reinterpret_cast<HHOOK *>(TlsGetValue(g_TlsIndex));
 
 	static BOOL bLocked = FALSE;
 	static const BYTE RECURSIVE_KEY = 0x07;
@@ -593,7 +614,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 
 	if (!m_bEnableKeyboardHook || CUtils::IsXkeymacs() ||
 			nCode < 0 || nCode == HC_NOREMOVE)
-		return CallNextHookEx(g_hHookKeyboard, nCode, wParam, lParam);
+		return CallNextHookEx(*phHook, nCode, wParam, lParam);
 
 //	CUtils::Log(_T("nKey = %#x, ext = %d, rel = %d, pre = %d, %#hx, %#hx"), nOrigKey,
 //		(lParam & EXTENDED_KEY) ? 1 : 0, (lParam & BEING_RELEASED) ? 1 : 0, (lParam & REPEATED_KEY) ? 1 : 0,
@@ -878,7 +899,7 @@ DO_NOTHING:
 		m_Macro.push_back(m);
 		m_bDown[wParam] |= !bRelease;
 	}
-	return CallNextHookEx(g_hHookKeyboard, nCode, wParam, lParam);
+	return CallNextHookEx(*phHook, nCode, wParam, lParam);
 
 RECURSIVE:
 	Kdu(RECURSIVE_KEY, 1, FALSE);
