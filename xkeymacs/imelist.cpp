@@ -54,6 +54,8 @@ void IMEList::GetTSF()
 	TF_LANGUAGEPROFILE prof;
 	ULONG fetch;
 	while (pEnum->Next(1, &prof, &fetch) == S_OK) {
+		if (!prof.fActive)
+			continue;
 		BSTR bstr;
 		hr = pProfiles->GetLanguageProfileDescription(prof.clsid, langid, prof.guidProfile, &bstr);
 		if (FAILED(hr))
