@@ -610,7 +610,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	static BYTE nOneShotModifier[MAX_KEY] = {'\0'};
 	static BOOL bCherryOneShotModifier = FALSE;
 
-//	CUtils::Log(_T("nCode = %#x, nKey = %#x, lParam = %p, %d, %d"), nCode, nOrigKey, lParam, IsDll64, Is64ProcessHwnd(GetForegroundWindow()));
+//	CUtils::Log(_T("nCode = %#x, nKey = %#x, lParam = %#x"), nCode, nOrigKey, lParam);
 
 	if (!m_bEnableKeyboardHook || CUtils::IsXkeymacs() ||
 			nCode < 0 || nCode == HC_NOREMOVE)
