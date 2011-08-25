@@ -713,12 +713,12 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		}
 	}
 
-	int nVirtualCommandType = GetModifierState(FALSE);
+	int nVirtualType = GetModifierState(FALSE);
 	if (nOrigKey == VK_CONTROL)
-		nVirtualCommandType &= ~CONTROL;
+		nVirtualType &= ~CONTROL;
 	if (nOrigKey == VK_MENU)
-		nVirtualCommandType &= ~META;
-	if (CheckOriginal(nVirtualCommandType, nOrigKey)) {
+		nVirtualType &= ~META;
+	if (CheckOriginal(nVirtualType, nOrigKey)) {
 		goto DO_NOTHING;
 	}
 
