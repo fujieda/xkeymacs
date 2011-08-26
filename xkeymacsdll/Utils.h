@@ -116,7 +116,8 @@ public:
 	static BOOL IsBecky();
 	static BOOL IsAstecX();
 	static BOOL IsXkeymacs();
-	static BOOL CUtils::GetFindDialogTitle(CString *szDialogTitle);
+	static BOOL IsChrome();
+	static BOOL GetFindDialogTitle(CString *szDialogTitle);
 
 private:
 	static BOOL IsTOForEOF();

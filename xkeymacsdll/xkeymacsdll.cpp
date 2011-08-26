@@ -450,7 +450,9 @@ void CXkeymacsDll::SetModifierState(const UINT after, const UINT before)
 		UpdateKeyboardState(VK_CONTROL, 0);
 	}
 
-	const BOOL bHookApp = CUtils::IsVisualCpp() || CUtils::IsFirefox() || CUtils::IsVisualStudio() || CUtils::IsInternetExplorer();
+	const BOOL bHookApp =
+		CUtils::IsVisualCpp() ||  CUtils::IsVisualStudio() ||
+		CUtils::IsInternetExplorer() || CUtils::IsFirefox() || CUtils::IsChrome();
 	if (after & META && !(before & META)) {
 		if (bHookApp)
 			m_nHookAltRelease |= HOOK_ALT_LATER;

@@ -49,14 +49,19 @@ BOOL CUtils::IsFindDialog()
 	return GetFindDialogTitle(&szDialogTitle);
 }
 
-BOOL CUtils::IsAstecX()
-{
-	return !_tcsicmp(m_szApplicationName, _T("astecx.exe"));
-}
-
 BOOL CUtils::IsXkeymacs()
 {
 	return !_tcsicmp(m_szApplicationName, _T("xkeymacs.exe")) || !_tcsicmp(m_szApplicationName, _T("xkeymacs64.exe"));
+}
+
+BOOL CUtils::IsChrome()
+{
+	return !_tcsicmp(m_szApplicationName, _T("chrome.exe"));
+}
+
+BOOL CUtils::IsAstecX()
+{
+	return !_tcsicmp(m_szApplicationName, _T("astecx.exe"));
 }
 
 BOOL CUtils::IsBecky()
