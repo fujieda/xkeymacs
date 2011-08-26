@@ -413,125 +413,58 @@ BOOL CUtils::IsXPorLater()
 
 BOOL CUtils::OpenClipboard()
 {
-	const int RETRY_COUNT = 0x10;
-
-	BOOL bOpened = FALSE;
-	for (int i = 0; i <= RETRY_COUNT; ++i) {
-		if (::OpenClipboard(NULL)) {
-//			Log(_T("ok (%d)"), i);
-			bOpened = TRUE;
-			break;
-		} else {
-			Sleep(1);	// for OpenOffice
-//			Log(_T("CUtils::OpenClipboard: %d (%d)"), GetLastError(), i);
-		}
-	}
-	ASSERT(bOpened);
-	return bOpened;
+	// OpenClipboard will fail on OpenOffice.org/LibreOffice at the first time
+	// and we must retry multiple times.
+	for (int i = 0; i < 10; ++i, Sleep(1))
+		if (::OpenClipboard(NULL))
+			return TRUE;
+//		else
+//			Log(_T("failed to open clipboard: %d (%d)"), GetLastError(), i);
+	return FALSE;
 }
 
-BOOL CUtils::GetClipboardText(CString *szClipboardText)
+BOOL CUtils::GetClipboardText(CString& text)
 {
-	if (!szClipboardText) {
+	text.Empty();
+	if (!OpenClipboard())
 		return FALSE;
-	}
-
-	szClipboardText->Empty();
-
-	if (!OpenClipboard()) {
-//		CUtils::Log(_T("Cannot open the Clipboard"));
-		return FALSE;
-	}
-
 /*
-	{
-		Log(_T("GetClipboardText"));
-		UINT uFormat = 0;
-		for (;;) {
-			uFormat = EnumClipboardFormats(uFormat);
-			if (uFormat) {
-				Log(_T("uFormat = %d"), uFormat);
-			} else {
-				break;
-			}
-		}
-// winuser.h
-//#define CF_TEXT             1
-//#define CF_METAFILEPICT     3
-//#define CF_OEMTEXT          7
-//#define CF_UNICODETEXT      13
-//#define CF_ENHMETAFILE      14
-//#define CF_LOCALE           16
-//#define CF_DSPTEXT          0x0081
-// OwnerLink						49155
-// Native							49156
-// DataObject						49161
-// Embed Source						49163
-// Object Descriptor				49166
-// Ole Private Data					49171
-// Rich Text Format					49311
-// Rich Text Format					49312
-// HTML Format						49360
-// HTML Format						49361
-// Link								49408
-// RTF As Text						49595
-// Rich Text Format Without Objects	49618
-// Star Object Descriptor (XML)		49681
-// Star Embed Source (XML)			49708
-// HPB HTML Format					49742
-	}
+	Log(_T("GetClipboardText"));
+	UINT uFormat = 0;
+	while (uFormat = EnumClipboardFormats(uFormat))
+		Log(_T("uFormat = %d"), uFormat);
 */
-
-	UINT uFormat = CF_OEMTEXT;
-	if (IsSakuraEditor()) {
-		uFormat = CF_TEXT;
-	}
-
-	HANDLE hClipboardText;
-	if ((hClipboardText = ::GetClipboardData(uFormat)) == NULL) {
-//		DWORD dw = GetLastError();
-//		CUtils::Log(_T("Unable to get Clipboard data: %d"), dw);
+	const HANDLE hClipboard = GetClipboardData(CF_TEXT);
+	if (!hClipboard) {
 		CloseClipboard();
 		return FALSE;
 	}
-
-	szClipboardText->Format(_T("%s"), hClipboardText);
+	const LPVOID pMem = GlobalLock(hClipboard);
+	if (!pMem)
+		return FALSE;
+	text = reinterpret_cast<LPCSTR>(pMem);
+	GlobalUnlock(hClipboard);
 	EmptyClipboard();
 	CloseClipboard();
 	return TRUE;
 }
 
-BOOL CUtils::SetClipboardText(CString *szClipboardText)
+BOOL CUtils::SetClipboardText(const CString& text)
 {
-	if (!OpenClipboard()) {
-//		CUtils::Log(_T("Cannot open the Clipboard in SetClipboardText"));
+	if (!OpenClipboard())
 		return FALSE;
-	}
-
-	int nLength = szClipboardText->GetLength() + 1;
-	HGLOBAL hClipboardText = GlobalAlloc(GHND, nLength);
-	if (hClipboardText == NULL) {
-//		CUtils::Log(_T("Failed: GlobalAlloc in SetClipboardText"));
+	const int nLength = text.GetLength() + 1;
+	const HGLOBAL hClipboard = GlobalAlloc(GHND, nLength);
+	if (!hClipboard)
 		return FALSE;
-	}
-
-	LPTSTR lpStr = (LPTSTR)GlobalLock(hClipboardText);
-	lstrcpyn(lpStr, *szClipboardText, nLength);
-	GlobalUnlock(hClipboardText);
+	const LPVOID pMem = GlobalLock(hClipboard);
+	memcpy(pMem, text.GetString(), nLength);
+	GlobalUnlock(hClipboard);
 	EmptyClipboard();
-
-	UINT uFormat = CF_OEMTEXT;
-	if (IsSakuraEditor()) {
-		uFormat = CF_TEXT;
-	}
-
-	if ((hClipboardText = ::SetClipboardData(uFormat, hClipboardText)) == NULL) {
-//		DWORD dw = GetLastError();
-//		CUtils::Log(_T("Unable to set Clipboard data: %d"), dw);
+	if (SetClipboardData(CF_TEXT, hClipboard) == NULL) {
 		CloseClipboard();
 		return FALSE;
 	}
-
 	CloseClipboard();
 	return TRUE;
 }
@@ -817,24 +750,6 @@ BOOL CUtils::IsEclipse()
 		 || _tcslen(szFind) == _tcslen(szWindowText) && !_tcsicmp(szWindowText, szFind));
 }
 
-int CUtils::GetClipboardTextLength()
-{
-	CString szClipboardText;
-	CUtils::GetClipboardText(&szClipboardText);
-	CUtils::SetClipboardText(&szClipboardText);
-
-//	return sz.GetLength();
-
-	int nLength = 0;
-	for (int i = 0; i < szClipboardText.GetLength(); ++i) {
-		if (szClipboardText.GetAt(i) & 0x80) {
-			++i;
-		}
-		++nLength;
-	}
-	return nLength;
-}
-
 BOOL CUtils::IsDialog()
 {
 	HWND hwnd = GetForegroundWindow();
@@ -965,10 +880,10 @@ BOOL CUtils::IsTOF()
 
 BOOL CUtils::IsTOForEOF()
 {
-	CString szClipboardText;
-	GetClipboardText(&szClipboardText);
-	return szClipboardText.IsEmpty()			// for normal application
-		|| szClipboardText.GetLength() >= 3;	// for VC++
+	CString text;
+	GetClipboardText(text);
+	return text.IsEmpty() || // for normal application
+			text.GetLength() >= 3; // for VC++
 }
 
 BOOL CUtils::IsHusen()

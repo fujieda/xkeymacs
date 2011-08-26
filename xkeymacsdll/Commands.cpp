@@ -817,7 +817,7 @@ int CCommands::KillLine(BOOL bAllFormat, int (*pCommand)())
 			Kdu(VK_RIGHT);
 		}
 
-		CUtils::GetClipboardText(&szClipboardText);
+		CUtils::GetClipboardText(szClipboardText);
 //		CUtils::Log(_T("%x, %s"), szClipboardText.GetAt(0), szClipboardText);
 
 		if (szClipboardText.IsEmpty()) {	// EOF
@@ -1922,7 +1922,7 @@ int CCommands::TransposeChars()
 			Su();
 
 			CString szClipboardText;
-			CUtils::GetClipboardText(&szClipboardText);
+			CUtils::GetClipboardText(szClipboardText);
 //			CUtils::Log(_T("%x, %d, %s"), szClipboardText.GetAt(0), szClipboardText.GetLength(), szClipboardText);
 
 			if (CUtils::IsDirector()
@@ -2701,7 +2701,7 @@ int CCommands::KillWord()
 		{
 //			CUtils::Log(_T("M-d: 1"));
 			nStep = 0;
-			CUtils::GetClipboardText(&szClipboardText);
+			CUtils::GetClipboardText(szClipboardText);
 			int nWordEnd = szClipboardText.GetLength();
 			int nFirstSpace = szClipboardText.Find(_T(' '));
 //			CUtils::Log(_T("M-d: 1-1 _%s_%c"), szClipboardText, szClipboardText.GetAt(szClipboardText.GetLength() - 1));
@@ -2730,7 +2730,7 @@ int CCommands::KillWord()
 				CString szEndWhiteSpace;
 				nWhiteSpace = szClipboardText.GetLength() - nWordEnd;
 				szEndWhiteSpace = szClipboardText.Right(nWhiteSpace);
-				CUtils::SetClipboardText(&szEndWhiteSpace);
+				CUtils::SetClipboardText(szEndWhiteSpace);
 				szClipboardText = szClipboardText.Left(nWordEnd);
 				nStep = 2;
 			}
@@ -2753,7 +2753,7 @@ int CCommands::KillWord()
 	case 4:
 //		CUtils::Log(_T("M-d: 4"));
 		nStep = 0;
-		CUtils::SetClipboardText(&szClipboardText);
+		CUtils::SetClipboardText(szClipboardText);
 		nStep = 5;
 		return Reset(GOTO_RECURSIVE);
 	case 5:
@@ -3700,7 +3700,7 @@ int CCommands::FillParagraph()
 //		CUtils::Log(_T("M-q: 2"));
 		nStep = 0;
 
-		CUtils::GetClipboardText(&szClipboardText);
+		CUtils::GetClipboardText(szClipboardText);
 //		CUtils::Log(_T("M-q: 2-1: _%s_"), szClipboardText);
 		if (szClipboardText.IsEmpty()) {
 			// TOF
@@ -3756,7 +3756,7 @@ int CCommands::FillParagraph()
 //		CUtils::Log(_T("M-q: 6"));
 		nStep = 0;
 
-		CUtils::GetClipboardText(&szClipboardText);
+		CUtils::GetClipboardText(szClipboardText);
 		if (szClipboardText.GetLength() == nOldLineLength + 1) {
 //			CUtils::Log(_T("M-q: 6-1 Finished"));
 			Kdu(VK_END, VK_BACK, VK_RETURN);
@@ -3873,7 +3873,7 @@ int CCommands::CaseWord(CASE_WORD nCase)
 			nStep = 0;
 
 			CString szClipboardText;
-			CUtils::GetClipboardText(&szClipboardText);
+			CUtils::GetClipboardText(szClipboardText);
 
 			CString szTrimmed = szClipboardText;
 			szTrimmed.TrimLeft();
@@ -3890,7 +3890,7 @@ int CCommands::CaseWord(CASE_WORD nCase)
 					}
 					nNext = GOTO_HOOK;
 				}
-				CUtils::SetClipboardText(&szClipboardText);
+				CUtils::SetClipboardText(szClipboardText);
 				nStep = 3;
 				return Reset(GOTO_RECURSIVE);
 			} else if (CUtils::IsHidemaru()) {
@@ -3928,7 +3928,7 @@ int CCommands::CaseWord(CASE_WORD nCase)
 				ASSERT(0);
 			}
 
-			CUtils::SetClipboardText(&szClipboardText);
+			CUtils::SetClipboardText(szClipboardText);
 
 			nLastWhiteSpace = 0;
 			for (int j = szClipboardText.GetLength() - 1; !szClipboardText.IsEmpty() && 0 <= j; --j) {

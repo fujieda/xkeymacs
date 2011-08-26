@@ -56,7 +56,6 @@ public:
 	static BOOL IsVisualBasicEditor();
 	static BOOL IsEudora();
 	static BOOL IsDialog();
-	static int GetClipboardTextLength();
 	static BOOL IsEclipse();
 	static BOOL IsFindDialog();
 	static BOOL IsVisualBasic();
@@ -86,8 +85,8 @@ public:
 	static BOOL IsDefaultIgnoreApplication();
 	static BOOL IsXWin();
 	static BOOL IsEmacs();
-	static BOOL SetClipboardText(CString *szClipboardText);
-	static BOOL GetClipboardText(CString *szClipboardText);
+	static BOOL SetClipboardText(const CString& text);
+	static BOOL GetClipboardText(CString& text);
 	static void InitCUtils();
 	static void SetApplicationName(BOOL bImeComposition);
 	static LPCTSTR const GetApplicationName();
