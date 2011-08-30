@@ -207,10 +207,6 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 #pragma data_seg(".xkmcs")
 	bool	CXkeymacsDll::m_bEnableKeyboardHook = false;
 	DWORD	CXkeymacsDll::m_nHookAltRelease	= 0;
-	HHOOK	CXkeymacsDll::m_hHookCallWnd = NULL;
-	HHOOK	CXkeymacsDll::m_hHookCallWndRet = NULL;
-	HHOOK	CXkeymacsDll::m_hHookGetMessage = NULL;
-	HHOOK	CXkeymacsDll::m_hHookShell = NULL;
 	BOOL	CXkeymacsDll::m_bRightControl	= FALSE;
 	BOOL	CXkeymacsDll::m_bRightAlt		= FALSE;
 	BOOL	CXkeymacsDll::m_bRightShift		= FALSE;
@@ -227,6 +223,10 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	TCHAR	CXkeymacsDll::m_M_xTip[128] = "";
 	CONFIG	CXkeymacsDll::m_Config = {0};
 #pragma data_seg()
+HHOOK CXkeymacsDll::m_hHookCallWnd = NULL;
+HHOOK CXkeymacsDll::m_hHookCallWndRet = NULL;
+HHOOK CXkeymacsDll::m_hHookGetMessage = NULL;
+HHOOK CXkeymacsDll::m_hHookShell = NULL;
 BOOL CXkeymacsDll::m_bRecordingMacro = FALSE;
 BOOL CXkeymacsDll::m_bDown[MAX_KEY] = {0};
 std::list<KbdMacro> CXkeymacsDll::m_Macro;
@@ -270,10 +270,10 @@ void CXkeymacsDll::SetConfig(const CONFIG& config)
 
 void CXkeymacsDll::SetHooks()
 {
-	m_hHookCallWnd = SetWindowsHookEx(WH_CALLWNDPROC, (HOOKPROC)CallWndProc, g_hDllInst, 0);
-	m_hHookCallWndRet = SetWindowsHookEx(WH_CALLWNDPROCRET, (HOOKPROC)CallWndRetProc, g_hDllInst, 0);
-	m_hHookGetMessage = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC)GetMsgProc, g_hDllInst, 0);
-	m_hHookShell = SetWindowsHookEx(WH_SHELL, (HOOKPROC)ShellProc, g_hDllInst, 0);
+	m_hHookCallWnd = SetWindowsHookEx(WH_CALLWNDPROC, CallWndProc, g_hDllInst, 0);
+	m_hHookCallWndRet = SetWindowsHookEx(WH_CALLWNDPROCRET, CallWndRetProc, g_hDllInst, 0);
+	m_hHookGetMessage = SetWindowsHookEx(WH_GETMESSAGE, GetMsgProc, g_hDllInst, 0);
+	m_hHookShell = SetWindowsHookEx(WH_SHELL, ShellProc, g_hDllInst, 0);
 	m_bEnableKeyboardHook = true;
 }
 
@@ -353,34 +353,35 @@ BOOL CXkeymacsDll::IsKeyboardHook()
 LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	SetKeyboardHook();
-	if (nCode < 0)
-		return CallNextHookEx(m_hHookCallWnd, nCode, wParam, lParam);
-	const CWPSTRUCT *cwps = reinterpret_cast<CWPSTRUCT *>(lParam);
-	switch (cwps->message) {
-	case WM_IME_STARTCOMPOSITION:
-		InitKeyboardProc(TRUE);
-		break;
-	case WM_IME_ENDCOMPOSITION:
-		InitKeyboardProc(FALSE);
-		break;
-	case WM_SETFOCUS:
-		if (cwps->hwnd == GetForegroundWindow()) {
+	if (nCode >= 0) {
+		const CWPSTRUCT *cwps = reinterpret_cast<CWPSTRUCT *>(lParam);
+		switch (cwps->message) {
+		case WM_IME_STARTCOMPOSITION:
+			InitKeyboardProc(TRUE);
+			break;
+		case WM_IME_ENDCOMPOSITION:
 			InitKeyboardProc(FALSE);
-			ShowKeyboardHookState();
+			break;
+		case WM_SETFOCUS:
+			if (cwps->hwnd == GetForegroundWindow()) {
+				InitKeyboardProc(FALSE);
+				ShowKeyboardHookState();
+			}
+			break;
+		case WM_NCACTIVATE:
+			if (cwps->wParam && cwps->hwnd == GetForegroundWindow()) {
+				InitKeyboardProc(FALSE);
+				ShowKeyboardHookState();
+			}
+			break;
 		}
-		break;
-	case WM_NCACTIVATE:
-		if (cwps->wParam && cwps->hwnd == GetForegroundWindow()) {
-			InitKeyboardProc(FALSE);
-			ShowKeyboardHookState();
-		}
-		break;
 	}
 	return CallNextHookEx(m_hHookCallWnd, nCode, wParam, lParam);
 }
 
 LRESULT CALLBACK CXkeymacsDll::CallWndRetProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
+	SetKeyboardHook();
 	if (nCode >= 0) {
 		const CWPRETSTRUCT *cwprets = reinterpret_cast<CWPRETSTRUCT *>(lParam);
 		switch (cwprets->message) {
@@ -398,14 +399,17 @@ LRESULT CALLBACK CXkeymacsDll::CallWndRetProc(int nCode, WPARAM wParam, LPARAM l
 
 LRESULT CALLBACK CXkeymacsDll::GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-	const MSG *msg = reinterpret_cast<MSG *>(lParam);
-	switch (msg->message) {
-	case WM_IME_STARTCOMPOSITION:
-		InitKeyboardProc(TRUE);
-		break;
-	case WM_IME_ENDCOMPOSITION:
-		InitKeyboardProc(FALSE);
-		break;
+	SetKeyboardHook();
+	if (nCode >= 0) {
+		const MSG *msg = reinterpret_cast<MSG *>(lParam);
+		switch (msg->message) {
+		case WM_IME_STARTCOMPOSITION:
+			InitKeyboardProc(TRUE);
+			break;
+		case WM_IME_ENDCOMPOSITION:
+			InitKeyboardProc(FALSE);
+			break;
+		}
 	}
 	return CallNextHookEx(m_hHookGetMessage, nCode, wParam, lParam);
 }
@@ -420,7 +424,7 @@ LRESULT CALLBACK CXkeymacsDll::ShellProc(int nCode, WPARAM wParam, LPARAM lParam
 			ShowKeyboardHookState();
 		}
 	}
-	return CallNextHookEx( m_hHookShell, nCode, wParam, lParam );
+	return CallNextHookEx(m_hHookShell, nCode, wParam, lParam);
 }
 
 UINT CXkeymacsDll::GetModifierState(BOOL bPhysicalKey)
