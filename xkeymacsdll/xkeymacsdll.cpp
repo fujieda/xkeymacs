@@ -279,9 +279,15 @@ void CXkeymacsDll::SetHooks()
 
 void CXkeymacsDll::SetKeyboardHook()
 {
-	HHOOK *phHook = reinterpret_cast<HHOOK *>(TlsGetValue(g_TlsIndex));
-	if (!phHook)
-		return;
+	LPVOID lpData = TlsGetValue(g_TlsIndex);
+	if (!lpData) {
+		lpData = LocalAlloc(LPTR, sizeof(HHOOK));
+		if (!lpData)
+			return;
+		if (!TlsSetValue(g_TlsIndex, lpData))
+			return;
+	}
+	HHOOK *phHook = reinterpret_cast<HHOOK *>(lpData);
 	if (!*phHook)
 		*phHook = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, g_hDllInst, GetCurrentThreadId());
 }
