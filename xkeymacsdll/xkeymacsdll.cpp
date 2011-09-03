@@ -376,7 +376,7 @@ LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lPar
 			break;
 		}
 	}
-	return CallNextHookEx(m_hHookCallWnd, nCode, wParam, lParam);
+	return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
 LRESULT CALLBACK CXkeymacsDll::CallWndRetProc(int nCode, WPARAM wParam, LPARAM lParam)
@@ -394,7 +394,7 @@ LRESULT CALLBACK CXkeymacsDll::CallWndRetProc(int nCode, WPARAM wParam, LPARAM l
 			break;
 		}
 	}
-	return CallNextHookEx(m_hHookCallWndRet, nCode, wParam, lParam);
+	return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
 LRESULT CALLBACK CXkeymacsDll::GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam)
@@ -411,7 +411,7 @@ LRESULT CALLBACK CXkeymacsDll::GetMsgProc(int nCode, WPARAM wParam, LPARAM lPara
 			break;
 		}
 	}
-	return CallNextHookEx(m_hHookGetMessage, nCode, wParam, lParam);
+	return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
 LRESULT CALLBACK CXkeymacsDll::ShellProc(int nCode, WPARAM wParam, LPARAM lParam)
@@ -424,7 +424,7 @@ LRESULT CALLBACK CXkeymacsDll::ShellProc(int nCode, WPARAM wParam, LPARAM lParam
 			ShowKeyboardHookState();
 		}
 	}
-	return CallNextHookEx(m_hHookShell, nCode, wParam, lParam);
+	return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
 UINT CXkeymacsDll::GetModifierState(BOOL bPhysicalKey)
@@ -608,7 +608,6 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	const BYTE nOrigKey = static_cast<BYTE>(wParam);
 	const bool bRelease = (lParam & BEING_RELEASED) != 0;
 	const bool bExtended = (lParam & EXTENDED_KEY) != 0;
-	const HHOOK *phHook = reinterpret_cast<HHOOK *>(TlsGetValue(g_TlsIndex));
 
 	static BOOL bLocked = FALSE;
 	static const BYTE RECURSIVE_KEY = 0x07;
@@ -620,7 +619,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 
 	if (!m_bEnableKeyboardHook || CUtils::IsXkeymacs() ||
 			nCode < 0 || nCode == HC_NOREMOVE)
-		return CallNextHookEx(*phHook, nCode, wParam, lParam);
+		return CallNextHookEx(NULL, nCode, wParam, lParam);
 
 //	CUtils::Log(_T("nKey = %#x, ext = %d, rel = %d, pre = %d, %#hx, %#hx"), nOrigKey,
 //		(lParam & EXTENDED_KEY) ? 1 : 0, (lParam & BEING_RELEASED) ? 1 : 0, (lParam & REPEATED_KEY) ? 1 : 0,
@@ -905,7 +904,7 @@ DO_NOTHING:
 		m_Macro.push_back(m);
 		m_bDown[wParam] |= !bRelease;
 	}
-	return CallNextHookEx(*phHook, nCode, wParam, lParam);
+	return CallNextHookEx(NULL, nCode, wParam, lParam);
 
 RECURSIVE:
 	Kdu(RECURSIVE_KEY, 1, FALSE);
