@@ -130,7 +130,6 @@ private:
 	static int IsPassThrough(BYTE nKey);
 	static void CancelMarkWithShift(BYTE nKey, bool bRelease);
 	static BOOL IsDepressedModifier(int Modifier(), BOOL bPhysicalKey = TRUE);
-	static BOOL IsValidKey(BYTE bVk);
 	static std::list<KbdMacro> m_Macro;
 	static BOOL m_bRecordingMacro;
 	static BOOL m_bDown[MAX_KEY];

@@ -947,30 +947,19 @@ void CXkeymacsDll::Clear(int nAppID)
 	}
 }
 
-BOOL CXkeymacsDll::IsValidKey(BYTE bVk)
-{
-	if (bVk == 0xf0) {	// 0xf0: Eisu key. GetAsyncKeyState returns the wrong state of Eisu key.
-		return FALSE;
-	}
-
-	switch (bVk) {
-	case VK_CONTROL:
-	case VK_MENU:
-	case VK_SHIFT:
-		return FALSE;
-	default:
-		break;
-	}
-
-	return TRUE;
-}
-
 BOOL CXkeymacsDll::IsDepressedModifier(int (__cdecl *Modifier)(void), BOOL bPhysicalKey)
 {
 	BYTE bVk = 0;
+	const BYTE *pnID = m_Config.nCommandID[m_nAppID][NONE];
 	do {
-		if (IsValidKey(bVk) && IsDown(bVk, bPhysicalKey) &&
-				Commands[m_Config.nCommandID[m_nAppID][NONE][bVk]].fCommand == Modifier)
+		switch (bVk) {
+		case VK_SHIFT:
+		case VK_CONTROL:
+		case VK_MENU:
+		case 0xf0: // Eisu key. GetAsyncKeyState returns the wrong state of Eisu key.
+			continue;
+		}
+		if (IsDown(bVk, bPhysicalKey) && Commands[pnID[bVk]].fCommand == Modifier)
 			return TRUE;
 	} while (++bVk);
 	return FALSE;
