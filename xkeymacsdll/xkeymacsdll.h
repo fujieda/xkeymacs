@@ -63,7 +63,7 @@ public:
 	static BOOL SaveConfig();
 	static BOOL LoadConfig();
 	static void SetConfig(const CONFIG& config);
-	static void SetM_xTip(const TCHAR *const szPath);
+	static void SetM_xTip(LPCTSTR szPath);
 	static BOOL Get326Compatible();
 	static void SetCursorData(HCURSOR hEnable, HCURSOR hDisableTMP, HCURSOR hDisableWOCQ, HICON hDisable, BOOL bEnable);
 	static unsigned int GetMaxKeyInterval(void);
@@ -86,7 +86,7 @@ public:
 	static CClipboardSnap* GetKillRing(CClipboardSnap *pSnap, BOOL bForce = TRUE);
 	static void IncreaseKillRingIndex(int nKillRing = 1);
 	static UINT GetModifierState(BOOL bPhysicalKey = TRUE);
-	static void SetModifierState(const UINT before, const UINT after);
+	static void SetModifierState(UINT before, UINT after);
 	static BOOL IsDown(BYTE bVk, BOOL bPhysicalKey = TRUE);
 	static void Kdu(BYTE bVk, DWORD n = 1, BOOL bOriginal = TRUE);
 	static void ReleaseKey(BYTE bVk);
@@ -99,7 +99,7 @@ private:
 	static bool m_bEnableKeyboardHook;
 	static DWORD m_nHookAltRelease;
 	static TCHAR m_M_xTip[128];
-	static void InvokeM_x(const TCHAR* const szPath);
+	static void InvokeM_x(LPCTSTR szPath);
 	static BOOL UpdateKeyboardState(BYTE bVK, BYTE bState);
 	static void LogCallWndProcMessage(WPARAM wParam, LPARAM lParam);
 	static void DoSetCursor();
@@ -122,7 +122,7 @@ private:
 	static LRESULT CALLBACK CallWndProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK ShellProc(int nCode, WPARAM wParam, LPARAM lParam);
-	static int GetAppID(const LPCSTR szName, const int fallback);
+	static int GetAppID(LPCSTR szName, int fallback);
 	static KeyBind ParseKey(LPCTSTR& def);
 	static BYTE a2v(TCHAR nAscii);
 	static BOOL IsShift(TCHAR nAscii);
