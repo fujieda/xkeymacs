@@ -134,7 +134,7 @@ static const int MAX_KEYNAME = _countof(KeyNames);
 static AFX_EXTENSION_MODULE XkeymacsdllDLL = { NULL, NULL };
 
 static HINSTANCE g_hDllInst = NULL;
-static DWORD g_TlsIndex = NULL;
+static DWORD g_TlsIndex = 0;
 
 extern "C" int APIENTRY
 DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
@@ -242,7 +242,7 @@ BOOL CXkeymacsDll::SaveConfig()
 	if (hFile == INVALID_HANDLE_VALUE)
 		return FALSE;
 	DWORD written;
-	BOOL res = WriteFile(hFile, &m_Config, sizeof(m_Config), &written, NULL) || written != sizeof(m_Config);
+	BOOL res = WriteFile(hFile, &m_Config, sizeof(m_Config), &written, NULL) && written == sizeof(m_Config);
 	CloseHandle(hFile);
 	return res;
 }
@@ -445,7 +445,7 @@ UINT CXkeymacsDll::GetModifierState(BOOL bPhysicalKey)
 	return result;
 }
 
-void CXkeymacsDll::SetModifierState(const UINT after, const UINT before)
+void CXkeymacsDll::SetModifierState(UINT after, UINT before)
 {
 	if (after & SHIFT && !(before & SHIFT))
 		DepressKey(VK_SHIFT);
@@ -488,10 +488,8 @@ BOOL CXkeymacsDll::IsDown(BYTE bVk, BOOL bPhysicalKey)
 	return bPhysicalKey ? GetAsyncKeyState(bVk) < 0 : GetKeyState(bVk) < 0;
 }
 
-// Do keybd_event
 void CXkeymacsDll::DoKeybd_event(BYTE bVk, DWORD dwFlags)
 {
-	// Set KEYEVENTF_EXTENDEDKEY if needed
 	switch (bVk) {
 	case VK_CONTROL:
 		if (m_bRightControl)
@@ -535,7 +533,6 @@ void CXkeymacsDll::DoKeybd_event(BYTE bVk, DWORD dwFlags)
 //	CUtils::Log(_T("a: %x, %x, %x, %#hx, %#hx"), bVk, dwFlags, GetMessageExtraInfo(), GetKeyState(bVk), GetAsyncKeyState(bVk));
 }
 
-// the key is being depressed
 void CXkeymacsDll::DepressKey(BYTE bVk, BOOL bOriginal)	// bVk is virtual-key code, MSDN said
 {
 	if (bOriginal) {
@@ -547,13 +544,11 @@ void CXkeymacsDll::DepressKey(BYTE bVk, BOOL bOriginal)	// bVk is virtual-key co
 	DoKeybd_event(bVk, 0);
 }
 
-// the key is being released
 void CXkeymacsDll::ReleaseKey(BYTE bVk)	// bVk is virtual-key code, MSDN said
 {
 	DoKeybd_event(bVk, KEYEVENTF_KEYUP);
 }
 
-// bVk down, bVk up
 void CXkeymacsDll::Kdu(BYTE bVk, DWORD n, BOOL bOriginal)
 {
 	while (n--) {
@@ -601,7 +596,7 @@ void CXkeymacsDll::InitKeyboardProc(BOOL bImeComposition)
 	CCommands::Reset();
 }
 
-int CXkeymacsDll::GetAppID(const LPCSTR szName, const int fallback)
+int CXkeymacsDll::GetAppID(LPCSTR szName, int fallback)
 {
 	for (int i = 0; i < MAX_APP; ++i)
 		if (!_tcsicmp(m_Config.szSpecialApp[i], szName))
@@ -714,12 +709,14 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		nType &= ~CONTROLX;
 	}
 	// Ignore undefined Meta Ctrl+?
-	if (CCommands::bM_() && nType & CONTROL && fCommand(nType) == NULL && nFunctionID < 0) {
-		if (m_Config.bIgnoreUndefinedMetaCtrl[m_nAppID]) {
-			if (CheckOriginal(CONTROL, nKey))
-				goto DO_NOTHING;
-			CCommands::Reset(GOTO_HOOK);
-			goto HOOK;
+	if (CCommands::bM_() && nType & CONTROL) {
+		if (fCommand(nType) == NULL && nFunctionID < 0) {
+			if (m_Config.bIgnoreUndefinedMetaCtrl[m_nAppID]) {
+				if (CheckOriginal(CONTROL, nKey))
+					goto DO_NOTHING;
+				CCommands::Reset(GOTO_HOOK);
+				goto HOOK;
+			}
 			nType &= ~META;
 		}
 	}
@@ -729,9 +726,8 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		nVirtualType &= ~CONTROL;
 	if (nOrigKey == VK_MENU)
 		nVirtualType &= ~META;
-	if (CheckOriginal(nVirtualType, nOrigKey)) {
+	if (CheckOriginal(nVirtualType, nOrigKey))
 		goto DO_NOTHING;
-	}
 
 	int (*const fCommand)() = fCommand(nType);
 	if (fCommand == CCommands::EnableOrDisableXKeymacs) {
@@ -898,7 +894,7 @@ RECURSIVE_COMMAND:
 	case GOTO_HOOKX:
 		bLocked = FALSE;
 		goto HOOKX;
-		case GOTO_HOOK0_9:
+	case GOTO_HOOK0_9:
 		bLocked = FALSE;
 		goto HOOK0_9;
 	}
@@ -938,7 +934,6 @@ void CXkeymacsDll::SetModifierIcons()
 	SendIconMessage(msg, 6);
 }
 
-// Clear data of nAppID
 void CXkeymacsDll::Clear(int nAppID)
 {
 	if (0 <= nAppID && nAppID < MAX_APP) {
@@ -994,13 +989,13 @@ void CXkeymacsDll::CancelMarkWithShift(BYTE nKey, bool bRelease)
 			goto exit;
 	} while (++bVk);
 	if (!bRelease) {
-		bShift = TRUE;
+		bShift = true;
 		return;
 	}
 	if (bShift)
 		CCommands::SetMark(FALSE);
 exit:
-	bShift = FALSE;
+	bShift = false;
 	return;
 }
 
@@ -1533,7 +1528,7 @@ BOOL CXkeymacsDll::Get326Compatible()
 	return m_Config.b326Compatible[m_nAppID];
 }
 
-void CXkeymacsDll::InvokeM_x(const TCHAR *const szPath)
+void CXkeymacsDll::InvokeM_x(LPCTSTR szPath)
 {
 //	CUtils::Log("M-x: szPath=_%s_", szPath);
 	int (*fCommand)() = NULL;
@@ -1554,7 +1549,7 @@ void CXkeymacsDll::InvokeM_x(const TCHAR *const szPath)
 	}
 }
 
-void CXkeymacsDll::SetM_xTip(const TCHAR *const szPath)
+void CXkeymacsDll::SetM_xTip(LPCTSTR szPath)
 {
 	_tcscpy_s(m_M_xTip, "M-x LED");
 	if (szPath && _tcslen(szPath) < 128 - 5)
