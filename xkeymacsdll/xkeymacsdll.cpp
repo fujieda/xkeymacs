@@ -612,8 +612,8 @@ int CXkeymacsDll::GetAppID(const LPCSTR szName, const int fallback)
 LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	const BYTE nOrigKey = static_cast<BYTE>(wParam);
-	const bool bRelease = (lParam & BEING_RELEASED) != 0;
-	const bool bExtended = (lParam & EXTENDED_KEY) != 0;
+	const bool bRelease = (HIWORD(lParam) & KF_UP) != 0;
+	const bool bExtended = (HIWORD(lParam) & KF_EXTENDED) != 0;
 
 	static BOOL bLocked = FALSE;
 	static const BYTE RECURSIVE_KEY = 0x07;
@@ -628,7 +628,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		return CallNextHookEx(NULL, nCode, wParam, lParam);
 
 //	CUtils::Log(_T("nKey = %#x, ext = %d, rel = %d, pre = %d, %#hx, %#hx"), nOrigKey,
-//		(lParam & EXTENDED_KEY) ? 1 : 0, (lParam & BEING_RELEASED) ? 1 : 0, (lParam & REPEATED_KEY) ? 1 : 0,
+//		(HIWORD(lParam) & KF_EXTENDED) ? 1 : 0, (HIWORD(lParam) & KF_UP) ? 1 : 0, (HIWORD(lParam) & KF_REPEAT) ? 1 : 0,
 //		GetKeyState(nOrigKey), GetAsyncKeyState(nOrigKey));
 
 	if (nOrigKey == RECURSIVE_KEY) {
@@ -926,14 +926,13 @@ HOOK_RECURSIVE_KEY:
 
 void CXkeymacsDll::SetModifierIcons()
 {
-#define IconState(x) ((x) ? ON_ICON : OFF_ICON)
 	ICONMSG msg[6] = {
-		{MX_ICON, IconState(CCommands::bM_x()), ""},
-		{CX_ICON, IconState(CCommands::bC_x()), ""},
-		{META_ICON, IconState(CCommands::bM_()), ""},
-		{SHIFT_ICON, IconState(IsDown(VK_SHIFT, FALSE)), ""},
-		{CTRL_ICON, IconState(IsControl()), ""},
-		{ALT_ICON, IconState(IsDown(VK_MENU, FALSE)), ""}
+		{MX_ICON, CCommands::bM_x(), ""},
+		{CX_ICON, CCommands::bC_x(), ""},
+		{META_ICON, CCommands::bM_(), ""},
+		{SHIFT_ICON, IsDown(VK_SHIFT, FALSE), ""},
+		{CTRL_ICON, IsControl(), ""},
+		{ALT_ICON, IsDown(VK_MENU, FALSE), ""}
 	};
 	_tcscpy_s(msg[0].szTip, m_M_xTip);
 	SendIconMessage(msg, 6);
@@ -1131,7 +1130,7 @@ void CXkeymacsDll::EndRecordMacro()
 	m_bRecordingMacro = FALSE;
 	while (!m_Macro.empty()) { // remove not released push
 		const KbdMacro& m = m_Macro.back();
-		if (m.lParam & BEING_RELEASED)
+		if (HIWORD(m.lParam) & KF_UP)
 			break;
 		m_Macro.pop_back();
 	}
@@ -1144,7 +1143,7 @@ void CXkeymacsDll::CallMacro()
 	UINT before = GetModifierState(FALSE);
 	SetModifierState(0, before);
 	for (std::list<KbdMacro>::const_iterator m = m_Macro.begin(); m != m_Macro.end(); ++m)
-		if (m->lParam & BEING_RELEASED)
+		if (HIWORD(m->lParam) & KF_UP)
 			ReleaseKey(static_cast<BYTE>(m->wParam));
 		else
 			DepressKey(static_cast<BYTE>(m->wParam), m->bOriginal);
