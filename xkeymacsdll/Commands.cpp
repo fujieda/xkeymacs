@@ -281,14 +281,15 @@ BOOL CCommands::m_bDefaultNumericArgument = TRUE;
 BOOL CCommands::m_bNegativeNumericArgument = FALSE;
 BOOL CCommands::m_bC_u = FALSE;
 SEARCH_DIRECTION CCommands::m_SearchDirection = NA;
-int (*CCommands::m_LastKillCommand)() = NULL;
-int (*CCommands::m_LastCommand)() = NULL;
 BOOL CCommands::m_bFirstFindDialog = FALSE;
 BOOL CCommands::m_bTemporarilyDisableXKeymacs = FALSE;
-CArray<CClipboardSnap *, CClipboardSnap *> CCommands::m_oClipboardData;
 OriginalWindowPosition CCommands::m_OriginalWindowPosition[MAX_WINDOW] = {'\0'};
 BOOL CCommands::m_bIsSu = FALSE;
 #pragma data_seg()
+
+int (*CCommands::m_LastKillCommand)() = NULL;
+int (*CCommands::m_LastCommand)() = NULL;
+CArray<CClipboardSnap *, CClipboardSnap *> CCommands::m_oClipboardData;
 
 void CCommands::DepressKey(BYTE bVk)
 {
