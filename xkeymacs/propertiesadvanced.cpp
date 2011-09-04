@@ -414,41 +414,24 @@ void CPropertiesAdvanced::ClearNewKey()
 
 LRESULT CALLBACK CPropertiesAdvanced::KeyboardProc(int code, WPARAM wParam, LPARAM lParam)
 {
-	if (code < 0 || code == HC_NOREMOVE) {
+	if (code < 0 || code == HC_NOREMOVE)
 		return ::CallNextHookEx(m_hKeyboardHook, code, wParam, lParam);
+	if (HIWORD(lParam) & KF_UP)
+		return TRUE;
+	const bool bExt = HIWORD(lParam) & KF_EXTENDED;
+	switch (wParam) {
+	case VK_SHIFT:
+		wParam = (bExt) ? VK_RSHIFT : VK_LSHIFT;
+		break;
+	case VK_CONTROL:
+		wParam = (bExt) ? VK_RCONTROL : VK_LCONTROL;
+		break;
+	case VK_MENU:
+		wParam = (bExt) ? VK_RMENU : VK_LMENU;
+		break;
 	}
-
-	if (lParam & BEING_RELEASED) {	// Key Up
-	} else {						// Key Down
-		switch (wParam) {
-		case VK_CONTROL:
-			if (lParam & EXTENDED_KEY) {
-				wParam = VK_RCONTROL;
-			} else {
-				wParam = VK_LCONTROL;
-			}
-			break;
-		case VK_MENU:
-			if (lParam & EXTENDED_KEY) {
-				wParam = VK_RMENU;
-			} else {
-				wParam = VK_LMENU;
-			}
-			break;
-		case VK_SHIFT:
-			if (lParam & EXTENDED_KEY) {
-				wParam = VK_RSHIFT;
-			} else {
-				wParam = VK_LSHIFT;
-			}
-			break;
-		default:
-			break;
-		}
-		m_nAssignKey = wParam;
-		SetNewKey();
-	}
-
+	m_nAssignKey = wParam;
+	SetNewKey();
 	return TRUE;
 }
 
