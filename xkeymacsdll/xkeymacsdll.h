@@ -70,7 +70,6 @@ public:
 	static void SetKeyboardSpeed(int nKeyboardSpeed);
 	static int GetAccelerate(void);
 	static void SetAccelerate(int nAccelerate);
-	static void Clear(int nAppID);
 	static BOOL IsKeyboardHook();
 	static void ReleaseHooks();
 	static void ReleaseKeyboardHook();

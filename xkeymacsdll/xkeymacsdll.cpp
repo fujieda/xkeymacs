@@ -934,19 +934,6 @@ void CXkeymacsDll::SetModifierIcons()
 	SendIconMessage(msg, 6);
 }
 
-void CXkeymacsDll::Clear(int nAppID)
-{
-	if (0 <= nAppID && nAppID < MAX_APP) {
-		ZeroMemory(m_Config.szSpecialApp[nAppID], sizeof(m_Config.szSpecialApp[nAppID]));
-		ZeroMemory(m_Config.nCommandID[nAppID], sizeof(m_Config.nCommandID[nAppID]));
-		m_Config.nKillRingMax[nAppID] = 0;
-		m_Config.bUseDialogSetting[nAppID] = FALSE;
-		m_Config.nSettingStyle[nAppID] = 0;
-	} else {
-		ASSERT(0);
-	}
-}
-
 BOOL CXkeymacsDll::IsDepressedModifier(int (__cdecl *Modifier)(void), BOOL bPhysicalKey)
 {
 	BYTE bVk = 0;
@@ -1142,13 +1129,11 @@ BOOL CXkeymacsDll::Is106Keyboard()
 int CXkeymacsDll::IsPassThrough(BYTE nKey)
 {
 	BYTE bVk = 0;
+	const BYTE *pnID = m_Config.nCommandID[m_nAppID][NONE]; 
 	do {
-		if (IsDown(bVk)
-		 && (Commands[m_Config.nCommandID[m_nAppID][NONE][bVk]].fCommand == CCommands::PassThrough)) {
-			if (bVk == nKey) {
+		if (IsDown(bVk) && Commands[pnID[bVk]].fCommand == CCommands::PassThrough) {
+			if (bVk == nKey)
 				return GOTO_HOOK;
-			}
-
 			return GOTO_DO_NOTHING;
 		}
 	} while (++bVk);
