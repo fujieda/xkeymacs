@@ -203,23 +203,25 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 // CXkeymacsDll Class
 //////////////////////////////////////////////////////////////////////
 
-#include "xkeymacsDll.h"
+#include "xkeymacsdll.h"
+
 #pragma data_seg(".xkmcs")
-	bool	CXkeymacsDll::m_bEnableKeyboardHook = false;
-	DWORD	CXkeymacsDll::m_nHookAltRelease	= 0;
-	BOOL	CXkeymacsDll::m_bRightControl	= FALSE;
-	BOOL	CXkeymacsDll::m_bRightAlt		= FALSE;
-	BOOL	CXkeymacsDll::m_bRightShift		= FALSE;
-	BOOL	CXkeymacsDll::m_bHook			= TRUE;
-	BYTE	CXkeymacsDll::m_nOriginal[MAX_COMMAND_TYPE][MAX_KEY] = {'\0'};
-	int		CXkeymacsDll::m_nAccelerate = 0;
-	int		CXkeymacsDll::m_nKeyboardSpeed = 31;
-	HCURSOR	CXkeymacsDll::m_hCursor[MAX_STATUS] = {'\0'};
-	HCURSOR CXkeymacsDll::m_hCurrentCursor = NULL;
-	BOOL	CXkeymacsDll::m_bCursor = FALSE;
-	TCHAR	CXkeymacsDll::m_M_xTip[128] = "";
-	CONFIG	CXkeymacsDll::m_Config = {0};
+CONFIG CXkeymacsDll::m_Config = {0};
+bool CXkeymacsDll::m_bEnableKeyboardHook = false;
+BOOL CXkeymacsDll::m_bHook = TRUE;
+DWORD CXkeymacsDll::m_nHookAltRelease = 0;
+BOOL CXkeymacsDll::m_bRightShift = FALSE;
+BOOL CXkeymacsDll::m_bRightControl = FALSE;
+BOOL CXkeymacsDll::m_bRightAlt = FALSE;
+TCHAR CXkeymacsDll::m_M_xTip[128] = "";
+BYTE CXkeymacsDll::m_nOriginal[MAX_COMMAND_TYPE][MAX_KEY] = {'\0'};
+int CXkeymacsDll::m_nAccelerate = 0;
+int CXkeymacsDll::m_nKeyboardSpeed = 31;
+HCURSOR CXkeymacsDll::m_hCurrentCursor = NULL;
+BOOL CXkeymacsDll::m_bCursor = FALSE;
+HCURSOR CXkeymacsDll::m_hCursor[MAX_STATUS] = {'\0'};
 #pragma data_seg()
+
 HHOOK CXkeymacsDll::m_hHookCallWnd = NULL;
 HHOOK CXkeymacsDll::m_hHookCallWndRet = NULL;
 HHOOK CXkeymacsDll::m_hHookGetMessage = NULL;
@@ -327,6 +329,11 @@ void CXkeymacsDll::ToggleKeyboardHookState()
 	ShowKeyboardHookState();
 }
 
+BOOL CXkeymacsDll::IsKeyboardHook()
+{
+	return m_bHook;
+}
+
 void CXkeymacsDll::ShowKeyboardHookState()
 {
 	ICONMSG msg = {MAIN_ICON,};
@@ -349,11 +356,6 @@ void CXkeymacsDll::ShowKeyboardHookState()
 	}
 	SendIconMessage(&msg, 1);
 	DoSetCursor();
-}
-
-BOOL CXkeymacsDll::IsKeyboardHook()
-{
-	return m_bHook;
 }
 
 LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lParam)
@@ -431,130 +433,6 @@ LRESULT CALLBACK CXkeymacsDll::ShellProc(int nCode, WPARAM wParam, LPARAM lParam
 		}
 	}
 	return CallNextHookEx(NULL, nCode, wParam, lParam);
-}
-
-UINT CXkeymacsDll::GetModifierState(BOOL bPhysicalKey)
-{
-	UINT result = 0;
-	if (IsDown(VK_SHIFT, bPhysicalKey))
-		result |= SHIFT;
-	if (IsDown(VK_CONTROL, bPhysicalKey))
-		result |= CONTROL;
-	if (IsDown(VK_MENU, bPhysicalKey))
-		result |= META;
-	return result;
-}
-
-void CXkeymacsDll::SetModifierState(UINT after, UINT before)
-{
-	if (after & SHIFT && !(before & SHIFT))
-		DepressKey(VK_SHIFT);
-	else if (!(after & SHIFT) && before & SHIFT)
-		ReleaseKey(VK_SHIFT);
-
-	if (after & CONTROL && !(before & CONTROL)) {
-		UpdateKeyboardState(VK_CONTROL, 1);
-		DepressKey(VK_CONTROL);
-	} else if (!(after & CONTROL) && before & CONTROL) {
-		ReleaseKey(VK_CONTROL);
-		UpdateKeyboardState(VK_CONTROL, 0);
-	}
-
-	const BOOL bHookApp =
-		CUtils::IsVisualCpp() ||  CUtils::IsVisualStudio() ||
-		CUtils::IsInternetExplorer() || CUtils::IsFirefox() || CUtils::IsChrome();
-	if (after & META && !(before & META)) {
-		if (bHookApp)
-			m_nHookAltRelease |= HOOK_ALT_LATER;
-		DepressKey(VK_MENU);
-	} else if (!(after & META) && before & META) {
-		if (bHookApp)
-			++m_nHookAltRelease;
-		ReleaseKey(VK_MENU);
-	}
-}
-
-BOOL CXkeymacsDll::UpdateKeyboardState(BYTE bVk, BYTE bState)
-{
-	BYTE ks[256] = {'\0'};
-	if (!GetKeyboardState(ks))
-		return FALSE;
-	ks[bVk] = bState;
-	return SetKeyboardState(ks);
-}
-
-BOOL CXkeymacsDll::IsDown(BYTE bVk, BOOL bPhysicalKey)
-{
-	return bPhysicalKey ? GetAsyncKeyState(bVk) < 0 : GetKeyState(bVk) < 0;
-}
-
-void CXkeymacsDll::DoKeybd_event(BYTE bVk, DWORD dwFlags)
-{
-	switch (bVk) {
-	case VK_CONTROL:
-		if (m_bRightControl)
-			dwFlags |= KEYEVENTF_EXTENDEDKEY;
-		break;
-
-	case VK_MENU:
-		if (m_bRightAlt)
-			dwFlags |= KEYEVENTF_EXTENDEDKEY;
-		break;
-
-	case VK_SHIFT:
-		if (m_bRightShift) {
-			if (CUtils::IsXPorLater())
-				bVk = VK_RSHIFT;
-			else
-				dwFlags |= KEYEVENTF_EXTENDEDKEY;
-		}
-		break;
-	case VK_PAUSE:
-		if (IsDown(VK_CONTROL, FALSE)) // Break
-			dwFlags |= KEYEVENTF_EXTENDEDKEY;
-		break;
-	case VK_INSERT:
-	case VK_DELETE:
-	case VK_HOME:
-	case VK_END:
-	case VK_NEXT:
-	case VK_PRIOR:
-	case VK_UP:
-	case VK_DOWN:
-	case VK_RIGHT:
-	case VK_LEFT:
-	case VK_NUMLOCK:
-	case VK_PRINT:
-		dwFlags |= KEYEVENTF_EXTENDEDKEY;
-		break;
-	}
-//	CUtils::Log(_T("b: %x, %x, %x, %#hx, %#hx"), bVk, dwFlags, GetMessageExtraInfo(), GetKeyState(bVk), GetAsyncKeyState(bVk));
-	keybd_event(bVk, 0, dwFlags, GetMessageExtraInfo());
-//	CUtils::Log(_T("a: %x, %x, %x, %#hx, %#hx"), bVk, dwFlags, GetMessageExtraInfo(), GetKeyState(bVk), GetAsyncKeyState(bVk));
-}
-
-void CXkeymacsDll::DepressKey(BYTE bVk, BOOL bOriginal)	// bVk is virtual-key code, MSDN said
-{
-	if (bOriginal) {
-//		CUtils::Log(_T("i: %x, %d, %d, %d, %d, %d, %d, %d, %d"), bVk,
-//			IsDown(VK_CONTROL), IsDown(VK_CONTROL, FALSE), IsDepressedModifier(CCommands::C_), IsDepressedModifier(CCommands::C_, FALSE),
-//			IsDown(VK_MENU), IsDown(VK_MENU, FALSE), IsDepressedModifier(CCommands::MetaAlt), IsDepressedModifier(CCommands::MetaAlt, FALSE));
-		SetOriginal(GetModifierState(), bVk);
-	}
-	DoKeybd_event(bVk, 0);
-}
-
-void CXkeymacsDll::ReleaseKey(BYTE bVk)	// bVk is virtual-key code, MSDN said
-{
-	DoKeybd_event(bVk, KEYEVENTF_KEYUP);
-}
-
-void CXkeymacsDll::Kdu(BYTE bVk, DWORD n, BOOL bOriginal)
-{
-	while (n--) {
-		DepressKey(bVk, bOriginal);
-		ReleaseKey(bVk);
-	}
 }
 
 void CXkeymacsDll::InitKeyboardProc(BOOL bImeComposition)
@@ -920,38 +798,6 @@ HOOK_RECURSIVE_KEY:
 	return TRUE;
 }
 
-void CXkeymacsDll::SetModifierIcons()
-{
-	ICONMSG msg[6] = {
-		{MX_ICON, CCommands::bM_x(), ""},
-		{CX_ICON, CCommands::bC_x(), ""},
-		{META_ICON, CCommands::bM_(), ""},
-		{SHIFT_ICON, IsDown(VK_SHIFT, FALSE), ""},
-		{CTRL_ICON, IsControl(), ""},
-		{ALT_ICON, IsDown(VK_MENU, FALSE), ""}
-	};
-	_tcscpy_s(msg[0].szTip, m_M_xTip);
-	SendIconMessage(msg, 6);
-}
-
-BOOL CXkeymacsDll::IsDepressedModifier(int (__cdecl *Modifier)(void), BOOL bPhysicalKey)
-{
-	BYTE bVk = 0;
-	const BYTE *pnID = m_Config.nCommandID[m_nAppID][NONE];
-	do {
-		switch (bVk) {
-		case VK_SHIFT:
-		case VK_CONTROL:
-		case VK_MENU:
-		case 0xf0: // Eisu key. GetAsyncKeyState returns the wrong state of Eisu key.
-			continue;
-		}
-		if (IsDown(bVk, bPhysicalKey) && Commands[pnID[bVk]].fCommand == Modifier)
-			return TRUE;
-	} while (++bVk);
-	return FALSE;
-}
-
 void CXkeymacsDll::CancelMarkWithShift(BYTE nKey, bool bRelease)
 {
 	static bool bShift;
@@ -975,6 +821,197 @@ exit:
 	return;
 }
 
+int CXkeymacsDll::IsPassThrough(BYTE nKey)
+{
+	BYTE bVk = 0;
+	const BYTE *pnID = m_Config.nCommandID[m_nAppID][NONE]; 
+	do {
+		if (IsDown(bVk) && Commands[pnID[bVk]].fCommand == CCommands::PassThrough) {
+			if (bVk == nKey)
+				return GOTO_HOOK;
+			return GOTO_DO_NOTHING;
+		}
+	} while (++bVk);
+	return CONTINUE;
+}
+
+void CXkeymacsDll::InvokeM_x(LPCTSTR szPath)
+{
+//	CUtils::Log("M-x: szPath=_%s_", szPath);
+	int (*fCommand)() = NULL;
+	for (int i = 0; i < MAX_COMMAND; ++i)
+		if (_tcsicmp(szPath, Commands[i].szCommandName) == 0) {
+			fCommand = Commands[i].fCommand;
+			break;
+		}
+	if (fCommand) {
+//		CUtils::Log("M-x: Command: _%s_", Commands[i].szCommandName);
+		fCommand();
+	} else {
+//		CUtils::Log("M-x: Path: _%s_", szPath);
+		ShellExecute(NULL, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
+	}
+}
+
+void CXkeymacsDll::SetModifierIcons()
+{
+	ICONMSG msg[6] = {
+		{MX_ICON, CCommands::bM_x(), ""},
+		{CX_ICON, CCommands::bC_x(), ""},
+		{META_ICON, CCommands::bM_(), ""},
+		{SHIFT_ICON, IsDown(VK_SHIFT, FALSE), ""},
+		{CTRL_ICON, IsControl(), ""},
+		{ALT_ICON, IsDown(VK_MENU, FALSE), ""}
+	};
+	_tcscpy_s(msg[0].szTip, m_M_xTip);
+	SendIconMessage(msg, 6);
+}
+
+void CXkeymacsDll::SetM_xTip(LPCTSTR szPath)
+{
+	_tcscpy_s(m_M_xTip, "M-x LED");
+	if (szPath && _tcslen(szPath) < 128 - 5)
+		_stprintf_s(m_M_xTip, "M-x %s", szPath);
+}
+
+BOOL CXkeymacsDll::SendIconMessage(ICONMSG *pMsg, DWORD num)
+{
+	DWORD ack, read;
+	return CallNamedPipe(ICON_PIPE, pMsg, sizeof(ICONMSG) * num, &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT) && read == sizeof(DWORD);
+}
+
+void CXkeymacsDll::Kdu(BYTE bVk, DWORD n, BOOL bOriginal)
+{
+	while (n--) {
+		DepressKey(bVk, bOriginal);
+		ReleaseKey(bVk);
+	}
+}
+
+void CXkeymacsDll::DepressKey(BYTE bVk, BOOL bOriginal)	// bVk is virtual-key code, MSDN said
+{
+	if (bOriginal) {
+//		CUtils::Log(_T("i: %x, %d, %d, %d, %d, %d, %d, %d, %d"), bVk,
+//			IsDown(VK_CONTROL), IsDown(VK_CONTROL, FALSE), IsDepressedModifier(CCommands::C_), IsDepressedModifier(CCommands::C_, FALSE),
+//			IsDown(VK_MENU), IsDown(VK_MENU, FALSE), IsDepressedModifier(CCommands::MetaAlt), IsDepressedModifier(CCommands::MetaAlt, FALSE));
+		SetOriginal(GetModifierState(), bVk);
+	}
+	DoKeybd_event(bVk, 0);
+}
+
+void CXkeymacsDll::ReleaseKey(BYTE bVk)	// bVk is virtual-key code, MSDN said
+{
+	DoKeybd_event(bVk, KEYEVENTF_KEYUP);
+}
+
+void CXkeymacsDll::DoKeybd_event(BYTE bVk, DWORD dwFlags)
+{
+	switch (bVk) {
+	case VK_CONTROL:
+		if (m_bRightControl)
+			dwFlags |= KEYEVENTF_EXTENDEDKEY;
+		break;
+
+	case VK_MENU:
+		if (m_bRightAlt)
+			dwFlags |= KEYEVENTF_EXTENDEDKEY;
+		break;
+
+	case VK_SHIFT:
+		if (m_bRightShift) {
+			if (CUtils::IsXPorLater())
+				bVk = VK_RSHIFT;
+			else
+				dwFlags |= KEYEVENTF_EXTENDEDKEY;
+		}
+		break;
+	case VK_PAUSE:
+		if (IsDown(VK_CONTROL, FALSE)) // Break
+			dwFlags |= KEYEVENTF_EXTENDEDKEY;
+		break;
+	case VK_INSERT:
+	case VK_DELETE:
+	case VK_HOME:
+	case VK_END:
+	case VK_NEXT:
+	case VK_PRIOR:
+	case VK_UP:
+	case VK_DOWN:
+	case VK_RIGHT:
+	case VK_LEFT:
+	case VK_NUMLOCK:
+	case VK_PRINT:
+		dwFlags |= KEYEVENTF_EXTENDEDKEY;
+		break;
+	}
+//	CUtils::Log(_T("b: %x, %x, %x, %#hx, %#hx"), bVk, dwFlags, GetMessageExtraInfo(), GetKeyState(bVk), GetAsyncKeyState(bVk));
+	keybd_event(bVk, 0, dwFlags, GetMessageExtraInfo());
+//	CUtils::Log(_T("a: %x, %x, %x, %#hx, %#hx"), bVk, dwFlags, GetMessageExtraInfo(), GetKeyState(bVk), GetAsyncKeyState(bVk));
+}
+
+void CXkeymacsDll::SetOriginal(UINT nType, BYTE bVk)
+{
+	m_nOriginal[nType & ~SHIFT][bVk]++;
+}
+
+int CXkeymacsDll::CheckOriginal(UINT nType, BYTE bVk)
+{
+	nType &= ~SHIFT;
+	if (m_nOriginal[nType][bVk])
+		return m_nOriginal[nType][bVk]--;
+	return 0;
+}
+
+UINT CXkeymacsDll::GetModifierState(BOOL bPhysicalKey)
+{
+	UINT result = 0;
+	if (IsDown(VK_SHIFT, bPhysicalKey))
+		result |= SHIFT;
+	if (IsDown(VK_CONTROL, bPhysicalKey))
+		result |= CONTROL;
+	if (IsDown(VK_MENU, bPhysicalKey))
+		result |= META;
+	return result;
+}
+
+void CXkeymacsDll::SetModifierState(UINT after, UINT before)
+{
+	if (after & SHIFT && !(before & SHIFT))
+		DepressKey(VK_SHIFT);
+	else if (!(after & SHIFT) && before & SHIFT)
+		ReleaseKey(VK_SHIFT);
+
+	if (after & CONTROL && !(before & CONTROL)) {
+		UpdateKeyboardState(VK_CONTROL, 1);
+		DepressKey(VK_CONTROL);
+	} else if (!(after & CONTROL) && before & CONTROL) {
+		ReleaseKey(VK_CONTROL);
+		UpdateKeyboardState(VK_CONTROL, 0);
+	}
+
+	const BOOL bHookApp =
+		CUtils::IsVisualCpp() ||  CUtils::IsVisualStudio() ||
+		CUtils::IsInternetExplorer() || CUtils::IsFirefox() || CUtils::IsChrome();
+	if (after & META && !(before & META)) {
+		if (bHookApp)
+			m_nHookAltRelease |= HOOK_ALT_LATER;
+		DepressKey(VK_MENU);
+	} else if (!(after & META) && before & META) {
+		if (bHookApp)
+			++m_nHookAltRelease;
+		ReleaseKey(VK_MENU);
+	}
+}
+
+BOOL CXkeymacsDll::UpdateKeyboardState(BYTE bVk, BYTE bState)
+{
+	BYTE ks[256] = {'\0'};
+	if (!GetKeyboardState(ks))
+		return FALSE;
+	ks[bVk] = bState;
+	return SetKeyboardState(ks);
+}
+
 BOOL CXkeymacsDll::IsControl()
 {
 	return CCommands::bC_() || IsDepressedModifier(CCommands::C_);
@@ -983,6 +1020,29 @@ BOOL CXkeymacsDll::IsControl()
 BOOL CXkeymacsDll::IsMeta()
 {
 	return CCommands::bM_() || IsDepressedModifier(CCommands::MetaAlt);
+}
+
+BOOL CXkeymacsDll::IsDepressedModifier(int (__cdecl *Modifier)(void), BOOL bPhysicalKey)
+{
+	BYTE bVk = 0;
+	const BYTE *pnID = m_Config.nCommandID[m_nAppID][NONE];
+	do {
+		switch (bVk) {
+		case VK_SHIFT:
+		case VK_CONTROL:
+		case VK_MENU:
+		case 0xf0: // Eisu key. GetAsyncKeyState returns the wrong state of Eisu key.
+			continue;
+		}
+		if (IsDown(bVk, bPhysicalKey) && Commands[pnID[bVk]].fCommand == Modifier)
+			return TRUE;
+	} while (++bVk);
+	return FALSE;
+}
+
+BOOL CXkeymacsDll::IsDown(BYTE bVk, BOOL bPhysicalKey)
+{
+	return bPhysicalKey ? GetAsyncKeyState(bVk) < 0 : GetKeyState(bVk) < 0;
 }
 
 void CXkeymacsDll::AddKillRing(BOOL bNewData)
@@ -1064,19 +1124,6 @@ CClipboardSnap* CXkeymacsDll::GetKillRing(CClipboardSnap* pSnap, BOOL bForce)
 	return pSnap->GetNext();
 }
 
-void CXkeymacsDll::SetOriginal(UINT nType, BYTE bVk)
-{
-	m_nOriginal[nType & ~SHIFT][bVk]++;
-}
-
-int CXkeymacsDll::CheckOriginal(UINT nType, BYTE bVk)
-{
-	nType &= ~SHIFT;
-	if (m_nOriginal[nType][bVk])
-		return m_nOriginal[nType][bVk]--;
-	return 0;
-}
-
 void CXkeymacsDll::IncreaseKillRingIndex(int nKillRing)
 {
 	m_nKillRing += nKillRing;
@@ -1085,6 +1132,16 @@ void CXkeymacsDll::IncreaseKillRingIndex(int nKillRing)
 BOOL CXkeymacsDll::GetEnableCUA()
 {
 	return m_Config.bEnableCUA[m_nAppID];
+}
+
+BOOL CXkeymacsDll::Get326Compatible()
+{
+	return m_Config.b326Compatible[m_nAppID];
+}
+
+BOOL CXkeymacsDll::Is106Keyboard()
+{
+	return m_Config.b106Keyboard;
 }
 
 void CXkeymacsDll::StartRecordMacro()
@@ -1119,25 +1176,6 @@ void CXkeymacsDll::CallMacro()
 		else
 			DepressKey(static_cast<BYTE>(m->wParam), m->bOriginal);
 	SetModifierState(before, 0);
-}
-
-BOOL CXkeymacsDll::Is106Keyboard()
-{
-	return m_Config.b106Keyboard;
-}
-
-int CXkeymacsDll::IsPassThrough(BYTE nKey)
-{
-	BYTE bVk = 0;
-	const BYTE *pnID = m_Config.nCommandID[m_nAppID][NONE]; 
-	do {
-		if (IsDown(bVk) && Commands[pnID[bVk]].fCommand == CCommands::PassThrough) {
-			if (bVk == nKey)
-				return GOTO_HOOK;
-			return GOTO_DO_NOTHING;
-		}
-	} while (++bVk);
-	return CONTINUE;
 }
 
 // call an original command which is defined in dot.xkeymacs
@@ -1447,11 +1485,7 @@ BOOL CXkeymacsDll::IsMatchWindowText(CString szWindowText)
 	case IDS_WINDOW_TEXT_IGNORE:							// *
 		bIsMatchWindowText = TRUE;
 		break;
-	default:
-		ASSERT(0);
-		break;
 	}
-
 //	CUtils::Log(_T("IsMatchWindowText: %d, _%s_, _%s_"), bIsMatchWindowText, szCurrentWindowText, szWindowText);
 	return bIsMatchWindowText;
 }
@@ -1492,46 +1526,6 @@ void CXkeymacsDll::SetCursorData(HCURSOR hEnable, HCURSOR hDisableTMP, HCURSOR h
 
 void CXkeymacsDll::DoSetCursor()
 {
-	if (m_bCursor && m_hCurrentCursor) {
+	if (m_bCursor && m_hCurrentCursor)
 		::SetCursor(m_hCurrentCursor);
-	}
-}
-
-BOOL CXkeymacsDll::Get326Compatible()
-{
-	return m_Config.b326Compatible[m_nAppID];
-}
-
-void CXkeymacsDll::InvokeM_x(LPCTSTR szPath)
-{
-//	CUtils::Log("M-x: szPath=_%s_", szPath);
-	int (*fCommand)() = NULL;
-
-	for (int i = 0; i < MAX_COMMAND; ++i) {
-		if (_tcsicmp(szPath, Commands[i].szCommandName) == 0) {
-			fCommand = Commands[i].fCommand;
-			break;
-		}
-	}
-
-	if (fCommand) {
-//		CUtils::Log("M-x: Command: _%s_", Commands[i].szCommandName);
-		fCommand();
-	} else {
-//		CUtils::Log("M-x: Path: _%s_", szPath);
-		ShellExecute(NULL, NULL, szPath, NULL, NULL, SW_SHOWNORMAL);
-	}
-}
-
-void CXkeymacsDll::SetM_xTip(LPCTSTR szPath)
-{
-	_tcscpy_s(m_M_xTip, "M-x LED");
-	if (szPath && _tcslen(szPath) < 128 - 5)
-		_stprintf_s(m_M_xTip, "M-x %s", szPath);
-}
-
-BOOL CXkeymacsDll::SendIconMessage(ICONMSG *pMsg, DWORD num)
-{
-	DWORD ack, read;
-	return CallNamedPipe(ICON_PIPE, pMsg, sizeof(ICONMSG) * num, &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT);
 }
