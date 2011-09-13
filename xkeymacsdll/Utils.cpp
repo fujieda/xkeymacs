@@ -458,7 +458,7 @@ BOOL CUtils::SetClipboardText(const CString& text)
 	if (!hClipboard)
 		return FALSE;
 	const LPVOID pMem = GlobalLock(hClipboard);
-	memcpy(pMem, text.GetString(), nLength);
+	memcpy(pMem, LPCTSTR(text), nLength);
 	GlobalUnlock(hClipboard);
 	EmptyClipboard();
 	if (SetClipboardData(CF_TEXT, hClipboard) == NULL) {
