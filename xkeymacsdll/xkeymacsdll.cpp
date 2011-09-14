@@ -226,9 +226,7 @@ HHOOK CXkeymacsDll::m_hHookShell = NULL;
 int CXkeymacsDll::m_nAppID = 0;
 CList<CClipboardSnap *, CClipboardSnap *> CXkeymacsDll::m_oKillRing;
 int CXkeymacsDll::m_nKillRing = 0;
-BOOL CXkeymacsDll::m_bRecordingMacro = FALSE;
-BOOL CXkeymacsDll::m_bDown[MAX_KEY] = {0};
-std::list<KbdMacro> CXkeymacsDll::m_Macro;
+KbdMacro* CXkeymacsDll::m_kbdMacro = NULL;
 
 BOOL CXkeymacsDll::SaveConfig()
 {
@@ -776,11 +774,8 @@ RECURSIVE_COMMAND:
 
 DO_NOTHING:
 	SetModifierIcons();
-	if (m_bRecordingMacro && (!bRelease || m_bDown[wParam])) {
-		KbdMacro m = { nCode, wParam, lParam, TRUE };
-		m_Macro.push_back(m);
-		m_bDown[wParam] |= !bRelease;
-	}
+	if (m_kbdMacro)
+		m_kbdMacro->Record(nKey, bRelease);
 	return CallNextHookEx(NULL, nCode, wParam, lParam);
 
 RECURSIVE:
@@ -1137,38 +1132,9 @@ BOOL CXkeymacsDll::Is106Keyboard()
 	return m_Config.b106Keyboard;
 }
 
-void CXkeymacsDll::StartRecordMacro()
+void CXkeymacsDll::SetKbMacro(KbdMacro* kbdMacro)
 {
-	if (CCommands::bC_u())
-		CallMacro();
-	m_bRecordingMacro = TRUE;
-	m_Macro.erase(m_Macro.begin(), m_Macro.end());
-	ZeroMemory(m_bDown, MAX_KEY);
-}
-
-void CXkeymacsDll::EndRecordMacro()
-{
-	m_bRecordingMacro = FALSE;
-	while (!m_Macro.empty()) { // remove not released push
-		const KbdMacro& m = m_Macro.back();
-		if (HIWORD(m.lParam) & KF_UP)
-			break;
-		m_Macro.pop_back();
-	}
-}
-
-void CXkeymacsDll::CallMacro()
-{
-	if (m_bRecordingMacro)
-		m_bRecordingMacro = FALSE;
-	UINT before = GetModifierState(FALSE);
-	SetModifierState(0, before);
-	for (std::list<KbdMacro>::const_iterator m = m_Macro.begin(); m != m_Macro.end(); ++m)
-		if (HIWORD(m->lParam) & KF_UP)
-			ReleaseKey(static_cast<BYTE>(m->wParam));
-		else
-			DepressKey(static_cast<BYTE>(m->wParam), m->bOriginal);
-	SetModifierState(before, 0);
+	m_kbdMacro = kbdMacro;
 }
 
 // call an original command which is defined in dot.xkeymacs

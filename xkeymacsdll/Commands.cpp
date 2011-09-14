@@ -287,6 +287,7 @@ OriginalWindowPosition CCommands::m_OriginalWindowPosition[MAX_WINDOW] = {'\0'};
 BOOL CCommands::m_bIsSu = FALSE;
 #pragma data_seg()
 
+KbdMacro CCommands::m_kbdMacro;
 int (*CCommands::m_LastKillCommand)() = NULL;
 int (*CCommands::m_LastCommand)() = NULL;
 CArray<CClipboardSnap *, CClipboardSnap *> CCommands::m_oClipboardData;
@@ -2788,12 +2789,15 @@ int CCommands::SelectAll()
 // C-x (
 int CCommands::StartKbdMacro()
 {
-	if (CUtils::IsMicrosoftWord()) {
+	if (CUtils::IsMicrosoftWord())
 		AdKduAu('T', 'M', 'R');
-	} else if (CUtils::IsHidemaru()) {
+	else if (CUtils::IsHidemaru())
 		SdKduSu(VK_F1);
-	} else {
-		CXkeymacsDll::StartRecordMacro();
+	else {
+		if (bC_u())
+			m_kbdMacro.Call();
+		m_kbdMacro.Start();
+		CXkeymacsDll::SetKbMacro(&m_kbdMacro);
 	}
 	return Reset(GOTO_HOOK);
 }
@@ -2801,12 +2805,13 @@ int CCommands::StartKbdMacro()
 // C-x )
 int CCommands::EndKbdMacro()
 {
-	if (CUtils::IsMicrosoftWord()) {
+	if (CUtils::IsMicrosoftWord())
 		AdKduAu('T', 'M', 'R');
-	} else if (CUtils::IsHidemaru()) {
+	else if (CUtils::IsHidemaru())
 		SdKduSu(VK_F1);
-	} else {
-		CXkeymacsDll::EndRecordMacro();
+	else {
+		m_kbdMacro.End();
+		CXkeymacsDll::SetKbMacro(NULL);
 	}
 	return Reset(GOTO_HOOK);
 }
@@ -2814,21 +2819,19 @@ int CCommands::EndKbdMacro()
 // C-x e
 int CCommands::CallLastKbdMacro()
 {
-	if (CUtils::IsMicrosoftWord()) {
+	if (CUtils::IsMicrosoftWord())
 		AdKduAu('T', 'M', 'M');
-	} else if (CUtils::IsHidemaru()) {
+	else if (CUtils::IsHidemaru()) {
 		int n = 1;
-		if (!m_bDefaultNumericArgument) {
+		if (!m_bDefaultNumericArgument)
 			n = m_nNumericArgument;
-		}
 		ClearNumericArgument();
-		while (n--) {
+		while (n--)
 			AdKduAu('M', 'P');
-		}
 	} else {
-		while (m_nNumericArgument--) {
-			CXkeymacsDll::CallMacro();
-		}
+		EndKbdMacro();
+		while (m_nNumericArgument--)
+			m_kbdMacro.Call();
 	}
 	return Reset(GOTO_HOOK);
 }

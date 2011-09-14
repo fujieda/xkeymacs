@@ -10,18 +10,11 @@
 #endif // _MSC_VER > 1000
 
 #include "StdAfx.h"
+#include "KbdMacro.h"
 #include "ClipboardSnap.h"
 #include "defs.h"
 #include "ipc.h"
 #include <list>
-
-struct KbdMacro
-{
-	int nCode;
-	WPARAM wParam;
-	LPARAM lParam;
-	BOOL bOriginal;
-};
 
 const DWORD HOOK_ALT_LATER = 0x10000;
 
@@ -53,9 +46,7 @@ public:
 	static BOOL GetEnableCUA();
 	static BOOL Get326Compatible();
 	static BOOL Is106Keyboard();
-	static void StartRecordMacro();
-	static void EndRecordMacro();
-	static void CallMacro();
+	static void SetKbMacro(KbdMacro* kbdMacro);
 	static int GetAccelerate(void);
 	static void SetAccelerate(int nAccelerate);
 	static void SetKeyboardSpeed(int nKeyboardSpeed);
@@ -97,9 +88,7 @@ private:
 	static BOOL IsDepressedModifier(int Modifier(), BOOL bPhysicalKey = TRUE);
 	static CList<CClipboardSnap *, CClipboardSnap *> m_oKillRing;
 	static int m_nKillRing;
-	static BOOL m_bRecordingMacro;
-	static BOOL m_bDown[MAX_KEY];
-	static std::list<KbdMacro> m_Macro;
+	static KbdMacro* m_kbdMacro;
 	static void CallFunction(int nFuncID);
 	static KeyBind ParseKey(LPCTSTR& def);
 	static BOOL IsShift(TCHAR nAscii);

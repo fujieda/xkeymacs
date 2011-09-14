@@ -11,6 +11,7 @@
 
 #include "StdAfx.h"
 #include "defs.h"
+#include "KbdMacro.h"
 #include "ClipboardSnap.h"
 
 enum SEARCH_DIRECTION { NA, FORWARD, BACKWARD, AGAIN };
@@ -180,6 +181,7 @@ public:
 	static int GetDefaultControlID(int nComID, int nIndex);
 
 private:
+	static KbdMacro m_kbdMacro;
 	static BOOL CutFollowingWord();
 	static int CaseWord(CASE_WORD nCase);
 	static BOOL CopyCurrentLine();

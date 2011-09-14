@@ -196,6 +196,7 @@
     <ClCompile Include="ClipboardSnap.cpp" />
     <ClCompile Include="Commands.cpp" />
     <ClCompile Include="FunctionDefinition.cpp" />
+    <ClCompile Include="KbdMacro.cpp" />
     <ClCompile Include="StdAfx.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="xkeymacsdll.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="defs.h" />
     <ClInclude Include="FunctionDefinition.h" />
     <ClInclude Include="ipc.h" />
+    <ClInclude Include="KbdMacro.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="Utils.h" />
