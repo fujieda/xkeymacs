@@ -75,7 +75,7 @@ BOOL CXkeymacsApp::InitInstance()
 
 	// set registry key
 	CUtils::InitCUtils();
-	if (!Create64bitProcess())
+	if (!Start64bitProcess())
 		return FALSE;
 	CProfile::InitDllData();
 
@@ -87,7 +87,7 @@ BOOL CXkeymacsApp::IsWow64()
 	return m_bIsWow64;
 }
 
-BOOL CXkeymacsApp::Create64bitProcess()
+BOOL CXkeymacsApp::Start64bitProcess()
 {
 	typedef BOOL (WINAPI *PFIsWow64Process)(HANDLE, PBOOL);
 	PFIsWow64Process func = (PFIsWow64Process)GetProcAddress(GetModuleHandle(_T("kernel32")), _T("IsWow64Process"));
@@ -98,21 +98,18 @@ BOOL CXkeymacsApp::Create64bitProcess()
 	if (!m_bIsWow64)
 		return TRUE; // do nothing
 	
-	TCHAR szFileName[MAX_PATH];
-	if (!GetModuleFileName(NULL, szFileName, sizeof(szFileName)))
+	TCHAR buf[MAX_PATH];
+	if (!GetModuleFileName(NULL, buf, MAX_PATH))
 		return FALSE;
-	TCHAR szDrive[_MAX_DRIVE], szDir[_MAX_DIR], szFile[_MAX_FNAME], szExt[_MAX_EXT];
-	if (_tsplitpath_s(szFileName, szDrive, szDir, szFile, szExt) ||
-			_tcscat_s(szFile, _T("64")) ||
-			_tmakepath_s(szFileName, szDrive, szDir, szFile, szExt))
+	CString path = buf;
+	if (!path.Replace(_T("xkeymacs.exe"), _T("xkeymacs64.exe")))
 		return FALSE;
-
 	STARTUPINFO si;
 	ZeroMemory(&si, sizeof(si));
 	si.cb = sizeof(si);
 	PROCESS_INFORMATION pi;
 	ZeroMemory(&pi, sizeof(pi));
-	if (!CreateProcess(szFileName, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+	if (!CreateProcess(path, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
 		return FALSE;
 	// close unused handles
 	CloseHandle(pi.hProcess);

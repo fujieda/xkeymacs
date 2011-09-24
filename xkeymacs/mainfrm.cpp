@@ -575,7 +575,7 @@ void CMainFrame::OnReset()
 	StartPollThread();
 	CXkeymacsApp *pApp = static_cast<CXkeymacsApp *>(AfxGetApp());
 	if (!pApp->SendIPCMessage(XKEYMACS_RESET))
-		pApp->Create64bitProcess(); // try to restart 64bit app
+		pApp->Start64bitProcess(); // try to restart 64bit app
 }
 
 void CMainFrame::OnHelpFinder() 

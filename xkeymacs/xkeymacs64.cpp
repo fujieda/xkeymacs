@@ -10,21 +10,21 @@ CXkeymacsApp::CXkeymacsApp()
 CXkeymacsApp theApp;
 
 static UINT PollIPCMessage(LPVOID lpParam);
+static void Start32bitProcess();
 
 BOOL CXkeymacsApp::InitInstance()
 {
-	HANDLE h32 = CreateMutex(FALSE, 0, _T("XKeymacs"));
-	if (GetLastError() != ERROR_ALREADY_EXISTS) {
-		CloseHandle(h32);
+	m_hMutex = CreateMutex(NULL, FALSE, _T("XKeymacs64"));
+	if (GetLastError() == ERROR_ALREADY_EXISTS) {
+		CloseHandle(m_hMutex);
+		m_hMutex = NULL;
 		return FALSE;
 	}
+	bool start32bit = false;
+	HANDLE h32 = CreateMutex(NULL, FALSE, _T("XKeymacs"));
+	if (GetLastError() != ERROR_ALREADY_EXISTS)
+		start32bit = true;
 	CloseHandle(h32);
-	m_hMutex = CreateMutex(FALSE, 0, _T("XKeymacs64"));
-    if (GetLastError() == ERROR_ALREADY_EXISTS) {
-        CloseHandle(m_hMutex);
-		m_hMutex = NULL;
-        return FALSE;
-    }
 
 	m_pMainWnd = new CMainFrame;
 	m_pMainWnd->ShowWindow(SW_HIDE);
@@ -32,6 +32,8 @@ BOOL CXkeymacsApp::InitInstance()
 
 	CUtils::InitCUtils();
 	AfxBeginThread(PollIPCMessage, NULL);
+	if (start32bit)
+		Start32bitProcess();
 	CXkeymacsDll::SetHooks();
 	return TRUE;
 }
@@ -70,6 +72,26 @@ exit:
 	CXkeymacsDll::ReleaseHooks();
 	ExitProcess(0);
 	return 0;
+}
+
+void Start32bitProcess()
+{
+	TCHAR buf[MAX_PATH];
+	if (!GetModuleFileName(NULL, buf, MAX_PATH))
+		return;
+	CString path = buf;
+	if (!path.Replace(_T("xkeymacs64.exe"), _T("xkeymacs.exe")))
+		return;
+	STARTUPINFO si;
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&pi, sizeof(pi));
+	if (!CreateProcess(path, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+		return;
+	// close unused handles
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
 }
 
 int CXkeymacsApp::ExitInstance() 

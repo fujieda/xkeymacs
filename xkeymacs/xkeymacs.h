@@ -39,7 +39,7 @@ public:
 	//}}AFX_MSG
 	BOOL IsWow64();
 	BOOL SendIPCMessage(DWORD msg);
-	BOOL Create64bitProcess();
+	BOOL Start64bitProcess();
 	DECLARE_MESSAGE_MAP()
 private:
 	HANDLE m_hMutex;
