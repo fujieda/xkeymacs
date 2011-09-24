@@ -5,8 +5,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "resource.h"
-
 class CXkeymacsApp : public CWinApp
 {
 public:

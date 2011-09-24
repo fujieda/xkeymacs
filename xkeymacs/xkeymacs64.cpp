@@ -13,14 +13,13 @@ static UINT PollIPCMessage(LPVOID lpParam);
 
 BOOL CXkeymacsApp::InitInstance()
 {
-	HANDLE h32 = CreateMutex(FALSE, 0, CString(MAKEINTRESOURCE(AFX_IDS_APP_TITLE)));
+	HANDLE h32 = CreateMutex(FALSE, 0, _T("XKeymacs"));
 	if (GetLastError() != ERROR_ALREADY_EXISTS) {
-		AfxMessageBox(CString(MAKEINTRESOURCE(IDS_ERR_32BIT)));
 		CloseHandle(h32);
 		return FALSE;
 	}
 	CloseHandle(h32);
-	m_hMutex = CreateMutex(FALSE, 0, CString(MAKEINTRESOURCE(AFX_IDS_APP_TITLE)) + _T("64"));
+	m_hMutex = CreateMutex(FALSE, 0, _T("XKeymacs64"));
     if (GetLastError() == ERROR_ALREADY_EXISTS) {
         CloseHandle(m_hMutex);
 		m_hMutex = NULL;
@@ -30,7 +29,6 @@ BOOL CXkeymacsApp::InitInstance()
 	m_pMainWnd = new CMainFrame;
 	m_pMainWnd->ShowWindow(SW_HIDE);
 	m_pMainWnd->UpdateWindow();
-	SetClassLongPtr(m_pMainWnd->m_hWnd, GCLP_HICON, (LONG_PTR)LoadIcon(IDR_MAINFRAME));
 
 	CUtils::InitCUtils();
 	AfxBeginThread(PollIPCMessage, NULL);

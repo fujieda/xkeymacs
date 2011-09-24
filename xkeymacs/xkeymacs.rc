@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -13,62 +13,50 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 日本語 resources
+// 日本語 (日本) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
-#ifdef _WIN32
 LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 #pragma code_page(932)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Dialog
 //
 
-IDD_OPTIONS DIALOG DISCARDABLE  0, 0, 123, 178
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_OPTIONS DIALOG 0, 0, 123, 178
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "オプション"
 FONT 9, "MS UI Gothic"
 BEGIN
     GROUPBOX        "XKeymacs",IDC_STATIC,7,7,109,25
-    CONTROL         "ログオン時に実行",IDC_AUTO_RUN,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,15,17,65,10
+    CONTROL         "ログオン時に実行",IDC_AUTO_RUN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,17,65,10
     GROUPBOX        "コマンド プロンプト",IDC_STATIC,7,33,109,25
-    CONTROL         "ファイル名自動補完",IDC_FILE_COMPLETION,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,15,43,79,10
+    CONTROL         "ファイル名自動補完",IDC_FILE_COMPLETION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,43,79,10
     GROUPBOX        "タスクバーのステータス領域",IDC_STATIC,7,59,109,90
-    CONTROL         "C-x-",IDC_C_X_,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
-                    69,28,10
-    CONTROL         "M-x",IDC_M_X,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
-                    82,28,10
-    CONTROL         "Meta",IDC_M_,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
-                    95,32,10
-    CONTROL         "Shift",IDC_SHIFT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    15,108,31,10
-    CONTROL         "Ctrl",IDC_CTRL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
-                    121,26,10
-    CONTROL         "Alt",IDC_ALT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
-                    134,25,10
+    CONTROL         "C-x-",IDC_C_X_,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,69,28,10
+    CONTROL         "M-x",IDC_M_X,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,82,28,10
+    CONTROL         "Meta",IDC_M_,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,95,32,10
+    CONTROL         "Shift",IDC_SHIFT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,108,31,10
+    CONTROL         "Ctrl",IDC_CTRL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,121,26,10
+    CONTROL         "Alt",IDC_ALT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,134,25,10
     DEFPUSHBUTTON   "OK",IDOK,7,157,50,14
     PUSHBUTTON      "キャンセル",IDCANCEL,66,157,50,14
 END
 
-IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 150, 60
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ABOUTBOX DIALOG 0, 0, 150, 60
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "XKeymacs のバージョン情報"
 FONT 9, "MS UI Gothic"
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,10,10,0,0
-    LTEXT           "XKeymacs Version x.xx",IDC_VERSION_INFORMATION,40,10,
-                    119,8,SS_NOPREFIX
-    LTEXT           "http://xkeymacs.sourceforge.jp/",IDC_URL,40,22,140,8,
-                    SS_NOTIFY
+    LTEXT           "XKeymacs Version x.xx",IDC_VERSION_INFORMATION,40,10,119,8,SS_NOPREFIX
+    LTEXT           "http://xkeymacs.sourceforge.jp/",IDC_URL,40,22,140,8,SS_NOTIFY
     DEFPUSHBUTTON   "OK",IDOK,50,40,50,14,WS_GROUP
 END
 
-IDD_104KEYBOARD DIALOG DISCARDABLE  0, 0, 362, 303
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_104KEYBOARD DIALOG 0, 0, 362, 303
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "キーボードレイアウト"
 FONT 9, "MS UI Gothic"
 BEGIN
@@ -103,8 +91,7 @@ BEGIN
     CONTROL         "0",IDC_0,"Button",BS_OWNERDRAW,163,43,14,16
     CONTROL         "-",IDC_MINUS,"Button",BS_OWNERDRAW,178,43,14,16
     CONTROL         "=",IDC_EQUAL,"Button",BS_OWNERDRAW,193,43,14,16
-    CONTROL         "\\",IDC_BACKSLASH1,"Button",BS_OWNERDRAW | NOT 
-                    WS_VISIBLE,7,279,14,16
+    CONTROL         "\\",IDC_BACKSLASH1,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,7,279,14,16
     CONTROL         "BS",IDC_BACKSPACE,"Button",BS_OWNERDRAW,208,43,29,16
     CONTROL         "Tab",IDC_TAB,"Button",BS_OWNERDRAW,13,60,22,16
     CONTROL         "Q",IDC_Q,"Button",BS_OWNERDRAW,36,60,14,16
@@ -144,28 +131,19 @@ BEGIN
     CONTROL         ",",IDC_COMMA,"Button",BS_OWNERDRAW,151,94,14,16
     CONTROL         ".",IDC_PERIOD,"Button",BS_OWNERDRAW,166,94,14,16
     CONTROL         "/",IDC_SLASH,"Button",BS_OWNERDRAW,181,94,14,16
-    CONTROL         "＼",IDC_BACKSLASH2,"Button",BS_OWNERDRAW | NOT 
-                    WS_VISIBLE,26,279,14,16
-    CONTROL         "RShift",IDC_RIGHT_SHIFT,"Button",BS_OWNERDRAW,196,94,41,
-                    16
+    CONTROL         "＼",IDC_BACKSLASH2,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,26,279,14,16
+    CONTROL         "RShift",IDC_RIGHT_SHIFT,"Button",BS_OWNERDRAW,196,94,41,16
     CONTROL         "Ctrl",IDC_LEFT_CTRL,"Button",BS_OWNERDRAW,13,111,22,16
-    CONTROL         "ミ田",IDC_LEFT_WINDOWS,"Button",BS_OWNERDRAW,36,111,22,
-                    16
+    CONTROL         "ミ田",IDC_LEFT_WINDOWS,"Button",BS_OWNERDRAW,36,111,22,16
     CONTROL         "Alt",IDC_LEFT_ALT,"Button",BS_OWNERDRAW,59,111,22,16
-    CONTROL         "無",IDC_NONCONVERT,"Button",BS_OWNERDRAW | NOT 
-                    WS_VISIBLE,83,279,14,16
+    CONTROL         "無",IDC_NONCONVERT,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,83,279,14,16
     CONTROL         "Space",IDC_SPACE,"Button",BS_OWNERDRAW,82,111,63,16
-    CONTROL         "変",IDC_CONVERT,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,
-                    44,279,14,16
-    CONTROL         "ひ",IDC_KANA,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,63,
-                    279,14,16
+    CONTROL         "変",IDC_CONVERT,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,44,279,14,16
+    CONTROL         "ひ",IDC_KANA,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,63,279,14,16
     CONTROL         "RAlt",IDC_RIGHT_ALT,"Button",BS_OWNERDRAW,146,111,22,16
-    CONTROL         "Rミ田",IDC_RIGHT_WINDOWS,"Button",BS_OWNERDRAW,169,111,
-                    22,16
-    CONTROL         "目、",IDC_APPLICATION,"Button",BS_OWNERDRAW,192,111,22,
-                    16
-    CONTROL         "RCtrl",IDC_RIGHT_CTRL,"Button",BS_OWNERDRAW,215,111,22,
-                    16
+    CONTROL         "Rミ田",IDC_RIGHT_WINDOWS,"Button",BS_OWNERDRAW,169,111,22,16
+    CONTROL         "目、",IDC_APPLICATION,"Button",BS_OWNERDRAW,192,111,22,16
+    CONTROL         "RCtrl",IDC_RIGHT_CTRL,"Button",BS_OWNERDRAW,215,111,22,16
     CONTROL         "Ins",IDC_INSERT,"Button",BS_OWNERDRAW,242,43,14,16
     CONTROL         "Hm",IDC_HOME,"Button",BS_OWNERDRAW,257,43,14,16
     CONTROL         "PU",IDC_PAGE_UP,"Button",BS_OWNERDRAW,272,43,14,16
@@ -191,8 +169,7 @@ BEGIN
     CONTROL         "(2)",IDC_NUMPAD2,"Button",BS_OWNERDRAW,305,94,14,16
     CONTROL         "(3)",IDC_NUMPAD3,"Button",BS_OWNERDRAW,320,94,14,16
     CONTROL         "(0)",IDC_NUMPAD0,"Button",BS_OWNERDRAW,290,111,29,16
-    CONTROL         "Dl",IDC_NUMPADDELETE,"Button",BS_OWNERDRAW,320,111,14,
-                    16
+    CONTROL         "Dl",IDC_NUMPADDELETE,"Button",BS_OWNERDRAW,320,111,14,16
     CONTROL         "Ent",IDC_NUMPADENTER,"Button",BS_OWNERDRAW,335,94,14,33
     CONTROL         "Esc",IDC_ESC_,"Button",BS_OWNERDRAW,13,158,14,16
     CONTROL         "F1",IDC_F1_,"Button",BS_OWNERDRAW,43,158,14,16
@@ -207,10 +184,8 @@ BEGIN
     CONTROL         "F10",IDC_F10_,"Button",BS_OWNERDRAW,193,158,14,16
     CONTROL         "F11",IDC_F11_,"Button",BS_OWNERDRAW,208,158,14,16
     CONTROL         "F12",IDC_F12_,"Button",BS_OWNERDRAW,223,158,14,16
-    CONTROL         "PS",IDC_PRINT_SCREEN_,"Button",BS_OWNERDRAW,242,158,14,
-                    16
-    CONTROL         "SL",IDC_SCROLL_LOCK_,"Button",BS_OWNERDRAW,257,158,14,
-                    16
+    CONTROL         "PS",IDC_PRINT_SCREEN_,"Button",BS_OWNERDRAW,242,158,14,16
+    CONTROL         "SL",IDC_SCROLL_LOCK_,"Button",BS_OWNERDRAW,257,158,14,16
     CONTROL         "Pau",IDC_PAUSE_,"Button",BS_OWNERDRAW,272,158,14,16
     CONTROL         "`",IDC_BACK_QUOTE_,"Button",BS_OWNERDRAW,13,180,14,16
     CONTROL         "1",IDC_1_,"Button",BS_OWNERDRAW,28,180,14,16
@@ -225,8 +200,7 @@ BEGIN
     CONTROL         "0",IDC_0_,"Button",BS_OWNERDRAW,163,180,14,16
     CONTROL         "-",IDC_MINUS_,"Button",BS_OWNERDRAW,178,180,14,16
     CONTROL         "=",IDC_EQUAL_,"Button",BS_OWNERDRAW,193,180,14,16
-    CONTROL         "\\",IDC_BACKSLASH1_,"Button",BS_OWNERDRAW | NOT 
-                    WS_VISIBLE,151,279,14,16
+    CONTROL         "\\",IDC_BACKSLASH1_,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,151,279,14,16
     CONTROL         "BS",IDC_BACKSPACE_,"Button",BS_OWNERDRAW,208,180,29,16
     CONTROL         "Tab",IDC_TAB_,"Button",BS_OWNERDRAW,13,197,22,16
     CONTROL         "Q",IDC_Q_,"Button",BS_OWNERDRAW,36,197,14,16
@@ -255,8 +229,7 @@ BEGIN
     CONTROL         ";",IDC_SEMICOLON_,"Button",BS_OWNERDRAW,174,214,14,16
     CONTROL         "'",IDC_QUOTE_,"Button",BS_OWNERDRAW,189,214,14,16
     CONTROL         "Enter",IDC_ENTER_,"Button",BS_OWNERDRAW,204,214,33,16
-    CONTROL         "Shift",IDC_LEFT_SHIFT_,"Button",BS_OWNERDRAW,13,231,33,
-                    16
+    CONTROL         "Shift",IDC_LEFT_SHIFT_,"Button",BS_OWNERDRAW,13,231,33,16
     CONTROL         "Z",IDC_Z_,"Button",BS_OWNERDRAW,47,231,14,16
     CONTROL         "X",IDC_X_,"Button",BS_OWNERDRAW,62,231,14,16
     CONTROL         "C",IDC_C_,"Button",BS_OWNERDRAW,77,231,14,16
@@ -267,29 +240,19 @@ BEGIN
     CONTROL         ",",IDC_COMMA_,"Button",BS_OWNERDRAW,151,231,14,16
     CONTROL         ".",IDC_PERIOD_,"Button",BS_OWNERDRAW,166,231,14,16
     CONTROL         "/",IDC_SLASH_,"Button",BS_OWNERDRAW,181,231,14,16
-    CONTROL         "＼",IDC_BACKSLASH2_,"Button",BS_OWNERDRAW | NOT 
-                    WS_VISIBLE,168,279,14,16
-    CONTROL         "RShift",IDC_RIGHT_SHIFT_,"Button",BS_OWNERDRAW,196,231,
-                    41,16
+    CONTROL         "＼",IDC_BACKSLASH2_,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,168,279,14,16
+    CONTROL         "RShift",IDC_RIGHT_SHIFT_,"Button",BS_OWNERDRAW,196,231,41,16
     CONTROL         "Ctrl",IDC_LEFT_CTRL_,"Button",BS_OWNERDRAW,13,248,22,16
-    CONTROL         "ミ田",IDC_LEFT_WINDOWS_,"Button",BS_OWNERDRAW,36,248,22,
-                    16
+    CONTROL         "ミ田",IDC_LEFT_WINDOWS_,"Button",BS_OWNERDRAW,36,248,22,16
     CONTROL         "Alt",IDC_LEFT_ALT_,"Button",BS_OWNERDRAW,59,248,22,16
-    CONTROL         "無",IDC_NONCONVERT_,"Button",BS_OWNERDRAW | NOT 
-                    WS_VISIBLE,226,279,14,16
+    CONTROL         "無",IDC_NONCONVERT_,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,226,279,14,16
     CONTROL         "Space",IDC_SPACE_,"Button",BS_OWNERDRAW,82,248,63,16
-    CONTROL         "変",IDC_CONVERT_,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,
-                    187,279,14,16
-    CONTROL         "ひ",IDC_KANA_,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,
-                    207,279,14,16
-    CONTROL         "RAlt",IDC_RIGHT_ALT_,"Button",BS_OWNERDRAW,146,248,22,
-                    16
-    CONTROL         "Rミ田",IDC_RIGHT_WINDOWS_,"Button",BS_OWNERDRAW,169,248,
-                    22,16
-    CONTROL         "目、",IDC_APPLICATION_,"Button",BS_OWNERDRAW,192,248,22,
-                    16
-    CONTROL         "RCtrl",IDC_RIGHT_CTRL_,"Button",BS_OWNERDRAW,215,248,22,
-                    16
+    CONTROL         "変",IDC_CONVERT_,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,187,279,14,16
+    CONTROL         "ひ",IDC_KANA_,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,207,279,14,16
+    CONTROL         "RAlt",IDC_RIGHT_ALT_,"Button",BS_OWNERDRAW,146,248,22,16
+    CONTROL         "Rミ田",IDC_RIGHT_WINDOWS_,"Button",BS_OWNERDRAW,169,248,22,16
+    CONTROL         "目、",IDC_APPLICATION_,"Button",BS_OWNERDRAW,192,248,22,16
+    CONTROL         "RCtrl",IDC_RIGHT_CTRL_,"Button",BS_OWNERDRAW,215,248,22,16
     CONTROL         "Ins",IDC_INSERT_,"Button",BS_OWNERDRAW,242,180,14,16
     CONTROL         "Hm",IDC_HOME_,"Button",BS_OWNERDRAW,257,180,14,16
     CONTROL         "PU",IDC_PAGE_UP_,"Button",BS_OWNERDRAW,272,180,14,16
@@ -315,23 +278,20 @@ BEGIN
     CONTROL         "(2)",IDC_NUMPAD2_,"Button",BS_OWNERDRAW,305,231,14,16
     CONTROL         "(3)",IDC_NUMPAD3_,"Button",BS_OWNERDRAW,320,231,14,16
     CONTROL         "(0)",IDC_NUMPAD0_,"Button",BS_OWNERDRAW,290,248,29,16
-    CONTROL         "Dl",IDC_NUMPADDELETE_,"Button",BS_OWNERDRAW,320,248,14,
-                    16
-    CONTROL         "Ent",IDC_NUMPADENTER_,"Button",BS_OWNERDRAW,335,231,14,
-                    33
+    CONTROL         "Dl",IDC_NUMPADDELETE_,"Button",BS_OWNERDRAW,320,248,14,16
+    CONTROL         "Ent",IDC_NUMPADENTER_,"Button",BS_OWNERDRAW,335,231,14,33
     GROUPBOX        "ベースキーボード",IDC_STATIC,7,7,349,130
     GROUPBOX        "リマップキーボード",IDC_STATIC,7,144,349,130
     CONTROL         "Pw",IDC_ACPI_POWER,"Button",BS_OWNERDRAW,335,21,14,16
     CONTROL         "Pw",IDC_ACPI_POWER_,"Button",BS_OWNERDRAW,335,158,14,16
     CONTROL         "Slp",IDC_ACPI_SLEEP,"Button",BS_OWNERDRAW,320,21,14,16
-    CONTROL         "Slp",IDC_ACPI_SLEEP_,"Button",BS_OWNERDRAW,320,158,14,
-                    16
+    CONTROL         "Slp",IDC_ACPI_SLEEP_,"Button",BS_OWNERDRAW,320,158,14,16
     CONTROL         "Wk",IDC_ACPI_WAKE,"Button",BS_OWNERDRAW,305,21,14,16
     CONTROL         "Wk",IDC_ACPI_WAKE_,"Button",BS_OWNERDRAW,305,158,14,16
 END
 
-IDD_109KEYBOARD DIALOG DISCARDABLE  0, 0, 362, 303
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_109KEYBOARD DIALOG 0, 0, 362, 303
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "キーボードレイアウト"
 FONT 9, "MS UI Gothic"
 BEGIN
@@ -407,23 +367,18 @@ BEGIN
     CONTROL         ".",IDC_PERIOD,"Button",BS_OWNERDRAW,166,94,14,16
     CONTROL         "/",IDC_SLASH,"Button",BS_OWNERDRAW,181,94,14,16
     CONTROL         "＼",IDC_BACKSLASH2,"Button",BS_OWNERDRAW,196,94,14,16
-    CONTROL         "RShift",IDC_RIGHT_SHIFT,"Button",BS_OWNERDRAW,211,94,26,
-                    16
+    CONTROL         "RShift",IDC_RIGHT_SHIFT,"Button",BS_OWNERDRAW,211,94,26,16
     CONTROL         "Ctrl",IDC_LEFT_CTRL,"Button",BS_OWNERDRAW,13,111,18,16
-    CONTROL         "ミ田",IDC_LEFT_WINDOWS,"Button",BS_OWNERDRAW,32,111,14,
-                    16
+    CONTROL         "ミ田",IDC_LEFT_WINDOWS,"Button",BS_OWNERDRAW,32,111,14,16
     CONTROL         "Alt",IDC_LEFT_ALT,"Button",BS_OWNERDRAW,47,111,18,16
     CONTROL         "無",IDC_NONCONVERT,"Button",BS_OWNERDRAW,66,111,14,16
     CONTROL         "Space",IDC_SPACE,"Button",BS_OWNERDRAW,81,111,57,16
     CONTROL         "変",IDC_CONVERT,"Button",BS_OWNERDRAW,139,111,14,16
     CONTROL         "ひ",IDC_KANA,"Button",BS_OWNERDRAW,154,111,14,16
     CONTROL         "RAlt",IDC_RIGHT_ALT,"Button",BS_OWNERDRAW,170,111,18,16
-    CONTROL         "R田",IDC_RIGHT_WINDOWS,"Button",BS_OWNERDRAW,189,111,14,
-                    16
-    CONTROL         "目、",IDC_APPLICATION,"Button",BS_OWNERDRAW,204,111,14,
-                    16
-    CONTROL         "RCtrl",IDC_RIGHT_CTRL,"Button",BS_OWNERDRAW,219,111,18,
-                    16
+    CONTROL         "R田",IDC_RIGHT_WINDOWS,"Button",BS_OWNERDRAW,189,111,14,16
+    CONTROL         "目、",IDC_APPLICATION,"Button",BS_OWNERDRAW,204,111,14,16
+    CONTROL         "RCtrl",IDC_RIGHT_CTRL,"Button",BS_OWNERDRAW,219,111,18,16
     CONTROL         "Ins",IDC_INSERT,"Button",BS_OWNERDRAW,242,43,14,16
     CONTROL         "Hm",IDC_HOME,"Button",BS_OWNERDRAW,257,43,14,16
     CONTROL         "PU",IDC_PAGE_UP,"Button",BS_OWNERDRAW,272,43,14,16
@@ -449,8 +404,7 @@ BEGIN
     CONTROL         "(2)",IDC_NUMPAD2,"Button",BS_OWNERDRAW,305,94,14,16
     CONTROL         "(3)",IDC_NUMPAD3,"Button",BS_OWNERDRAW,320,94,14,16
     CONTROL         "(0)",IDC_NUMPAD0,"Button",BS_OWNERDRAW,290,111,29,16
-    CONTROL         "Dl",IDC_NUMPADDELETE,"Button",BS_OWNERDRAW,320,111,14,
-                    16
+    CONTROL         "Dl",IDC_NUMPADDELETE,"Button",BS_OWNERDRAW,320,111,14,16
     CONTROL         "Ent",IDC_NUMPADENTER,"Button",BS_OWNERDRAW,335,94,14,33
     CONTROL         "Esc",IDC_ESC_,"Button",BS_OWNERDRAW,13,158,14,16
     CONTROL         "F1",IDC_F1_,"Button",BS_OWNERDRAW,43,158,14,16
@@ -465,10 +419,8 @@ BEGIN
     CONTROL         "F10",IDC_F10_,"Button",BS_OWNERDRAW,193,158,14,16
     CONTROL         "F11",IDC_F11_,"Button",BS_OWNERDRAW,208,158,14,16
     CONTROL         "F12",IDC_F12_,"Button",BS_OWNERDRAW,223,158,14,16
-    CONTROL         "PS",IDC_PRINT_SCREEN_,"Button",BS_OWNERDRAW,242,158,14,
-                    16
-    CONTROL         "SL",IDC_SCROLL_LOCK_,"Button",BS_OWNERDRAW,257,158,14,
-                    16
+    CONTROL         "PS",IDC_PRINT_SCREEN_,"Button",BS_OWNERDRAW,242,158,14,16
+    CONTROL         "SL",IDC_SCROLL_LOCK_,"Button",BS_OWNERDRAW,257,158,14,16
     CONTROL         "Pau",IDC_PAUSE_,"Button",BS_OWNERDRAW,272,158,14,16
     CONTROL         "半",IDC_BACK_QUOTE_,"Button",BS_OWNERDRAW,13,180,14,16
     CONTROL         "1",IDC_1_,"Button",BS_OWNERDRAW,28,180,14,16
@@ -512,8 +464,7 @@ BEGIN
     CONTROL         ":",IDC_QUOTE_,"Button",BS_OWNERDRAW,189,214,14,16
     CONTROL         "]",IDC_BACKSLASH_,"Button",BS_OWNERDRAW,204,214,14,16
     CONTROL         "Enter",IDC_ENTER_,"Button",BS_OWNERDRAW,219,197,18,33
-    CONTROL         "Shift",IDC_LEFT_SHIFT_,"Button",BS_OWNERDRAW,13,231,33,
-                    16
+    CONTROL         "Shift",IDC_LEFT_SHIFT_,"Button",BS_OWNERDRAW,13,231,33,16
     CONTROL         "Z",IDC_Z_,"Button",BS_OWNERDRAW,47,231,14,16
     CONTROL         "X",IDC_X_,"Button",BS_OWNERDRAW,62,231,14,16
     CONTROL         "C",IDC_C_,"Button",BS_OWNERDRAW,77,231,14,16
@@ -525,24 +476,18 @@ BEGIN
     CONTROL         ".",IDC_PERIOD_,"Button",BS_OWNERDRAW,166,231,14,16
     CONTROL         "/",IDC_SLASH_,"Button",BS_OWNERDRAW,181,231,14,16
     CONTROL         "＼",IDC_BACKSLASH2_,"Button",BS_OWNERDRAW,196,231,14,16
-    CONTROL         "RShift",IDC_RIGHT_SHIFT_,"Button",BS_OWNERDRAW,211,231,
-                    26,16
+    CONTROL         "RShift",IDC_RIGHT_SHIFT_,"Button",BS_OWNERDRAW,211,231,26,16
     CONTROL         "Ctrl",IDC_LEFT_CTRL_,"Button",BS_OWNERDRAW,13,248,18,16
-    CONTROL         "ミ田",IDC_LEFT_WINDOWS_,"Button",BS_OWNERDRAW,32,248,14,
-                    16
+    CONTROL         "ミ田",IDC_LEFT_WINDOWS_,"Button",BS_OWNERDRAW,32,248,14,16
     CONTROL         "Alt",IDC_LEFT_ALT_,"Button",BS_OWNERDRAW,47,248,18,16
     CONTROL         "無",IDC_NONCONVERT_,"Button",BS_OWNERDRAW,66,248,14,16
     CONTROL         "Space",IDC_SPACE_,"Button",BS_OWNERDRAW,81,248,57,16
     CONTROL         "変",IDC_CONVERT_,"Button",BS_OWNERDRAW,139,248,14,16
     CONTROL         "ひ",IDC_KANA_,"Button",BS_OWNERDRAW,154,248,14,16
-    CONTROL         "RAlt",IDC_RIGHT_ALT_,"Button",BS_OWNERDRAW,170,248,18,
-                    16
-    CONTROL         "R田",IDC_RIGHT_WINDOWS_,"Button",BS_OWNERDRAW,189,248,
-                    14,16
-    CONTROL         "目、",IDC_APPLICATION_,"Button",BS_OWNERDRAW,204,248,14,
-                    16
-    CONTROL         "RCtrl",IDC_RIGHT_CTRL_,"Button",BS_OWNERDRAW,219,248,18,
-                    16
+    CONTROL         "RAlt",IDC_RIGHT_ALT_,"Button",BS_OWNERDRAW,170,248,18,16
+    CONTROL         "R田",IDC_RIGHT_WINDOWS_,"Button",BS_OWNERDRAW,189,248,14,16
+    CONTROL         "目、",IDC_APPLICATION_,"Button",BS_OWNERDRAW,204,248,14,16
+    CONTROL         "RCtrl",IDC_RIGHT_CTRL_,"Button",BS_OWNERDRAW,219,248,18,16
     CONTROL         "Ins",IDC_INSERT_,"Button",BS_OWNERDRAW,242,180,14,16
     CONTROL         "Hm",IDC_HOME_,"Button",BS_OWNERDRAW,257,180,14,16
     CONTROL         "PU",IDC_PAGE_UP_,"Button",BS_OWNERDRAW,272,180,14,16
@@ -568,39 +513,29 @@ BEGIN
     CONTROL         "(2)",IDC_NUMPAD2_,"Button",BS_OWNERDRAW,305,231,14,16
     CONTROL         "(3)",IDC_NUMPAD3_,"Button",BS_OWNERDRAW,320,231,14,16
     CONTROL         "(0)",IDC_NUMPAD0_,"Button",BS_OWNERDRAW,290,248,29,16
-    CONTROL         "Dl",IDC_NUMPADDELETE_,"Button",BS_OWNERDRAW,320,248,14,
-                    16
-    CONTROL         "Ent",IDC_NUMPADENTER_,"Button",BS_OWNERDRAW,335,231,14,
-                    33
+    CONTROL         "Dl",IDC_NUMPADDELETE_,"Button",BS_OWNERDRAW,320,248,14,16
+    CONTROL         "Ent",IDC_NUMPADENTER_,"Button",BS_OWNERDRAW,335,231,14,33
     GROUPBOX        "ベースキーボード",IDC_STATIC,7,7,349,130
     GROUPBOX        "リマップキーボード",IDC_STATIC,7,144,349,130
     CONTROL         "Pw",IDC_ACPI_POWER,"Button",BS_OWNERDRAW,335,21,14,16
     CONTROL         "Pw",IDC_ACPI_POWER_,"Button",BS_OWNERDRAW,335,158,14,16
     CONTROL         "Slp",IDC_ACPI_SLEEP,"Button",BS_OWNERDRAW,320,21,14,16
-    CONTROL         "Slp",IDC_ACPI_SLEEP_,"Button",BS_OWNERDRAW,320,158,14,
-                    16
+    CONTROL         "Slp",IDC_ACPI_SLEEP_,"Button",BS_OWNERDRAW,320,158,14,16
     CONTROL         "Wk",IDC_ACPI_WAKE,"Button",BS_OWNERDRAW,305,21,14,16
     CONTROL         "Wk",IDC_ACPI_WAKE_,"Button",BS_OWNERDRAW,305,158,14,16
 END
 
 IDD_PROPERTIES DIALOGEX 0, 0, 362, 304
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "プロパティ"
 FONT 9, "MS UI Gothic", 0, 0, 0x1
 BEGIN
-    COMBOBOX        IDC_APPLICATION,7,7,253,246,CBS_DROPDOWNLIST | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
-    CONTROL         "標準の設定を使用する",IDC_SETTING_DEFAULT,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP,267,7,83,10
-    CONTROL         "独自の設定を使用する",IDC_SETTING_SPECIFIC,"Button",
-                    BS_AUTORADIOBUTTON,267,17,80,10
-    CONTROL         "XKeymacs を無効にする",IDC_SETTING_DISABLE,"Button",
-                    BS_AUTORADIOBUTTON,267,27,80,10
-    CONTROL         "",IDC_TAB,"Static",SS_BLACKFRAME | WS_GROUP,9,45,342,
-                    233
-    CONTROL         "ダイアログにはダイアログ専用の設定を利用する",
-                    IDC_USE_DIALOG_SETTING,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,15,27,148,10
+    COMBOBOX        IDC_APPLICATION,7,7,253,246,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "標準の設定を使用する",IDC_SETTING_DEFAULT,"Button",BS_AUTORADIOBUTTON | WS_GROUP,267,7,83,10
+    CONTROL         "独自の設定を使用する",IDC_SETTING_SPECIFIC,"Button",BS_AUTORADIOBUTTON,267,17,80,10
+    CONTROL         "XKeymacs を無効にする",IDC_SETTING_DISABLE,"Button",BS_AUTORADIOBUTTON,267,27,80,10
+    CONTROL         "",IDC_TAB,"Static",SS_BLACKFRAME | WS_GROUP,9,45,342,233
+    CONTROL         "ダイアログにはダイアログ専用の設定を利用する",IDC_USE_DIALOG_SETTING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,27,148,10
     PUSHBUTTON      "Load Default",IDC_LOAD_DEFAULT,7,283,50,14
     PUSHBUTTON      "Select All",IDC_SELECT_ALL,63,283,50,14
     PUSHBUTTON      "Clear All",IDC_CLEAR_ALL,120,283,50,14
@@ -608,203 +543,124 @@ BEGIN
     PUSHBUTTON      "キャンセル",IDCANCEL,249,283,50,14
     PUSHBUTTON      "適用(&A)",IDC_APPLY,305,283,50,14
     LTEXT           "kill-ring-max: ",IDC_STATIC,196,28,41,8
-    EDITTEXT        IDC_KILL_RING_MAX,240,26,20,12,ES_AUTOHSCROLL | 
-                    ES_NUMBER,WS_EX_RIGHT
-    EDITTEXT        IDC_WINDOW_TEXT,109,33,40,14,ES_AUTOHSCROLL | NOT 
-                    WS_VISIBLE
+    EDITTEXT        IDC_KILL_RING_MAX,240,26,20,12,ES_AUTOHSCROLL | ES_NUMBER,WS_EX_RIGHT
+    EDITTEXT        IDC_WINDOW_TEXT,109,33,40,14,ES_AUTOHSCROLL | NOT WS_VISIBLE
     LTEXT           "のときのみ適用",IDC_STATIC,157,38,44,8,NOT WS_VISIBLE
     LTEXT           "タイトルが",IDC_STATIC,63,39,29,8,NOT WS_VISIBLE
 END
 
-IDD_PROPERTIES_BASIC DIALOG DISCARDABLE  0, 0, 344, 215
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_PROPERTIES_BASIC DIALOG 0, 0, 344, 215
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "基本"
 FONT 9, "MS UI Gothic"
 BEGIN
     GROUPBOX        "消去、編集",IDC_KILL,140,7,91,84
     GROUPBOX        "エラーリカバリー",IDC_RECOVERY,140,92,91,69
-    CONTROL         "C-x C-f",IDC_CXCF,"Button",BS_AUTOCHECKBOX | WS_GROUP | 
-                    WS_TABSTOP,15,17,37,10
-    CONTROL         "C-x k",IDC_CXK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
-                    29,34,10
-    CONTROL         "C-x C-s",IDC_CXCS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    15,41,38,10
-    CONTROL         "C-x C-w",IDC_CXCW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    15,53,40,10
+    CONTROL         "C-x C-f",IDC_CXCF,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,15,17,37,10
+    CONTROL         "C-x k",IDC_CXK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,29,34,10
+    CONTROL         "C-x C-s",IDC_CXCS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,41,38,10
+    CONTROL         "C-x C-w",IDC_CXCW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,53,40,10
     GROUPBOX        "ファイル",IDC_FILES,7,7,54,71
-    CONTROL         "C-s",IDC_CS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,89,
-                    26,10
-    CONTROL         "C-r",IDC_CR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
-                    101,25,10
-    CONTROL         "M-%",IDC_MS5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
-                    113,29,10
-    CONTROL         "C-M-%",IDC_CMS5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    15,125,36,10
+    CONTROL         "C-s",IDC_CS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,89,26,10
+    CONTROL         "C-r",IDC_CR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,101,25,10
+    CONTROL         "M-%",IDC_MS5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,113,29,10
+    CONTROL         "C-M-%",IDC_CMS5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,125,36,10
     GROUPBOX        "検索、置換",IDC_SEARCH,7,79,54,82
-    CONTROL         "C-z",IDC_CZ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
-                    173,26,10
-    CONTROL         "C-x C-c",IDC_CXCC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    73,173,39,10
-    CONTROL         "M-F12",IDC_MF12,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    15,185,37,10
+    CONTROL         "C-z",IDC_CZ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,173,26,10
+    CONTROL         "C-x C-c",IDC_CXCC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,173,39,10
+    CONTROL         "M-F12",IDC_MF12,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,185,37,10
     GROUPBOX        "アクティブウィンドウから離れる",IDC_WINDOW,7,163,128,45
-    CONTROL         "C-b",IDC_CB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,17,
-                    27,10
-    CONTROL         "C-f",IDC_CF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,106,
-                    17,25,10
-    CONTROL         "M-b",IDC_MB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,29,
-                    26,10
-    CONTROL         "M-f",IDC_MF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,106,
-                    29,26,10
-    CONTROL         "C-p",IDC_CP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,41,
-                    27,10
-    CONTROL         "C-n",IDC_CN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,106,
-                    41,27,10
-    CONTROL         "C-a",IDC_CA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,53,
-                    27,10
-    CONTROL         "C-e",IDC_CE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,106,
-                    53,27,10
-    CONTROL         "M-<",IDC_MSCOMMA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    73,65,28,10
-    CONTROL         "M->",IDC_MSPERIOD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    73,77,28,10
-    CONTROL         "M-v",IDC_MV,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,89,
-                    28,10
-    CONTROL         "C-v",IDC_CV,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,106,
-                    89,27,10
-    CONTROL         "C-l",IDC_CL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,
-                    101,24,10
+    CONTROL         "C-b",IDC_CB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,17,27,10
+    CONTROL         "C-f",IDC_CF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,106,17,25,10
+    CONTROL         "M-b",IDC_MB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,29,26,10
+    CONTROL         "M-f",IDC_MF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,106,29,26,10
+    CONTROL         "C-p",IDC_CP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,41,27,10
+    CONTROL         "C-n",IDC_CN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,106,41,27,10
+    CONTROL         "C-a",IDC_CA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,53,27,10
+    CONTROL         "C-e",IDC_CE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,106,53,27,10
+    CONTROL         "M-<",IDC_MSCOMMA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,65,28,10
+    CONTROL         "M->",IDC_MSPERIOD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,77,28,10
+    CONTROL         "M-v",IDC_MV,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,89,28,10
+    CONTROL         "C-v",IDC_CV,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,106,89,27,10
+    CONTROL         "C-l",IDC_CL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,101,24,10
     GROUPBOX        "移動",IDC_MOTION,65,7,70,154
-    CONTROL         "C-d",IDC_CD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,
-                    17,27,10
-    CONTROL         "C-h",IDC_CH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,
-                    17,26,10
-    CONTROL         "C-w",IDC_CW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,
-                    29,28,10
-    CONTROL         "M-w",IDC_MW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,
-                    29,29,10
-    CONTROL         "C-k",IDC_CK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,
-                    41,27,10
-    CONTROL         "M-t",IDC_MT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,
-                    41,29,10
-    CONTROL         "M-DEL",IDC_MDEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    148,53,35,10
-    CONTROL         "M-d",IDC_MD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,
-                    53,28,10
-    CONTROL         "C-y",IDC_CY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,
-                    65,26,10
-    CONTROL         "M-y",IDC_MY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,
-                    65,27,10
-    CONTROL         "C-t",IDC_CT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,
-                    77,24,10
-    CONTROL         "C-x C-t",IDC_CXCT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    188,77,35,10
-    CONTROL         "C-x u",IDC_CXU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    148,101,32,10
-    CONTROL         "C-/",IDC_CSLASH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    148,113,26,10
-    CONTROL         "C-_",IDC_C_,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,
-                    125,46,10
-    CONTROL         "C-g",IDC_CG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,
-                    137,27,10
-    CONTROL         "C-x C-j",IDC_CXCJ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    148,173,36,10
-    CONTROL         "C-o",IDC_CO2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,
-                    173,25,10
-    CONTROL         "C-\\",IDC_CBACKSLASH,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,188,185,24,10
-    CONTROL         "C-＼",IDC_CBACKSLASH_106,"Button",BS_AUTOCHECKBOX | 
-                    BS_MULTILINE | WS_TABSTOP,148,185,32,9
+    CONTROL         "C-d",IDC_CD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,17,27,10
+    CONTROL         "C-h",IDC_CH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,17,26,10
+    CONTROL         "C-w",IDC_CW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,29,28,10
+    CONTROL         "M-w",IDC_MW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,29,29,10
+    CONTROL         "C-k",IDC_CK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,41,27,10
+    CONTROL         "M-t",IDC_MT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,41,29,10
+    CONTROL         "M-DEL",IDC_MDEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,53,35,10
+    CONTROL         "M-d",IDC_MD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,53,28,10
+    CONTROL         "C-y",IDC_CY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,65,26,10
+    CONTROL         "M-y",IDC_MY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,65,27,10
+    CONTROL         "C-t",IDC_CT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,77,24,10
+    CONTROL         "C-x C-t",IDC_CXCT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,77,35,10
+    CONTROL         "C-x u",IDC_CXU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,101,32,10
+    CONTROL         "C-/",IDC_CSLASH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,113,26,10
+    CONTROL         "C-_",IDC_C_,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,125,46,10
+    CONTROL         "C-g",IDC_CG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,137,27,10
+    CONTROL         "C-x C-j",IDC_CXCJ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,148,173,36,10
+    CONTROL         "C-o",IDC_CO2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,173,25,10
+    CONTROL         "C-\\",IDC_CBACKSLASH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,185,24,10
+    CONTROL         "C-＼",IDC_CBACKSLASH_106,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,148,185,32,9
     GROUPBOX        "IME の切替え",IDC_IME,140,163,90,45
-    CONTROL         "C-Space",IDC_CSPACE,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,243,17,43,10
-    CONTROL         "C-x h",IDC_CXH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    243,29,32,10
-    CONTROL         "C-x C-p",IDC_CXCP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    289,30,39,10
-    CONTROL         "C-u",IDC_CU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,
-                    41,26,10
-    CONTROL         "C-0 ... C-9",IDC_CDIGIT,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,289,41,45,10
-    CONTROL         "Left Alt",IDC_LEFT_ALT,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,243,53,38,10
-    CONTROL         "Right Alt",IDC_RIGHT_ALT,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,289,53,41,10
-    CONTROL         "Alt",IDC_ALT,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | 
-                    WS_TABSTOP,243,53,37,10
-    CONTROL         "Esc",IDC_ESCAPE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    243,65,28,10
-    CONTROL         "C-[",IDC_SQUARE_BRA,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,289,65,25,10
-    CONTROL         "C-m",IDC_CM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,
-                    77,28,10
-    CONTROL         "C-o",IDC_CO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,289,
-                    77,27,10
-    CONTROL         "C-i",IDC_CI,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,
-                    89,24,10
-    CONTROL         "M-i",IDC_MI,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,289,
-                    89,25,10
-    CONTROL         "M-!",IDC_MS1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,
-                    101,26,10
-    CONTROL         "M-x",IDC_MX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,289,
-                    101,29,10
-    CONTROL         "C-q",IDC_CQ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,
-                    113,28,10
-    CONTROL         "C-x (",IDC_CXS9,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    243,125,30,10
-    CONTROL         "C-x )",IDC_CXS0,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    243,137,31,10
-    CONTROL         "C-x e",IDC_CXE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    243,149,32,10
+    CONTROL         "C-Space",IDC_CSPACE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,17,43,10
+    CONTROL         "C-x h",IDC_CXH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,29,32,10
+    CONTROL         "C-x C-p",IDC_CXCP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,289,30,39,10
+    CONTROL         "C-u",IDC_CU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,41,26,10
+    CONTROL         "C-0 ... C-9",IDC_CDIGIT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,289,41,45,10
+    CONTROL         "Left Alt",IDC_LEFT_ALT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,53,38,10
+    CONTROL         "Right Alt",IDC_RIGHT_ALT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,289,53,41,10
+    CONTROL         "Alt",IDC_ALT,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,243,53,37,10
+    CONTROL         "Esc",IDC_ESCAPE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,65,28,10
+    CONTROL         "C-[",IDC_SQUARE_BRA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,289,65,25,10
+    CONTROL         "C-m",IDC_CM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,77,28,10
+    CONTROL         "C-o",IDC_CO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,289,77,27,10
+    CONTROL         "C-i",IDC_CI,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,89,24,10
+    CONTROL         "M-i",IDC_MI,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,289,89,25,10
+    CONTROL         "M-!",IDC_MS1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,101,26,10
+    CONTROL         "M-x",IDC_MX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,289,101,29,10
+    CONTROL         "C-q",IDC_CQ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,113,28,10
+    CONTROL         "C-x (",IDC_CXS9,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,125,30,10
+    CONTROL         "C-x )",IDC_CXS0,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,137,31,10
+    CONTROL         "C-x e",IDC_CXE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,149,32,10
     GROUPBOX        "その他",IDC_OTHER,235,7,102,201
-    CONTROL         "C-x b",IDC_CXB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    243,161,33,10
-    CONTROL         "M-l",IDC_ML,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,
-                    173,27,10
-    CONTROL         "M-u",IDC_MU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,289,
-                    173,29,10
-    CONTROL         "M-c",IDC_MC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,
-                    185,29,10
+    CONTROL         "C-x b",IDC_CXB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,161,33,10
+    CONTROL         "M-l",IDC_ML,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,173,27,10
+    CONTROL         "M-u",IDC_MU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,289,173,29,10
+    CONTROL         "M-c",IDC_MC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,185,29,10
 END
 
-IDD_PROPERTIES_ADVANCED DIALOG DISCARDABLE  0, 0, 344, 215
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_PROPERTIES_ADVANCED DIALOG 0, 0, 344, 215
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "詳細"
 FONT 9, "MS UI Gothic"
 BEGIN
     LTEXT           "カテゴリ(&C):",IDC_STATIC,7,7,31,8
-    COMBOBOX        IDC_CATEGORY,7,17,106,132,CBS_DROPDOWNLIST | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_CATEGORY,7,17,106,132,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "コマンド(&O):",IDC_STATIC,7,31,38,8
-    LISTBOX         IDC_COMMANDS,7,41,180,116,LBS_SORT | 
-                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_COMMANDS,7,41,180,116,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "説明:",IDC_STATIC,7,160,17,8
     LTEXT           "brank",IDC_DESCRIPTION,7,169,180,39
     LTEXT           "現在のキー(&U):",IDC_STATIC,194,31,45,8
-    LISTBOX         IDC_CURRENT_KEYS,194,41,143,32,LBS_SORT | 
-                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "新しいショートカットキーの入力(&N):",IDC_STATIC,194,100,
-                    99,8
-    CONTROL         "Ctrl+X",IDC_C_X,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    194,111,31,10
+    LISTBOX         IDC_CURRENT_KEYS,194,41,143,32,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "新しいショートカットキーの入力(&N):",IDC_STATIC,194,100,99,8
+    CONTROL         "Ctrl+X",IDC_C_X,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,194,111,31,10
     EDITTEXT        IDC_NEW_KEY,194,123,142,14,ES_AUTOHSCROLL
-    LTEXT           "Currently assigned to:\n[unassigned]",
-                    IDC_CURRENTLY_ASSIGNED,194,158,142,32
+    LTEXT           "Currently assigned to:\n[unassigned]",IDC_CURRENTLY_ASSIGNED,194,158,142,32
     PUSHBUTTON      "割り当て(&A)",IDC_ASSIGN,287,142,50,14
     PUSHBUTTON      "削除(&R)",IDC_REMOVE,287,78,50,14
-    PUSHBUTTON      "すべてリセット(&S)",IDC_RESET_ALL,197,142,50,14,NOT 
-                    WS_VISIBLE
-    CONTROL         "CUA-mode を有効にする",IDC_ENABLE_CUA,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,255,17,82,10
+    PUSHBUTTON      "すべてリセット(&S)",IDC_RESET_ALL,197,142,50,14,NOT WS_VISIBLE
+    CONTROL         "CUA-mode を有効にする",IDC_ENABLE_CUA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,255,17,82,10
 END
 
-IDD_PROPERTIES_LIST DIALOG DISCARDABLE  0, 0, 344, 215
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_PROPERTIES_LIST DIALOG 0, 0, 344, 215
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "一覧"
 FONT 9, "MS UI Gothic"
 BEGIN
-    CONTROL         "List1",IDC_PROPERTIES_LIST,"SysListView32",LVS_REPORT | 
-                    LVS_SINGLESEL | WS_BORDER | WS_TABSTOP,7,7,330,201
+    CONTROL         "List1",IDC_PROPERTIES_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | WS_BORDER | WS_TABSTOP,7,7,330,201
 END
 
 
@@ -814,7 +670,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_OPTIONS, DIALOG
     BEGIN
@@ -827,7 +683,6 @@ BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 228
         TOPMARGIN, 7
         BOTTOMMARGIN, 48
     END
@@ -888,27 +743,27 @@ END
 // Menu
 //
 
-IDR_RIGHT_MENU MENU DISCARDABLE 
+IDR_RIGHT_MENU MENU
 BEGIN
     POPUP "Right Menu"
     BEGIN
-        MENUITEM "プロパティ(&P)...",           IDC_PROPERTIES
-        MENUITEM "設定の取り込み(&I)...",       IDC_IMPORT
-        MENUITEM "設定の書き出し(&E)...",       IDC_EXPORT
+        MENUITEM "プロパティ(&P)...",                IDC_PROPERTIES
+        MENUITEM "設定の取り込み(&I)...",              IDC_IMPORT
+        MENUITEM "設定の書き出し(&E)...",              IDC_EXPORT
         MENUITEM SEPARATOR
-        MENUITEM "オプション(&O)...",           IDC_OPTIONS
+        MENUITEM "オプション(&O)...",                IDC_OPTIONS
         POPUP "キーボードレイアウト(&K)"
         BEGIN
-            MENUITEM "ログオンユーザー用(&L)...",   IDC_KEYBOARD
-            MENUITEM "すべてのユーザー用(&A)...",   IDC_KEYBOARD_ANY_USER
+            MENUITEM "ログオンユーザー用(&L)...",            IDC_KEYBOARD
+            MENUITEM "すべてのユーザー用(&A)...",            IDC_KEYBOARD_ANY_USER
         END
         MENUITEM SEPARATOR
         MENUITEM "&Disable",                    IDC_DISABLE
-        MENUITEM "リセット(&R)",                IDC_RESET
-        MENUITEM "終了(&X)",                    IDC_QUIT
+        MENUITEM "リセット(&R)",                    IDC_RESET
+        MENUITEM "終了(&X)",                      IDC_QUIT
         MENUITEM SEPARATOR
-        MENUITEM "ヘルプ(&H)",                  ID_HELP_FINDER
-        MENUITEM "バージョン情報(&A)",          IDC_ABOUT
+        MENUITEM "ヘルプ(&H)",                     ID_HELP_FINDER
+        MENUITEM "バージョン情報(&A)",                 IDC_ABOUT
     END
 END
 
@@ -918,18 +773,18 @@ END
 // String Table
 //
 
-STRINGTABLE PRELOAD DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "xkeymacs\n\nXkeyma\n\n\nXkeymacs.Document\nXkeyma Document"
 END
 
-STRINGTABLE PRELOAD DISCARDABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_APP_TITLE       "XKeymacs"
     AFX_IDS_IDLEMESSAGE     "Ready"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     ID_INDICATOR_EXT        "EXT"
     ID_INDICATOR_CAPS       "CAP"
@@ -939,7 +794,7 @@ BEGIN
     ID_INDICATOR_REC        "REC"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     ID_FILE_NEW             "Create a new document\nNew"
     ID_FILE_OPEN            "Open an existing document\nOpen"
@@ -948,13 +803,13 @@ BEGIN
     ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
     ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     ID_FILE_MRU_FILE1       "Open this document"
     ID_FILE_MRU_FILE2       "Open this document"
@@ -974,18 +829,18 @@ BEGIN
     ID_FILE_MRU_FILE16      "Open this document"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
     ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     ID_EDIT_CLEAR           "Erase the selection\nErase"
     ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
@@ -1000,7 +855,7 @@ BEGIN
     ID_EDIT_REDO            "Redo the previously undone action\nRedo"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_SCSIZE          "Change the window size"
     AFX_IDS_SCMOVE          "Change the window position"
@@ -1011,13 +866,13 @@ BEGIN
     AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_SCRESTORE       "Restore the window to normal size"
     AFX_IDS_SCTASKLIST      "Activate Task List"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_DEFAULT             "Default"
     IDS_DEFAULT_TITLE       "標準"
@@ -1032,7 +887,7 @@ BEGIN
     IDS_REG_ENTRY_CONTROL   "C-%c"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_REG_ENTRY_CONTROLX  "C-X C-%c"
     IDS_REG_ENTRY_META      "M-%c"
@@ -1052,7 +907,7 @@ BEGIN
     IDS_ERR_SAVE_DATA       "XKeymacs は %d 種類しか設定を保存できません。不要な設定を選択し ""Use Default Setting""をチェックすることにより、新たに保存できるようになります。"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_ERR_32BIT           "32ビット版の xkeymacs.exe を実行してください。"
     IDS_ERR_IMPORT          "%s\nファイルが見つかりません。\n指定したファイル名が正しいかどうか確認してください。"
@@ -1072,7 +927,7 @@ BEGIN
     IDS_ERR_LOST_KEY        "[%s] キーは利用できなくなります。\n"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_FOR_LOGGED_ON_USER  " (ログオンユーザー用)"
     IDS_FOR_ANY_USER        " (すべてのユーザー用)"
@@ -1088,7 +943,7 @@ BEGIN
     IDS_EXTENSION_EXECUTABLE ".exe"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_BECKY               "Becky!"
     IDS_OUTLOOK_EXPRESS     "Outlook Express"
@@ -1104,7 +959,7 @@ BEGIN
     IDS_TIP_META            "Meta LED"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_REGISTRATION_FILTER "レジストリ ファイル|*.reg|すべてのファイル (*.*)|*.*||"
     IDS_REGSUBKEY_KEYBOARD_LAYOUT "Keyboard Layout"
@@ -1124,13 +979,13 @@ BEGIN
     IDS_WINDOW_TEXT_MATCH_FULL "Macth Full"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_TIP_MX              "M-x LED"
     IDS_VER_SUB_BLOCK       "\\"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_REG_ENTRY_NONE_FOO  "N-0x%02x (%c)"
     IDS_REG_ENTRY_NONE_SHIFT_FOO "N-S-0x%02x (%c)"
@@ -1150,7 +1005,7 @@ BEGIN
     IDS_REG_ENTRY_ALT       "alt_icon"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_FILES               "ファイル"
     IDS_SEARCH              "検索、置換"
@@ -1167,12 +1022,12 @@ BEGIN
     IDS_MODIFIER            "One Shot モディファイヤ"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_REG_ENTRY_ICON_META "meta_icon"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SET_MARK_COMMAND_D  "マークをキャレットの位置に置く。"
     IDS_BEGINNING_OF_LINE_D "行頭に移動する。"
@@ -1188,7 +1043,7 @@ BEGIN
     IDS_NEXT_LINE_D         "垂直に 1 行下へ移動する。"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_OPEN_LINE_D         "1 行以上の空行をキャレットの右側に挿入する。"
     IDS_PREVIOUS_LINE_D     "垂直に 1 行上へ移動する。"
@@ -1204,12 +1059,11 @@ BEGIN
     IDS_ICONIFY_OR_DEICONIFY_FRAME_D "ウィンドウを最小化する。"
     IDS_QUAIL_MODE_D        "foo"
     IDS_UNDO_D              "元に戻す。"
-    IDS_TOGGLE_WIN32IME_MODE_D 
-                            "インプットメソッドが有効ならば無効に、無効ならば有効にする。"
+    IDS_TOGGLE_WIN32IME_MODE_D "インプットメソッドが有効ならば無効に、無効ならば有効にする。"
     IDS_BACKWARD_WORD_D     "1 語左へ移動する。"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_FORWARD_WORD_D      "1 語右へ移動する。"
     IDS_DIGIT_ARGUMENT_D    "Part of the numeric argument for the next command."
@@ -1230,7 +1084,7 @@ BEGIN
     IDS_META_PREFIX_D       "Meta のプレフィックスキー。"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_META_D              "Meta"
     IDS_DIGIT_ARGUMENT0_D   "引数を 10 倍し 0 を加える。"
@@ -1243,22 +1097,20 @@ BEGIN
     IDS_DIGIT_ARGUMENT7_D   "引数を 10 倍し 7 を加える。"
     IDS_DIGIT_ARGUMENT8_D   "引数を 10 倍し 8 を加える。"
     IDS_DIGIT_ARGUMENT9_D   "引数を 10 倍し 9 を加える。"
-    IDS_META_PREFIX_AND_ORIGINAL_D 
-                            "本来の機能を生かしたまま Meta のプレフィックスキーとしても機能する。"
+    IDS_META_PREFIX_AND_ORIGINAL_D "本来の機能を生かしたまま Meta のプレフィックスキーとしても機能する。"
     IDS_KILL_BUFFER_D       "ファイルを閉じる。"
     IDS_KILL_WORD_D         "単語の末尾までキルする。"
     IDS_MARK_WHOLE_BUFFER_D "ファイル全体をリージョンとする。"
     IDS_DELETE_BACKWARD_CHAR_D "キャレットの左側の文字を削除する。"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_QUERY_REPLACE_D     "置換ダイアログを開く。"
     IDS_QUERY_REPLACE_REGEXP_D "置換ダイアログを開く。"
     IDS_YANK_POP_D          "ヤンクしたテキストを、それより前にキルしたテキストで置き換える。"
     IDS_CLOSE_INPUT_METHOD_D "インプットメソッドを無効にする。"
-    IDS_ENABLE_OR_DISABLE_XKEYMACS_D 
-                            "XKeymacs が有効ならば無効に、無効ならば有効にする。"
+    IDS_ENABLE_OR_DISABLE_XKEYMACS_D "XKeymacs が有効ならば無効に、無効ならば有効にする。"
     IDS_ENTER_D             "Enter"
     IDS_IGNORE_D            "キーを無視する。"
     IDS_OPEN_INPUT_METHOD_D "インプットメソッドを有効にする。"
@@ -1272,7 +1124,7 @@ BEGIN
     IDS_CONTROL_PREFIX_D    "C-"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_ESCAPE_D            "Esc"
     IDS_TILDE_D             "~"
@@ -1286,21 +1138,20 @@ BEGIN
     IDS_MAXIMIZE_HORIZONTALLY_D "ウィンドウを横向きに最大化する。"
     IDS_PASS_THROUGH_D      "このコマンドに割り当てられているキーが押されている間、XKeymacs は全ての入力をそのままアプリケーションへ渡す。"
     IDS_REDO_D              "Redo"
-    IDS_TEMPORARILY_DISABLE_XKEYMACS_D 
-                            "次のコマンドを、直接アプリケーションへ渡す。"
+    IDS_TEMPORARILY_DISABLE_XKEYMACS_D "次のコマンドを、直接アプリケーションへ渡す。"
     IDS_COPY_D              "コピー"
     IDS_PASTE_D             "貼り付け"
     IDS_CUT_D               "切り取り"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_ESC                 "Esc"
     IDS_1                   "1"
     IDS_2                   "2"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_3                   "3"
     IDS_4                   "4"
@@ -1320,7 +1171,7 @@ BEGIN
     IDS_R                   "R"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_T                   "T"
     IDS_Y                   "Y"
@@ -1340,7 +1191,7 @@ BEGIN
     IDS_D                   "D"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_F                   "F"
     IDS_G                   "G"
@@ -1360,7 +1211,7 @@ BEGIN
     IDS_B                   "B"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_N                   "N"
     IDS_M                   "M"
@@ -1380,7 +1231,7 @@ BEGIN
     IDS_F3                  "F3"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_F4                  "F4"
     IDS_F5                  "F5"
@@ -1400,7 +1251,7 @@ BEGIN
     IDS_SUBTRACT            "Numeric -"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_NUMPAD4             "Numeric 4"
     IDS_LEFT                "Left Arrow"
@@ -1420,7 +1271,7 @@ BEGIN
     IDS_DELETE              "Delete"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_F11                 "F11"
     IDS_F12                 "F12"
@@ -1440,12 +1291,12 @@ BEGIN
     IDS_ACPI_SLEEP          "Sleep"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_ACPI_WAKE           "Wake up"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_NEW_D               "新規"
     IDS_PRINT_D             "印刷..."
@@ -1457,8 +1308,7 @@ BEGIN
     IDS_ENABLE_XKEYMACS_D   "XKeymacs を有効にする。"
     IDS_DISABLE_XKEYMACS_D  "XKeymacs を無効にする。"
     IDS_CAPS_LOCK_D         "Caps Lock"
-    IDS_COMPLETE_CLOSE_INPUT_METHOD_D 
-                            "現在の文字列を変換結果として確定し、インプットメソッドを無効にする。"
+    IDS_COMPLETE_CLOSE_INPUT_METHOD_D "現在の文字列を変換結果として確定し、インプットメソッドを無効にする。"
     IDS_COMPLETE_TOGGLE_INPUT_METHOD_D 
                             "現在の文字列を変換結果として確定し、インプットメソッドが有効ならば無効に、無効ならば有効にする。"
     IDS_UNDERSCORE_D        "_"
@@ -1467,13 +1317,13 @@ BEGIN
     IDS_OSMODIFIER_SHIFT_D  "One Shot Modifier Shift"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_FSET                "(fset "
     IDS_README              "Readme_J"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_CONTROL_X_PREFIX_T  " "
     IDS_CONTROL_T           " "
@@ -1489,7 +1339,7 @@ BEGIN
     IDS_IGNORE_T            " "
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_KILL_LINE_FOR_ALL_FORMAT_T " "
     IDS_MAXIMIZE_T          " "
@@ -1509,7 +1359,7 @@ BEGIN
     IDS_RESTORE_T           " "
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SELECT_ALL_T        " "
     IDS_SIZE_T              " "
@@ -1529,7 +1379,7 @@ BEGIN
     IDS_END_OF_LINE_T       "end-of-line"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_FIND_FILE_T         "find-file"
     IDS_FORWARD_CHAR_T      "forward-char"
@@ -1549,7 +1399,7 @@ BEGIN
     IDS_DIGIT_ARGUMENT0_T   " "
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_DIGIT_ARGUMENT1_T   " "
     IDS_DIGIT_ARGUMENT2_T   " "
@@ -1569,7 +1419,7 @@ BEGIN
     IDS_SAVE_BUFFER_T       "save-buffer"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SAVE_BUFFERS_KILL_EMACS_T "save-buffers-kill-emacs"
     IDS_SCROLL_DOWN_T       "scroll-down"
@@ -1589,7 +1439,7 @@ BEGIN
     IDS_YANK_POP_T          "yank-pop"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_BACKWARD_KILL_WORD_T "backward-kill-word"
     IDS_ENABLE_XKEYMACS_T   "Enable XKeymacs"
@@ -1609,7 +1459,7 @@ BEGIN
     IDS_CYCLE_ITEMS_T       " "
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_OSMODIFIER_SHIFT_REPEAT_D "One Shot Modifier Shift with Repeat"
     IDS_OSMODIFIER_CTRL_D   "One Shot Modifier Ctrl"
@@ -1626,7 +1476,7 @@ BEGIN
     IDS_EXECUTE_EXTENDED_COMMAND_D "コマンド名を読み込み、それを実行する"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_CYCLE_ITEMS_INVERSELY_T " "
     IDS_TRANSPOSE_WORDS_T   "transpose-words"
@@ -1637,7 +1487,7 @@ BEGIN
     IDS_EXECUTE_EXTENDED_COMMAND_T "execute-extended-command"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_REG_ENTRY_ACCELERATE "accelerate"
     IDS_REGSUBKEY_KEYBOARD  "Control Panel\\Keyboard"
@@ -1647,67 +1497,56 @@ BEGIN
     IDS_REG_ENTRY_MX        "mx_icon"
 END
 
-#endif    // 日本語 resources
+#endif    // 日本語 (日本) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// 英語 (ｱﾒﾘｶ) resources
+// 英語 (米国) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 150, 60
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ABOUTBOX DIALOG 0, 0, 150, 60
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About XKeymacs"
 FONT 8, "Tahoma"
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,10,10,0,0
-    LTEXT           "XKeymacs Version x.xx",IDC_VERSION_INFORMATION,40,10,
-                    119,8,SS_NOPREFIX
-    LTEXT           "http://xkeymacs.sourceforge.jp/",IDC_URL,40,22,140,8,
-                    SS_NOTIFY
+    LTEXT           "XKeymacs Version x.xx",IDC_VERSION_INFORMATION,40,10,119,8,SS_NOPREFIX
+    LTEXT           "http://xkeymacs.sourceforge.jp/",IDC_URL,40,22,140,8,SS_NOTIFY
     DEFPUSHBUTTON   "OK",IDOK,50,40,50,14,WS_GROUP
 END
 
-IDD_OPTIONS DIALOG DISCARDABLE  0, 0, 152, 251
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_OPTIONS DIALOG 0, 0, 152, 251
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Options"
 FONT 8, "Tahoma"
 BEGIN
     GROUPBOX        "XKeymacs",IDC_STATIC,7,7,138,33
-    CONTROL         "Auto Run",IDC_AUTO_RUN,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,17,22,46,10
+    CONTROL         "Auto Run",IDC_AUTO_RUN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,22,46,10
     GROUPBOX        "Command Prompt",IDC_STATIC,7,47,138,33
     CONTROL         "File and Directory Name Completion",IDC_FILE_COMPLETION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,62,126,10
     GROUPBOX        "Taskbar's Status Area",IDC_STATIC,7,87,138,133
-    CONTROL         "C-x-",IDC_C_X_,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,
-                    102,28,10
-    CONTROL         "M-x",IDC_M_X,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,
-                    122,28,10
-    CONTROL         "Meta",IDC_M_,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,
-                    142,32,10
-    CONTROL         "Shift",IDC_SHIFT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    17,162,30,10
-    CONTROL         "Ctrl",IDC_CTRL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,
-                    182,26,10
-    CONTROL         "Alt",IDC_ALT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,
-                    202,24,10
+    CONTROL         "C-x-",IDC_C_X_,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,102,28,10
+    CONTROL         "M-x",IDC_M_X,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,122,28,10
+    CONTROL         "Meta",IDC_M_,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,142,32,10
+    CONTROL         "Shift",IDC_SHIFT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,162,30,10
+    CONTROL         "Ctrl",IDC_CTRL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,182,26,10
+    CONTROL         "Alt",IDC_ALT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,202,24,10
     DEFPUSHBUTTON   "OK",IDOK,7,230,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,95,230,50,14
 END
 
-IDD_104KEYBOARD DIALOG DISCARDABLE  0, 0, 422, 280
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_104KEYBOARD DIALOG 0, 0, 422, 280
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Keyboard Layout"
 FONT 8, "Tahoma"
 BEGIN
@@ -1742,8 +1581,7 @@ BEGIN
     CONTROL         "0",IDC_0,"Button",BS_OWNERDRAW,192,36,17,16
     CONTROL         "-",IDC_MINUS,"Button",BS_OWNERDRAW,210,36,17,16
     CONTROL         "=",IDC_EQUAL,"Button",BS_OWNERDRAW,228,36,17,16
-    CONTROL         "(\\)",IDC_BACKSLASH1,"Button",BS_OWNERDRAW | NOT 
-                    WS_VISIBLE,7,256,17,16
+    CONTROL         "(\\)",IDC_BACKSLASH1,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,7,256,17,16
     CONTROL         "BS",IDC_BACKSPACE,"Button",BS_OWNERDRAW,246,36,35,16
     CONTROL         "Tab",IDC_TAB,"Button",BS_OWNERDRAW,12,53,26,16
     CONTROL         "Q",IDC_Q,"Button",BS_OWNERDRAW,39,53,17,16
@@ -1783,28 +1621,19 @@ BEGIN
     CONTROL         ",",IDC_COMMA,"Button",BS_OWNERDRAW,178,87,17,16
     CONTROL         ".",IDC_PERIOD,"Button",BS_OWNERDRAW,196,87,17,16
     CONTROL         "/",IDC_SLASH,"Button",BS_OWNERDRAW,214,87,17,16
-    CONTROL         "\\",IDC_BACKSLASH2,"Button",BS_OWNERDRAW | NOT 
-                    WS_VISIBLE,29,256,17,16
-    CONTROL         "RShift",IDC_RIGHT_SHIFT,"Button",BS_OWNERDRAW,232,87,49,
-                    16
+    CONTROL         "\\",IDC_BACKSLASH2,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,29,256,17,16
+    CONTROL         "RShift",IDC_RIGHT_SHIFT,"Button",BS_OWNERDRAW,232,87,49,16
     CONTROL         "Ctrl",IDC_LEFT_CTRL,"Button",BS_OWNERDRAW,12,104,27,16
-    CONTROL         "Win",IDC_LEFT_WINDOWS,"Button",BS_OWNERDRAW,40,104,27,
-                    16
+    CONTROL         "Win",IDC_LEFT_WINDOWS,"Button",BS_OWNERDRAW,40,104,27,16
     CONTROL         "Alt",IDC_LEFT_ALT,"Button",BS_OWNERDRAW,68,104,27,16
-    CONTROL         "NCn",IDC_NONCONVERT,"Button",BS_OWNERDRAW | NOT 
-                    WS_VISIBLE,97,256,17,16
+    CONTROL         "NCn",IDC_NONCONVERT,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,97,256,17,16
     CONTROL         "Space",IDC_SPACE,"Button",BS_OWNERDRAW,96,104,73,16
-    CONTROL         "Cnv",IDC_CONVERT,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,
-                    52,256,17,16
-    CONTROL         "Kna",IDC_KANA,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,75,
-                    256,17,16
+    CONTROL         "Cnv",IDC_CONVERT,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,52,256,17,16
+    CONTROL         "Kna",IDC_KANA,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,75,256,17,16
     CONTROL         "RAlt",IDC_RIGHT_ALT,"Button",BS_OWNERDRAW,170,104,27,16
-    CONTROL         "RWin",IDC_RIGHT_WINDOWS,"Button",BS_OWNERDRAW,198,104,
-                    27,16
-    CONTROL         "App",IDC_APPLICATION,"Button",BS_OWNERDRAW,226,104,27,
-                    16
-    CONTROL         "RCtrl",IDC_RIGHT_CTRL,"Button",BS_OWNERDRAW,254,104,27,
-                    16
+    CONTROL         "RWin",IDC_RIGHT_WINDOWS,"Button",BS_OWNERDRAW,198,104,27,16
+    CONTROL         "App",IDC_APPLICATION,"Button",BS_OWNERDRAW,226,104,27,16
+    CONTROL         "RCtrl",IDC_RIGHT_CTRL,"Button",BS_OWNERDRAW,254,104,27,16
     CONTROL         "Ins",IDC_INSERT,"Button",BS_OWNERDRAW,284,36,17,16
     CONTROL         "Hm",IDC_HOME,"Button",BS_OWNERDRAW,302,36,17,16
     CONTROL         "PU",IDC_PAGE_UP,"Button",BS_OWNERDRAW,320,36,17,16
@@ -1830,8 +1659,7 @@ BEGIN
     CONTROL         "(2)",IDC_NUMPAD2,"Button",BS_OWNERDRAW,358,87,17,16
     CONTROL         "(3)",IDC_NUMPAD3,"Button",BS_OWNERDRAW,376,87,17,16
     CONTROL         "(0)",IDC_NUMPAD0,"Button",BS_OWNERDRAW,340,104,35,16
-    CONTROL         "Dl",IDC_NUMPADDELETE,"Button",BS_OWNERDRAW,376,104,17,
-                    16
+    CONTROL         "Dl",IDC_NUMPADDELETE,"Button",BS_OWNERDRAW,376,104,17,16
     CONTROL         "Ent",IDC_NUMPADENTER,"Button",BS_OWNERDRAW,394,87,17,33
     CONTROL         "Esc",IDC_ESC_,"Button",BS_OWNERDRAW,12,142,17,16
     CONTROL         "F1",IDC_F1_,"Button",BS_OWNERDRAW,48,142,17,16
@@ -1846,10 +1674,8 @@ BEGIN
     CONTROL         "F10",IDC_F10_,"Button",BS_OWNERDRAW,228,142,17,16
     CONTROL         "F11",IDC_F11_,"Button",BS_OWNERDRAW,246,142,17,16
     CONTROL         "F12",IDC_F12_,"Button",BS_OWNERDRAW,264,142,17,16
-    CONTROL         "PS",IDC_PRINT_SCREEN_,"Button",BS_OWNERDRAW,284,142,17,
-                    16
-    CONTROL         "SL",IDC_SCROLL_LOCK_,"Button",BS_OWNERDRAW,302,142,17,
-                    16
+    CONTROL         "PS",IDC_PRINT_SCREEN_,"Button",BS_OWNERDRAW,284,142,17,16
+    CONTROL         "SL",IDC_SCROLL_LOCK_,"Button",BS_OWNERDRAW,302,142,17,16
     CONTROL         "Pau",IDC_PAUSE_,"Button",BS_OWNERDRAW,320,142,17,16
     CONTROL         "`",IDC_BACK_QUOTE_,"Button",BS_OWNERDRAW,12,162,17,16
     CONTROL         "1",IDC_1_,"Button",BS_OWNERDRAW,30,162,17,16
@@ -1864,8 +1690,7 @@ BEGIN
     CONTROL         "0",IDC_0_,"Button",BS_OWNERDRAW,192,162,17,16
     CONTROL         "-",IDC_MINUS_,"Button",BS_OWNERDRAW,210,162,17,16
     CONTROL         "=",IDC_EQUAL_,"Button",BS_OWNERDRAW,228,162,17,16
-    CONTROL         "(\\)",IDC_BACKSLASH1_,"Button",BS_OWNERDRAW | NOT 
-                    WS_VISIBLE,205,256,17,16
+    CONTROL         "(\\)",IDC_BACKSLASH1_,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,205,256,17,16
     CONTROL         "BS",IDC_BACKSPACE_,"Button",BS_OWNERDRAW,246,162,35,16
     CONTROL         "Tab",IDC_TAB_,"Button",BS_OWNERDRAW,12,179,26,16
     CONTROL         "Q",IDC_Q_,"Button",BS_OWNERDRAW,39,179,17,16
@@ -1894,8 +1719,7 @@ BEGIN
     CONTROL         ";",IDC_SEMICOLON_,"Button",BS_OWNERDRAW,205,196,17,16
     CONTROL         "'",IDC_QUOTE_,"Button",BS_OWNERDRAW,223,196,17,16
     CONTROL         "Enter",IDC_ENTER_,"Button",BS_OWNERDRAW,241,196,40,16
-    CONTROL         "Shift",IDC_LEFT_SHIFT_,"Button",BS_OWNERDRAW,12,213,39,
-                    16
+    CONTROL         "Shift",IDC_LEFT_SHIFT_,"Button",BS_OWNERDRAW,12,213,39,16
     CONTROL         "Z",IDC_Z_,"Button",BS_OWNERDRAW,52,213,17,16
     CONTROL         "X",IDC_X_,"Button",BS_OWNERDRAW,70,213,17,16
     CONTROL         "C",IDC_C_,"Button",BS_OWNERDRAW,88,213,17,16
@@ -1906,29 +1730,19 @@ BEGIN
     CONTROL         ",",IDC_COMMA_,"Button",BS_OWNERDRAW,178,213,17,16
     CONTROL         ".",IDC_PERIOD_,"Button",BS_OWNERDRAW,196,213,17,16
     CONTROL         "/",IDC_SLASH_,"Button",BS_OWNERDRAW,214,213,17,16
-    CONTROL         "\\",IDC_BACKSLASH2_,"Button",BS_OWNERDRAW | NOT 
-                    WS_VISIBLE,225,256,17,16
-    CONTROL         "RShift",IDC_RIGHT_SHIFT_,"Button",BS_OWNERDRAW,232,213,
-                    49,16
+    CONTROL         "\\",IDC_BACKSLASH2_,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,225,256,17,16
+    CONTROL         "RShift",IDC_RIGHT_SHIFT_,"Button",BS_OWNERDRAW,232,213,49,16
     CONTROL         "Ctrl",IDC_LEFT_CTRL_,"Button",BS_OWNERDRAW,12,230,27,16
-    CONTROL         "Win",IDC_LEFT_WINDOWS_,"Button",BS_OWNERDRAW,40,230,27,
-                    16
+    CONTROL         "Win",IDC_LEFT_WINDOWS_,"Button",BS_OWNERDRAW,40,230,27,16
     CONTROL         "Alt",IDC_LEFT_ALT_,"Button",BS_OWNERDRAW,68,230,27,16
-    CONTROL         "NCn",IDC_NONCONVERT_,"Button",BS_OWNERDRAW | NOT 
-                    WS_VISIBLE,287,256,17,16
+    CONTROL         "NCn",IDC_NONCONVERT_,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,287,256,17,16
     CONTROL         "Space",IDC_SPACE_,"Button",BS_OWNERDRAW,96,230,73,16
-    CONTROL         "Cnv",IDC_CONVERT_,"Button",BS_OWNERDRAW | NOT 
-                    WS_VISIBLE,245,256,17,16
-    CONTROL         "Kna",IDC_KANA_,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,
-                    266,256,17,16
-    CONTROL         "RAlt",IDC_RIGHT_ALT_,"Button",BS_OWNERDRAW,170,230,27,
-                    16
-    CONTROL         "RWin",IDC_RIGHT_WINDOWS_,"Button",BS_OWNERDRAW,198,230,
-                    27,16
-    CONTROL         "App",IDC_APPLICATION_,"Button",BS_OWNERDRAW,226,230,27,
-                    16
-    CONTROL         "RCtrl",IDC_RIGHT_CTRL_,"Button",BS_OWNERDRAW,254,230,27,
-                    16
+    CONTROL         "Cnv",IDC_CONVERT_,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,245,256,17,16
+    CONTROL         "Kna",IDC_KANA_,"Button",BS_OWNERDRAW | NOT WS_VISIBLE,266,256,17,16
+    CONTROL         "RAlt",IDC_RIGHT_ALT_,"Button",BS_OWNERDRAW,170,230,27,16
+    CONTROL         "RWin",IDC_RIGHT_WINDOWS_,"Button",BS_OWNERDRAW,198,230,27,16
+    CONTROL         "App",IDC_APPLICATION_,"Button",BS_OWNERDRAW,226,230,27,16
+    CONTROL         "RCtrl",IDC_RIGHT_CTRL_,"Button",BS_OWNERDRAW,254,230,27,16
     CONTROL         "Ins",IDC_INSERT_,"Button",BS_OWNERDRAW,284,162,17,16
     CONTROL         "Hm",IDC_HOME_,"Button",BS_OWNERDRAW,302,162,17,16
     CONTROL         "PU",IDC_PAGE_UP_,"Button",BS_OWNERDRAW,320,162,17,16
@@ -1954,23 +1768,20 @@ BEGIN
     CONTROL         "(2)",IDC_NUMPAD2_,"Button",BS_OWNERDRAW,358,213,17,16
     CONTROL         "(3)",IDC_NUMPAD3_,"Button",BS_OWNERDRAW,376,213,17,16
     CONTROL         "(0)",IDC_NUMPAD0_,"Button",BS_OWNERDRAW,340,230,35,16
-    CONTROL         "Dl",IDC_NUMPADDELETE_,"Button",BS_OWNERDRAW,376,230,17,
-                    16
-    CONTROL         "Ent",IDC_NUMPADENTER_,"Button",BS_OWNERDRAW,394,213,17,
-                    33
+    CONTROL         "Dl",IDC_NUMPADDELETE_,"Button",BS_OWNERDRAW,376,230,17,16
+    CONTROL         "Ent",IDC_NUMPADENTER_,"Button",BS_OWNERDRAW,394,213,17,33
     GROUPBOX        "Base keyboard",IDC_STATIC,7,7,409,120
     GROUPBOX        "Remapped keyboard",IDC_STATIC,7,132,409,120
     CONTROL         "Wk",IDC_ACPI_WAKE,"Button",BS_OWNERDRAW,358,16,17,16
     CONTROL         "Wk",IDC_ACPI_WAKE_,"Button",BS_OWNERDRAW,358,142,17,16
     CONTROL         "Slp",IDC_ACPI_SLEEP,"Button",BS_OWNERDRAW,376,16,17,16
-    CONTROL         "Slp",IDC_ACPI_SLEEP_,"Button",BS_OWNERDRAW,376,142,17,
-                    16
+    CONTROL         "Slp",IDC_ACPI_SLEEP_,"Button",BS_OWNERDRAW,376,142,17,16
     CONTROL         "Pw",IDC_ACPI_POWER,"Button",BS_OWNERDRAW,394,16,17,16
     CONTROL         "Pw",IDC_ACPI_POWER_,"Button",BS_OWNERDRAW,394,142,17,16
 END
 
-IDD_109KEYBOARD DIALOG DISCARDABLE  0, 0, 422, 280
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_109KEYBOARD DIALOG 0, 0, 422, 280
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Keyboard Layout"
 FONT 8, "Tahoma"
 BEGIN
@@ -2046,23 +1857,18 @@ BEGIN
     CONTROL         ".",IDC_PERIOD,"Button",BS_OWNERDRAW,196,87,17,16
     CONTROL         "/",IDC_SLASH,"Button",BS_OWNERDRAW,214,87,17,16
     CONTROL         "\\",IDC_BACKSLASH2,"Button",BS_OWNERDRAW,232,87,17,16
-    CONTROL         "RShift",IDC_RIGHT_SHIFT,"Button",BS_OWNERDRAW,250,87,31,
-                    16
+    CONTROL         "RShift",IDC_RIGHT_SHIFT,"Button",BS_OWNERDRAW,250,87,31,16
     CONTROL         "Ctrl",IDC_LEFT_CTRL,"Button",BS_OWNERDRAW,12,104,23,16
-    CONTROL         "Win",IDC_LEFT_WINDOWS,"Button",BS_OWNERDRAW,36,104,17,
-                    16
+    CONTROL         "Win",IDC_LEFT_WINDOWS,"Button",BS_OWNERDRAW,36,104,17,16
     CONTROL         "Alt",IDC_LEFT_ALT,"Button",BS_OWNERDRAW,54,104,23,16
     CONTROL         "NCn",IDC_NONCONVERT,"Button",BS_OWNERDRAW,78,104,17,16
     CONTROL         "Space",IDC_SPACE,"Button",BS_OWNERDRAW,96,104,65,16
     CONTROL         "Cnv",IDC_CONVERT,"Button",BS_OWNERDRAW,162,104,17,16
     CONTROL         "Kna",IDC_KANA,"Button",BS_OWNERDRAW,180,104,17,16
     CONTROL         "RAlt",IDC_RIGHT_ALT,"Button",BS_OWNERDRAW,198,104,23,16
-    CONTROL         "RW",IDC_RIGHT_WINDOWS,"Button",BS_OWNERDRAW,222,104,17,
-                    16
-    CONTROL         "App",IDC_APPLICATION,"Button",BS_OWNERDRAW,240,104,17,
-                    16
-    CONTROL         "RCtrl",IDC_RIGHT_CTRL,"Button",BS_OWNERDRAW,258,104,23,
-                    16
+    CONTROL         "RW",IDC_RIGHT_WINDOWS,"Button",BS_OWNERDRAW,222,104,17,16
+    CONTROL         "App",IDC_APPLICATION,"Button",BS_OWNERDRAW,240,104,17,16
+    CONTROL         "RCtrl",IDC_RIGHT_CTRL,"Button",BS_OWNERDRAW,258,104,23,16
     CONTROL         "Ins",IDC_INSERT,"Button",BS_OWNERDRAW,284,36,17,16
     CONTROL         "Hm",IDC_HOME,"Button",BS_OWNERDRAW,302,36,17,16
     CONTROL         "PU",IDC_PAGE_UP,"Button",BS_OWNERDRAW,320,36,17,16
@@ -2088,8 +1894,7 @@ BEGIN
     CONTROL         "(2)",IDC_NUMPAD2,"Button",BS_OWNERDRAW,358,87,17,16
     CONTROL         "(3)",IDC_NUMPAD3,"Button",BS_OWNERDRAW,376,87,17,16
     CONTROL         "(0)",IDC_NUMPAD0,"Button",BS_OWNERDRAW,340,104,35,16
-    CONTROL         "Dl",IDC_NUMPADDELETE,"Button",BS_OWNERDRAW,376,104,17,
-                    16
+    CONTROL         "Dl",IDC_NUMPADDELETE,"Button",BS_OWNERDRAW,376,104,17,16
     CONTROL         "Ent",IDC_NUMPADENTER,"Button",BS_OWNERDRAW,394,87,17,33
     CONTROL         "Esc",IDC_ESC_,"Button",BS_OWNERDRAW,12,142,17,16
     CONTROL         "F1",IDC_F1_,"Button",BS_OWNERDRAW,48,142,17,16
@@ -2104,10 +1909,8 @@ BEGIN
     CONTROL         "F10",IDC_F10_,"Button",BS_OWNERDRAW,228,142,17,16
     CONTROL         "F11",IDC_F11_,"Button",BS_OWNERDRAW,246,142,17,16
     CONTROL         "F12",IDC_F12_,"Button",BS_OWNERDRAW,264,142,17,16
-    CONTROL         "PS",IDC_PRINT_SCREEN_,"Button",BS_OWNERDRAW,284,142,17,
-                    16
-    CONTROL         "SL",IDC_SCROLL_LOCK_,"Button",BS_OWNERDRAW,302,142,17,
-                    16
+    CONTROL         "PS",IDC_PRINT_SCREEN_,"Button",BS_OWNERDRAW,284,142,17,16
+    CONTROL         "SL",IDC_SCROLL_LOCK_,"Button",BS_OWNERDRAW,302,142,17,16
     CONTROL         "Pau",IDC_PAUSE_,"Button",BS_OWNERDRAW,320,142,17,16
     CONTROL         "H/Z",IDC_BACK_QUOTE_,"Button",BS_OWNERDRAW,12,162,17,16
     CONTROL         "1",IDC_1_,"Button",BS_OWNERDRAW,30,162,17,16
@@ -2122,8 +1925,7 @@ BEGIN
     CONTROL         "0",IDC_0_,"Button",BS_OWNERDRAW,192,162,17,16
     CONTROL         "-",IDC_MINUS_,"Button",BS_OWNERDRAW,210,162,17,16
     CONTROL         "^",IDC_EQUAL_,"Button",BS_OWNERDRAW,228,162,17,16
-    CONTROL         "(\\)",IDC_BACKSLASH1_,"Button",BS_OWNERDRAW,246,162,17,
-                    16
+    CONTROL         "(\\)",IDC_BACKSLASH1_,"Button",BS_OWNERDRAW,246,162,17,16
     CONTROL         "BS",IDC_BACKSPACE_,"Button",BS_OWNERDRAW,264,162,17,16
     CONTROL         "Tab",IDC_TAB_,"Button",BS_OWNERDRAW,12,179,26,16
     CONTROL         "Q",IDC_Q_,"Button",BS_OWNERDRAW,39,179,17,16
@@ -2152,8 +1954,7 @@ BEGIN
     CONTROL         ":",IDC_QUOTE_,"Button",BS_OWNERDRAW,223,196,17,16
     CONTROL         "]",IDC_BACKSLASH_,"Button",BS_OWNERDRAW,241,196,17,16
     CONTROL         "Enter",IDC_ENTER_,"Button",BS_OWNERDRAW,259,179,22,33
-    CONTROL         "Shift",IDC_LEFT_SHIFT_,"Button",BS_OWNERDRAW,12,213,39,
-                    16
+    CONTROL         "Shift",IDC_LEFT_SHIFT_,"Button",BS_OWNERDRAW,12,213,39,16
     CONTROL         "Z",IDC_Z_,"Button",BS_OWNERDRAW,52,213,17,16
     CONTROL         "X",IDC_X_,"Button",BS_OWNERDRAW,70,213,17,16
     CONTROL         "C",IDC_C_,"Button",BS_OWNERDRAW,88,213,17,16
@@ -2165,24 +1966,18 @@ BEGIN
     CONTROL         ".",IDC_PERIOD_,"Button",BS_OWNERDRAW,196,213,17,16
     CONTROL         "/",IDC_SLASH_,"Button",BS_OWNERDRAW,214,213,17,16
     CONTROL         "\\",IDC_BACKSLASH2_,"Button",BS_OWNERDRAW,232,213,17,16
-    CONTROL         "RShift",IDC_RIGHT_SHIFT_,"Button",BS_OWNERDRAW,250,213,
-                    31,16
+    CONTROL         "RShift",IDC_RIGHT_SHIFT_,"Button",BS_OWNERDRAW,250,213,31,16
     CONTROL         "Ctrl",IDC_LEFT_CTRL_,"Button",BS_OWNERDRAW,12,230,23,16
-    CONTROL         "Win",IDC_LEFT_WINDOWS_,"Button",BS_OWNERDRAW,36,230,17,
-                    16
+    CONTROL         "Win",IDC_LEFT_WINDOWS_,"Button",BS_OWNERDRAW,36,230,17,16
     CONTROL         "Alt",IDC_LEFT_ALT_,"Button",BS_OWNERDRAW,54,230,23,16
     CONTROL         "NCn",IDC_NONCONVERT_,"Button",BS_OWNERDRAW,78,230,17,16
     CONTROL         "Space",IDC_SPACE_,"Button",BS_OWNERDRAW,96,230,65,16
     CONTROL         "Cnv",IDC_CONVERT_,"Button",BS_OWNERDRAW,162,230,17,16
     CONTROL         "Kna",IDC_KANA_,"Button",BS_OWNERDRAW,180,230,17,16
-    CONTROL         "RAlt",IDC_RIGHT_ALT_,"Button",BS_OWNERDRAW,198,230,23,
-                    16
-    CONTROL         "RW",IDC_RIGHT_WINDOWS_,"Button",BS_OWNERDRAW,222,230,17,
-                    16
-    CONTROL         "App",IDC_APPLICATION_,"Button",BS_OWNERDRAW,240,230,17,
-                    16
-    CONTROL         "RCtrl",IDC_RIGHT_CTRL_,"Button",BS_OWNERDRAW,258,230,23,
-                    16
+    CONTROL         "RAlt",IDC_RIGHT_ALT_,"Button",BS_OWNERDRAW,198,230,23,16
+    CONTROL         "RW",IDC_RIGHT_WINDOWS_,"Button",BS_OWNERDRAW,222,230,17,16
+    CONTROL         "App",IDC_APPLICATION_,"Button",BS_OWNERDRAW,240,230,17,16
+    CONTROL         "RCtrl",IDC_RIGHT_CTRL_,"Button",BS_OWNERDRAW,258,230,23,16
     CONTROL         "Ins",IDC_INSERT_,"Button",BS_OWNERDRAW,284,162,17,16
     CONTROL         "Hm",IDC_HOME_,"Button",BS_OWNERDRAW,302,162,17,16
     CONTROL         "PU",IDC_PAGE_UP_,"Button",BS_OWNERDRAW,320,162,17,16
@@ -2208,39 +2003,30 @@ BEGIN
     CONTROL         "(2)",IDC_NUMPAD2_,"Button",BS_OWNERDRAW,358,213,17,16
     CONTROL         "(3)",IDC_NUMPAD3_,"Button",BS_OWNERDRAW,376,213,17,16
     CONTROL         "(0)",IDC_NUMPAD0_,"Button",BS_OWNERDRAW,340,230,35,16
-    CONTROL         "Dl",IDC_NUMPADDELETE_,"Button",BS_OWNERDRAW,376,230,17,
-                    16
-    CONTROL         "Ent",IDC_NUMPADENTER_,"Button",BS_OWNERDRAW,394,213,17,
-                    33
+    CONTROL         "Dl",IDC_NUMPADDELETE_,"Button",BS_OWNERDRAW,376,230,17,16
+    CONTROL         "Ent",IDC_NUMPADENTER_,"Button",BS_OWNERDRAW,394,213,17,33
     GROUPBOX        "Base keyboard",IDC_STATIC,7,7,409,120
     GROUPBOX        "Remapped keyboard",IDC_STATIC,7,132,409,120
     CONTROL         "Pw",IDC_ACPI_POWER,"Button",BS_OWNERDRAW,394,16,17,16
     CONTROL         "Pw",IDC_ACPI_POWER_,"Button",BS_OWNERDRAW,394,142,17,16
     CONTROL         "Slp",IDC_ACPI_SLEEP,"Button",BS_OWNERDRAW,376,16,17,16
-    CONTROL         "Slp",IDC_ACPI_SLEEP_,"Button",BS_OWNERDRAW,376,142,17,
-                    16
+    CONTROL         "Slp",IDC_ACPI_SLEEP_,"Button",BS_OWNERDRAW,376,142,17,16
     CONTROL         "Wk",IDC_ACPI_WAKE,"Button",BS_OWNERDRAW,358,16,17,16
     CONTROL         "Wk",IDC_ACPI_WAKE_,"Button",BS_OWNERDRAW,358,142,17,16
 END
 
 IDD_PROPERTIES DIALOGEX 0, 0, 422, 279
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Properties"
 FONT 8, "Tahoma", 0, 0, 0x1
 BEGIN
-    COMBOBOX        IDC_APPLICATION,7,7,320,246,CBS_DROPDOWNLIST | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Use Default Setting",IDC_SETTING_DEFAULT,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP,338,7,77,10
-    CONTROL         "Use Specific Setting",IDC_SETTING_SPECIFIC,"Button",
-                    BS_AUTORADIOBUTTON,338,16,80,10
-    CONTROL         "Disable XKeymacs",IDC_SETTING_DISABLE,"Button",
-                    BS_AUTORADIOBUTTON,338,25,75,10
-    CONTROL         "",IDC_TAB,"Static",SS_BLACKFRAME | WS_GROUP,7,39,411,
-                    213
-    CONTROL         "Use Dialog setting for all dialogs",
-                    IDC_USE_DIALOG_SETTING,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,15,25,115,10
+    COMBOBOX        IDC_APPLICATION,7,7,320,246,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Use Default Setting",IDC_SETTING_DEFAULT,"Button",BS_AUTORADIOBUTTON | WS_GROUP,338,7,77,10
+    CONTROL         "Use Specific Setting",IDC_SETTING_SPECIFIC,"Button",BS_AUTORADIOBUTTON,338,16,80,10
+    CONTROL         "Disable XKeymacs",IDC_SETTING_DISABLE,"Button",BS_AUTORADIOBUTTON,338,25,75,10
+    CONTROL         "",IDC_TAB,"Static",SS_BLACKFRAME | WS_GROUP,7,39,411,213
+    CONTROL         "Use Dialog setting for all dialogs",IDC_USE_DIALOG_SETTING,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,25,115,10
     PUSHBUTTON      "Load Default",IDC_LOAD_DEFAULT,3,260,50,14
     PUSHBUTTON      "Select All",IDC_SELECT_ALL,59,260,50,14
     PUSHBUTTON      "Clear All",IDC_CLEAR_ALL,116,260,50,14
@@ -2248,202 +2034,124 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,311,260,50,14
     PUSHBUTTON      "&Apply",IDC_APPLY,368,260,50,14
     LTEXT           "kill-ring-max: ",IDC_STATIC,262,26,41,8
-    EDITTEXT        IDC_KILL_RING_MAX,306,24,20,12,ES_AUTOHSCROLL | 
-                    ES_NUMBER,WS_EX_RIGHT
-    EDITTEXT        IDC_WINDOW_TEXT,150,25,40,14,ES_AUTOHSCROLL | NOT 
-                    WS_VISIBLE
-    LTEXT           "Use if the window title is ",IDC_STATIC,67,32,78,8,NOT 
-                    WS_VISIBLE
+    EDITTEXT        IDC_KILL_RING_MAX,306,24,20,12,ES_AUTOHSCROLL | ES_NUMBER,WS_EX_RIGHT
+    EDITTEXT        IDC_WINDOW_TEXT,150,25,40,14,ES_AUTOHSCROLL | NOT WS_VISIBLE
+    LTEXT           "Use if the window title is ",IDC_STATIC,67,32,78,8,NOT WS_VISIBLE
 END
 
-IDD_PROPERTIES_BASIC DIALOG DISCARDABLE  0, 0, 408, 202
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_PROPERTIES_BASIC DIALOG 0, 0, 408, 202
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Basic"
 FONT 8, "Tahoma"
 BEGIN
-    CONTROL         "C-x C-f",IDC_CXCF,"Button",BS_AUTOCHECKBOX | WS_GROUP | 
-                    WS_TABSTOP,15,17,37,10
-    CONTROL         "C-x k",IDC_CXK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
-                    29,34,10
-    CONTROL         "C-x C-s",IDC_CXCS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    15,41,38,10
-    CONTROL         "C-x C-w",IDC_CXCW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    15,53,40,10
+    CONTROL         "C-x C-f",IDC_CXCF,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,15,17,37,10
+    CONTROL         "C-x k",IDC_CXK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,29,34,10
+    CONTROL         "C-x C-s",IDC_CXCS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,41,38,10
+    CONTROL         "C-x C-w",IDC_CXCW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,53,40,10
     GROUPBOX        "Files",IDC_FILES,7,7,88,59
-    CONTROL         "C-s",IDC_CS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,77,
-                    26,10
-    CONTROL         "C-r",IDC_CR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,89,
-                    25,10
-    CONTROL         "M-%",IDC_MS5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
-                    101,29,10
-    CONTROL         "C-M-%",IDC_CMS5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    15,113,36,10
+    CONTROL         "C-s",IDC_CS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,77,26,10
+    CONTROL         "C-r",IDC_CR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,89,25,10
+    CONTROL         "M-%",IDC_MS5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,101,29,10
+    CONTROL         "C-M-%",IDC_CMS5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,113,36,10
     GROUPBOX        "Search",IDC_SEARCH,7,67,88,59
-    CONTROL         "C-z",IDC_CZ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
-                    137,26,10
-    CONTROL         "C-x C-c",IDC_CXCC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    15,149,39,10
-    CONTROL         "M-F12",IDC_MF12,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    15,161,37,10
+    CONTROL         "C-z",IDC_CZ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,137,26,10
+    CONTROL         "C-x C-c",IDC_CXCC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,149,39,10
+    CONTROL         "M-F12",IDC_MF12,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,161,37,10
     GROUPBOX        "Leaving Active Window",IDC_WINDOW,7,127,88,68
-    CONTROL         "C-b",IDC_CB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,
-                    17,27,10
-    CONTROL         "C-f",IDC_CF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,149,
-                    17,25,10
-    CONTROL         "M-b",IDC_MB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,
-                    29,26,10
-    CONTROL         "M-f",IDC_MF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,149,
-                    29,26,10
-    CONTROL         "C-p",IDC_CP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,
-                    41,27,10
-    CONTROL         "C-n",IDC_CN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,149,
-                    41,27,10
-    CONTROL         "C-a",IDC_CA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,
-                    53,27,10
-    CONTROL         "C-e",IDC_CE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,149,
-                    53,27,10
-    CONTROL         "M-<",IDC_MSCOMMA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    110,65,28,10
-    CONTROL         "M->",IDC_MSPERIOD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    110,77,28,10
-    CONTROL         "M-v",IDC_MV,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,
-                    89,28,10
-    CONTROL         "C-v",IDC_CV,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,149,
-                    89,27,10
-    CONTROL         "C-l",IDC_CL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,
-                    101,24,10
+    CONTROL         "C-b",IDC_CB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,17,27,10
+    CONTROL         "C-f",IDC_CF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,149,17,25,10
+    CONTROL         "M-b",IDC_MB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,29,26,10
+    CONTROL         "M-f",IDC_MF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,149,29,26,10
+    CONTROL         "C-p",IDC_CP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,41,27,10
+    CONTROL         "C-n",IDC_CN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,149,41,27,10
+    CONTROL         "C-a",IDC_CA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,53,27,10
+    CONTROL         "C-e",IDC_CE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,149,53,27,10
+    CONTROL         "M-<",IDC_MSCOMMA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,65,28,10
+    CONTROL         "M->",IDC_MSPERIOD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,77,28,10
+    CONTROL         "M-v",IDC_MV,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,89,28,10
+    CONTROL         "C-v",IDC_CV,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,149,89,27,10
+    CONTROL         "C-l",IDC_CL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,101,24,10
     GROUPBOX        "Motion",IDC_MOTION,102,7,83,141
-    CONTROL         "C-d",IDC_CD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,
-                    17,27,10
-    CONTROL         "C-h",IDC_CH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,240,
-                    17,26,10
-    CONTROL         "C-w",IDC_CW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,
-                    29,28,10
-    CONTROL         "M-w",IDC_MW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,240,
-                    29,29,10
-    CONTROL         "C-k",IDC_CK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,
-                    41,27,10
-    CONTROL         "M-t",IDC_MT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,240,
-                    41,29,10
-    CONTROL         "M-DEL",IDC_MDEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    200,53,35,10
-    CONTROL         "M-d",IDC_MD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,240,
-                    53,28,10
-    CONTROL         "C-y",IDC_CY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,
-                    65,26,10
-    CONTROL         "M-y",IDC_MY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,240,
-                    65,27,10
-    CONTROL         "C-t",IDC_CT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,
-                    77,24,10
-    CONTROL         "C-x C-t",IDC_CXCT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    240,77,35,10
+    CONTROL         "C-d",IDC_CD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,17,27,10
+    CONTROL         "C-h",IDC_CH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,240,17,26,10
+    CONTROL         "C-w",IDC_CW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,29,28,10
+    CONTROL         "M-w",IDC_MW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,240,29,29,10
+    CONTROL         "C-k",IDC_CK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,41,27,10
+    CONTROL         "M-t",IDC_MT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,240,41,29,10
+    CONTROL         "M-DEL",IDC_MDEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,53,35,10
+    CONTROL         "M-d",IDC_MD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,240,53,28,10
+    CONTROL         "C-y",IDC_CY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,65,26,10
+    CONTROL         "M-y",IDC_MY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,240,65,27,10
+    CONTROL         "C-t",IDC_CT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,77,24,10
+    CONTROL         "C-x C-t",IDC_CXCT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,240,77,35,10
     GROUPBOX        "Killing and Deleting",IDC_KILL,192,7,91,84
-    CONTROL         "C-x u",IDC_CXU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    200,101,32,10
-    CONTROL         "C-/",IDC_CSLASH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    200,113,26,10
-    CONTROL         "C-_",IDC_C_,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,
-                    125,46,10
-    CONTROL         "C-g",IDC_CG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,
-                    137,27,10
+    CONTROL         "C-x u",IDC_CXU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,101,32,10
+    CONTROL         "C-/",IDC_CSLASH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,113,26,10
+    CONTROL         "C-_",IDC_C_,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,125,46,10
+    CONTROL         "C-g",IDC_CG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,137,27,10
     GROUPBOX        "Error Recovery",IDC_RECOVERY,192,92,91,56
-    CONTROL         "C-x C-j",IDC_CXCJ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    109,161,36,10
-    CONTROL         "C-o",IDC_CO2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,
-                    161,25,10
-    CONTROL         "C-\\",IDC_CBACKSLASH,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,216,161,24,10
+    CONTROL         "C-x C-j",IDC_CXCJ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,109,161,36,10
+    CONTROL         "C-o",IDC_CO2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,161,25,10
+    CONTROL         "C-\\",IDC_CBACKSLASH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,216,161,24,10
     CONTROL         "C-BACKSLASH of 106/109 keyboard",IDC_CBACKSLASH_106,
-                    "Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,109,
-                    173,132,9
+                    "Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,109,173,132,9
     GROUPBOX        "Toggle Input Method Editor",IDC_IME,102,150,181,45
-    CONTROL         "C-Space",IDC_CSPACE,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,298,17,43,10
-    CONTROL         "C-x h",IDC_CXH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    298,29,32,10
-    CONTROL         "C-x C-p",IDC_CXCP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    350,30,39,10
-    CONTROL         "C-u",IDC_CU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,
-                    41,26,10
-    CONTROL         "C-0 ... C-9",IDC_CDIGIT,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,350,41,45,10
-    CONTROL         "Left Alt",IDC_LEFT_ALT,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,298,53,38,10
-    CONTROL         "Right Alt",IDC_RIGHT_ALT,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,350,53,41,10
-    CONTROL         "Alt",IDC_ALT,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | 
-                    WS_TABSTOP,298,53,37,10
-    CONTROL         "Esc",IDC_ESCAPE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    298,65,28,10
-    CONTROL         "C-[",IDC_SQUARE_BRA,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,350,65,25,10
-    CONTROL         "C-m",IDC_CM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,
-                    77,28,10
-    CONTROL         "C-o",IDC_CO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,350,
-                    77,27,10
-    CONTROL         "C-i",IDC_CI,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,
-                    89,24,10
-    CONTROL         "M-i",IDC_MI,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,350,
-                    89,25,10
-    CONTROL         "M-!",IDC_MS1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,
-                    101,26,10
-    CONTROL         "M-x",IDC_MX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,350,
-                    101,29,10
-    CONTROL         "C-q",IDC_CQ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,
-                    113,28,10
-    CONTROL         "C-x (",IDC_CXS9,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    298,125,30,10
-    CONTROL         "C-x )",IDC_CXS0,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    350,125,31,10
-    CONTROL         "C-x e",IDC_CXE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    298,137,32,10
+    CONTROL         "C-Space",IDC_CSPACE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,17,43,10
+    CONTROL         "C-x h",IDC_CXH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,29,32,10
+    CONTROL         "C-x C-p",IDC_CXCP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,350,30,39,10
+    CONTROL         "C-u",IDC_CU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,41,26,10
+    CONTROL         "C-0 ... C-9",IDC_CDIGIT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,350,41,45,10
+    CONTROL         "Left Alt",IDC_LEFT_ALT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,53,38,10
+    CONTROL         "Right Alt",IDC_RIGHT_ALT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,350,53,41,10
+    CONTROL         "Alt",IDC_ALT,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,298,53,37,10
+    CONTROL         "Esc",IDC_ESCAPE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,65,28,10
+    CONTROL         "C-[",IDC_SQUARE_BRA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,350,65,25,10
+    CONTROL         "C-m",IDC_CM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,77,28,10
+    CONTROL         "C-o",IDC_CO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,350,77,27,10
+    CONTROL         "C-i",IDC_CI,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,89,24,10
+    CONTROL         "M-i",IDC_MI,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,350,89,25,10
+    CONTROL         "M-!",IDC_MS1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,101,26,10
+    CONTROL         "M-x",IDC_MX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,350,101,29,10
+    CONTROL         "C-q",IDC_CQ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,113,28,10
+    CONTROL         "C-x (",IDC_CXS9,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,125,30,10
+    CONTROL         "C-x )",IDC_CXS0,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,350,125,31,10
+    CONTROL         "C-x e",IDC_CXE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,137,32,10
     GROUPBOX        "Other",IDC_OTHER,290,7,111,188
-    CONTROL         "C-x b",IDC_CXB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    298,149,33,10
-    CONTROL         "M-l",IDC_ML,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,
-                    161,27,10
-    CONTROL         "M-u",IDC_MU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,350,
-                    161,29,10
-    CONTROL         "M-c",IDC_MC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,
-                    173,29,10
+    CONTROL         "C-x b",IDC_CXB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,149,33,10
+    CONTROL         "M-l",IDC_ML,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,161,27,10
+    CONTROL         "M-u",IDC_MU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,350,161,29,10
+    CONTROL         "M-c",IDC_MC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,298,173,29,10
 END
 
-IDD_PROPERTIES_ADVANCED DIALOG DISCARDABLE  0, 0, 408, 202
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_PROPERTIES_ADVANCED DIALOG 0, 0, 408, 202
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Advanced"
 FONT 8, "Tahoma"
 BEGIN
     LTEXT           "&Category:",IDC_STATIC,7,7,31,8
-    COMBOBOX        IDC_CATEGORY,7,17,106,132,CBS_DROPDOWNLIST | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_CATEGORY,7,17,106,132,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "C&ommands:",IDC_STATIC,7,31,38,8
-    LISTBOX         IDC_COMMANDS,7,41,242,116,LBS_SORT | 
-                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_COMMANDS,7,41,242,116,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Description:",IDC_STATIC,7,160,38,8
     LTEXT           "brank",IDC_DESCRIPTION,7,169,242,26
     LTEXT           "C&urrent keys:",IDC_STATIC,258,31,42,8
-    LISTBOX         IDC_CURRENT_KEYS,258,41,143,32,LBS_SORT | 
-                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_CURRENT_KEYS,258,41,143,32,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Press &new shortcut key:",IDC_STATIC,258,100,76,8
-    CONTROL         "Ctrl+X",IDC_C_X,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    258,111,31,10
+    CONTROL         "Ctrl+X",IDC_C_X,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,258,111,31,10
     EDITTEXT        IDC_NEW_KEY,258,123,142,14,ES_AUTOHSCROLL
-    LTEXT           "Currently assigned to:\n[unassigned]",
-                    IDC_CURRENTLY_ASSIGNED,258,158,142,32
+    LTEXT           "Currently assigned to:\n[unassigned]",IDC_CURRENTLY_ASSIGNED,258,158,142,32
     PUSHBUTTON      "&Assign",IDC_ASSIGN,351,142,50,14
     PUSHBUTTON      "&Remove",IDC_REMOVE,351,79,50,14
     PUSHBUTTON      "Re&set All",IDC_RESET_ALL,263,142,50,14,NOT WS_VISIBLE
-    CONTROL         "Enable CUA-mode",IDC_ENABLE_CUA,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,327,17,74,10
+    CONTROL         "Enable CUA-mode",IDC_ENABLE_CUA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,327,17,74,10
 END
 
-IDD_PROPERTIES_LIST DIALOG DISCARDABLE  0, 0, 408, 202
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_PROPERTIES_LIST DIALOG 0, 0, 408, 202
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "List"
 FONT 8, "Tahoma"
 BEGIN
-    CONTROL         "List1",IDC_PROPERTIES_LIST,"SysListView32",LVS_REPORT | 
-                    LVS_SINGLESEL | WS_BORDER | WS_TABSTOP,7,7,394,188
+    CONTROL         "List1",IDC_PROPERTIES_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | WS_BORDER | WS_TABSTOP,7,7,394,188
 END
 
 
@@ -2453,12 +2161,11 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 228
         TOPMARGIN, 7
         BOTTOMMARGIN, 48
     END
@@ -2527,7 +2234,7 @@ END
 // Menu
 //
 
-IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+IDR_MAINFRAME MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -2554,7 +2261,7 @@ BEGIN
     END
 END
 
-IDR_RIGHT_MENU MENU DISCARDABLE 
+IDR_RIGHT_MENU MENU
 BEGIN
     POPUP "Right Menu"
     BEGIN
@@ -2585,18 +2292,18 @@ END
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"
@@ -2624,29 +2331,29 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON    DISCARDABLE     "res\\xkeymacs.ico"
-IDR_MAIN_DISABLE_WOCQ   ICON    DISCARDABLE     "res\\disableWOCQ.ico"
-IDI_CTRL_ON             ICON    DISCARDABLE     "res\\ctrl_on.ico"
-IDI_CTRL_OFF            ICON    DISCARDABLE     "res\\ctrl_off.ico"
-IDI_CX_ON               ICON    DISCARDABLE     "res\\cx_on.ico"
-IDI_CX_OFF              ICON    DISCARDABLE     "res\\cx_off.ico"
-IDI_SHIFT_ON            ICON    DISCARDABLE     "res\\shift_on.ico"
-IDI_SHIFT_OFF           ICON    DISCARDABLE     "res\\shift_of.ico"
-IDI_ALT_ON              ICON    DISCARDABLE     "res\\alt_on.ico"
-IDI_ALT_OFF             ICON    DISCARDABLE     "res\\alt_off.ico"
-IDI_META_ON             ICON    DISCARDABLE     "res\\meta_on.ico"
-IDI_META_OFF            ICON    DISCARDABLE     "res\\meta_off.ico"
-IDR_MAIN_DISABLE        ICON    DISCARDABLE     "res\\disable.ico"
-IDR_MAIN_DISABLE_TMP    ICON    DISCARDABLE     "res\\disableTMP.ico"
-IDI_MX_ON               ICON    DISCARDABLE     "res\\mx_on.ico"
-IDI_MX_OFF              ICON    DISCARDABLE     "res\\mx_off.ico"
+IDR_MAINFRAME           ICON                    "res\\xkeymacs.ico"
+IDR_MAIN_DISABLE_WOCQ   ICON                    "res\\disableWOCQ.ico"
+IDI_CTRL_ON             ICON                    "res\\ctrl_on.ico"
+IDI_CTRL_OFF            ICON                    "res\\ctrl_off.ico"
+IDI_CX_ON               ICON                    "res\\cx_on.ico"
+IDI_CX_OFF              ICON                    "res\\cx_off.ico"
+IDI_SHIFT_ON            ICON                    "res\\shift_on.ico"
+IDI_SHIFT_OFF           ICON                    "res\\shift_of.ico"
+IDI_ALT_ON              ICON                    "res\\alt_on.ico"
+IDI_ALT_OFF             ICON                    "res\\alt_off.ico"
+IDI_META_ON             ICON                    "res\\meta_on.ico"
+IDI_META_OFF            ICON                    "res\\meta_off.ico"
+IDR_MAIN_DISABLE        ICON                    "res\\disable.ico"
+IDR_MAIN_DISABLE_TMP    ICON                    "res\\disableTMP.ico"
+IDI_MX_ON               ICON                    "res\\mx_on.ico"
+IDI_MX_OFF              ICON                    "res\\mx_off.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Accelerator
 //
 
-IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+IDR_MAINFRAME ACCELERATORS
 BEGIN
     "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
@@ -2664,7 +2371,6 @@ BEGIN
 END
 
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -2687,18 +2393,12 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "\0"
-            VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "XKeymacs MFC Application\0"
-            VALUE "FileVersion", "4, 0, 0, 0\0"
-            VALUE "InternalName", "xkeymacs\0"
-            VALUE "LegalCopyright", "\0"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "xkeymacs.exe\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "XKeymacs Application\0"
-            VALUE "ProductVersion", "4, 0, 0, 0\0"
-            VALUE "SpecialBuild", "\0"
+            VALUE "FileDescription", "XKeymacs"
+            VALUE "FileVersion", "4, 0, 0, 0"
+            VALUE "InternalName", "xkeymacs"
+            VALUE "OriginalFilename", "xkeymacs.exe"
+            VALUE "ProductName", "XKeymacs"
+            VALUE "ProductVersion", "4, 0, 0, 0"
         END
     END
     BLOCK "VarFileInfo"
@@ -2707,45 +2407,43 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Cursor
 //
 
-IDC_HAND_CURSOR         CURSOR  DISCARDABLE     "res\\hand.cur"
-IDC_DRAG_CURSOR         CURSOR  DISCARDABLE     "res\\drag.cur"
-IDC_DISABLE_CURSOR      CURSOR  DISCARDABLE     "res\\disable_.cur"
-IDC_DISABLE_WOCQ_CURSOR CURSOR  DISCARDABLE     "res\\disable_wocq.cur"
-IDC_DISABLE_TMP_CURSOR  CURSOR  DISCARDABLE     "res\\disable_tmp.cur"
+IDC_HAND_CURSOR         CURSOR                  "res\\hand.cur"
+IDC_DRAG_CURSOR         CURSOR                  "res\\drag.cur"
+IDC_DISABLE_CURSOR      CURSOR                  "res\\disable_.cur"
+IDC_DISABLE_WOCQ_CURSOR CURSOR                  "res\\disable_wocq.cur"
+IDC_DISABLE_TMP_CURSOR  CURSOR                  "res\\disable_tmp.cur"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Bitmap
 //
 
-IDB_SORT_ASCENDING      BITMAP  DISCARDABLE     "res\\sort_asc.bmp"
-IDB_SORT_DESCENDING     BITMAP  DISCARDABLE     "res\\sort_des.bmp"
+IDB_SORT_ASCENDING      BITMAP                  "res\\sort_asc.bmp"
+IDB_SORT_DESCENDING     BITMAP                  "res\\sort_des.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
 //
 
-STRINGTABLE PRELOAD DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "xkeymacs\n\nXkeyma\n\n\nXkeymacs.Document\nXkeyma Document"
 END
 
-STRINGTABLE PRELOAD DISCARDABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_APP_TITLE       "XKeymacs"
     AFX_IDS_IDLEMESSAGE     "Ready"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     ID_INDICATOR_EXT        "EXT"
     ID_INDICATOR_CAPS       "CAP"
@@ -2755,7 +2453,7 @@ BEGIN
     ID_INDICATOR_REC        "REC"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     ID_FILE_NEW             "Create a new document\nNew"
     ID_FILE_OPEN            "Open an existing document\nOpen"
@@ -2764,13 +2462,13 @@ BEGIN
     ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
     ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     ID_FILE_MRU_FILE1       "Open this document"
     ID_FILE_MRU_FILE2       "Open this document"
@@ -2790,18 +2488,18 @@ BEGIN
     ID_FILE_MRU_FILE16      "Open this document"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
     ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     ID_EDIT_CLEAR           "Erase the selection\nErase"
     ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
@@ -2816,7 +2514,7 @@ BEGIN
     ID_EDIT_REDO            "Redo the previously undone action\nRedo"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_SCSIZE          "Change the window size"
     AFX_IDS_SCMOVE          "Change the window position"
@@ -2827,13 +2525,13 @@ BEGIN
     AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_SCRESTORE       "Restore the window to normal size"
     AFX_IDS_SCTASKLIST      "Activate Task List"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_DEFAULT             "Default"
     IDS_DEFAULT_TITLE       "Default"
@@ -2848,7 +2546,7 @@ BEGIN
     IDS_REG_ENTRY_CONTROL   "C-%c"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_REG_ENTRY_CONTROLX  "C-X C-%c"
     IDS_REG_ENTRY_META      "M-%c"
@@ -2868,7 +2566,7 @@ BEGIN
     IDS_ERR_SAVE_DATA       "XKeymacs can save only %d settings. You have to delete a setting to select an application and check ""Use Default Setting""."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_ERR_32BIT           "Please start 32bit version of xkeymacs.exe."
     IDS_ERR_IMPORT          "%s\nFile not found.\nPlease verify the correct file name was given."
@@ -2888,7 +2586,7 @@ BEGIN
     IDS_ERR_LOST_KEY        "[%s] key will be turned off.\n"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_FOR_LOGGED_ON_USER  " for the Logged on User"
     IDS_FOR_ANY_USER        " for Any User"
@@ -2904,7 +2602,7 @@ BEGIN
     IDS_EXTENSION_EXECUTABLE ".exe"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_BECKY               "Becky!"
     IDS_OUTLOOK_EXPRESS     "Outlook Express"
@@ -2920,7 +2618,7 @@ BEGIN
     IDS_TIP_META            "Meta LED"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_REGISTRATION_FILTER "Registration Files|*.reg|All Files (*.*)|*.*||"
     IDS_REGSUBKEY_KEYBOARD_LAYOUT "Keyboard Layout"
@@ -2940,13 +2638,13 @@ BEGIN
     IDS_WINDOW_TEXT_MATCH_FULL "Macth Full"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_TIP_MX              "M-x LED"
     IDS_VER_SUB_BLOCK       "\\"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_REG_ENTRY_NONE_FOO  "N-0x%02x (%c)"
     IDS_REG_ENTRY_NONE_SHIFT_FOO "N-S-0x%02x (%c)"
@@ -2966,7 +2664,7 @@ BEGIN
     IDS_REG_ENTRY_ALT       "alt_icon"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_FILES               "Files"
     IDS_SEARCH              "Search"
@@ -2983,12 +2681,12 @@ BEGIN
     IDS_MODIFIER            "One Shot Modifier"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_REG_ENTRY_ICON_META "meta_icon"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SET_MARK_COMMAND_D  "Set mark at where point is, or jump to mark."
     IDS_BEGINNING_OF_LINE_D "Move point to beginning of current line."
@@ -3004,7 +2702,7 @@ BEGIN
     IDS_NEXT_LINE_D         "Move cursor vertically down ARG lines."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_OPEN_LINE_D         "Insert a newline and leave point before it."
     IDS_PREVIOUS_LINE_D     "Move cursor vertically up ARG lines."
@@ -3026,7 +2724,7 @@ BEGIN
     IDS_BACKWARD_WORD_D     "Move backward until encountering the end of a word."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_FORWARD_WORD_D      "Move point forward ARG words (backward if ARG is negative)."
     IDS_DIGIT_ARGUMENT_D    "Part of the numeric argument for the next command."
@@ -3048,7 +2746,7 @@ BEGIN
     IDS_META_PREFIX_D       "Prefix for typing Meta."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_META_D              "Meta"
     IDS_DIGIT_ARGUMENT0_D   "Part of the numeric argument for the next command."
@@ -3070,7 +2768,7 @@ BEGIN
                             "Delete the previous N characters (following if N is negative)."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_QUERY_REPLACE_D     "Replace some occurrences of FROM-STRING with TO-STRING."
     IDS_QUERY_REPLACE_REGEXP_D 
@@ -3092,7 +2790,7 @@ BEGIN
     IDS_CONTROL_PREFIX_D    "C-"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_ESCAPE_D            "Esc"
     IDS_TILDE_D             "~"
@@ -3113,14 +2811,14 @@ BEGIN
     IDS_CUT_D               "Cut"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_ESC                 "Esc"
     IDS_1                   "1"
     IDS_2                   "2"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_3                   "3"
     IDS_4                   "4"
@@ -3140,7 +2838,7 @@ BEGIN
     IDS_R                   "R"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_T                   "T"
     IDS_Y                   "Y"
@@ -3160,7 +2858,7 @@ BEGIN
     IDS_D                   "D"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_F                   "F"
     IDS_G                   "G"
@@ -3180,7 +2878,7 @@ BEGIN
     IDS_B                   "B"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_N                   "N"
     IDS_M                   "M"
@@ -3200,7 +2898,7 @@ BEGIN
     IDS_F3                  "F3"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_F4                  "F4"
     IDS_F5                  "F5"
@@ -3220,7 +2918,7 @@ BEGIN
     IDS_SUBTRACT            "Numeric -"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_NUMPAD4             "Numeric 4"
     IDS_LEFT                "Left Arrow"
@@ -3240,7 +2938,7 @@ BEGIN
     IDS_DELETE              "Delete"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_F11                 "F11"
     IDS_F12                 "F12"
@@ -3260,12 +2958,12 @@ BEGIN
     IDS_ACPI_SLEEP          "Sleep"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_ACPI_WAKE           "Wake up"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_NEW_D               "New"
     IDS_PRINT_D             "Print..."
@@ -3289,7 +2987,7 @@ BEGIN
     IDS_OSMODIFIER_SHIFT_D  "One Shot Modifier Shift"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_CONTROL_X_PREFIX_T  " "
     IDS_CONTROL_T           " "
@@ -3305,7 +3003,7 @@ BEGIN
     IDS_IGNORE_T            " "
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_KILL_LINE_FOR_ALL_FORMAT_T " "
     IDS_MAXIMIZE_T          " "
@@ -3325,7 +3023,7 @@ BEGIN
     IDS_RESTORE_T           " "
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SELECT_ALL_T        " "
     IDS_SIZE_T              " "
@@ -3345,7 +3043,7 @@ BEGIN
     IDS_END_OF_LINE_T       "end-of-line"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_FIND_FILE_T         "find-file"
     IDS_FORWARD_CHAR_T      "forward-char"
@@ -3365,7 +3063,7 @@ BEGIN
     IDS_DIGIT_ARGUMENT0_T   " "
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_DIGIT_ARGUMENT1_T   " "
     IDS_DIGIT_ARGUMENT2_T   " "
@@ -3385,7 +3083,7 @@ BEGIN
     IDS_SAVE_BUFFER_T       "save-buffer"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SAVE_BUFFERS_KILL_EMACS_T "save-buffers-kill-emacs"
     IDS_SCROLL_DOWN_T       "scroll-down"
@@ -3405,7 +3103,7 @@ BEGIN
     IDS_YANK_POP_T          "yank-pop"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_BACKWARD_KILL_WORD_T "backward-kill-word"
     IDS_ENABLE_XKEYMACS_T   "Enable XKeymacs"
@@ -3425,13 +3123,13 @@ BEGIN
     IDS_CYCLE_ITEMS_T       " "
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_FSET                "(fset "
     IDS_README              "Readme"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_OSMODIFIER_SHIFT_REPEAT_D "One Shot Modifier Shift with Repeat"
     IDS_OSMODIFIER_CTRL_D   "One Shot Modifier Ctrl"
@@ -3450,7 +3148,7 @@ BEGIN
                             "Read the name of another command and invoke it."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_CYCLE_ITEMS_INVERSELY_T " "
     IDS_TRANSPOSE_WORDS_T   "transpose-words"
@@ -3461,7 +3159,7 @@ BEGIN
     IDS_EXECUTE_EXTENDED_COMMAND_T "execute-extended-command"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_REG_ENTRY_ACCELERATE "accelerate"
     IDS_REGSUBKEY_KEYBOARD  "Control Panel\\Keyboard"
@@ -3471,7 +3169,7 @@ BEGIN
     IDS_REG_ENTRY_MX        "mx_icon"
 END
 
-#endif    // 英語 (ｱﾒﾘｶ) resources
+#endif    // 英語 (米国) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

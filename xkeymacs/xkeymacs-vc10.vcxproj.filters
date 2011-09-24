@@ -128,10 +128,87 @@
     <ClInclude Include="imelist.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="xkeymacs.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+    <ResourceCompile Include="xkeymacs64.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\xkeymacs.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\disableWOCQ.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ctrl_on.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ctrl_off.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\cx_on.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\cx_off.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\shift_on.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\shift_of.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\alt_on.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\alt_off.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\meta_on.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\meta_off.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\disable.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\disableTMP.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\mx_on.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\mx_off.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\hand.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\drag.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\disable_.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\disable_wocq.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\disable_tmp.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\sort_asc.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\sort_des.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
