@@ -918,12 +918,8 @@ void CXkeymacsDll::DoKeybd_event(BYTE bVk, DWORD dwFlags)
 		break;
 
 	case VK_SHIFT:
-		if (m_bRightShift) {
-			if (CUtils::IsXPorLater())
-				bVk = VK_RSHIFT;
-			else
-				dwFlags |= KEYEVENTF_EXTENDEDKEY;
-		}
+		if (m_bRightShift)
+			bVk = VK_RSHIFT;
 		break;
 	case VK_PAUSE:
 		if (IsDown(VK_CONTROL, FALSE)) // Break

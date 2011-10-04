@@ -19,7 +19,6 @@ public:
 	static int GetWindowTextType(CString strWindowText);
 	static BOOL IsThunderbird();
 	static BOOL IsOpenJane();
-	static void PrintWindowInfo(WINDOWINFO *pwi);
 	static BOOL IsVisualSlickEdit();
 	static BOOL IsMSDN();
 	static BOOL IsJavaW();
@@ -36,7 +35,6 @@ public:
 	static BOOL IsIPMessenger();
 	static BOOL IsDana();
 	static BOOL IsJmEditor();
-	static BOOL IsXPorLater();
 	static BOOL IsEdLeaf();
 	static BOOL IsShuriken();
 	static BOOL IsAutla();
@@ -87,7 +85,6 @@ public:
 	static BOOL IsEmacs();
 	static BOOL SetClipboardText(const CString& text);
 	static BOOL GetClipboardText(CString& text);
-	static void InitCUtils();
 	static void SetApplicationName(BOOL bImeComposition);
 	static LPCTSTR const GetApplicationName();
 	static BOOL IsXyzzy();
@@ -124,8 +121,6 @@ private:
 	static void FairConsoleApplicationName(LPTSTR szApplicationName, LPTSTR szWindowText);
 	static BOOL IsConsole(LPCTSTR szApplicationName);
 	static BOOL IsJavaW(LPCTSTR szApplicationName);
-	static void SetIMEName();
-	static OSVERSIONINFO m_OsVersionInfo;
 	static TCHAR m_szIMEName[MAX_PATH];
 	static TCHAR m_szApplicationName[MAX_PATH];
 };

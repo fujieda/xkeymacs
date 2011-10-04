@@ -1007,9 +1007,7 @@ int CCommands::SaveBuffersKillEmacs()
 	if (CUtils::IsConsole()) {
 		SystemMenu(CMD_CLOSE);
 	} else if (CUtils::IsExplorer()) {
-		if (!CUtils::IsXPorLater()) {
-			ReleaseKey(VK_CONTROL);
-		}
+		ReleaseKey(VK_CONTROL);
 		AdKduAu(VK_F4);
 	} else if (CUtils::IsInternetExplorer()
 			|| CUtils::IsJavaW()) {

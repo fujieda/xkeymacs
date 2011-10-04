@@ -73,8 +73,6 @@ BOOL CXkeymacsApp::InitInstance()
 	m_pMainWnd->UpdateWindow();
 	SetClassLongPtr(m_pMainWnd->m_hWnd, GCLP_HICON, (LONG_PTR)LoadIcon(IDR_MAINFRAME));
 
-	// set registry key
-	CUtils::InitCUtils();
 	if (!Start64bitProcess())
 		return FALSE;
 	CProfile::InitDllData();

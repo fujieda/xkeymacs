@@ -30,7 +30,6 @@ BOOL CXkeymacsApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_HIDE);
 	m_pMainWnd->UpdateWindow();
 
-	CUtils::InitCUtils();
 	AfxBeginThread(PollIPCMessage, NULL);
 	if (start32bit)
 		Start32bitProcess();

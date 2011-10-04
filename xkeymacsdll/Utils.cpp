@@ -9,7 +9,6 @@
 #pragma data_seg(".xkmcs")
 TCHAR CUtils::m_szApplicationName[MAX_PATH] = {'\0'};
 TCHAR CUtils::m_szIMEName[MAX_PATH] = _T("IME");	// IDS_IME_FILE_NAME
-OSVERSIONINFO CUtils::m_OsVersionInfo = {sizeof(OSVERSIONINFO)};
 #pragma data_seg()
 
 BOOL CUtils::GetFindDialogTitle(CString *szDialogTitle)
@@ -389,26 +388,6 @@ void CUtils::SetApplicationName(BOOL bImeComposition)
 		}
 //		CUtils::Log(_T("name: %s"), m_szApplicationName);
 	}
-}
-
-void CUtils::SetIMEName()
-{
-	HKL hKL = GetKeyboardLayout(0);
-	if (ImmIsIME(hKL)) {
-		ImmGetIMEFileName(hKL, m_szIMEName, sizeof(m_szIMEName));
-	}
-}
-
-void CUtils::InitCUtils()
-{
-	GetVersionEx(&m_OsVersionInfo);
-	SetIMEName();
-}
-
-BOOL CUtils::IsXPorLater()
-{
-	return 5 < m_OsVersionInfo.dwMajorVersion
-		|| 5 == m_OsVersionInfo.dwMajorVersion && 1 <= m_OsVersionInfo.dwMinorVersion;
 }
 
 BOOL CUtils::OpenClipboard()
@@ -1026,26 +1005,6 @@ BOOL CUtils::IsMSDN()
 BOOL CUtils::IsVisualSlickEdit()
 {
 	return !_tcsicmp(m_szApplicationName, _T("vs.exe"));
-}
-
-void CUtils::PrintWindowInfo(WINDOWINFO *pwi)
-{
-	Log(_T("windowinfo.cbSize: %d"), pwi->cbSize);
-	Log(_T("windowinfo.rcWindow.top: %d"), pwi->rcWindow.top);
-	Log(_T("windowinfo.rcWindow.bottom: %d"), pwi->rcWindow.bottom);
-	Log(_T("windowinfo.rcWindow.left: %d"), pwi->rcWindow.left);
-	Log(_T("windowinfo.rcWindow.right: %d"), pwi->rcWindow.right);
-	Log(_T("windowinfo.rcClient.top: %d"), pwi->rcClient.top);
-	Log(_T("windowinfo.rcClient.bottom: %d"), pwi->rcClient.bottom);
-	Log(_T("windowinfo.rcClient.left: %d"), pwi->rcClient.left);
-	Log(_T("windowinfo.rcClient.right: %d"), pwi->rcClient.right);
-	Log(_T("windowinfo.dwStyle: %d"), pwi->dwStyle);
-	Log(_T("windowinfo.dwExStyle: %d"), pwi->dwExStyle);
-	Log(_T("windowinfo.dwWindowStatus: %d"), pwi->dwWindowStatus);
-	Log(_T("windowinfo.cxWindowBorders: %d"), pwi->cxWindowBorders);
-	Log(_T("windowinfo.cyWindowBorders: %d"), pwi->cyWindowBorders);
-	Log(_T("windowinfo.atomWindowType: %d"), pwi->atomWindowType);
-	Log(_T("windowinfo.wCreatorVersion: %d"), pwi->wCreatorVersion);
 }
 
 BOOL CUtils::IsOpenJane()
