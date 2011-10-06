@@ -574,85 +574,34 @@ BOOL CUtils::IsBash()
 	return !_tcsicmp(m_szApplicationName, _T("bash.exe"));
 }
 
+static void invalid_parameter_handler(const wchar_t*, const wchar_t*, const wchar_t*, unsigned int, uintptr_t)
+{
+	return;
+}
+
 // for debug
-void CUtils::Log(LPTSTR fmt, ...)
+void CUtils::Log(LPCTSTR fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
-
-	static const int LOG_MAX = 0x10000;
-	TCHAR szLog[LOG_MAX] = {'\0'};
-
-	for (unsigned int nIndex = 0; nIndex < _tcslen(fmt); ) {
-		LPTSTR pNextString = fmt + nIndex;
-		int len = _tcslen(szLog);
-		LPTSTR pLogEnd = szLog + len;
-
-		if (*pNextString == _T('%')) {
-			TCHAR szFormatTag[LOG_MAX] = {'0'};
-			_tcscpy_s(szFormatTag, pNextString);
-
-			switch (GetFormatTag(szFormatTag)) {
-			case _T('d'):
-			case _T('i'):
-			case _T('o'):
-			case _T('x'):
-			case _T('X'):
-			case _T('u'):
-			case _T('c'):
-				_stprintf_s(pLogEnd, LOG_MAX - len, szFormatTag, va_arg(ap, int));
-				break;
-			case _T('s'):
-				_stprintf_s(pLogEnd, LOG_MAX - len, szFormatTag, va_arg(ap, LPTSTR));
-				break;
-			case _T('f'):
-			case _T('e'):
-			case _T('E'):
-			case _T('g'):
-			case _T('G'):
-				_stprintf_s(pLogEnd, LOG_MAX - len, szFormatTag, va_arg(ap, double));
-				break;
-			case _T('p'):
-				_stprintf_s(pLogEnd, LOG_MAX - len, szFormatTag, va_arg(ap, void *));
-				break;
-			case _T('n'):
-				_stprintf_s(pLogEnd, LOG_MAX - len, szFormatTag, va_arg(ap, int *));
-				break;
-			case _T('%'):
-			default:
-				_stprintf_s(pLogEnd, LOG_MAX - len, _T("%s"), szFormatTag);
-				break;
-			}
-
-			nIndex += _tcslen(szFormatTag);
-		} else {
-			TCHAR szString[LOG_MAX] = {'0'};
-			_tcscpy_s(szString, pNextString);
-			LPTSTR c;
-			LPTSTR pString = _tcstok_s(szString, _T("%"), &c);
-			_stprintf_s(pLogEnd, LOG_MAX - len, _T("%s"), pString);
-
-			nIndex += _tcslen(pString);
-		}
-	}
-
-	va_end(ap);
+	TCHAR log[1024];
+	_set_invalid_parameter_handler(invalid_parameter_handler);
+	if (_vstprintf_s(log, fmt, ap) < 0)
+		_tcscpy_s(log, _T("invalid format"));
 
 	static int n = 0;
-	TCHAR szPath[MAX_PATH] = {'\0'};
-	if (GetTempPath(MAX_PATH, szPath)) {
+	TCHAR path[MAX_PATH];
+	if (GetTempPath(MAX_PATH, path)) {
 #ifndef _WIN64
-		_tmakepath_s(szPath, NULL, szPath, _T("xkeylog"), _T("txt"));
+		_tmakepath_s(path, NULL, path, _T("xkeylog"), _T("txt"));
 #else
-		_tmakepath_s(szPath, NULL, szPath, _T("xkeylog64"), _T("txt"));
+		_tmakepath_s(path, NULL, path, _T("xkeylog64"), _T("txt"));
 #endif
-	} else {
-		_tcscpy_s(szPath, _T("c:\\xkeylog.txt"));
-	}
+	} else
+		_tcscpy_s(path, _T("c:\\xkeylog.txt"));
 	FILE *fp;
-	_tfopen_s(&fp, szPath, _T("a"));
-	_ftprintf(fp, _T("%8d: %s	%s\n"), n++, m_szApplicationName, szLog);
-	fflush(fp);
+	_tfopen_s(&fp, path, _T("a"));
+	_ftprintf(fp, _T("%8d: %s\t%s\n"), n++, m_szApplicationName, log);
 	fclose(fp);
 }
 
@@ -736,79 +685,6 @@ BOOL CUtils::IsDialog()
 	if (!GetWindowText(hwnd, szWindowText, sizeof(szWindowText)))
 		return FALSE; // inside sound box
 	return GetParent(GetForegroundWindow()) != NULL;
-}
-
-int CUtils::GetFormatTag(LPTSTR szFormatTag)
-{
-	if (*(szFormatTag) != _T('%')) {
-		return NULL;
-	}
-
-	unsigned int nIndex = 1;
-
-	// flags
-	while (nIndex < _tcslen(szFormatTag)) {
-		switch (*(szFormatTag + nIndex)) {
-		case _T('-'):
-		case _T('+'):
-		case _T(' '):
-		case _T('0'):
-		case _T('#'):
-			++nIndex;
-			continue;
-		default:
-			break;
-		}
-
-		break;
-	}
-
-	// width
-	while (_istdigit(*(szFormatTag + nIndex))) {
-		++nIndex;
-	}
-
-	// precision
-	if (*(szFormatTag + nIndex) == _T('.')) {
-		++nIndex;
-		while (_istdigit(*(szFormatTag + nIndex))) {
-			++nIndex;
-		}
-	}
-
-	// prefix
-	switch (*(szFormatTag + nIndex)) {
-	case _T('h'):
-	case _T('l'):
-	case _T('L'):
-		++nIndex;
-		break;
-	}
-
-	// type
-	switch (*(szFormatTag + nIndex)) {
-	case _T('d'):
-	case _T('i'):
-	case _T('o'):
-	case _T('x'):
-	case _T('X'):
-	case _T('u'):
-	case _T('c'):
-	case _T('s'):
-	case _T('f'):
-	case _T('e'):
-	case _T('E'):
-	case _T('g'):
-	case _T('G'):
-	case _T('p'):
-	case _T('n'):
-	case _T('%'):
-		*(szFormatTag + nIndex + 1) = NULL;
-		return *(szFormatTag + nIndex);
-	default:
-		*(szFormatTag + nIndex) = NULL;
-		return NULL;
-	}
 }
 
 BOOL CUtils::IsEudora()

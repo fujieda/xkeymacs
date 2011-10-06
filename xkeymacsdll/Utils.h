@@ -64,7 +64,7 @@ public:
 	static BOOL IsSh();
 	static BOOL IsBash();
 	static void SetCorrectApplicationName(LPTSTR szApplicationName, LPTSTR szWindowText);
-	static void Log(LPTSTR fmt, ...);
+	static void Log(LPCTSTR fmt, ...);
 	static BOOL IsSleipnir();
 	static BOOL IsConsole();
 	static BOOL IsPaint();
@@ -117,7 +117,6 @@ public:
 
 private:
 	static BOOL IsTOForEOF();
-	static int GetFormatTag(LPTSTR szFormatTag);
 	static void FairConsoleApplicationName(LPTSTR szApplicationName, LPTSTR szWindowText);
 	static BOOL IsConsole(LPCTSTR szApplicationName);
 	static BOOL IsJavaW(LPCTSTR szApplicationName);
