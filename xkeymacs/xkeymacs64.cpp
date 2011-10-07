@@ -1,6 +1,6 @@
-#include "stdafx.h"
 #include "xkeymacs64.h"
 #include "mainfrm64.h"
+#include "../xkeymacsdll/xkeymacsdll.h"
 
 CXkeymacsApp::CXkeymacsApp()
 {

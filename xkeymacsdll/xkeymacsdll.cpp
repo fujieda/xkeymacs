@@ -1,11 +1,10 @@
 // xkeymacsdll.cpp : Defines the initialization routines for the DLL.
 //
 
-#include "stdafx.h"
-#include "resource.h"
+#include "xkeymacsdll.h"
 #include "Utils.h"
 #include "Commands.h"
-#include <afxdllx.h>
+#include "../xkeymacs/resource.h"
 #include <math.h>
 #include <Imm.h>
 #include <vector>
@@ -202,8 +201,6 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 //////////////////////////////////////////////////////////////////////
 // CXkeymacsDll Class
 //////////////////////////////////////////////////////////////////////
-
-#include "xkeymacsdll.h"
 
 #pragma data_seg(".xkmcs")
 CONFIG CXkeymacsDll::m_Config = {0};

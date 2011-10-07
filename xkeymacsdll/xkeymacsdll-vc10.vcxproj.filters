@@ -73,6 +73,9 @@
     <ClInclude Include="ipc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="defs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="xkeymacsdll.rc">

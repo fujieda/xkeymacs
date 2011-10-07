@@ -2,10 +2,10 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
 #include "Commands.h"
 #include "xkeymacsdll.h"
 #include "Utils.h"
+#include "../xkeymacs/resource.h"
 #include <math.h>
 #include <Imm.h>
 

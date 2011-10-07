@@ -8,6 +8,11 @@ class CProperties;
 // PropertiesBasic.h : header file
 //
 
+#include "stdafx.h"
+#include "resource.h"
+#include "../xkeymacsdll/Commands.h"
+class CProperties;
+
 /////////////////////////////////////////////////////////////////////////////
 // CPropertiesBasic dialog
 
@@ -127,5 +132,7 @@ private:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
+
+#include "properties.h"
 
 #endif // !defined(AFX_PROPERTIESBASIC_H__04D80B48_2913_4D7C_86A4_3049877B6996__INCLUDED_)

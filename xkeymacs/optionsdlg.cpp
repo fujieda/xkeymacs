@@ -1,11 +1,9 @@
 // OptionsDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "xkeymacs.h"
-#include "OptionsDlg.h"
-#include "MainFrm.h"
-#include "Profile.h"
+#include "optionsdlg.h"
+#include "mainfrm.h"
+#include "../xkeymacsdll/defs.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

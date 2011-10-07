@@ -1,11 +1,9 @@
 // PropertiesList.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "xkeymacs.h"
-#include "Profile.h"
-#include "Properties.h"
-#include "PropertiesList.h"
+#include "propertieslist.h"
+#include "profile.h"
+#include "../xkeymacsdll/Commands.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -1,11 +1,10 @@
 // MainFrm.cpp : implementation of the CMainFrame class
 //
 
-#include "stdafx.h"
-#include <Lmcons.h>
+#include "mainfrm.h"
 #include "xkeymacs.h"
-#include "Profile.h"
-#include "MainFrm.h"
+#include "profile.h"
+#include "../xkeymacsdll/xkeymacsdll.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

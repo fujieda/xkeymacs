@@ -2,10 +2,11 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
-#include <direct.h>
+#include "dotxkeymacs.h"
+#include "resource.h"
+#include "../xkeymacsdll/FunctionDefinition.h"
+#include <Shlobj.h>
 #include <Shlwapi.h>
-#include "DotXkeymacs.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

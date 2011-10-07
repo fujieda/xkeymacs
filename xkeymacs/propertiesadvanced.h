@@ -7,6 +7,11 @@
 // PropertiesAdvanced.h : header file
 //
 
+#include "stdafx.h"
+#include "resource.h"
+#include "../xkeymacsdll/Commands.h"
+class CProperties;
+
 /////////////////////////////////////////////////////////////////////////////
 // CPropertiesAdvanced dialog
 
@@ -100,5 +105,7 @@ private:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
+
+#include "properties.h"
 
 #endif // !defined(AFX_PROPERTIESADVANCED_H__41C61B2B_97BA_4015_8F1E_CA65AC628E42__INCLUDED_)

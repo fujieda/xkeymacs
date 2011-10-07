@@ -1,10 +1,9 @@
 // xkeymacs.cpp : Defines the class behaviors for the application.
 //
 
-#include "stdafx.h"
 #include "xkeymacs.h"
-#include "Profile.h"
-#include "MainFrm.h"
+#include "mainfrm.h"
+#include "profile.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

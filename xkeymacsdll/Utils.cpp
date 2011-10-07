@@ -2,8 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
 #include "Utils.h"
+#include "defs.h"
 #include "../xkeymacs/resource.h"
 #include <Imm.h>
 #pragma data_seg(".xkmcs")

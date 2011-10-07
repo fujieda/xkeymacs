@@ -1,7 +1,6 @@
 // 109Keyboard.cpp : implementation file
 //
 
-#include "stdafx.h"
 #include "109Keyboard.h"
 
 #ifdef _DEBUG

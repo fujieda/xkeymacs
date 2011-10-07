@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "mainfrm64.h"
 
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)

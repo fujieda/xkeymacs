@@ -2,13 +2,13 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
-#include "xkeymacs.h"
-#include "Profile.h"
-#include "MainFrm.h"
-#include "DotXkeymacs.h"
+#include "profile.h"
 #include "imelist.h"
-#include <Shlwapi.h>
+#include "xkeymacs.h"
+#include "dotxkeymacs.h"
+#include "mainfrm.h"
+#include "../xkeymacsdll/xkeymacsdll.h"
+#include "../xkeymacsdll/Utils.h"
 #include <TlHelp32.h>
 
 #ifdef _DEBUG

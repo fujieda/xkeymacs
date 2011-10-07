@@ -1,12 +1,14 @@
 #if !defined(AFX_KEY_H__509440FD_B54D_4C17_AAA1_C394820F4FB6__INCLUDED_)
 #define AFX_KEY_H__509440FD_B54D_4C17_AAA1_C394820F4FB6__INCLUDED_
 
-#include "Profile.h"	// Added by ClassView
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 // Key.h : header file
 //
+
+#include "stdafx.h"
+#include "profile.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CKey window

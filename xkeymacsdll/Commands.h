@@ -2,14 +2,16 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "xkeymacsdll.h"
-
 #if !defined(AFX_COMMANDS_H__3AD9D537_AB40_40BB_9697_35F1BB0CA431__INCLUDED_)
 #define AFX_COMMANDS_H__3AD9D537_AB40_40BB_9697_35F1BB0CA431__INCLUDED_
 
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+
+#include "StdAfx.h"
+#include "defs.h"
+#include "ClipboardSnap.h"
 
 enum SEARCH_DIRECTION { NA, FORWARD, BACKWARD, AGAIN };
 enum MAXIMIZE_DIRECTION { VERTICAL, HORIZONTAL, ROLL_UP_UNROLL, MAX_MAXIMIZE_DIRECTION };
@@ -250,8 +252,6 @@ struct Command
 	int (*fCommand)();
 	KeyBind keybind[MAX_KEY_BIND];
 };
-
-#include "../xkeymacs/resource.h"
 
 const int MAX_COMMAND = 115;
 extern AFX_EXT_DATA const Command Commands[MAX_COMMAND];

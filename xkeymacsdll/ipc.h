@@ -5,6 +5,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "defs.h"
+
 #pragma warning(disable: 4324)
 __declspec(align(8)) struct ICONMSG {
 	ICON_TYPE nType;

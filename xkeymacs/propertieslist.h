@@ -4,11 +4,13 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-
-enum SORT_TYPE { SORT_CATEGORY, SORT_COMMAND, SORT_KEY };
-
 // PropertiesList.h : header file
 //
+
+#include "stdafx.h"
+#include "resource.h"
+enum SORT_TYPE { SORT_CATEGORY, SORT_COMMAND, SORT_KEY };
+class CProperties;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPropertiesList dialog
@@ -69,5 +71,7 @@ private:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
+
+#include "properties.h"
 
 #endif // !defined(AFX_PROPERTIESLIST_H__0BC352B3_8869_46D9_873B_D65D705F1228__INCLUDED_)

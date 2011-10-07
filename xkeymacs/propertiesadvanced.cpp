@@ -1,12 +1,10 @@
 // PropertiesAdvanced.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "xkeymacs.h"
-#include "DotXkeymacs.h"
-#include "Profile.h"
-#include "Properties.h"
-#include "PropertiesAdvanced.h"
+#include "propertiesadvanced.h"
+#include "resource.h"
+#include "profile.h"
+#include "dotxkeymacs.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

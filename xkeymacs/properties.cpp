@@ -1,10 +1,9 @@
 // Properties.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "xkeymacs.h"
-#include "Profile.h"
-#include "Properties.h"
+#include "properties.h"
+#include "resource.h"
+#include "profile.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

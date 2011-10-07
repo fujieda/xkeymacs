@@ -5,15 +5,15 @@
 #if !defined(AFX_MAINFRM_H__CF58719A_1B31_4BC0_8E55_06E0AE5BED2E__INCLUDED_)
 #define AFX_MAINFRM_H__CF58719A_1B31_4BC0_8E55_06E0AE5BED2E__INCLUDED_
 
-#include "OptionsDlg.h"	// Added by ClassView
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
 #include "about.h"
+#include "optionsdlg.h"
 #include "104Keyboard.h"
 #include "109Keyboard.h"
-#include "Properties.h"
+#include "properties.h"
 
 enum KEYBOARD_TYPE { UNKNOWN_KEYBOARD, ENGLISH_KEYBOARD, JAPANESE_KEYBOARD, MAX_KEYBOARD_TYPE };
 

@@ -5,6 +5,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "stdafx.h"
+
 class CMainFrame: public CFrameWnd
 {
 public:

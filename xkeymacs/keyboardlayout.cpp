@@ -1,5 +1,3 @@
-#include "stdafx.h"
-#include <Lmcons.h>
 #include "keyboardlayout.h"
 
 const int MAX_KEYBOARD_LAYOUT = 112;

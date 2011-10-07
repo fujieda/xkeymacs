@@ -5,6 +5,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "stdafx.h"
 #include "profile.h"
 #include "key.h"
 

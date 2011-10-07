@@ -1,12 +1,13 @@
 #if !defined(AFX_PROPERTIES_H__13ABBD97_6862_4CDA_86ED_4863B4845A1B__INCLUDED_)
 #define AFX_PROPERTIES_H__13ABBD97_6862_4CDA_86ED_4863B4845A1B__INCLUDED_
 
-#include "PropertiesBasic.h"	// Added by ClassView
-#include "PropertiesAdvanced.h"	// Added by ClassView
-#include "PropertiesList.h"	// Added by ClassView
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+
+#include "propertiesbasic.h"
+#include "propertiesadvanced.h"
+#include "propertieslist.h"
 
 enum TAB_NAME { BASIC_TAB = 1, ADVANCED_TAB = 2, LIST_TAB = 4, ACTIVE_TAB = 8 };
 

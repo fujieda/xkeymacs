@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "xkeymacsdll.h"
+#include "StdAfx.h"
 
 class AFX_EXT_CLASS CUtils  
 {

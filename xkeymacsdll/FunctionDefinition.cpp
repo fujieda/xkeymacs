@@ -2,9 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
 #include "FunctionDefinition.h"
-#include "Commands.h"
 #include "Utils.h"
 
 CFunctionDefinition::CFunctionDefinition(CString szSymbol, CString szDefinition)

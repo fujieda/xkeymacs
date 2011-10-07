@@ -1,9 +1,9 @@
 // Key.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "Key.h"
+#include "key.h"
 #include "keyboardlayout.h"
+#include "profile.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

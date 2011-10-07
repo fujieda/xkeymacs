@@ -9,9 +9,9 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <winperf.h>   // for Windows NT
 #include "resource.h"
 #include "properties.h"
+#include "../xkeymacsdll/ipc.h"
 
 struct TASK_LIST {
     DWORD dwProcessId;
