@@ -74,7 +74,7 @@ private:
 	static bool GetAppTitle(CString& appTitle, const CString& windowName, int nth = 1000);
 	static BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam);
 	static void SetDllData();
-	static CONFIG m_Config;
+	static Config m_Config;
 	static TCHAR m_szAppTitle[MAX_APP][WINDOW_TEXT_LENGTH];
 	static void DeleteAllRegistryData();
 	static TASK_LIST m_TaskList[MAX_TASKS];

@@ -304,7 +304,7 @@ static const KeyName KeyNames[] = {
 	{0xff,			_T("Fn")},
 };
 
-CONFIG CProfile::m_Config;
+Config CProfile::m_Config;
 TCHAR CProfile::m_szAppTitle[MAX_APP][WINDOW_TEXT_LENGTH];
 TASK_LIST CProfile::m_TaskList[MAX_TASKS];
 DWORD CProfile::m_dwTasks;

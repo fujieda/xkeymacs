@@ -203,7 +203,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 //////////////////////////////////////////////////////////////////////
 
 #pragma data_seg(".xkmcs")
-CONFIG CXkeymacsDll::m_Config = {0};
+Config CXkeymacsDll::m_Config = {0};
 bool CXkeymacsDll::m_bEnableKeyboardHook = false;
 BOOL CXkeymacsDll::m_bHook = TRUE;
 DWORD CXkeymacsDll::m_nHookAltRelease = 0;
@@ -260,7 +260,7 @@ BOOL CXkeymacsDll::LoadConfig()
 	return res;
 }
 
-void CXkeymacsDll::SetConfig(const CONFIG& config)
+void CXkeymacsDll::SetConfig(const Config& config)
 {
 	m_Config = config;
 }
@@ -331,7 +331,7 @@ BOOL CXkeymacsDll::IsKeyboardHook()
 
 void CXkeymacsDll::ShowKeyboardHookState()
 {
-	ICONMSG msg = {MAIN_ICON,};
+	IconMsg msg = {MAIN_ICON,};
 	if (m_bHook) {
 		if (CCommands::IsTemporarilyDisableXKeymacs()) {
 			msg.nState = STATUS_DISABLE_TMP;
@@ -458,7 +458,7 @@ void CXkeymacsDll::InitKeyboardProc(BOOL bImeComposition)
 		// Use Dialog Setting
 		m_nAppID = GetAppID(_T("Dialog"), m_nAppID);
 
-	ICONMSG msg[3] = {
+	IconMsg msg[3] = {
 		{CX_ICON, OFF_ICON, ""},
 		{MX_ICON, OFF_ICON, ""},
 		{META_ICON, OFF_ICON, ""}
@@ -847,7 +847,7 @@ void CXkeymacsDll::InvokeM_x(LPCTSTR szPath)
 
 void CXkeymacsDll::SetModifierIcons()
 {
-	ICONMSG msg[6] = {
+	IconMsg msg[6] = {
 		{MX_ICON, CCommands::bM_x(), ""},
 		{CX_ICON, CCommands::bC_x(), ""},
 		{META_ICON, CCommands::bM_(), ""},
@@ -866,10 +866,10 @@ void CXkeymacsDll::SetM_xTip(LPCTSTR szPath)
 		_stprintf_s(m_M_xTip, "M-x %s", szPath);
 }
 
-BOOL CXkeymacsDll::SendIconMessage(ICONMSG *pMsg, DWORD num)
+BOOL CXkeymacsDll::SendIconMessage(IconMsg *pMsg, DWORD num)
 {
 	DWORD ack, read;
-	return CallNamedPipe(ICON_PIPE, pMsg, sizeof(ICONMSG) * num, &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT) && read == sizeof(DWORD);
+	return CallNamedPipe(ICON_PIPE, pMsg, sizeof(IconMsg) * num, &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT) && read == sizeof(DWORD);
 }
 
 void CXkeymacsDll::Kdu(BYTE bVk, DWORD n, BOOL bOriginal)

@@ -7,14 +7,13 @@
 
 #include "defs.h"
 
-#pragma warning(disable: 4324)
-__declspec(align(8)) struct ICONMSG {
+struct IconMsg {
 	ICON_TYPE nType;
 	int nState;
 	TCHAR szTip[128];
 };
 
-__declspec(align(8)) struct CONFIG {
+struct Config {
 	BYTE b326Compatible[MAX_APP];
 	TCHAR szWindowText[MAX_APP][WINDOW_TEXT_LENGTH];
 	TCHAR szFunctionDefinition[MAX_FUNCTION][MAX_DEFINITION];
@@ -29,7 +28,6 @@ __declspec(align(8)) struct CONFIG {
 	BYTE nCommandID[MAX_APP][MAX_COMMAND_TYPE][MAX_KEY];
 	BYTE b106Keyboard;
 };
-#pragma warning(default: 4223)
 
 enum XKEYMACS_IPC { XKEYMACS_EXIT, XKEYMACS_RELOAD, XKEYMACS_RESET };
 

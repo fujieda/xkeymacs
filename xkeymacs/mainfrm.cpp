@@ -218,7 +218,7 @@ void CMainFrame::StartPollThread()
 void CMainFrame::TerminatePollThread()
 {
 	m_bPollIconMessage = FALSE;
-	ICONMSG nul = {MAIN_ICON,};
+	IconMsg nul = {MAIN_ICON,};
 	if (CXkeymacsDll::SendIconMessage(&nul, 1))
 		WaitForSingleObject(m_hThread, 5000);
 	CloseHandle(m_hThread);
@@ -228,13 +228,13 @@ DWORD WINAPI CMainFrame::PollIconMessage(LPVOID lpParam)
 {
 	CMainFrame *pThis = reinterpret_cast<CMainFrame *>(lpParam);
 	HANDLE hPipe = CreateNamedPipe(ICON_PIPE, PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1,
-									sizeof(DWORD), sizeof(ICONMSG) * MAX_ICON_TYPE, 0, NULL);
+									sizeof(DWORD), sizeof(IconMsg) * MAX_ICON_TYPE, 0, NULL);
 	if (hPipe == INVALID_HANDLE_VALUE)
 		return 1;
 	for (; ;) {
 		if (ConnectNamedPipe(hPipe, NULL) ? FALSE : (GetLastError() != ERROR_PIPE_CONNECTED))
 			break;
-		ICONMSG msg[MAX_ICON_TYPE];
+		IconMsg msg[MAX_ICON_TYPE];
 		DWORD read;
 		if (!ReadFile(hPipe, msg, sizeof(msg), &read, NULL))
 			break;
@@ -245,7 +245,7 @@ DWORD WINAPI CMainFrame::PollIconMessage(LPVOID lpParam)
 			break;
 		if (!pThis->m_bPollIconMessage)
 			break;
-		for (DWORD i = 0; i < read / sizeof(ICONMSG); ++i) {
+		for (DWORD i = 0; i < read / sizeof(IconMsg); ++i) {
 			pThis->m_stNtfyIcon[msg[i].nType].hIcon = pThis->m_hIcon[msg[i].nType][msg[i].nState];
 			if (msg[i].nType == MX_ICON && msg[i].szTip[0] != 0)
 				memcpy(pThis->m_stNtfyIcon[MX_ICON].szTip, msg[i].szTip, 128);

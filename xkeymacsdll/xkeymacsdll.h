@@ -23,7 +23,7 @@ class AFX_EXT_CLASS CXkeymacsDll
 public:
 	static BOOL SaveConfig();
 	static BOOL LoadConfig();
-	static void SetConfig(const CONFIG& config);
+	static void SetConfig(const Config& config);
 	static void SetHooks();
 	static void SetKeyboardHook();
 	static void ResetHooks();
@@ -33,7 +33,7 @@ public:
 	static BOOL IsKeyboardHook();
 	static void ShowKeyboardHookState();
 	static void SetM_xTip(LPCTSTR szPath);
-	static BOOL SendIconMessage(ICONMSG *pMsg, DWORD num);
+	static BOOL SendIconMessage(IconMsg *pMsg, DWORD num);
 	static BOOL IsDown(BYTE bVk, BOOL bPhysicalKey = TRUE);
 	static void Kdu(BYTE bVk, DWORD n = 1, BOOL bOriginal = TRUE);
 	static void DepressKey(BYTE bVk, BOOL bOriginal = TRUE);
@@ -54,7 +54,7 @@ public:
 	static void SetCursorData(HCURSOR hEnable, HCURSOR hDisableTMP, HCURSOR hDisableWOCQ, HICON hDisable, BOOL bEnable);
 
 private:
-	static CONFIG m_Config;
+	static Config m_Config;
 	static HHOOK m_hHookCallWnd;
 	static HHOOK m_hHookCallWndRet;
 	static HHOOK m_hHookGetMessage;
