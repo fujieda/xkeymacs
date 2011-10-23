@@ -274,7 +274,7 @@ void CXkeymacsDll::SetHooks()
 	m_bEnableKeyboardHook = true;
 }
 
-void CXkeymacsDll::SetKeyboardHook()
+void CXkeymacsDll::SetKeyboardHook(DWORD threadId)
 {
 	LPVOID lpData = TlsGetValue(g_TlsIndex);
 	if (!lpData) {
@@ -286,7 +286,7 @@ void CXkeymacsDll::SetKeyboardHook()
 	}
 	HHOOK *phHook = reinterpret_cast<HHOOK *>(lpData);
 	if (!*phHook)
-		*phHook = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, g_hDllInst, GetCurrentThreadId());
+		*phHook = SetWindowsHookEx(WH_KEYBOARD, KeyboardProc, g_hDllInst, threadId ? threadId : GetCurrentThreadId());
 }
 
 inline void unhook(HHOOK &hh)
@@ -420,8 +420,9 @@ LRESULT CALLBACK CXkeymacsDll::GetMsgProc(int nCode, WPARAM wParam, LPARAM lPara
 LRESULT CALLBACK CXkeymacsDll::ShellProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	if (nCode == HSHELL_WINDOWACTIVATED) {
-		TCHAR className[256];
-		GetClassName((HWND)wParam, className, 255);
+		SetKeyboardHook(GetWindowThreadProcessId(reinterpret_cast<HWND>(wParam), NULL));
+		TCHAR className[CLASS_NAME_LENGTH];
+		GetClassName(reinterpret_cast<HWND>(wParam), className, CLASS_NAME_LENGTH);
 		if (!_tcsicmp(className, _T("ConsoleWindowClass"))) {
 			InitKeyboardProc(FALSE);
 			ShowKeyboardHookState();

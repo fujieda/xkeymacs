@@ -25,7 +25,7 @@ public:
 	static BOOL LoadConfig();
 	static void SetConfig(const Config& config);
 	static void SetHooks();
-	static void SetKeyboardHook();
+	static void SetKeyboardHook(DWORD threadId = 0);
 	static void ResetHooks();
 	static void ReleaseHooks();
 	static void ReleaseKeyboardHook();
