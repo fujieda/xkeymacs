@@ -39,6 +39,9 @@
     <ClCompile Include="KbdMacro.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AppName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="xkeymacsdll.def">
@@ -80,6 +83,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="KbdMacro.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AppName.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

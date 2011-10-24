@@ -112,6 +112,7 @@ XKeymacs 3.48に由来するコードの著作権は
 * Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 * Tomohiro Kashiwada <kikairoya@gmail.com>
 * Harold Bamford <hbamford@users.sourceforge.net>
+* co <cogood@gmail.com>
 
 ライセンス
 ----------
