@@ -66,7 +66,7 @@ private:
 	static LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK ShellProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static int m_nAppID;
-	static void InitKeyboardProc(BOOL bImeComposition);
+	static void InitKeyboardProc(bool imeState);
 	static int GetAppID(LPCSTR szName, int fallback);
 	static BOOL m_bRightShift;
 	static BOOL m_bRightControl;

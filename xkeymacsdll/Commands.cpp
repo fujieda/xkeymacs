@@ -1005,7 +1005,7 @@ int CCommands::SaveBuffersKillEmacs()
 		}
 	}
 
-	if (CUtils::IsConsole()) {
+	if (AppName::IsConsole()) {
 		SystemMenu(CMD_CLOSE);
 	} else if (CUtils::IsExplorer()) {
 		ReleaseKey(VK_CONTROL);
@@ -1023,7 +1023,7 @@ int CCommands::SaveBuffersKillEmacs()
 int CCommands::IconifyOrDeiconifyFrame()
 {
 	ClearNumericArgument();
-	if (CUtils::IsConsole()) {
+	if (AppName::IsConsole()) {
 		SystemMenu(CMD_MINIMIZE);
 	} else {
 		AdKduAu(VK_SPACE, 'N');

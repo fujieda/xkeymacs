@@ -360,20 +360,20 @@ LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lPar
 		const CWPSTRUCT *cwps = reinterpret_cast<CWPSTRUCT *>(lParam);
 		switch (cwps->message) {
 		case WM_IME_STARTCOMPOSITION:
-			InitKeyboardProc(TRUE);
+			InitKeyboardProc(true);
 			break;
 		case WM_IME_ENDCOMPOSITION:
-			InitKeyboardProc(FALSE);
+			InitKeyboardProc(false);
 			break;
 		case WM_SETFOCUS:
 			if (cwps->hwnd == GetForegroundWindow()) {
-				InitKeyboardProc(FALSE);
+				InitKeyboardProc(false);
 				ShowKeyboardHookState();
 			}
 			break;
 		case WM_NCACTIVATE:
 			if (cwps->wParam && cwps->hwnd == GetForegroundWindow()) {
-				InitKeyboardProc(FALSE);
+				InitKeyboardProc(false);
 				ShowKeyboardHookState();
 			}
 			break;
@@ -390,7 +390,7 @@ LRESULT CALLBACK CXkeymacsDll::CallWndRetProc(int nCode, WPARAM wParam, LPARAM l
 		switch (cwprets->message) {
 		case WM_SETTEXT:
 			if (cwprets->hwnd == GetForegroundWindow())
-				InitKeyboardProc(FALSE);
+				InitKeyboardProc(false);
 			break;
 		case WM_SETCURSOR:
 			DoSetCursor();
@@ -407,10 +407,10 @@ LRESULT CALLBACK CXkeymacsDll::GetMsgProc(int nCode, WPARAM wParam, LPARAM lPara
 		const MSG *msg = reinterpret_cast<MSG *>(lParam);
 		switch (msg->message) {
 		case WM_IME_STARTCOMPOSITION:
-			InitKeyboardProc(TRUE);
+			InitKeyboardProc(true);
 			break;
 		case WM_IME_ENDCOMPOSITION:
-			InitKeyboardProc(FALSE);
+			InitKeyboardProc(false);
 			break;
 		}
 	}
@@ -424,20 +424,22 @@ LRESULT CALLBACK CXkeymacsDll::ShellProc(int nCode, WPARAM wParam, LPARAM lParam
 		TCHAR className[CLASS_NAME_LENGTH];
 		GetClassName(reinterpret_cast<HWND>(wParam), className, CLASS_NAME_LENGTH);
 		if (!_tcsicmp(className, _T("ConsoleWindowClass"))) {
-			InitKeyboardProc(FALSE);
+			InitKeyboardProc(false);
 			ShowKeyboardHookState();
 		}
 	}
 	return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
-void CXkeymacsDll::InitKeyboardProc(BOOL bImeComposition)
+void CXkeymacsDll::InitKeyboardProc(bool imeState)
 {
-	CUtils::SetApplicationName(bImeComposition);
-	if (_tcsnicmp(m_Config.szSpecialApp[m_nAppID], CUtils::GetApplicationName(), 0xF) || !IsMatchWindowText(m_Config.szWindowText[m_nAppID])) {	// PROCESSENTRY32 has only 0xF bytes of Name
+	AppName::Init();
+	AppName::SetIMEState(imeState);
+
+	if (_tcsnicmp(m_Config.szSpecialApp[m_nAppID], AppName::GetAppName(), 0xF) || !IsMatchWindowText(m_Config.szWindowText[m_nAppID])) {	// PROCESSENTRY32 has only 0xF bytes of Name
 		m_nAppID = -1;
 		for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
-			if (_tcsnicmp(m_Config.szSpecialApp[nAppID], CUtils::GetApplicationName(), 0xF) || !IsMatchWindowText(m_Config.szWindowText[nAppID]))
+			if (_tcsnicmp(m_Config.szSpecialApp[nAppID], AppName::GetAppName(), 0xF) || !IsMatchWindowText(m_Config.szWindowText[nAppID]))
 				continue;
 			if (m_nAppID < 0)
 				m_nAppID = nAppID;
@@ -455,7 +457,7 @@ void CXkeymacsDll::InitKeyboardProc(BOOL bImeComposition)
 	}
 	if (m_Config.nSettingStyle[m_nAppID] != SETTING_DISABLE &&
 			(_tcsicmp(m_Config.szSpecialApp[m_nAppID], _T("Default")) || !CUtils::IsDefaultIgnoreApplication()) &&
-			!bImeComposition && CUtils::IsDialog() && m_Config.bUseDialogSetting[m_nAppID])
+			!imeState && CUtils::IsDialog() && m_Config.bUseDialogSetting[m_nAppID])
 		// Use Dialog Setting
 		m_nAppID = GetAppID(_T("Dialog"), m_nAppID);
 

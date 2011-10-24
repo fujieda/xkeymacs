@@ -8,6 +8,7 @@
 #include "dotxkeymacs.h"
 #include "mainfrm.h"
 #include "../xkeymacsdll/xkeymacsdll.h"
+#include "../xkeymacsdll/AppName.h"
 #include "../xkeymacsdll/Utils.h"
 #include <TlHelp32.h>
 
@@ -379,7 +380,7 @@ BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
 			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("vim.exe"), sizeof(pTask[i].ProcessName))) {
 				appTitle.Format(_T("VIM"));
 			} else {
-				CUtils::SetCorrectApplicationName(pTask[i].ProcessName, szWindowName);
+				AppName::CorrectAppName(szWindowName, pTask[i].ProcessName);
 				GetAppTitle(appTitle, szWindowName);
 			}
 			break;

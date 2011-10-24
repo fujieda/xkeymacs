@@ -107,6 +107,7 @@ The following developers have the copyrights of their contributions.
 * Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
 * Tomohiro Kashiwada <kikairoya@gmail.com>
 * Harold Bamford <hbamford@users.sourceforge.net>
+* co <cogood@gmail.com>
 
 License
 -------

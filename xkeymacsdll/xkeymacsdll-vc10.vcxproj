@@ -200,6 +200,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AppName.cpp" />
     <ClCompile Include="ClipboardFormatSnap.cpp" />
     <ClCompile Include="ClipboardSnap.cpp" />
     <ClCompile Include="Commands.cpp" />
@@ -219,6 +220,7 @@
     <None Include="xkeymacsdll.def" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AppName.h" />
     <ClInclude Include="ClipboardFormatSnap.h" />
     <ClInclude Include="ClipboardSnap.h" />
     <ClInclude Include="Commands.h" />
