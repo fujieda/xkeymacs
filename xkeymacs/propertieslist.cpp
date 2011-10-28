@@ -75,8 +75,7 @@ void CPropertiesList::SetDialogData()
 		for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType) {
 			for (int nKey = 0; nKey < MAX_KEY; ++nKey)
 				if (nComID == CProfile::GetCommandID(nAppID, nType, nKey)) {
-					CString key;
-					key.Format(_T("%s%s"), CProfile::CommandType2String(nType), CProfile::Key2String(nKey));
+					CString key = CProfile::KeyToString(nType, nKey);
 					InsertItem(category, szComName, key);
 					bInserted = true;
 				}
