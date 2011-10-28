@@ -211,6 +211,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="KeyString.cpp" />
     <ClCompile Include="mainfrm.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -264,6 +265,7 @@
     <ClInclude Include="imelist.h" />
     <ClInclude Include="key.h" />
     <ClInclude Include="keyboardlayout.h" />
+    <ClInclude Include="KeyString.h" />
     <ClInclude Include="mainfrm.h" />
     <ClInclude Include="mainfrm64.h" />
     <ClInclude Include="optionsdlg.h" />

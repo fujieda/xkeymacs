@@ -33,7 +33,10 @@ static const Modifier Modifiers[] = {
 };
 static const int MAX_MODIFIER = _countof(Modifiers);
 
-static const KeyName KeyNames[] = {
+static const struct {
+	BYTE bVk;
+	LPCTSTR name;
+} KeyNames[] = {
 //	{ VK_LBUTTON,		_T("mouse-1") },				// does not work well
 //	{ VK_RBUTTON,		_T("mouse-3") },				// does not work well
 	{ VK_CANCEL,		_T("break") },

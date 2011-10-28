@@ -17,297 +17,11 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-struct CommandTypeName
-{
-	int nType;
-	LPCTSTR szName;
-};
-
-static const CommandTypeName CommandTypes[] = {
-	{NONE,							_T("")},
-	{SHIFT,							_T("Shift+")},
-	{CONTROL,						_T("Ctrl+")},
-	{CONTROL+SHIFT,					_T("Ctrl+Shift+")},
-	{META,							_T("Meta+")},
-	{META+SHIFT,					_T("Meta+Shift+")},
-	{CONTROL+META,					_T("Ctrl+Meta+")},
-	{CONTROL+META+SHIFT,			_T("Ctrl+Meta+Shift+")},
-	{CONTROLX+NONE,					_T("Ctrl+X ")},
-	{CONTROLX+SHIFT,				_T("Ctrl+X Shift+")},
-	{CONTROLX+CONTROL,				_T("Ctrl+X Ctrl+")},
-	{CONTROLX+CONTROL+SHIFT,		_T("Ctrl+X Ctrl+Shift+")},
-	{CONTROLX+META,					_T("Ctrl+X Meta+")},
-	{CONTROLX+META+SHIFT,			_T("Ctrl+X Meta+Shift+")},
-	{CONTROLX+CONTROL+META,			_T("Ctrl+X Ctrl+Meta+")},
-	{CONTROLX+CONTROL+META+SHIFT,	_T("Ctrl+X Ctrl+Meta+Shift+")},
-};
-
-static const KeyName KeyNames[] = {
-	{0,				_T("")},
-	{VK_LBUTTON,	_T("Left mouse button")},
-	{VK_RBUTTON,	_T("Right mouse button")},
-	{VK_CANCEL,		_T("Break")},
-	{VK_MBUTTON,	_T("Middle mouse button")},
-	{0x05,			_T("X1 mouse button")},	// VK_XBUTTON1
-	{0x06,			_T("X2 mouse button")},	// VK_XBUTTON2
-	{0x07,			_T("Undefined")},
-	{VK_BACK,		_T("Backspace")},
-	{VK_TAB,		_T("Tab")},
-	{0x0a,			_T("Reserved")},
-	{0x0b,			_T("Reserved")},
-	{VK_CLEAR,		_T("Clear")},
-	{VK_RETURN,		_T("Enter")},
-	{0x0e,			_T("Undefined")},
-	{0x0f,			_T("Undefined")},
-	{VK_SHIFT,		_T("Shift")},
-	{VK_CONTROL,	_T("Ctrl")},
-	{VK_MENU,		_T("Alt")},
-	{VK_PAUSE,		_T("Pause")},
-	{VK_CAPITAL,	_T("Caps Lock")},
-	{VK_KANA,		_T("Kana")},	//	{VK_HANGUEL,	"Hanguel"},	{VK_HANGUL,		"Hangul"},
-	{0x16,			_T("Undefined")},
-	{VK_JUNJA,		_T("Junja")},
-	{VK_FINAL,		_T("Final")},
-	{VK_KANJI,		_T("Kanji")},	//	{VK_HANJA,		"Hanja"},
-	{0x1a,			_T("Undefined")},
-	{VK_ESCAPE,		_T("Esc")},
-	{VK_CONVERT,	_T("Convert")},		// •ÏŠ·
-	{VK_NONCONVERT,	_T("Nonconvert")},	// –³•ÏŠ·
-	{VK_ACCEPT,		_T("Accept")},
-	{VK_MODECHANGE,	_T("Mode change")},
-	{VK_SPACE,		_T("Space")},
-	{VK_PRIOR,		_T("Page Up")},
-	{VK_NEXT,		_T("Page Down")},
-	{VK_END,		_T("End")},
-	{VK_HOME,		_T("Home")},
-	{VK_LEFT,		_T("Left")},
-	{VK_UP,			_T("Up")},
-	{VK_RIGHT,		_T("Right")},
-	{VK_DOWN,		_T("Down")},
-	{VK_SELECT,		_T("Select")},
-	{VK_PRINT,		_T("Print")},
-	{VK_EXECUTE,	_T("Execute")},
-	{VK_SNAPSHOT,	_T("Print Screen")},
-	{VK_INSERT,		_T("Ins")},
-	{VK_DELETE,		_T("Del")},
-	{VK_HELP,		_T("Help")},
-	{'0',			_T("0")},
-	{'1',			_T("1")},
-	{'2',			_T("2")},
-	{'3',			_T("3")},
-	{'4',			_T("4")},
-	{'5',			_T("5")},
-	{'6',			_T("6")},
-	{'7',			_T("7")},
-	{'8',			_T("8")},
-	{'9',			_T("9")},
-	{0x3a,			_T("Undefined")},
-	{0x3b,			_T("Undefined")},
-	{0x3c,			_T("Undefined")},
-	{0x3d,			_T("Undefined")},
-	{0x3e,			_T("Undefined")},
-	{0x3f,			_T("Undefined")},
-	{0x40,			_T("Undefined")},
-	{'A',			_T("A")},
-	{'B',			_T("B")},
-	{'C',			_T("C")},
-	{'D',			_T("D")},
-	{'E',			_T("E")},
-	{'F',			_T("F")},
-	{'G',			_T("G")},
-	{'H',			_T("H")},
-	{'I',			_T("I")},
-	{'J',			_T("J")},
-	{'K',			_T("K")},
-	{'L',			_T("L")},
-	{'M',			_T("M")},
-	{'N',			_T("N")},
-	{'O',			_T("O")},
-	{'P',			_T("P")},
-	{'Q',			_T("Q")},
-	{'R',			_T("R")},
-	{'S',			_T("S")},
-	{'T',			_T("T")},
-	{'U',			_T("U")},
-	{'V',			_T("V")},
-	{'W',			_T("W")},
-	{'X',			_T("X")},
-	{'Y',			_T("Y")},
-	{'Z',			_T("Z")},
-	{VK_LWIN,		_T("Left Windows")},
-	{VK_RWIN,		_T("Right Windows")},
-	{VK_APPS,		_T("Application")},
-	{0x5e,			_T("Reserved")},
-	{0x5f,			_T("Sleep")},	// VK_SLEEP
-	{VK_NUMPAD0,	_T("Num 0")},
-	{VK_NUMPAD1,	_T("Num 1")},
-	{VK_NUMPAD2,	_T("Num 2")},
-	{VK_NUMPAD3,	_T("Num 3")},
-	{VK_NUMPAD4,	_T("Num 4")},
-	{VK_NUMPAD5,	_T("Num 5")},
-	{VK_NUMPAD6,	_T("Num 6")},
-	{VK_NUMPAD7,	_T("Num 7")},
-	{VK_NUMPAD8,	_T("Num 8")},
-	{VK_NUMPAD9,	_T("Num 9")},
-	{VK_MULTIPLY,	_T("Num *")},
-	{VK_ADD,		_T("Num +")},
-	{VK_SEPARATOR,	_T("Separator")},
-	{VK_SUBTRACT,	_T("Num -")},
-	{VK_DECIMAL,	_T("Num .")},
-	{VK_DIVIDE,		_T("Num /")},
-	{VK_F1,			_T("F1")},
-	{VK_F2,			_T("F2")},
-	{VK_F3,			_T("F3")},
-	{VK_F4,			_T("F4")},
-	{VK_F5,			_T("F5")},
-	{VK_F6,			_T("F6")},
-	{VK_F7,			_T("F7")},
-	{VK_F8,			_T("F8")},
-	{VK_F9,			_T("F9")},
-	{VK_F10,		_T("F10")},
-	{VK_F11,		_T("F11")},
-	{VK_F12,		_T("F12")},
-	{VK_F13,		_T("F13")},
-	{VK_F14,		_T("F14")},
-	{VK_F15,		_T("F15")},
-	{VK_F16,		_T("F16")},
-	{VK_F17,		_T("F17")},
-	{VK_F18,		_T("F18")},
-	{VK_F19,		_T("F19")},
-	{VK_F20,		_T("F20")},
-	{VK_F21,		_T("F21")},
-	{VK_F22,		_T("F22")},
-	{VK_F23,		_T("F23")},
-	{VK_F24,		_T("F24")},
-	{0x88,			_T("Unassigned")},
-	{0x89,			_T("Unassigned")},
-	{0x8a,			_T("Unassigned")},
-	{0x8b,			_T("Unassigned")},
-	{0x8c,			_T("Unassigned")},
-	{0x8d,			_T("Unassigned")},
-	{0x8e,			_T("Unassigned")},
-	{0x8f,			_T("Unassigned")},
-	{VK_NUMLOCK,	_T("Num Lock")},
-	{VK_SCROLL,		_T("Scroll Lock")},
-	{0x92,			_T("OEM specific")},
-	{0x93,			_T("OEM specific")},
-	{0x94,			_T("OEM specific")},
-	{0x95,			_T("OEM specific")},
-	{0x96,			_T("OEM specific")},
-	{0x97,			_T("Unassigned")},
-	{0x98,			_T("Unassigned")},
-	{0x99,			_T("Unassigned")},
-	{0x9a,			_T("Unassigned")},
-	{0x9b,			_T("Unassigned")},
-	{0x9c,			_T("Unassigned")},
-	{0x9d,			_T("Unassigned")},
-	{0x9e,			_T("Unassigned")},
-	{0x9f,			_T("Unassigned")},
-	{VK_LSHIFT,		_T("Left Shift")},
-	{VK_RSHIFT,		_T("Right Shift")},
-	{VK_LCONTROL,	_T("Left Ctrl")},
-	{VK_RCONTROL,	_T("Right Ctrl")},
-	{VK_LMENU,		_T("Left Alt")},
-	{VK_RMENU,		_T("Right Alt")},
-	{0xa6,			_T("Browser Back")},		// VK_BROWSER_BACK
-	{0xa7,			_T("Browser Forward")},		// VK_BROWSER_FORWARD
-	{0xa8,			_T("Browser Refresh")},		// VK_BROWSER_REFRESH
-	{0xa9,			_T("Browser Stop")},		// VK_BROWSER_STOP
-	{0xaa,			_T("Browser Search")},		// VK_BROWSER_SEARCH
-	{0xab,			_T("Browser Favorites")},	// VK_BROWSER_FAVORITES
-	{0xac,			_T("Browser Start")},		// VK_BROWSER_HOME
-	{0xad,			_T("Volume Mute")},			// VK_VOLUME_MUTE
-	{0xae,			_T("Volume Down")},			// VK_VOLUME_DOWN
-	{0xaf,			_T("Volume Up")},			// VK_VOLUME_UP
-	{0xb0,			_T("Next Track")},			// VK_MEDIA_NEXT_TRACK
-	{0xb1,			_T("Previous Track")},		// VK_MEDIA_PREV_TRACK
-	{0xb2,			_T("Stop Media")},			// VK_MEDIA_STOP
-	{0xb3,			_T("Play/Pause Media")},	// VK_MEDIA_PLAY_PAUSE
-	{0xb4,			_T("Start Mail")},			// VK_LAUNCH_MAIL
-	{0xb5,			_T("Select Media")},		// VK_LAUNCH_MEDIA_SELECT
-	{0xb6,			_T("Start Application 1")},	// VK_LAUNCH_APP1
-	{0xb7,			_T("Start Application 2")},	// VK_LAUNCH_APP2
-	{0xb8,			_T("Reserved")},
-	{0xb9,			_T("Reserved")},
-	{0xba,			_T(";")},					// VK_OEM_1
-//	{0xba,			_T(":")},					// VK_OEM_1		// for Japanese keyboard
-	{0xbb,			_T("+")},					// VK_OEM_PLUS
-//	{0xbb,			_T(";")},					// VK_OEM_PLUS	// for Japanese keyboard
-	{0xbc,			_T(",")},					// VK_OEM_COMMA
-	{0xbd,			_T("-")},					// VK_OEM_MINUS
-	{0xbe,			_T(".")},					// VK_OEM_PERIOD
-	{0xbf,			_T("/")},					// VK_OEM_2
-	{0xc0,			_T("`")},					// VK_OEM_3
-//	{0xc0,			_T("@")},					// VK_OEM_3		// for Japanese keyboard
-	{0xc1,			_T("Reserved")},
-	{0xc2,			_T("Reserved")},
-	{0xc3,			_T("Reserved")},
-	{0xc4,			_T("Reserved")},
-	{0xc5,			_T("Reserved")},
-	{0xc6,			_T("Reserved")},
-	{0xc7,			_T("Reserved")},
-	{0xc8,			_T("Reserved")},
-	{0xc9,			_T("Reserved")},
-	{0xca,			_T("Reserved")},
-	{0xcb,			_T("Reserved")},
-	{0xcc,			_T("Reserved")},
-	{0xcd,			_T("Reserved")},
-	{0xce,			_T("Reserved")},
-	{0xcf,			_T("Reserved")},
-	{0xd0,			_T("Reserved")},
-	{0xd1,			_T("Reserved")},
-	{0xd2,			_T("Reserved")},
-	{0xd3,			_T("Reserved")},
-	{0xd4,			_T("Reserved")},
-	{0xd5,			_T("Reserved")},
-	{0xd6,			_T("Reserved")},
-	{0xd7,			_T("Reserved")},
-	{0xd8,			_T("Unassigned")},
-	{0xd9,			_T("Unassigned")},
-	{0xda,			_T("Unassigned")},
-	{0xdb,			_T("[")},					// VK_OEM_4
-	{0xdc,			_T("Backslash")},			// VK_OEM_5
-	{0xdd,			_T("]")},					// VK_OEM_6
-	{0xde,			_T("'")},					// VK_OEM_7
-	{0xdf,			_T("OEM specific")},		// VK_OEM_8
-	{0xe0,			_T("Reserved")},
-	{0xe1,			_T("OEM specific")},
-	{0xe2,			_T("Backslash for 106 keyboard")},	// VK_OEM_102
-	{0xe3,			_T("OEM specific")},
-	{0xe4,			_T("OEM specific")},
-	{0xe5,			_T("Process")},				// VK_PROCESSKEY
-	{0xe6,			_T("OEM specific")},
-	{0xe7,			_T("Packet")},	// VK_PACKET
-	{0xe8,			_T("Unassigned")},
-	{0xe9,			_T("OEM specific")},
-	{0xea,			_T("OEM specific")},
-	{0xeb,			_T("OEM specific")},
-	{0xec,			_T("OEM specific")},
-	{0xed,			_T("OEM specific")},
-	{0xee,			_T("OEM specific")},
-	{0xef,			_T("OEM specific")},
-	{0xf0,			_T("Eisu")},					// ‰p”
-	{0xf1,			_T("OEM specific")},
-	{0xf2,			_T("Hiragana")},				// ‚Ð‚ç‚ª‚È
-	{0xf3,			_T("Hankaku/Zenkaku 0xf3")},	// "”¼Šp/‘SŠp"
-	{0xf4,			_T("Hankaku/Zenkaku 0xf4")},	// "”¼Šp/‘SŠp"
-	{0xf5,			_T("OEM specific")},
-	{VK_ATTN,		_T("Attn")},
-	{VK_CRSEL,		_T("CrSel")},
-	{VK_EXSEL,		_T("ExSel")},
-	{VK_EREOF,		_T("Erace EOF")},
-	{VK_PLAY,		_T("Play")},
-	{VK_ZOOM,		_T("Zoom")},
-	{VK_NONAME,		_T("Noname")},
-	{VK_PA1,		_T("PA1")},
-	{VK_OEM_CLEAR,	_T("OEM Clear")},
-	{0xff,			_T("Fn")},
-};
-
 Config CProfile::m_Config;
 TCHAR CProfile::m_szAppTitle[MAX_APP][WINDOW_TEXT_LENGTH];
 TASK_LIST CProfile::m_TaskList[MAX_TASKS];
 DWORD CProfile::m_dwTasks;
+KeyString CProfile::m_KeyString(CProfile::Is106Keyboard() != FALSE);
 
 // This function returns the nth string in a window name separated by " - ".
 // If there aren't a sufficient number of strings, it returns the last string
@@ -428,7 +142,7 @@ void CProfile::LoadRegistry()
 				DWORD dwKeyBind = _countof(szKeyBind);
 				for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; ++dwIndex) {
 					int nType, nKey;
-					ReadKeyBind(nType, nKey, szKeyBind);
+					StringToKey(szKeyBind, nType, nKey);
 					m_Config.nCommandID[nAppID][nType][nKey] = nComID;
 					dwKeyBind = _countof(szKeyBind);
 				}
@@ -452,7 +166,7 @@ void CProfile::LoadRegistry()
 				DWORD dwKeyBind = _countof(szKeyBind);
 				for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; ++dwIndex) {
 					int nType, nKey;
-					ReadKeyBind(nType, nKey, szKeyBind);
+					StringToKey(szKeyBind, nType, nKey);
 					CDotXkeymacs::SetKey(nFuncID, nAppID, nType, nKey);
 					dwKeyBind = _countof(szKeyBind);
 				}
@@ -499,10 +213,9 @@ void CProfile::SaveRegistry()
 		entry.LoadString(IDS_REG_ENTRY_WINDOW_TEXT);
 		AfxGetApp()->WriteProfileString(szAppName, entry, m_Config.szWindowText[nAppID]);
 
-		const CString regApp = CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)) + _T("\\") + szAppName;
 		// Create all commands
 		for (int nComID = 1; nComID < MAX_COMMAND; ++nComID)
-			SaveCommand(szAppName, nComID);
+			SaveKeyBind(szAppName, nComID, 0, 0);
 		for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType)
 			for (int nKey = 0; nKey < MAX_KEY; ++nKey)
 				SaveKeyBind(szAppName, m_Config.nCommandID[nAppID][nType][nKey], nType, nKey);
@@ -575,107 +288,35 @@ void CProfile::SetDllData()
 	pApp->SendIPCMessage(XKEYMACS_RELOAD);
 }
 
-void CProfile::ReadKeyBind(int& nCommandType, int& nKey, const LPCTSTR szKeyBind)
+void CProfile::SaveKeyBind(const LPCTSTR appName, int comID, int type, int key)
 {
-	nCommandType = KeyBind2CommandType(szKeyBind);
-	nKey = KeyBind2Key(szKeyBind + _tcslen(CommandType2String(nCommandType)));
-}
-
-CString CProfile::WriteKeyBind(const int nType, const int nKey)
-{
-	CString szKeyBind;
-	szKeyBind.Format(_T("%s%s"), CommandType2String(nType), Key2String(nKey));
-	return szKeyBind;
-}
-
-int CProfile::KeyBind2CommandType(LPCTSTR szKeyBind)
-{
-	for (int nType = MAX_COMMAND_TYPE - 1; nType; --nType) {
-		if (IsCommandType(nType, szKeyBind)) {
-			return nType;
-		}
-	}
-	return NONE;
-}
-
-int CProfile::KeyBind2Key(LPCTSTR szKey)
-{
-	for (int nKey = 1; nKey <= 0xff; ++nKey) {
-		if (!_tcscmp(szKey, Key2String(nKey))) {
-			return nKey;
-		}
-	}
-	return 0;
-}
-
-LPCTSTR CProfile::CommandType2String(int nType)
-{
-	if (nType < 0 || sizeof(CommandTypes) / sizeof(CommandTypes[0]) <= nType) {
-		ASSERT(0);
-		nType = NONE;
-	}
-	return CommandTypes[nType].szName;
-}
-
-LPCTSTR CProfile::Key2String(int nKey)
-{
-	if (CProfile::Is106Keyboard()) {
-		switch (nKey) {
-		case 0xBA:
-			return _T(":");
-		case 0xBB:
-			return _T(";");
-		case 0xC0:
-			return _T("@");
-		case 0xDE:
-			return _T("^");
-		default:
-			break;
-		}
-	}
-
-	if (nKey < 0 || sizeof(KeyNames) / sizeof(KeyNames[0]) <= nKey) {
-		ASSERT(0);
-		nKey = 0;
-	}
-	return KeyNames[nKey].name;
-}
-
-BOOL CProfile::IsCommandType(const int nType, LPCTSTR szKeyBind)
-{
-	LPCTSTR szCommandType = CommandType2String(nType);
-
-	if (!_tcsnicmp(szKeyBind, szCommandType, _tcslen(szCommandType))) {
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-void CProfile::SaveKeyBind(const LPCSTR szAppName, const int nComID, const int nType, const int nKey)
-{
-	if (!nComID)
+	if (!comID)
 		return;
-	const LPCSTR szComName = CCommands::GetCommandName(nComID);
-	if (!szComName[0])
+	LPCTSTR comName = CCommands::GetCommandName(comID);
+	if (!comName[0])
 		return;
-	SaveKeyBind(szAppName, szComName, nType, nKey);
+	SaveKeyBind(appName, comName, type, key);
 }
 
-void CProfile::SaveKeyBind(const LPCSTR szAppName, const LPCSTR szComName, const int nType, const int nKey)
+void CProfile::SaveKeyBind(const LPCTSTR appName, const LPCTSTR comName, int type, int key)
 {
-	const CString szKeyBind = WriteKeyBind(nType, nKey);
-	CString szSubKey = CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)) + _T("\\") + szAppName + _T("\\") + szComName;
-	if (!szKeyBind.IsEmpty())
-		szSubKey += _T("\\") + szKeyBind;
+	CString subKey = CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)) + _T("\\") + appName + _T("\\") + comName;
+	CString s = KeyToString(type, key);
+	if (s.IsEmpty())
+		subKey = subKey + _T("\\") + s;
 	HKEY hKey = NULL;
-	if (RegCreateKeyEx(HKEY_CURRENT_USER, szSubKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, NULL) == ERROR_SUCCESS)
+	if (RegCreateKeyEx(HKEY_CURRENT_USER, subKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, NULL) == ERROR_SUCCESS)
 		RegCloseKey(hKey);
 }
 
-void CProfile::SaveCommand(const LPCSTR szAppName, const int nComID)
+void CProfile::StringToKey(const LPCTSTR str, int& type, int& key)
 {
-	SaveKeyBind(szAppName, nComID, 0, 0);
+	m_KeyString.ToKey(str, type, key);
+}
+
+CString CProfile::KeyToString(int type, int key)
+{
+	return m_KeyString.ToString(type, key);
 }
 
 void CProfile::AddKeyBind2C_(const LPCSTR szAppName, const BYTE bVk)
@@ -731,7 +372,7 @@ void CProfile::LevelUp()
 					DWORD dwKeyBind = sizeof(szKeyBind);
 					for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; ++dwIndex) {
 						int nType, nKey;
-						ReadKeyBind(nType, nKey, szKeyBind);
+						StringToKey(szKeyBind, nType, nKey);
 						SaveKeyBind(appName, CDotXkeymacs::GetFunctionSymbol(nFuncID), nType, nKey);
 						dwKeyBind = sizeof(szKeyBind);
 					}

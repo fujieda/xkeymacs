@@ -11,6 +11,7 @@
 
 #include "resource.h"
 #include "properties.h"
+#include "KeyString.h"
 #include "../xkeymacsdll/ipc.h"
 
 struct TASK_LIST {
@@ -44,9 +45,8 @@ public:
 	static void SetUseDialogSetting(int nAppID, BOOL bUseDialogSetting);
 	static int GetAppID(const LPCSTR szAppName);
 	static void CopyData(CString szDestinationApplication, CString szSourceApplication);
-	static void ReadKeyBind(int& pnCommandType, int& pnKey, LPCTSTR szKeyBind);
-	static LPCTSTR Key2String(int nKey);
-	static LPCTSTR CommandType2String(int nType);
+	static void StringToKey(LPCTSTR str, int& type, int& key);
+	static CString KeyToString(int type, int key);
 	static int GetKillRingMax(int nAppID);
 	static void SetKillRingMax(int nAppID, int nKillRingMax);
 	static int GetCommandID(int nAppID, int nType, int nKey);
@@ -64,12 +64,12 @@ public:
 	static void SaveData();
 
 private:
-	static void SaveKeyBind(const LPCSTR szAppName, const LPCSTR szComName, int nType, int nKey);
+	static KeyString m_KeyString;
 	static BOOL DiableTokenPrivileges();
 	static BOOL AdjustTokenPrivileges(LPCTSTR lpName);
-	static void SaveCommand(const LPCSTR szAppName, int nComID);
-	static void SaveKeyBind(const LPCSTR szAppName, int nComID, int nType, int nKey);
-	static void AddKeyBind2C_(const LPCSTR szApplicationName, BYTE bVk);
+	static void SaveKeyBind(const LPCTSTR appName, int comID, int type, int key);
+	static void SaveKeyBind(const LPCTSTR appName, const LPCTSTR comName, int type, int key);
+	static void AddKeyBind2C_(const LPCTSTR szApplicationName, BYTE bVk);
 	static void LevelUp();
 	static bool GetAppTitle(CString& appTitle, const CString& windowName, int nth = 1000);
 	static BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam);
@@ -80,10 +80,6 @@ private:
 	static TASK_LIST m_TaskList[MAX_TASKS];
 	static DWORD m_dwTasks;
 	static void GetTaskList();
-	static BOOL IsCommandType(int nType, LPCTSTR szKeyBind);
-	static int KeyBind2Key(const LPCTSTR szKey);
-	static int KeyBind2CommandType(const LPCTSTR szKeyBind);
-	static CString WriteKeyBind(int nType, int nKey);
 	static void LoadRegistry();
 	static void SaveRegistry();
 	static void AddIMEInfo(CProperties& cProperties);

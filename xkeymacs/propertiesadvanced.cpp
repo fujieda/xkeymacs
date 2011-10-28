@@ -258,9 +258,7 @@ void CPropertiesAdvanced::SetCurrentKeys()
 		for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType) {
 			for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
 				if (CCommands::GetCommandName(CProfile::GetCommandID(m_nAppID, nType, nKey)) == szCurrentCommandName) {
-					CString sz;
-					sz.Format(_T("%s%s"), CProfile::CommandType2String(nType), CProfile::Key2String(nKey));
-					m_cCurrentKeys.AddString(sz);
+					m_cCurrentKeys.AddString(CProfile::KeyToString(nType, nKey));
 				}
 			}
 		}
@@ -292,10 +290,7 @@ void CPropertiesAdvanced::SetCurrentKeys()
 			int nType = 0;
 			int nKey = 0;
 			CDotXkeymacs::GetKey(nIndex, m_nAppID, nKeyID, &nType, &nKey);
-
-			CString sz;
-			sz.Format(_T("%s%s"), CProfile::CommandType2String(nType), CProfile::Key2String(nKey));
-			m_cCurrentKeys.AddString(sz);
+			m_cCurrentKeys.AddString(CProfile::KeyToString(nType, nKey));
 		}
 
 		m_cDescription.SetWindowText(CDotXkeymacs::GetFunctionDefinition(szCurrentCommandName));
@@ -331,7 +326,7 @@ void CPropertiesAdvanced::OnSelchangeCurrentKeys()
 {
 	TCHAR szKeyBind[128] = {'\0'};
 	m_cCurrentKeys.GetText(m_cCurrentKeys.GetCurSel(), szKeyBind);
-	CProfile::ReadKeyBind(m_nRemoveCommandType, m_nRemoveKey, szKeyBind);
+	CProfile::StringToKey(szKeyBind, m_nRemoveCommandType, m_nRemoveKey);
 	m_cRemove.EnableWindow();
 }
 
@@ -354,9 +349,8 @@ void CPropertiesAdvanced::OnAssign()
 	CDotXkeymacs::RemoveKey(m_nAppID, m_nAssignCommandType, m_nAssignKey);
 
 	// Assign New Setting
-	CString szItem;
-	szItem.Format(_T("%s%s"), CProfile::CommandType2String(m_nAssignCommandType), CProfile::Key2String(m_nAssignKey));
-	if (m_cCurrentKeys.FindString(-1, szItem) == LB_ERR) {	// This key bind has not assignd to the same command yet.
+	CString item = CProfile::KeyToString(m_nAssignCommandType, m_nAssignKey);
+	if (m_cCurrentKeys.FindString(-1, item) == LB_ERR) {	// This key bind has not assignd to the same command yet.
 		CString szCategory;
 		m_cCategory.GetLBText(m_cCategory.GetCurSel(), szCategory);
 
@@ -368,7 +362,7 @@ void CPropertiesAdvanced::OnAssign()
 			m_cCommands.GetText(m_cCommands.GetCurSel(), szCurrentCommandName);
 			CDotXkeymacs::SetKey(CDotXkeymacs::GetIndex(szCurrentCommandName), m_nAppID, m_nAssignCommandType, m_nAssignKey);
 		}
-		m_cCurrentKeys.AddString(szItem);
+		m_cCurrentKeys.AddString(item);
 	}
 
 	ClearNewKey();
@@ -435,37 +429,25 @@ LRESULT CALLBACK CPropertiesAdvanced::KeyboardProc(int code, WPARAM wParam, LPAR
 
 void CPropertiesAdvanced::SetNewKey()
 {
-	CString szNewKey;
-	int nType = NONE;
-
-	if (m_bC_x) {
-		szNewKey += _T("Ctrl+X ");
-		nType += CONTROLX;
-	}
-	if (IsCtrlDown()) {
-		szNewKey += _T("Ctrl+");
-		nType += CONTROL;
-	}
-	if (IsMetaDown()) {
-		szNewKey += _T("Meta+");
-		nType += META;
-	}
-	if (IsShiftDown()) {
-		szNewKey += _T("Shift+");
-		nType += SHIFT;
-	}
-
+	UINT nType = NONE;
+	if (m_bC_x)
+		nType |= CONTROLX;
+	if (IsCtrlDown())
+		nType |= CONTROL;
+	if (IsMetaDown())
+		nType |= META;
+	if (IsShiftDown())
+		nType |= SHIFT;
 	m_nAssignCommandType = nType;
 
-	szNewKey += CProfile::Key2String(m_nAssignKey);
-	if (m_pNewKey) {
-		m_pNewKey->SetWindowText(szNewKey);
-	}
+	CString newKey = CProfile::KeyToString(nType, m_nAssignKey);
+	if (m_pNewKey)
+		m_pNewKey->SetWindowText(newKey);
 
 	if (m_pAssign) {
 		BOOL bEnable = TRUE;
 		if (m_pCurrentKeys
-		 && m_pCurrentKeys->FindString(-1, szNewKey) != LB_ERR) {	// This key bind is already assigned.
+		 && m_pCurrentKeys->FindString(-1, newKey) != LB_ERR) {	// This key bind is already assigned.
 			bEnable = FALSE;
 		}
 		m_pAssign->EnableWindow(bEnable);
