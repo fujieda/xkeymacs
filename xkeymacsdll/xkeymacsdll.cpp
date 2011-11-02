@@ -483,6 +483,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	const BYTE nOrigKey = static_cast<BYTE>(wParam);
 	const bool bRelease = (HIWORD(lParam) & KF_UP) != 0;
 	const bool bExtended = (HIWORD(lParam) & KF_EXTENDED) != 0;
+	BYTE nKey = nOrigKey;
 
 	static BOOL bLocked = FALSE;
 	static const BYTE RECURSIVE_KEY = 0x07;
@@ -509,7 +510,6 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 
 	CancelMarkWithShift(nOrigKey, bRelease);
 
-	BYTE nKey = nOrigKey;
 	switch (nKey) {
 	case VK_CONTROL:
 		nKey = bExtended ? VK_RCONTROL : VK_LCONTROL;

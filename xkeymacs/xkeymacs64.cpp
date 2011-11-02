@@ -9,7 +9,7 @@ CXkeymacsApp::CXkeymacsApp()
 
 CXkeymacsApp theApp;
 
-static UINT PollIPCMessage(LPVOID lpParam);
+static UINT PollIPCMessage(LPVOID);
 static void Start32bitProcess();
 
 BOOL CXkeymacsApp::InitInstance()
@@ -37,7 +37,7 @@ BOOL CXkeymacsApp::InitInstance()
 	return TRUE;
 }
 
-UINT PollIPCMessage(LPVOID lpParam)
+UINT PollIPCMessage(LPVOID)
 {
 	HANDLE hPipe = CreateNamedPipe(IPC_PIPE, PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1, 512, 512, 0, NULL);
 	if (hPipe == INVALID_HANDLE_VALUE)
