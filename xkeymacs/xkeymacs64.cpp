@@ -9,7 +9,7 @@ CXkeymacsApp::CXkeymacsApp()
 
 CXkeymacsApp theApp;
 
-static UINT PollIPCMessage(LPVOID lpParam);
+static UINT PollIPCMessage(LPVOID param);
 static void Start32bitProcess();
 
 BOOL CXkeymacsApp::InitInstance()
@@ -30,14 +30,14 @@ BOOL CXkeymacsApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_HIDE);
 	m_pMainWnd->UpdateWindow();
 
-	AfxBeginThread(PollIPCMessage, NULL);
+	AfxBeginThread(PollIPCMessage, m_pMainWnd);
 	if (start32bit)
 		Start32bitProcess();
 	CXkeymacsDll::SetHooks();
 	return TRUE;
 }
 
-UINT PollIPCMessage(LPVOID lpParam)
+UINT PollIPCMessage(LPVOID param)
 {
 	HANDLE hPipe = CreateNamedPipe(IPC_PIPE, PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1, 512, 512, 0, NULL);
 	if (hPipe == INVALID_HANDLE_VALUE)
@@ -69,7 +69,7 @@ UINT PollIPCMessage(LPVOID lpParam)
 exit:
 	CloseHandle(hPipe);
 	CXkeymacsDll::ReleaseHooks();
-	ExitProcess(0);
+	reinterpret_cast<CMainFrame *>(param)->SendMessage(WM_CLOSE);
 	return 0;
 }
 
@@ -95,13 +95,7 @@ void Start32bitProcess()
 
 int CXkeymacsApp::ExitInstance() 
 {
-	if (m_hMutex) {
+	if (m_hMutex)
 		CloseHandle(m_hMutex);
-
-		m_pMainWnd->DestroyWindow();
-		delete m_pMainWnd;
-		m_pMainWnd = NULL;
-	}
-
 	return CWinApp::ExitInstance();
 }

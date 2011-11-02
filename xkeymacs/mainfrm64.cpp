@@ -4,10 +4,10 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
 CMainFrame::CMainFrame()
 {
+	LPCTSTR title = _T("XKeymacs64");
+
 	// register window class
 	WNDCLASS	stWndClass;
-	CString szClassName(MAKEINTRESOURCE(AFX_IDS_APP_TITLE));
-
 	stWndClass.style			= CS_BYTEALIGNWINDOW;
 	stWndClass.lpfnWndProc		= &AfxWndProc;
 	stWndClass.cbClsExtra		= 0;
@@ -17,13 +17,11 @@ CMainFrame::CMainFrame()
 	stWndClass.hCursor			= NULL;
 	stWndClass.hbrBackground	= (HBRUSH)COLOR_BACKGROUND;
 	stWndClass.lpszMenuName		= NULL;
-	stWndClass.lpszClassName	= szClassName;
-
+	stWndClass.lpszClassName	= title;
 	AfxRegisterClass(&stWndClass);
 
 	// make window
-	CRect	rect(0, 0, 100, 100);
-
-	Create(szClassName, CString(MAKEINTRESOURCE(AFX_IDS_APP_TITLE)), WS_OVERLAPPEDWINDOW | WS_MINIMIZE, rect);
+	CRect rect(0, 0, 100, 100);
+	Create(title , title, WS_OVERLAPPEDWINDOW | WS_MINIMIZE, rect);
 }
 
