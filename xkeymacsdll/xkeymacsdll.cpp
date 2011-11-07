@@ -447,10 +447,10 @@ void CXkeymacsDll::InitKeyboardProc(bool imeState)
 			if (m_nAppID < 0)
 				m_nAppID = nAppID;
 			else {
-				const LPCSTR curText = m_Config.szWindowText[m_nAppID];
-				const LPCSTR newText = m_Config.szWindowText[nAppID];
-				const int curType = CUtils::GetWindowTextType(curText);
-				const int newType = CUtils::GetWindowTextType(newText);
+				LPCSTR curText = m_Config.szWindowText[m_nAppID];
+				LPCSTR newText = m_Config.szWindowText[nAppID];
+				int curType = CUtils::GetWindowTextType(curText);
+				int newType = CUtils::GetWindowTextType(newText);
 				if (curType < newType || curType == newType && _tcscmp(curText, newText) <= 0)
 					m_nAppID = nAppID;
 			}
@@ -485,9 +485,9 @@ int CXkeymacsDll::GetAppID(LPCSTR szName, int fallback)
 
 LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-	const BYTE nOrigKey = static_cast<BYTE>(wParam);
-	const bool bRelease = (HIWORD(lParam) & KF_UP) != 0;
-	const bool bExtended = (HIWORD(lParam) & KF_EXTENDED) != 0;
+	BYTE nOrigKey = static_cast<BYTE>(wParam);
+	bool bRelease = (HIWORD(lParam) & KF_UP) != 0;
+	bool bExtended = (HIWORD(lParam) & KF_EXTENDED) != 0;
 	BYTE nKey = nOrigKey;
 
 	static BOOL bLocked = FALSE;
@@ -545,7 +545,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		case VK_RWIN:
 		case VK_APPS:
 			for (int i = 0; i < MAX_COMMAND_TYPE; ++i) {
-				int (*const fCommand)() = fCommand(i);
+				int (*fCommand)() = fCommand(i);
 				if (fCommand && !(nOrigKey == VK_MENU && fCommand == CCommands::MetaAlt))
 					goto HOOK;
 			}
@@ -608,7 +608,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	if (CheckOriginal(nVirtualType, nOrigKey))
 		goto DO_NOTHING;
 
-	int (*const fCommand)() = fCommand(nType);
+	int (*fCommand)() = fCommand(nType);
 	if (fCommand == CCommands::EnableOrDisableXKeymacs) {
 		ToggleKeyboardHookState();
 		goto HOOK;
@@ -668,7 +668,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 			memset(szPath, 0, sizeof(szPath));
 			goto HOOK;
 		} else if (nKey && index < MAX_PATH - 1) {
-			const BOOL bIsShiftDown = IsDown(VK_SHIFT, FALSE);
+			BOOL bIsShiftDown = IsDown(VK_SHIFT, FALSE);
 			TCHAR nAscii = 0;
 			do { // 1-127
 				if (a2v(++nAscii) == nKey && bIsShiftDown == IsShift(nAscii)) {
@@ -983,7 +983,7 @@ void CXkeymacsDll::SetModifierState(UINT after, UINT before)
 		UpdateKeyboardState(VK_CONTROL, 0);
 	}
 
-	const BOOL bHookApp =
+	BOOL bHookApp =
 		CUtils::IsVisualCpp() ||  CUtils::IsVisualStudio() ||
 		CUtils::IsInternetExplorer() || CUtils::IsFirefox() || CUtils::IsChrome();
 	if (after & META && !(before & META)) {
@@ -1152,7 +1152,7 @@ void CXkeymacsDll::CallFunction(int nFuncID)
 	if (!def[0])
 		return;
 	std::vector<KeyBind> keybinds;
-	const LPCTSTR last = def + _tcslen(def) - 1;
+	LPCTSTR last = def + _tcslen(def) - 1;
 	if (*def == _T('"') && *last == _T('"')) {
 		++def; // skip '"'
 		while (def < last)
@@ -1184,8 +1184,8 @@ void CXkeymacsDll::CallFunction(int nFuncID)
 	UINT before = GetModifierState(FALSE);
 
 	for (std::vector<KeyBind>::const_iterator p = keybinds.begin(); p != keybinds.end(); ++p) {
-		const int nType = p->nType;
-		const BYTE bVk = p->bVk;
+		int nType = p->nType;
+		BYTE bVk = p->bVk;
 		int (*fCommand)() = nType < MAX_COMMAND_TYPE ? Commands[m_Config.nCommandID[m_nAppID][nType][bVk]].fCommand : NULL;
 		if (fCommand) {
 			if (fCommand == CCommands::ExecuteExtendedCommand)
@@ -1227,7 +1227,7 @@ void CXkeymacsDll::CallFunction(int nFuncID)
 		if (nType & SHIFT)
 			DepressKey(VK_SHIFT);
 		Kdu(bVk);
-		const int nNextType = (p + 1) != keybinds.end() ? (p + 1)->nType : 0;
+		int nNextType = (p + 1) != keybinds.end() ? (p + 1)->nType : 0;
 		if (nType & SHIFT && !(nNextType & SHIFT))
 			ReleaseKey(VK_SHIFT);
 		if (nType & WIN_ALT && !(nNextType & WIN_ALT))

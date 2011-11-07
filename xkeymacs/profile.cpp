@@ -68,7 +68,7 @@ void CProfile::DeleteAllRegistryData()
 
 void CProfile::LevelUp()
 {
-	const int nCurrentLevel = AfxGetApp()->GetProfileInt(_T(""), _T("Level"), 0);
+	int nCurrentLevel = AfxGetApp()->GetProfileInt(_T(""), _T("Level"), 0);
 	for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
 		CString entry;
 		entry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
@@ -122,7 +122,7 @@ void CProfile::LevelUp()
 	AfxGetApp()->WriteProfileInt(_T(""), _T("Level"), 4);
 }
 
-void CProfile::AddKeyBind2C_(const LPCSTR szAppName, const BYTE bVk)
+void CProfile::AddKeyBind2C_(LPCSTR szAppName, BYTE bVk)
 {
 	int nComID;
 	for (nComID = 0; nComID < MAX_COMMAND; ++nComID)
@@ -172,10 +172,10 @@ void CProfile::LoadRegistry()
 				RegCloseKey(hKey);
 			} else {
 				// Set the default assignment
-				for (int i = 0; const int nKey = CCommands::GetDefaultCommandKey(nComID, i); ++i) {
+				for (int i = 0; int nKey = CCommands::GetDefaultCommandKey(nComID, i); ++i) {
 					if (CCommands::GetDefaultControlID(nComID, i) == IDC_CO2)
 						continue;
-					const int nType = CCommands::GetDefaultCommandType(nComID, i);
+					int nType = CCommands::GetDefaultCommandType(nComID, i);
 					m_Config.nCommandID[nAppID][nType][nKey] = nComID;
 				}
 			}
@@ -219,7 +219,7 @@ void CProfile::SaveRegistry()
 {
 	const CString section(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION));	
 	for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
-		const LPCTSTR szAppName = m_Config.szSpecialApp[nAppID];
+		LPCTSTR szAppName = m_Config.szSpecialApp[nAppID];
 		CString entry;
 		entry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
 		if (!szAppName[0]) {
@@ -297,7 +297,7 @@ void CProfile::SetDllData()
 	pApp->SendIPCMessage(XKEYMACS_RELOAD);
 }
 
-void CProfile::SaveKeyBind(const LPCTSTR appName, int comID, int type, int key)
+void CProfile::SaveKeyBind(LPCTSTR appName, int comID, int type, int key)
 {
 	if (!comID)
 		return;
@@ -307,7 +307,7 @@ void CProfile::SaveKeyBind(const LPCTSTR appName, int comID, int type, int key)
 	SaveKeyBind(appName, comName, type, key);
 }
 
-void CProfile::SaveKeyBind(const LPCTSTR appName, const LPCTSTR comName, int type, int key)
+void CProfile::SaveKeyBind(LPCTSTR appName, LPCTSTR comName, int type, int key)
 {
 	CString subKey = CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)) + _T("\\") + appName + _T("\\") + comName;
 	CString s = KeyToString(type, key);
@@ -318,7 +318,7 @@ void CProfile::SaveKeyBind(const LPCTSTR appName, const LPCTSTR comName, int typ
 		RegCloseKey(hKey);
 }
 
-void CProfile::StringToKey(const LPCTSTR str, int& type, int& key)
+void CProfile::StringToKey(LPCTSTR str, int& type, int& key)
 {
 	m_KeyString.ToKey(str, type, key);
 }
@@ -335,8 +335,8 @@ void CProfile::InitAppList(CProperties& cProperties)
 	EnumWindows(EnumWindowsProc, reinterpret_cast<LPARAM>(&cProperties));
 
 	for (int i = 0; i < MAX_APP; ++i) {
-		const LPCTSTR szAppName = m_Config.szSpecialApp[i];
-		const LPCTSTR szAppTitle = m_szAppTitle[i];
+		LPCTSTR szAppName = m_Config.szSpecialApp[i];
+		LPCTSTR szAppTitle = m_szAppTitle[i];
 		if (!szAppName[0] || !_tcscmp(szAppName, _T("IME")))
 			continue;
 		if (CString(MAKEINTRESOURCE(IDS_DEFAULT)) == szAppName ||
@@ -367,7 +367,7 @@ void CProfile::GetTaskList()
 	CloseHandle(hProcessSnap);
 }
 
-BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
+BOOL CALLBACK CProfile::EnumWindowsProc(HWND hWnd, LPARAM lParam)
 {
 	CProperties *pProperties = reinterpret_cast<CProperties*>(lParam);
 	PTASK_LIST pTask = CProfile::m_TaskList;
@@ -440,7 +440,7 @@ BOOL CALLBACK CProfile::EnumWindowsProc(const HWND hWnd, const LPARAM lParam)
 bool CProfile::GetAppTitle(CString& appTitle, const CString& windowName, int nth)
 {
 	const CString sep(MAKEINTRESOURCE(IDS_SEPARATE_WINDOWTITLE));
-	const int nSep = windowName.Find(sep);
+	int nSep = windowName.Find(sep);
 	if (nSep < 0) {
 		appTitle = windowName;
 		return false;
@@ -471,8 +471,8 @@ void CProfile::ClearData(const CString szCurrentApplication)
 
 void CProfile::CopyData(const CString szDstApp, const CString szSrcApp)
 {
-	const int nDstApp = AssignAppID(szDstApp);
-	const int nSrcApp = GetAppID(szSrcApp);
+	int nDstApp = AssignAppID(szDstApp);
+	int nSrcApp = GetAppID(szSrcApp);
 	if (nDstApp == MAX_APP || nSrcApp == MAX_APP)
 		return;
 	SetSettingStyle(nDstApp, SETTING_SPECIFIC);
@@ -489,7 +489,7 @@ void CProfile::CopyData(const CString szDstApp, const CString szSrcApp)
 #undef CopyMember
 }
 
-int CProfile::AssignAppID(const LPCSTR szAppName)
+int CProfile::AssignAppID(LPCSTR szAppName)
 {
 	int nAppID = GetAppID(szAppName);
 	if (nAppID != MAX_APP)
@@ -511,7 +511,7 @@ int CProfile::DefaultAppID()
 	return MAX_APP;
 }
 
-int CProfile::GetAppID(const LPCSTR szAppName)
+int CProfile::GetAppID(LPCSTR szAppName)
 {
 	int nAppID = 0;
 	for (nAppID = 0; nAppID < MAX_APP; ++nAppID)
@@ -520,7 +520,7 @@ int CProfile::GetAppID(const LPCSTR szAppName)
 	return nAppID;
 }
 
-int CProfile::GetSettingStyle(const int nAppID)
+int CProfile::GetSettingStyle(int nAppID)
 {
 	if (nAppID == MAX_APP)
 		return SETTING_DEFAULT;
@@ -534,12 +534,12 @@ void CProfile::SetSettingStyle(int nAppID, int nSettingStyle)
 	m_Config.nSettingStyle[nAppID] = static_cast<BYTE>(nSettingStyle);
 }
 
-void CProfile::SetAppTitle(const int nAppID, const CString& appTitle)
+void CProfile::SetAppTitle(int nAppID, const CString& appTitle)
 {
 	_tcsncpy_s(m_szAppTitle[nAppID], appTitle, _TRUNCATE);
 }
 
-int CProfile::GetCommandID(const int nAppID, const int nType, const int nKey)
+int CProfile::GetCommandID(int nAppID, int nType, int nKey)
 {
 	int nComID = m_Config.nCommandID[nAppID][nType][nKey];
 	if (nKey == 0xf0 && Commands[nComID].fCommand == CCommands::C_Eisu)
@@ -550,7 +550,7 @@ int CProfile::GetCommandID(const int nAppID, const int nType, const int nKey)
 	return nComID;
 }
 
-void CProfile::SetCommandID(const int nAppID, const int nType, const int nKey, int nComID)
+void CProfile::SetCommandID(int nAppID, int nType, int nKey, int nComID)
 {
 	if (nKey == 0xf0 && Commands[nComID].fCommand == CCommands::C_)
 		// Change CommandID C_Eisu
@@ -560,42 +560,42 @@ void CProfile::SetCommandID(const int nAppID, const int nType, const int nKey, i
 	m_Config.nCommandID[nAppID][nType][nKey] = static_cast<BYTE>(nComID);
 }
 
-BOOL CProfile::GetUseDialogSetting(const int nAppID)
+BOOL CProfile::GetUseDialogSetting(int nAppID)
 {
 	return m_Config.bUseDialogSetting[nAppID];
 }
 
-void CProfile::SetUseDialogSetting(const int nAppID, const BOOL bUseDialogSetting)
+void CProfile::SetUseDialogSetting(int nAppID, BOOL bUseDialogSetting)
 {
 	m_Config.bUseDialogSetting[nAppID] = static_cast<BYTE>(bUseDialogSetting);
 }
 
-BOOL CProfile::GetEnableCUA(const int nAppID)
+BOOL CProfile::GetEnableCUA(int nAppID)
 {
 	return m_Config.bEnableCUA[nAppID];
 }
 
-void CProfile::SetEnableCUA(const int nAppID, const BOOL bEnableCUA)
+void CProfile::SetEnableCUA(int nAppID, BOOL bEnableCUA)
 {
 	m_Config.bEnableCUA[nAppID] = static_cast<BYTE>(bEnableCUA);
 }
 
-int CProfile::GetKillRingMax(const int nAppID)
+int CProfile::GetKillRingMax(int nAppID)
 {
 	return m_Config.nKillRingMax[nAppID];
 }
 
-void CProfile::SetKillRingMax(const int nAppID, const int nKillRingMax)
+void CProfile::SetKillRingMax(int nAppID, int nKillRingMax)
 {
 	m_Config.nKillRingMax[nAppID] = static_cast<BYTE>(nKillRingMax > 255 ? 255 : nKillRingMax);
 }
 
-CString CProfile::GetWindowText(const int nAppID)
+CString CProfile::GetWindowText(int nAppID)
 {
 	return m_Config.szWindowText[nAppID];
 }
 
-void CProfile::SetWindowText(const int nAppID, const CString szWindowText)
+void CProfile::SetWindowText(int nAppID, const CString szWindowText)
 {
 	if (CUtils::GetWindowTextType(szWindowText) == IDS_WINDOW_TEXT_IGNORE)
 		_tcscpy_s(m_Config.szWindowText[nAppID], _T("*"));
@@ -617,7 +617,7 @@ BOOL CProfile::Is106Keyboard()
 
 		if (verInfo.dwPlatformId == VER_PLATFORM_WIN32_NT) {
 			HKEY hKey = NULL;
-			CString szSubKey(_T("SYSTEM\\CurrentControlSet\\Services\\i8042prt\\Parameters"));
+			const CString szSubKey(_T("SYSTEM\\CurrentControlSet\\Services\\i8042prt\\Parameters"));
 			if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, szSubKey, 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS) {
 				static const CString szValueName(_T("OverrideKeyboardSubtype"));
 				if (RegQueryValueEx(hKey, szValueName, NULL, NULL, (LPBYTE)&subtype, &cbData) != ERROR_SUCCESS) {
