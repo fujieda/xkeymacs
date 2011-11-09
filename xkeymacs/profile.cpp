@@ -20,7 +20,7 @@ static char THIS_FILE[]=__FILE__;
 
 Config CProfile::m_Config;
 KeyString CProfile::m_KeyString(CProfile::Is106Keyboard() != FALSE);
-TCHAR CProfile::m_szAppTitle[MAX_APP][WINDOW_TEXT_LENGTH];
+TCHAR CProfile::m_AppTitle[MAX_APP][WINDOW_TEXT_LENGTH];
 TASK_LIST CProfile::m_TaskList[MAX_TASKS];
 DWORD CProfile::m_dwTasks;
 
@@ -122,13 +122,13 @@ void CProfile::LevelUp()
 	AfxGetApp()->WriteProfileInt(_T(""), _T("Level"), 4);
 }
 
-void CProfile::AddKeyBind2C_(LPCSTR szAppName, BYTE bVk)
+void CProfile::AddKeyBind2C_(LPCSTR appName, BYTE bVk)
 {
 	int nComID;
 	for (nComID = 0; nComID < MAX_COMMAND; ++nComID)
 		if (Commands[nComID].fCommand == CCommands::C_)
 			break;
-	SaveKeyBind(szAppName, nComID, NONE, bVk);
+	SaveKeyBind(appName, nComID, NONE, bVk);
 }
 
 void CProfile::LoadRegistry()
@@ -151,7 +151,7 @@ void CProfile::LoadRegistry()
 			bDialog = true;
 		_tcsncpy_s(m_Config.szSpecialApp[nAppID], appName, _TRUNCATE);
 		entry.LoadString(IDS_REG_ENTRY_APPLICATOIN_TITLE);
-		_tcsncpy_s(m_szAppTitle[nAppID], AfxGetApp()->GetProfileString(appName, entry), _TRUNCATE);
+		_tcsncpy_s(m_AppTitle[nAppID], AfxGetApp()->GetProfileString(appName, entry), _TRUNCATE);
 		entry.LoadString(IDS_REG_ENTRY_WINDOW_TEXT);
 		_tcsncpy_s(m_Config.szWindowText[nAppID], AfxGetApp()->GetProfileString(appName, entry, _T("*")), _TRUNCATE);
 
@@ -219,50 +219,50 @@ void CProfile::SaveRegistry()
 {
 	const CString section(MAKEINTRESOURCE(IDS_REG_SECTION_APPLICATION));	
 	for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
-		LPCTSTR szAppName = m_Config.szSpecialApp[nAppID];
+		LPCTSTR appName = m_Config.szSpecialApp[nAppID];
 		CString entry;
 		entry.Format(IDS_REG_ENTRY_APPLICATION, nAppID);
-		if (!szAppName[0]) {
+		if (!appName[0]) {
 			if (!AfxGetApp()->GetProfileString(section, entry).IsEmpty())
 				AfxGetApp()->WriteProfileString(section, entry, _T(""));
 			continue;
 		}
-		AfxGetApp()->WriteProfileString(section, entry, szAppName);
+		AfxGetApp()->WriteProfileString(section, entry, appName);
 
 		entry.LoadString(IDS_REG_ENTRY_APPLICATOIN_TITLE);
-		CString appTitle = m_szAppTitle[nAppID];
+		CString appTitle = m_AppTitle[nAppID];
 		appTitle.TrimLeft(_T(' '));
-		AfxGetApp()->WriteProfileString(szAppName, entry, appTitle);
+		AfxGetApp()->WriteProfileString(appName, entry, appTitle);
 		entry.LoadString(IDS_REG_ENTRY_WINDOW_TEXT);
-		AfxGetApp()->WriteProfileString(szAppName, entry, m_Config.szWindowText[nAppID]);
+		AfxGetApp()->WriteProfileString(appName, entry, m_Config.szWindowText[nAppID]);
 
 		// Create all commands
 		for (int nComID = 1; nComID < MAX_COMMAND; ++nComID)
-			SaveKeyBind(szAppName, nComID, 0, 0);
+			SaveKeyBind(appName, nComID, 0, 0);
 		for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType)
 			for (int nKey = 0; nKey < MAX_KEY; ++nKey)
-				SaveKeyBind(szAppName, m_Config.nCommandID[nAppID][nType][nKey], nType, nKey);
+				SaveKeyBind(appName, m_Config.nCommandID[nAppID][nType][nKey], nType, nKey);
 		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID)
 			for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nFuncID, nAppID); ++nKeyID) {
 				int nType, nKey;
 				CDotXkeymacs::GetKey(nFuncID, nAppID, nKeyID, &nType, &nKey);
-				SaveKeyBind(szAppName, CDotXkeymacs::GetFunctionSymbol(nFuncID), nType, nKey);
+				SaveKeyBind(appName, CDotXkeymacs::GetFunctionSymbol(nFuncID), nType, nKey);
 			}
 
 		entry.LoadString(IDS_REG_ENTRY_KILL_RING_MAX);
-		AfxGetApp()->WriteProfileInt(szAppName, entry, m_Config.nKillRingMax[nAppID]);
+		AfxGetApp()->WriteProfileInt(appName, entry, m_Config.nKillRingMax[nAppID]);
 		entry.LoadString(IDS_REG_ENTRY_USE_DIALOG_SETTING);
-		AfxGetApp()->WriteProfileInt(szAppName, entry, m_Config.bUseDialogSetting[nAppID]);
+		AfxGetApp()->WriteProfileInt(appName, entry, m_Config.bUseDialogSetting[nAppID]);
 		entry.LoadString(IDS_REG_ENTRY_DISABLE_XKEYMACS);
-		AfxGetApp()->WriteProfileInt(szAppName, entry, m_Config.nSettingStyle[nAppID] == SETTING_DISABLE);
+		AfxGetApp()->WriteProfileInt(appName, entry, m_Config.nSettingStyle[nAppID] == SETTING_DISABLE);
 		entry.LoadString(IDC_REG_ENTRY_IGNORE_META_CTRL);
-		AfxGetApp()->WriteProfileInt(szAppName, entry, m_Config.bIgnoreUndefinedMetaCtrl[nAppID]);
+		AfxGetApp()->WriteProfileInt(appName, entry, m_Config.bIgnoreUndefinedMetaCtrl[nAppID]);
 		entry.LoadString(IDC_REG_ENTRY_IGNORE_C_X);
-		AfxGetApp()->WriteProfileInt(szAppName, entry, m_Config.bIgnoreUndefinedC_x[nAppID]);
+		AfxGetApp()->WriteProfileInt(appName, entry, m_Config.bIgnoreUndefinedC_x[nAppID]);
 		entry.LoadString(IDC_REG_ENTRY_ENABLE_CUA);
-		AfxGetApp()->WriteProfileInt(szAppName, entry, m_Config.bEnableCUA[nAppID]);
+		AfxGetApp()->WriteProfileInt(appName, entry, m_Config.bEnableCUA[nAppID]);
 		entry.LoadString(IDS_REG_ENTRY_326_COMPATIBLE);
-		AfxGetApp()->WriteProfileInt(szAppName, entry, m_Config.b326Compatible[nAppID]);
+		AfxGetApp()->WriteProfileInt(appName, entry, m_Config.b326Compatible[nAppID]);
 	}
 }
 
@@ -335,14 +335,14 @@ void CProfile::InitAppList(CProperties& cProperties)
 	EnumWindows(EnumWindowsProc, reinterpret_cast<LPARAM>(&cProperties));
 
 	for (int i = 0; i < MAX_APP; ++i) {
-		LPCTSTR szAppName = m_Config.szSpecialApp[i];
-		LPCTSTR szAppTitle = m_szAppTitle[i];
-		if (!szAppName[0] || !_tcscmp(szAppName, _T("IME")))
+		LPCTSTR appName = m_Config.szSpecialApp[i];
+		LPCTSTR appTitle = m_AppTitle[i];
+		if (!appName[0] || !_tcscmp(appName, _T("IME")))
 			continue;
-		if (CString(MAKEINTRESOURCE(IDS_DEFAULT)) == szAppName ||
-				CString(MAKEINTRESOURCE(IDS_DIALOG)) == szAppName)
+		if (CString(MAKEINTRESOURCE(IDS_DEFAULT)) == appName ||
+				CString(MAKEINTRESOURCE(IDS_DIALOG)) == appName)
 			continue;
-		cProperties.AddItem(szAppTitle, szAppName);
+		cProperties.AddItem(appTitle, appName);
 	}
 	AddIMEInfo(cProperties);
 }
@@ -489,14 +489,14 @@ void CProfile::CopyData(const CString szDstApp, const CString szSrcApp)
 #undef CopyMember
 }
 
-int CProfile::AssignAppID(LPCSTR szAppName)
+int CProfile::AssignAppID(LPCSTR appName)
 {
-	int nAppID = GetAppID(szAppName);
+	int nAppID = GetAppID(appName);
 	if (nAppID != MAX_APP)
 		return nAppID;
 	for (nAppID = 0; nAppID < MAX_APP; ++nAppID)
 		if (!m_Config.szSpecialApp[nAppID][0]) {
-			_tcsncpy_s(m_Config.szSpecialApp[nAppID], szAppName, _TRUNCATE);
+			_tcsncpy_s(m_Config.szSpecialApp[nAppID], appName, _TRUNCATE);
 			return nAppID;
 		}
 	return nAppID;
@@ -511,11 +511,11 @@ int CProfile::DefaultAppID()
 	return MAX_APP;
 }
 
-int CProfile::GetAppID(LPCSTR szAppName)
+int CProfile::GetAppID(LPCSTR appName)
 {
 	int nAppID = 0;
 	for (nAppID = 0; nAppID < MAX_APP; ++nAppID)
-		if (!_tcscmp(szAppName, m_Config.szSpecialApp[nAppID]))
+		if (!_tcscmp(appName, m_Config.szSpecialApp[nAppID]))
 			break;
 	return nAppID;
 }
@@ -536,7 +536,7 @@ void CProfile::SetSettingStyle(int nAppID, int nSettingStyle)
 
 void CProfile::SetAppTitle(int nAppID, const CString& appTitle)
 {
-	_tcsncpy_s(m_szAppTitle[nAppID], appTitle, _TRUNCATE);
+	_tcsncpy_s(m_AppTitle[nAppID], appTitle, _TRUNCATE);
 }
 
 int CProfile::GetCommandID(int nAppID, int nType, int nKey)

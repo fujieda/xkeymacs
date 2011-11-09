@@ -37,9 +37,9 @@ public:
 	static void InitAppList(CProperties& cProperties);
 	static void CopyData(CString szDestinationApplication, CString szSourceApplication);
 	static void ClearData(CString szCurrentApplication);
-	static int AssignAppID(LPCSTR szAppName);
+	static int AssignAppID(LPCSTR appName);
 	static int DefaultAppID();
-	static int GetAppID(LPCSTR szAppName);
+	static int GetAppID(LPCSTR appName);
 	static int GetSettingStyle(int nAppID);
 	static void SetSettingStyle(int nAppID, int nSettingStyle);
 	static void SetAppTitle(int nAppID, const CString& appTitle);
@@ -63,7 +63,7 @@ public:
 private:
 	static Config m_Config;
 	static KeyString m_KeyString;
-	static TCHAR m_szAppTitle[MAX_APP][WINDOW_TEXT_LENGTH];
+	static TCHAR m_AppTitle[MAX_APP][WINDOW_TEXT_LENGTH];
 	static void DeleteAllRegistryData();
 	static void LevelUp();
 	static void AddKeyBind2C_(LPCTSTR szApplicationName, BYTE bVk);
