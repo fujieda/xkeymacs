@@ -92,7 +92,6 @@ private:
 	static KeyBind ParseKey(LPCTSTR& def);
 	static BOOL IsShift(TCHAR nAscii);
 	static BYTE a2v(TCHAR nAscii);
-	static BOOL IsMatchWindowText(CString szWindowText);
 	static int m_nAccelerate;
 	static int m_nKeyboardSpeed;
 	static HCURSOR m_hCurrentCursor;

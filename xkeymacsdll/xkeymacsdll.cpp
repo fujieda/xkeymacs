@@ -439,10 +439,12 @@ void CXkeymacsDll::InitKeyboardProc(bool imeState)
 	AppName::Init();
 	AppName::SetIMEState(imeState);
 
-	if (_tcsnicmp(m_Config.szSpecialApp[m_nAppID], AppName::GetAppName(), 0xF) || !IsMatchWindowText(m_Config.szWindowText[m_nAppID])) {	// PROCESSENTRY32 has only 0xF bytes of Name
+	if (_tcsnicmp(m_Config.szSpecialApp[m_nAppID], AppName::GetAppName(), 0xF) || // PROCESSENTRY32 has only 0xF bytes of Name
+			!CUtils::IsMatchWindowText(m_Config.szWindowText[m_nAppID])) {
 		m_nAppID = -1;
 		for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
-			if (_tcsnicmp(m_Config.szSpecialApp[nAppID], AppName::GetAppName(), 0xF) || !IsMatchWindowText(m_Config.szWindowText[nAppID]))
+			if (_tcsnicmp(m_Config.szSpecialApp[nAppID], AppName::GetAppName(), 0xF) ||
+					!CUtils::IsMatchWindowText(m_Config.szWindowText[nAppID]))
 				continue;
 			if (m_nAppID < 0)
 				m_nAppID = nAppID;
@@ -1421,38 +1423,6 @@ BYTE CXkeymacsDll::a2v(TCHAR nAscii)
 	default:
 		return 0;
 	}
-}
-
-BOOL CXkeymacsDll::IsMatchWindowText(CString szWindowText)
-{
-	BOOL bIsMatchWindowText = TRUE;
-
-	TCHAR szCurrentWindowText[WINDOW_TEXT_LENGTH] = {'\0'};
-	GetWindowText(GetForegroundWindow(), szCurrentWindowText, sizeof(szCurrentWindowText));
-
-	switch (CUtils::GetWindowTextType(szWindowText)) {
-	case IDS_WINDOW_TEXT_MATCH:								// *foo*
-		szWindowText.Delete(0);								// Delete first '*'
-		szWindowText.Delete(szWindowText.GetLength() - 1);	// Delete last '*'
-		bIsMatchWindowText = 0 <= CString(szCurrentWindowText).Find(szWindowText);
-		break;
-	case IDS_WINDOW_TEXT_MATCH_FORWARD:						// foo*
-		szWindowText.Delete(szWindowText.GetLength() - 1);	// Delete last '*'
-		bIsMatchWindowText = 0 == CString(szCurrentWindowText).Find(szWindowText);
-		break;
-	case IDS_WINDOW_TEXT_MATCH_BACKWARD:					// *foo
-		szWindowText.Delete(0);								// Delete first '*'
-		bIsMatchWindowText = 0 <= CString(szCurrentWindowText).Find(szWindowText, CString(szCurrentWindowText).GetLength() - szWindowText.GetLength());
-		break;
-	case IDS_WINDOW_TEXT_MATCH_FULL:						// foo
-		bIsMatchWindowText = szWindowText == CString(szCurrentWindowText);
-		break;
-	case IDS_WINDOW_TEXT_IGNORE:							// *
-		bIsMatchWindowText = TRUE;
-		break;
-	}
-//	CUtils::Log(_T("IsMatchWindowText: %d, _%s_, _%s_"), bIsMatchWindowText, szCurrentWindowText, szWindowText);
-	return bIsMatchWindowText;
 }
 
 void CXkeymacsDll::SetAccelerate(int nAccelerate)

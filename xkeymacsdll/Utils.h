@@ -15,10 +15,11 @@ class AFX_EXT_CLASS CUtils
 {
 public:
 	static bool IsConsole();
+	static int GetWindowTextType(const CString& text);
+	static bool IsMatchWindowText(const CString& text);
 	static BOOL GetFindDialogTitle(CString *szDialogTitle);
 	static BOOL IsAtok();
 	static BOOL IsLunascape();
-	static int GetWindowTextType(CString strWindowText);
 	static BOOL IsThunderbird();
 	static BOOL IsOpenJane();
 	static BOOL IsVisualSlickEdit();

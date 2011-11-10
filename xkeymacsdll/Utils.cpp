@@ -12,6 +12,39 @@ bool CUtils::IsConsole()
 	return AppName::IsConsole();
 }
 
+int CUtils::GetWindowTextType(const CString& text)
+{
+	int len = text.GetAllocLength();
+	if (len >= 3 && text[0] == _T('*') && text[len - 1] == _T('*'))
+		return IDS_WINDOW_TEXT_MATCH;
+	else if (len >= 2 && text[0] != _T('*') && text[len - 1] == _T('*'))
+		return IDS_WINDOW_TEXT_MATCH_FORWARD;
+	else if (len >= 2 && text[0] == _T('*') && text[len - 1] != _T('*'))
+		return IDS_WINDOW_TEXT_MATCH_BACKWARD;
+	else if (len > 0 && text[0] != _T('*') && text[len - 1] != _T('*'))
+		return IDS_WINDOW_TEXT_MATCH_FULL;
+	return IDS_WINDOW_TEXT_IGNORE;
+}
+
+bool CUtils::IsMatchWindowText(const CString& text)
+{
+	int len = text.GetLength();
+	TCHAR buf[WINDOW_TEXT_LENGTH];
+	GetWindowText(GetForegroundWindow(), buf, sizeof(buf));
+	CString current(buf);
+	switch (GetWindowTextType(text)) {
+	case IDS_WINDOW_TEXT_MATCH:								// *foo*
+		return current.Find(text.Mid(1, len - 2)) >= 0;
+	case IDS_WINDOW_TEXT_MATCH_FORWARD:						// foo*
+		return current.Left(len - 1) == text.Left(len - 1);
+	case IDS_WINDOW_TEXT_MATCH_BACKWARD:					// *foo
+		return current.Right(len - 1) == text.Right(len - 1);
+	case IDS_WINDOW_TEXT_MATCH_FULL:						// foo
+		return current == text;
+	}
+	return true;
+}
+
 BOOL CUtils::GetFindDialogTitle(CString *szDialogTitle)
 {
 	{
@@ -685,31 +718,6 @@ BOOL CUtils::IsOpenJane()
 BOOL CUtils::IsThunderbird()
 {
 	return AppName::Match(_T("thunderbird.exe"));
-}
-
-int CUtils::GetWindowTextType(CString strWindowText)
-{
-	int nWindowTextType = IDS_WINDOW_TEXT_IGNORE;
-
-	if (3 <= strWindowText.GetLength()
-	 && strWindowText.Find(_T('*')) == 0
-	 && strWindowText.ReverseFind(_T('*')) == strWindowText.GetLength() - 1) {
-		nWindowTextType = IDS_WINDOW_TEXT_MATCH;
-	} else if (2 <= strWindowText.GetLength()
-			&& strWindowText.Find(_T('*')) != 0
-			&& strWindowText.ReverseFind(_T('*')) == strWindowText.GetLength() - 1) {
-		nWindowTextType = IDS_WINDOW_TEXT_MATCH_FORWARD;
-	} else if (2 <= strWindowText.GetLength()
-			&& strWindowText.Find(_T('*')) == 0
-			&& strWindowText.ReverseFind(_T('*')) != strWindowText.GetLength() - 1) {
-		nWindowTextType = IDS_WINDOW_TEXT_MATCH_BACKWARD;
-	} else if (!strWindowText.IsEmpty()
-			&& strWindowText.Find(_T('*')) != 0
-			&& strWindowText.ReverseFind(_T('*')) != strWindowText.GetLength() - 1) {
-		nWindowTextType = IDS_WINDOW_TEXT_MATCH_FULL;
-	}
-
-	return nWindowTextType;
 }
 
 BOOL CUtils::IsLunascape()
