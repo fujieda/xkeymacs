@@ -36,7 +36,7 @@ public:
 	static CString KeyToString(int type, int key);
 	static void InitAppList(CProperties& cProperties);
 	static void ClearData(LPCTSTR appName);
-	static void CopyData(LPCTSTR dstApp, LPCTSTR srcApp);
+	static void CopyDefault(LPCTSTR appName);
 	static int AssignAppID(LPCTSTR appName);
 	static int DefaultAppID();
 	static int GetAppID(LPCTSTR appName);

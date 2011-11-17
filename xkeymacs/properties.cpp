@@ -294,7 +294,7 @@ void CProperties::OnApply()
 
 void CProperties::OnLoadDefault() 
 {
-	CProfile::CopyData(m_appName, CString(MAKEINTRESOURCE(IDS_DEFAULT)));
+	CProfile::CopyDefault(m_appName);
 	SetDialogData();
 }
 
@@ -336,7 +336,7 @@ void CProperties::OnSettingSpecific()
 	EnableControl(ACTIVE_TAB);
 
 	if (CProfile::GetAppID(m_appName) == MAX_APP) {
-		CProfile::CopyData(m_appName, CString(MAKEINTRESOURCE(IDS_DEFAULT)));
+		CProfile::CopyDefault(m_appName);
 		SetDialogData();
 	}
 }

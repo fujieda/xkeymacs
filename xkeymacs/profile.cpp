@@ -461,23 +461,22 @@ void CProfile::AddIMEInfo(CProperties& cProperties)
 
 void CProfile::ClearData(LPCTSTR appName)
 {
-	for (int nAppID = 0; nAppID < MAX_APP; ++nAppID)
-		if (!_tcscmp(appName, m_Config.szSpecialApp[nAppID])) {
-			ZeroMemory(m_Config.nCommandID[nAppID], sizeof(m_Config.nCommandID[nAppID]));
-			ZeroMemory(m_Config.szSpecialApp[nAppID], CLASS_NAME_LENGTH);
-			return;
-		}
+	int n = GetAppID(appName);
+	if (n == MAX_APP)
+		return;
+	ZeroMemory(m_Config.nCommandID[n], sizeof(m_Config.nCommandID[n]));
+	ZeroMemory(m_Config.szSpecialApp[n], CLASS_NAME_LENGTH);
 }
 
-void CProfile::CopyData(LPCTSTR dst, LPCTSTR src)
+void CProfile::CopyDefault(LPCTSTR appName)
 {
-	int nDstApp = AssignAppID(dst);
-	int nSrcApp = GetAppID(src);
-	if (nDstApp == MAX_APP || nSrcApp == MAX_APP)
+	int dst = AssignAppID(appName);
+	int src = DefaultAppID();
+	if (src == MAX_APP || dst == MAX_APP)
 		return;
-	SetSettingStyle(nDstApp, SETTING_SPECIFIC);
+	SetSettingStyle(dst, SETTING_SPECIFIC);
 
-#define CopyMember(member) CopyMemory(&m_Config. ## member ## [nDstApp], &m_Config. ## member ## [nSrcApp], sizeof(m_Config. ## member ## [nSrcApp]))
+#define CopyMember(member) CopyMemory(&m_Config. ## member ## [dst], &m_Config. ## member ## [src], sizeof(m_Config. ## member ## [src]))
 	CopyMember(b326Compatible);
 	CopyMember(nFunctionID);
 	CopyMember(bEnableCUA);
@@ -597,10 +596,8 @@ LPCTSTR CProfile::GetWindowText(int nAppID)
 
 void CProfile::SetWindowText(int nAppID, const CString& text)
 {
-	if (CUtils::GetWindowTextType(text) == IDS_WINDOW_TEXT_IGNORE)
-		_tcscpy_s(m_Config.szWindowText[nAppID], _T("*"));
-	else
-		_tcsncpy_s(m_Config.szWindowText[nAppID], text, _TRUNCATE);
+	_tcsncpy_s(m_Config.szWindowText[nAppID],
+		CUtils::GetWindowTextType(text) == IDS_WINDOW_TEXT_IGNORE ? _T("*") : text, _TRUNCATE);
 }
 
 BOOL CProfile::Is106Keyboard()
