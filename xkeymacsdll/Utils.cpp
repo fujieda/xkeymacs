@@ -242,7 +242,7 @@ BOOL CUtils::GetClipboardText(CString& text)
 	const LPVOID pMem = GlobalLock(hClipboard);
 	if (!pMem)
 		return FALSE;
-	text = reinterpret_cast<LPCSTR>(pMem);
+	text = reinterpret_cast<LPCTSTR>(pMem);
 	GlobalUnlock(hClipboard);
 	EmptyClipboard();
 	CloseClipboard();

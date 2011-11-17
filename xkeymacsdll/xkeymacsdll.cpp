@@ -447,8 +447,8 @@ void CXkeymacsDll::InitKeyboardProc(bool imeState)
 			if (m_nAppID < 0)
 				m_nAppID = nAppID;
 			else {
-				LPCSTR curText = m_Config.szWindowText[m_nAppID];
-				LPCSTR newText = m_Config.szWindowText[nAppID];
+				LPCTSTR curText = m_Config.szWindowText[m_nAppID];
+				LPCTSTR newText = m_Config.szWindowText[nAppID];
 				int curType = CUtils::GetWindowTextType(curText);
 				int newType = CUtils::GetWindowTextType(newText);
 				if (curType < newType || curType == newType && _tcscmp(curText, newText) <= 0)
@@ -475,7 +475,7 @@ void CXkeymacsDll::InitKeyboardProc(bool imeState)
 	CCommands::Reset();
 }
 
-int CXkeymacsDll::GetAppID(LPCSTR szName, int fallback)
+int CXkeymacsDll::GetAppID(LPCTSTR szName, int fallback)
 {
 	for (int i = 0; i < MAX_APP; ++i)
 		if (!_tcsicmp(m_Config.szSpecialApp[i], szName))

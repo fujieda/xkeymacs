@@ -35,11 +35,11 @@ public:
 	static void StringToKey(LPCTSTR str, int& type, int& key);
 	static CString KeyToString(int type, int key);
 	static void InitAppList(CProperties& cProperties);
-	static void CopyData(CString szDestinationApplication, CString szSourceApplication);
-	static void ClearData(CString szCurrentApplication);
-	static int AssignAppID(LPCSTR appName);
+	static void ClearData(LPCTSTR appName);
+	static void CopyData(LPCTSTR dstApp, LPCTSTR srcApp);
+	static int AssignAppID(LPCTSTR appName);
 	static int DefaultAppID();
-	static int GetAppID(LPCSTR appName);
+	static int GetAppID(LPCTSTR appName);
 	static int GetSettingStyle(int nAppID);
 	static void SetSettingStyle(int nAppID, int nSettingStyle);
 	static void SetAppTitle(int nAppID, const CString& appTitle);
@@ -51,8 +51,8 @@ public:
 	static BOOL GetEnableCUA(int nAppID);
 	static int GetKillRingMax(int nAppID);
 	static void SetKillRingMax(int nAppID, int nKillRingMax);
-	static CString GetWindowText(int nAppID);
-	static void SetWindowText(int nAppID, CString szWindowText);
+	static LPCTSTR GetWindowText(int nAppID);
+	static void SetWindowText(int nAppID, const CString& text);
 	static BOOL Is106Keyboard();
 	static BOOL IsVistaOrLater();
 	static void RestartComputer();

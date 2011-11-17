@@ -4005,7 +4005,7 @@ int CCommands::ExecuteExtendedCommand()
 	return Reset(GOTO_HOOKX);
 }
 
-LPCSTR CCommands::GetCommandName(int nComID)
+LPCTSTR CCommands::GetCommandName(int nComID)
 {
 	return Commands[nComID].szCommandName;
 }

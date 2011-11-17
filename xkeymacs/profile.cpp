@@ -122,7 +122,7 @@ void CProfile::LevelUp()
 	AfxGetApp()->WriteProfileInt(_T(""), _T("Level"), 4);
 }
 
-void CProfile::AddKeyBind2C_(LPCSTR appName, BYTE bVk)
+void CProfile::AddKeyBind2C_(LPCTSTR appName, BYTE bVk)
 {
 	int nComID;
 	for (nComID = 0; nComID < MAX_COMMAND; ++nComID)
@@ -459,20 +459,20 @@ void CProfile::AddIMEInfo(CProperties& cProperties)
 		cProperties.AddItem(p->szDescription, p->szFileName);
 }
 
-void CProfile::ClearData(const CString szCurrentApplication)
+void CProfile::ClearData(LPCTSTR appName)
 {
 	for (int nAppID = 0; nAppID < MAX_APP; ++nAppID)
-		if (szCurrentApplication == m_Config.szSpecialApp[nAppID]) {
+		if (!_tcscmp(appName, m_Config.szSpecialApp[nAppID])) {
 			ZeroMemory(m_Config.nCommandID[nAppID], sizeof(m_Config.nCommandID[nAppID]));
 			ZeroMemory(m_Config.szSpecialApp[nAppID], CLASS_NAME_LENGTH);
 			return;
 		}
 }
 
-void CProfile::CopyData(const CString szDstApp, const CString szSrcApp)
+void CProfile::CopyData(LPCTSTR dst, LPCTSTR src)
 {
-	int nDstApp = AssignAppID(szDstApp);
-	int nSrcApp = GetAppID(szSrcApp);
+	int nDstApp = AssignAppID(dst);
+	int nSrcApp = GetAppID(src);
 	if (nDstApp == MAX_APP || nSrcApp == MAX_APP)
 		return;
 	SetSettingStyle(nDstApp, SETTING_SPECIFIC);
@@ -489,7 +489,7 @@ void CProfile::CopyData(const CString szDstApp, const CString szSrcApp)
 #undef CopyMember
 }
 
-int CProfile::AssignAppID(LPCSTR appName)
+int CProfile::AssignAppID(LPCTSTR appName)
 {
 	int nAppID = GetAppID(appName);
 	if (nAppID != MAX_APP)
@@ -511,7 +511,7 @@ int CProfile::DefaultAppID()
 	return MAX_APP;
 }
 
-int CProfile::GetAppID(LPCSTR appName)
+int CProfile::GetAppID(LPCTSTR appName)
 {
 	int nAppID = 0;
 	for (nAppID = 0; nAppID < MAX_APP; ++nAppID)
@@ -590,17 +590,17 @@ void CProfile::SetKillRingMax(int nAppID, int nKillRingMax)
 	m_Config.nKillRingMax[nAppID] = static_cast<BYTE>(nKillRingMax > 255 ? 255 : nKillRingMax);
 }
 
-CString CProfile::GetWindowText(int nAppID)
+LPCTSTR CProfile::GetWindowText(int nAppID)
 {
 	return m_Config.szWindowText[nAppID];
 }
 
-void CProfile::SetWindowText(int nAppID, const CString szWindowText)
+void CProfile::SetWindowText(int nAppID, const CString& text)
 {
-	if (CUtils::GetWindowTextType(szWindowText) == IDS_WINDOW_TEXT_IGNORE)
+	if (CUtils::GetWindowTextType(text) == IDS_WINDOW_TEXT_IGNORE)
 		_tcscpy_s(m_Config.szWindowText[nAppID], _T("*"));
 	else
-		_tcsncpy_s(m_Config.szWindowText[nAppID], szWindowText, _TRUNCATE);
+		_tcsncpy_s(m_Config.szWindowText[nAppID], text, _TRUNCATE);
 }
 
 BOOL CProfile::Is106Keyboard()

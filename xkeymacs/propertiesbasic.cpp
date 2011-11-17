@@ -150,7 +150,7 @@ void CPropertiesBasic::SetDialogData()
 	if (nAppID == MAX_APP)
 		return;
 	for (int nComID = 0; nComID < MAX_COMMAND; ++nComID) {
-		const LPCSTR szComName = CCommands::GetCommandName(nComID);
+		const LPCTSTR szComName = CCommands::GetCommandName(nComID);
 		if (!szComName[0])
 			return;
 		for (int i = 0; const int nKey = CCommands::GetDefaultCommandKey(nComID, i); ++i) {
@@ -189,7 +189,7 @@ void CPropertiesBasic::GetDialogData()
 	if (nAppID == MAX_APP)
 		return;
 	for (int nComID = 0; nComID < MAX_COMMAND; ++nComID) {
-		const LPCSTR szComName = CCommands::GetCommandName(nComID);
+		const LPCTSTR szComName = CCommands::GetCommandName(nComID);
 		if (!szComName[0])
 			return;
 		for (int i = 0; const int nKey = CCommands::GetDefaultCommandKey(nComID, i); ++i) {

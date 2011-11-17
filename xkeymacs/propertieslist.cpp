@@ -65,7 +65,7 @@ void CPropertiesList::SetDialogData()
 
 	const int nAppID = m_pProperties->GetApplicationID();
 	for (int nComID = 1; nComID < MAX_COMMAND; ++nComID) {
-		const LPCSTR szComName = CCommands::GetCommandName(nComID);
+		const LPCTSTR szComName = CCommands::GetCommandName(nComID);
 		if (!szComName[0])
 			break;
 		const CString category(MAKEINTRESOURCE(CCommands::GetCategoryID(nComID)));
