@@ -257,7 +257,7 @@ void CPropertiesAdvanced::SetCurrentKeys()
 	if (szCategory.Compare(CString(MAKEINTRESOURCE(IDS_ORIGINAL)))) {
 		for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType) {
 			for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-				if (CCommands::GetCommandName(CProfile::GetCommandID(m_nAppID, nType, nKey)) == szCurrentCommandName) {
+				if (CCommands::GetCommandName(CProfile::GetCmdID(m_nAppID, nType, nKey)) == szCurrentCommandName) {
 					m_cCurrentKeys.AddString(CProfile::KeyToString(nType, nKey));
 				}
 			}
@@ -344,8 +344,8 @@ void CPropertiesAdvanced::OnSetfocusNewKey()
 void CPropertiesAdvanced::OnAssign() 
 {
 	// Remove Current Setting
-	CProfile::SetCommandID(m_nAppID, m_nAssignCommandType, m_nAssignKey, 0);
-	SetCommandID(m_nAssignCommandType, m_nAssignKey, 0);
+	CProfile::SetCmdID(m_nAppID, m_nAssignCommandType, m_nAssignKey, 0);
+	SetCmdID(m_nAssignCommandType, m_nAssignKey, 0);
 	CDotXkeymacs::RemoveKey(m_nAppID, m_nAssignCommandType, m_nAssignKey);
 
 	// Assign New Setting
@@ -355,8 +355,8 @@ void CPropertiesAdvanced::OnAssign()
 		m_cCategory.GetLBText(m_cCategory.GetCurSel(), szCategory);
 
 		if (szCategory.Compare(CString(MAKEINTRESOURCE(IDS_ORIGINAL)))) {
-			CProfile::SetCommandID(m_nAppID, m_nAssignCommandType, m_nAssignKey, m_nCommandID);
-			SetCommandID(m_nAssignCommandType, m_nAssignKey, m_nCommandID);
+			CProfile::SetCmdID(m_nAppID, m_nAssignCommandType, m_nAssignKey, m_nCommandID);
+			SetCmdID(m_nAssignCommandType, m_nAssignKey, m_nCommandID);
 		} else {
 			CString szCurrentCommandName;
 			m_cCommands.GetText(m_cCommands.GetCurSel(), szCurrentCommandName);
@@ -374,8 +374,8 @@ void CPropertiesAdvanced::OnRemove()
 	m_cCategory.GetLBText(m_cCategory.GetCurSel(), szCategory);
 
 	if (szCategory.Compare(CString(MAKEINTRESOURCE(IDS_ORIGINAL)))) {
-		CProfile::SetCommandID(m_nAppID, m_nRemoveCommandType, m_nRemoveKey, 0);
-		SetCommandID(m_nRemoveCommandType, m_nRemoveKey, 0);
+		CProfile::SetCmdID(m_nAppID, m_nRemoveCommandType, m_nRemoveKey, 0);
+		SetCmdID(m_nRemoveCommandType, m_nRemoveKey, 0);
 	} else {
 		CString szCurrentCommandName;
 		m_cCommands.GetText(m_cCommands.GetCurSel(), szCurrentCommandName);
@@ -465,7 +465,7 @@ void CPropertiesAdvanced::SetNewKey()
 	}
 }
 
-void CPropertiesAdvanced::SetCommandID(int nType, int nKey, int nComID)
+void CPropertiesAdvanced::SetCmdID(int nType, int nKey, int nComID)
 {
 	m_nCommandIDs[nType][nKey] = nComID;
 
@@ -502,7 +502,7 @@ void CPropertiesAdvanced::InitCommandIDs()
 {
 	for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType) {
 		for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-			SetCommandID(nType, nKey, CProfile::GetCommandID(m_nAppID, nType, nKey));
+			SetCmdID(nType, nKey, CProfile::GetCmdID(m_nAppID, nType, nKey));
 		}
 	}
 }
@@ -526,7 +526,7 @@ void CPropertiesAdvanced::OnKillfocusNewKey()
 void CPropertiesAdvanced::OnEnableCua() 
 {
 	UpdateData();
-	CProfile::SetEnableCUA(m_nAppID, m_bEnableCUA);
+	CProfile::SetEnableCUA(m_nAppID, m_bEnableCUA != FALSE);
 }
 
 BOOL CPropertiesAdvanced::IsCtrlDown()
@@ -553,7 +553,7 @@ BOOL CPropertiesAdvanced::IsShiftDown()
 BOOL CPropertiesAdvanced::IsFooDown(CString szCommandName)
 {
 	for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-		if (CCommands::GetCommandName(CProfile::GetCommandID(0, NONE, nKey)) == szCommandName) {	// FIXME
+		if (CCommands::GetCommandName(CProfile::GetCmdID(0, NONE, nKey)) == szCommandName) {	// FIXME
 			if (GetKeyState(nKey) < 0) {
 				return TRUE;
 			}

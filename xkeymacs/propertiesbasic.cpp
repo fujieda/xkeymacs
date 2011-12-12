@@ -156,7 +156,7 @@ void CPropertiesBasic::SetDialogData()
 		for (int i = 0; const int nKey = CCommands::GetDefaultCommandKey(nComID, i); ++i) {
 			const int nType = CCommands::GetDefaultCommandType(nComID, i);
 			const int nControlID = CCommands::GetDefaultControlID(nComID, i);
-			if (nComID != CProfile::GetCommandID(nAppID, nType, nKey))
+			if (nComID != CProfile::GetCmdID(nAppID, nType, nKey))
 				CheckDlgButton(nControlID, BST_UNCHECKED);
 		}
 	}
@@ -198,10 +198,10 @@ void CPropertiesBasic::GetDialogData()
 			if (!m_bChanged[nComID])
 				continue;
 			if (IsDlgButtonChecked(nControlID)) {
-				CProfile::SetCommandID(nAppID, nType, nKey, nComID);
+				CProfile::SetCmdID(nAppID, nType, nKey, nComID);
 				CDotXkeymacs::RemoveKey(nAppID, nType, nKey);
 			} else if (nControlID != IDC_CO2)
-				CProfile::SetCommandID(nAppID, nType, nKey, 0);
+				CProfile::SetCmdID(nAppID, nType, nKey, 0);
 		}
 	}
 }

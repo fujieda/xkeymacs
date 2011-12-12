@@ -13,20 +13,24 @@ struct IconMsg {
 	TCHAR szTip[128];
 };
 
+struct AppConfig {
+	TCHAR AppName[CLASS_NAME_LENGTH];
+	TCHAR WindowText[WINDOW_TEXT_LENGTH];
+	BYTE SettingStyle;
+	BYTE CmdID[MAX_COMMAND_TYPE][MAX_KEY];
+	BYTE FuncID[MAX_COMMAND_TYPE][MAX_KEY];
+	BYTE KillRingMax;
+	bool Is326Compatible;
+	bool EnableCUA;
+	bool UseDialogSetting;
+	bool IgnoreUndefC_x;
+	bool IgnoreUndefMetaCtrl;
+};
+
 struct Config {
-	BYTE b326Compatible[MAX_APP];
-	TCHAR szWindowText[MAX_APP][WINDOW_TEXT_LENGTH];
-	TCHAR szFunctionDefinition[MAX_FUNCTION][MAX_DEFINITION];
-	BYTE nFunctionID[MAX_APP][MAX_COMMAND_TYPE][MAX_KEY];
-	BYTE bEnableCUA[MAX_APP];
-	BYTE bUseDialogSetting[MAX_APP];
-	BYTE bIgnoreUndefinedC_x[MAX_APP];
-	BYTE bIgnoreUndefinedMetaCtrl[MAX_APP];
-	BYTE nSettingStyle[MAX_APP];
-	BYTE nKillRingMax[MAX_APP];
-	TCHAR szSpecialApp[MAX_APP][CLASS_NAME_LENGTH];
-	BYTE nCommandID[MAX_APP][MAX_COMMAND_TYPE][MAX_KEY];
-	BYTE b106Keyboard;
+	AppConfig AppConfig[MAX_APP];
+	TCHAR FuncDef[MAX_FUNCTION][MAX_DEFINITION];
+	bool Is106Keyboard;
 };
 
 enum XKEYMACS_IPC { XKEYMACS_EXIT, XKEYMACS_RELOAD, XKEYMACS_RESET };

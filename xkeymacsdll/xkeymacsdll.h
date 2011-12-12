@@ -42,9 +42,9 @@ public:
 	static void AddKillRing(BOOL bNewData = TRUE);
 	static CClipboardSnap* GetKillRing(CClipboardSnap *pSnap, BOOL bForce = TRUE);
 	static void IncreaseKillRingIndex(int nKillRing = 1);
-	static BOOL GetEnableCUA();
-	static BOOL Get326Compatible();
-	static BOOL Is106Keyboard();
+	static bool GetEnableCUA();
+	static bool Get326Compatible();
+	static bool Is106Keyboard();
 	static void SetKbMacro(KbdMacro* kbdMacro);
 	static int GetAccelerate(void);
 	static void SetAccelerate(int nAccelerate);
@@ -54,6 +54,7 @@ public:
 
 private:
 	static Config m_Config;
+	static AppConfig* m_CurrentConfig;
 	static HHOOK m_hHookCallWnd;
 	static HHOOK m_hHookCallWndRet;
 	static HHOOK m_hHookGetMessage;
@@ -65,9 +66,8 @@ private:
 	static LRESULT CALLBACK CallWndRetProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK ShellProc(int nCode, WPARAM wParam, LPARAM lParam);
-	static int m_nAppID;
 	static void InitKeyboardProc(bool imeState);
-	static int GetAppID(LPCTSTR szName, int fallback);
+	static AppConfig* GetAppConfig(LPCTSTR szName, AppConfig* fallback);
 	static BOOL m_bRightShift;
 	static BOOL m_bRightControl;
 	static BOOL m_bRightAlt;
