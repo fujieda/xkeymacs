@@ -4,6 +4,7 @@
 #include "properties.h"
 #include "resource.h"
 #include "profile.h"
+#include "AppList.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -125,7 +126,7 @@ void CProperties::OnSelchangeApplication()
 void CProperties::InitAppList()
 {
 	m_cAppList.ResetContent();
-	CProfile::InitAppList(*this);
+	AppList::SetAppList(*this);
 	// Add Dialog
 	m_cAppList.InsertString(0, CString(MAKEINTRESOURCE(IDS_DIALOG_TITLE)));
 	// Add Default

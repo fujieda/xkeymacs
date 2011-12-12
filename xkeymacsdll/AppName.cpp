@@ -5,7 +5,7 @@
 #pragma data_seg(".xkmcs")
 TCHAR AppName::m_FallbackIMEName[MAX_PATH] = _T("");
 #pragma data_seg()
-TCHAR AppName::m_AppName[MAX_PATH] = _T("");
+TCHAR AppName::m_AppName[CLASS_NAME_LENGTH] = _T("");
 TCHAR AppName::m_IMEName[MAX_PATH] = _T("");
 bool AppName::m_Inited = false;
 bool AppName::m_IMEState = false;
@@ -52,7 +52,7 @@ void AppName::SetIMEState(bool on)
 }
 
 // The code starting here is derived from work by co <cogood—gmail.com>.
-void AppName::CorrectAppName(TCHAR (&text)[WINDOW_TEXT_LENGTH], TCHAR (&appName)[MAX_PATH])
+void AppName::CorrectAppName(TCHAR (&text)[WINDOW_TEXT_LENGTH], TCHAR (&appName)[CLASS_NAME_LENGTH])
 {
 	CString s(text);
 	if (IsConsole(appName)) {
@@ -133,7 +133,7 @@ bool AppName::IsCmdExe(const CString& text)
 	return false;
 }
 
-void AppName::ConsoleAppName(CString& text, TCHAR (&appName)[MAX_PATH])
+void AppName::ConsoleAppName(CString& text, TCHAR (&appName)[CLASS_NAME_LENGTH])
 {
 	int endQuote = text.Find(_T('"'), 1);
 	int space = text.Find(_T(' '), 1);

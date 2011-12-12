@@ -8,7 +8,7 @@ public:
 	static void Init();
 	static LPCTSTR GetAppName();
 	static void SetIMEState(bool on);
-	static void CorrectAppName(TCHAR (&text)[WINDOW_TEXT_LENGTH], TCHAR (&appName)[MAX_PATH]);
+	static void CorrectAppName(TCHAR (&text)[WINDOW_TEXT_LENGTH], TCHAR (&appName)[CLASS_NAME_LENGTH]);
 	static bool IsConsole();
 	static bool Match(LPCTSTR name);
 	template<size_t size> static bool Match(LPCTSTR (&names)[size])
@@ -19,12 +19,12 @@ public:
 		return false;
 	}
 private:
-	static TCHAR m_AppName[MAX_PATH];
+	static TCHAR m_AppName[CLASS_NAME_LENGTH];
 	static TCHAR m_IMEName[MAX_PATH];
 	static TCHAR m_FallbackIMEName[MAX_PATH];
 	static bool m_Inited;
 	static bool m_IMEState;
-	static void ConsoleAppName(CString& text, TCHAR (&appName)[MAX_PATH]);
+	static void ConsoleAppName(CString& text, TCHAR (&appName)[CLASS_NAME_LENGTH]);
 	static void RemovePrefixes(CString& text);
 	static bool IsCmdExe(const CString& text);
 	static bool IsConsole(LPCTSTR appName);

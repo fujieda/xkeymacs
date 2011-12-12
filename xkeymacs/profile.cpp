@@ -3,14 +3,11 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "profile.h"
-#include "imelist.h"
 #include "xkeymacs.h"
 #include "dotxkeymacs.h"
 #include "mainfrm.h"
 #include "../xkeymacsdll/xkeymacsdll.h"
-#include "../xkeymacsdll/AppName.h"
 #include "../xkeymacsdll/Utils.h"
-#include <TlHelp32.h>
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -21,8 +18,6 @@ static char THIS_FILE[]=__FILE__;
 Config CProfile::m_Config;
 KeyString CProfile::m_KeyString(CProfile::Is106Keyboard() != FALSE);
 TCHAR CProfile::m_AppTitle[MAX_APP][WINDOW_TEXT_LENGTH];
-TASK_LIST CProfile::m_TaskList[MAX_TASKS];
-DWORD CProfile::m_dwTasks;
 
 void CProfile::LoadData()
 {
@@ -328,135 +323,10 @@ CString CProfile::KeyToString(int type, int key)
 	return m_KeyString.ToString(type, key);
 }
 
-void CProfile::InitAppList(CProperties& cProperties)
+void CProfile::GetAppList(TCHAR (&appTitle)[MAX_APP][WINDOW_TEXT_LENGTH], TCHAR (&appName)[MAX_APP][CLASS_NAME_LENGTH])
 {
-	GetTaskList();
-
-	EnumWindows(EnumWindowsProc, reinterpret_cast<LPARAM>(&cProperties));
-
-	for (int i = 0; i < MAX_APP; ++i) {
-		LPCTSTR appName = m_Config.szSpecialApp[i];
-		LPCTSTR appTitle = m_AppTitle[i];
-		if (!appName[0] || !_tcscmp(appName, _T("IME")))
-			continue;
-		if (CString(MAKEINTRESOURCE(IDS_DEFAULT)) == appName ||
-				CString(MAKEINTRESOURCE(IDS_DIALOG)) == appName)
-			continue;
-		cProperties.AddItem(appTitle, appName);
-	}
-	AddIMEInfo(cProperties);
-}
-
-void CProfile::GetTaskList()
-{
-	ZeroMemory(m_TaskList, sizeof(m_TaskList));
-
-	HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-	if (hProcessSnap == (HANDLE)-1)
-		return;
-
-	m_dwTasks = 0;
-	PROCESSENTRY32 processEntry32 = {sizeof(PROCESSENTRY32)};
-	if (Process32First(hProcessSnap, &processEntry32)) {
-		do {
-			lstrcpy(m_TaskList[m_dwTasks].ProcessName, processEntry32.szExeFile);
-			m_TaskList[m_dwTasks++].dwProcessId = processEntry32.th32ProcessID;
-		} while (m_dwTasks < MAX_TASKS && Process32Next(hProcessSnap, &processEntry32));
-	}
-
-	CloseHandle(hProcessSnap);
-}
-
-BOOL CALLBACK CProfile::EnumWindowsProc(HWND hWnd, LPARAM lParam)
-{
-	CProperties *pProperties = reinterpret_cast<CProperties*>(lParam);
-	PTASK_LIST pTask = CProfile::m_TaskList;
-	
-	TCHAR szWindowName[WINDOW_TEXT_LENGTH];
-	TCHAR szClassName[CLASS_NAME_LENGTH];
-	WINDOWPLACEMENT wpl;
-	
-	wpl.length = sizeof(WINDOWPLACEMENT);
-	::GetWindowText(hWnd, szWindowName, sizeof(szWindowName));
-	GetClassName(hWnd, szClassName, sizeof(szClassName));
-
-	CString appTitle;
-	// Get Process Name
-	DWORD dwProcessId = 0;
-	GetWindowThreadProcessId(hWnd, &dwProcessId);
-	DWORD i;
-	for (i = 0; i < CProfile::m_dwTasks; ++i) {
-		if (pTask[i].dwProcessId == dwProcessId) {
-
-			// Get Application Name
-			if (szWindowName[0] == '\0') {
-				continue;
-			}
-			if (!_tcsnicmp(pTask[i].ProcessName, CString(MAKEINTRESOURCE(IDS_B2)), sizeof(pTask[i].ProcessName))) {
-				appTitle.LoadString(IDS_BECKY);
-			} else if (!_tcsnicmp(pTask[i].ProcessName, CString(MAKEINTRESOURCE(IDS_EXPLORER)), sizeof(pTask[i].ProcessName))) {
-				appTitle.LoadString(IDS_PROGRAM_MANAGER);
-			} else if (!_tcsnicmp(pTask[i].ProcessName, CString(MAKEINTRESOURCE(IDS_MSIMN)), sizeof(pTask[i].ProcessName))) {
-				appTitle.LoadString(IDS_OUTLOOK_EXPRESS);
-			} else if (!_tcsnicmp(pTask[i].ProcessName, CString(MAKEINTRESOURCE(IDS_PROJECT)), sizeof(pTask[i].ProcessName))
-					|| !_tcsnicmp(pTask[i].ProcessName, CString(MAKEINTRESOURCE(IDS_EXCEL)), sizeof(pTask[i].ProcessName))
-					|| !_tcsnicmp(pTask[i].ProcessName, _T("psp.exe"), sizeof(pTask[i].ProcessName))) {
-				GetAppTitle(appTitle, szWindowName, 1);
-			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("sakura.exe"), sizeof(pTask[i].ProcessName))) {
-				GetAppTitle(appTitle, szWindowName, 2); // '.' is included, so...
-			} else if (!_tcsnicmp(pTask[i].ProcessName, CString(MAKEINTRESOURCE(IDS_MSDN)), sizeof(pTask[i].ProcessName))) {
-				appTitle = szWindowName;
-			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("devenv.exe"), sizeof(pTask[i].ProcessName))) {
-				appTitle.Format(_T("Microsoft Visual Studio .NET"));
-			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("vb6.exe"), sizeof(pTask[i].ProcessName))) {
-				appTitle.Format(_T("Microsoft Visual Basic"));
-			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("ssexp.exe"), sizeof(pTask[i].ProcessName))) {
-				appTitle.LoadString(IDS_VISUAL_SOURCESAFE_EXPLORER);
-			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("sh.exe"), sizeof(pTask[i].ProcessName))) {
-				appTitle.Format(_T("MKS Korn Shell"));
-			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("csh.exe"), sizeof(pTask[i].ProcessName))) {
-				appTitle.Format(_T("C Shell"));
-			} else if (!_tcsnicmp(pTask[i].ProcessName, _T("vim.exe"), sizeof(pTask[i].ProcessName))) {
-				appTitle.Format(_T("VIM"));
-			} else {
-				AppName::CorrectAppName(szWindowName, pTask[i].ProcessName);
-				GetAppTitle(appTitle, szWindowName);
-			}
-			break;
-		}
-	}
-	
-	if (IsWindowVisible(hWnd) && // Is visible?
-			GetWindow(hWnd, GW_OWNER) == NULL && // Is top level window?
-			lstrlen(szWindowName) > 0) { // Have caption?
-		pProperties->AddItem(appTitle, pTask[i].ProcessName);
-	}
-	return TRUE;
-}
-
-// This function returns the nth string in a window name separated by " - ".
-// If there aren't a sufficient number of strings, it returns the last string
-// appropriate for the title.
-bool CProfile::GetAppTitle(CString& appTitle, const CString& windowName, int nth)
-{
-	const CString sep(MAKEINTRESOURCE(IDS_SEPARATE_WINDOWTITLE));
-	int nSep = windowName.Find(sep);
-	if (nSep < 0) {
-		appTitle = windowName;
-		return false;
-	}
-	if (GetAppTitle(appTitle, windowName.Right(windowName.GetLength() - nSep - sep.GetLength()), --nth) ||
-			!nth || nth > 0 && appTitle.GetAt(0) != _T('[') && appTitle.FindOneOf(_T(".]")) == -1)
-		return true;
-	appTitle = windowName.Left(nSep);
-	return false;
-}
-
-void CProfile::AddIMEInfo(CProperties& cProperties)
-{
-	IMEList imeList;
-	for (IMEListIterator p = imeList.begin(); p != imeList.end(); ++p)
-		cProperties.AddItem(p->szDescription, p->szFileName);
+	memcpy(appTitle, m_AppTitle, sizeof(m_AppTitle));
+	memcpy(appName, m_Config.szSpecialApp, sizeof(m_Config.szSpecialApp));
 }
 
 void CProfile::ClearData(LPCTSTR appName)
