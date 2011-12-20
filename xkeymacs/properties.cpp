@@ -303,12 +303,12 @@ void CProperties::OnLoadDefault()
 
 void CProperties::OnSelectAll() 
 {
-	m_basic.SetAllDialogData(1, TRUE);
+	m_basic.SetDefaultBind(1);
 }
 
 void CProperties::OnClearAll() 
 {
-	m_basic.SetAllDialogData(0, TRUE);
+	m_basic.SetDefaultBind(0);
 }
 
 int CProperties::GetApplicationID()

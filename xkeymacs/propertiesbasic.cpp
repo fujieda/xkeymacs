@@ -27,14 +27,6 @@ CPropertiesBasic::~CPropertiesBasic()
 {
 }
 
-void CPropertiesBasic::DoDataExchange(CDataExchange* pDX)
-{
-	CPropertyPage::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CPropertiesBasic)
-	//}}AFX_DATA_MAP
-}
-
-
 BEGIN_MESSAGE_MAP(CPropertiesBasic, CPropertyPage)
 	//{{AFX_MSG_MAP(CPropertiesBasic)
 	ON_WM_CREATE()
@@ -116,94 +108,126 @@ BOOL CPropertiesBasic::OnSetActive()
 {
 	m_pProperties->EnableControl(BASIC_TAB);
 	SetDialogData();
-
 	return CPropertyPage::OnSetActive();
 }
 
-void CPropertiesBasic::SetAllDialogData(UINT nCheck, BOOL bChanged)
+BOOL CPropertiesBasic::OnKillActive() 
 {
-	for (int nComID = 0; nComID < MAX_COMMAND; ++nComID) {
-		CString szCommandName = CCommands::GetCommandName(nComID);
-		if (szCommandName.IsEmpty()) {
-			break;
-		}
+	GetDialogData();
 
-		for (int i = 0; ; ++i) {
-			int nKey = CCommands::GetDefaultCommandKey(nComID, i);
-			int nControlID = CCommands::GetDefaultControlID(nComID, i);
-			if (nKey == 0) {
-				break;
-			}
-			CheckDlgButton(nControlID, nCheck);
-		}
-	}
-	CheckDlgButton(IDC_CO2, BST_UNCHECKED);
+	return CPropertyPage::OnKillActive();
+}
 
-	InitChanged(bChanged);
+BOOL CPropertiesBasic::PreTranslateMessage(MSG* pMsg) 
+{
+	m_ToolTip.RelayEvent(pMsg);
+
+	return CPropertyPage::PreTranslateMessage(pMsg);
+}
+
+void CPropertiesBasic::DoDataExchange(CDataExchange* pDX)
+{
+	CPropertyPage::DoDataExchange(pDX);
+	//{{AFX_DATA_MAP(CPropertiesBasic)
+	//}}AFX_DATA_MAP
+}
+
+void CPropertiesBasic::EnableControl()
+{
+	BOOL enable = m_pProperties->IsEnableControl();
+	CmdTable::EnumCommands(this, &CPropertiesBasic::EnableControlHandler, enable);
+}
+
+void CPropertiesBasic::EnableControlHandler(int, const KeyBind& bind, int enable)
+{
+	if (GetDlgItem(bind.nControlID))
+		GetDlgItem(bind.nControlID)->EnableWindow(enable);
+}
+
+void CPropertiesBasic::GetDialogData()
+{
+	UpdateData();
+	int appID = m_pProperties->GetApplicationID();
+	if (appID == MAX_APP)
+		return;
+	CmdTable::EnumCommands(this, &CPropertiesBasic::GetDialogDataHandler, appID);
+}
+
+void CPropertiesBasic::GetDialogDataHandler(int cmdID, const KeyBind& bind, int appID)
+{
+	if (!m_Changed[cmdID])
+		return;
+	if (IsDlgButtonChecked(bind.nControlID)) {
+		CProfile::SetCmdID(appID, bind.nType, bind.bVk, cmdID);
+		CDotXkeymacs::RemoveKey(appID, bind.nType, bind.bVk);
+	} else if (bind.nControlID != IDC_CO2)
+		CProfile::SetCmdID(appID, bind.nType, bind.bVk, 0);
 }
 
 void CPropertiesBasic::SetDialogData()
 {
-	SetAllDialogData(1, FALSE);
+	SetDefaultBind(BST_CHECKED);
+	memset(m_Changed, 0, sizeof(m_Changed));
 	CheckDlgButton(IDC_CO2, BST_CHECKED);
-	const int nAppID = m_pProperties->GetApplicationID();
-	if (nAppID == MAX_APP)
+	int appID = m_pProperties->GetApplicationID();
+	if (appID == MAX_APP)
 		return;
-	for (int nComID = 0; nComID < MAX_COMMAND; ++nComID) {
-		const LPCTSTR szComName = CCommands::GetCommandName(nComID);
-		if (!szComName[0])
-			return;
-		for (int i = 0; const int nKey = CCommands::GetDefaultCommandKey(nComID, i); ++i) {
-			const int nType = CCommands::GetDefaultCommandType(nComID, i);
-			const int nControlID = CCommands::GetDefaultControlID(nComID, i);
-			if (nComID != CProfile::GetCmdID(nAppID, nType, nKey))
-				CheckDlgButton(nControlID, BST_UNCHECKED);
-		}
-	}
+	CmdTable::EnumCommands(this, &CPropertiesBasic::SetDialogDataHandler, appID);
 	UpdateData(FALSE);
 }
 
-void CPropertiesBasic::InitChanged(BOOL bChanged)
+void CPropertiesBasic::SetDialogDataHandler(int cmdID, const KeyBind& bind, int appID)
 {
-	for (int i = 0; i < MAX_COMMAND; ++i) {
-		if (CCommands::GetDefaultControlID(i, 0) || !bChanged) {
-			m_bChanged[i] = bChanged;
-		}
-	}
+	if (cmdID != CProfile::GetCmdID(appID, bind.nType, bind.bVk))
+		CheckDlgButton(bind.nControlID, BST_UNCHECKED);
+}
+
+void CPropertiesBasic::SetDefaultBind(UINT checked)
+{
+	CmdTable::EnumCommands(this, &CPropertiesBasic::SetDefaultBindHandler, checked);
+	CheckDlgButton(IDC_CO2, BST_UNCHECKED);
+}
+
+void CPropertiesBasic::SetDefaultBindHandler(int cmdID, const KeyBind& bind, int checked)
+{
+	m_Changed[cmdID] = true;
+	CheckDlgButton(bind.nControlID, checked);
+}
+
+void CPropertiesBasic::Changed(int ctrlID)
+{
+	CmdTable::EnumCommands(this, &CPropertiesBasic::ChangedHandler, ctrlID);
+}
+
+void CPropertiesBasic::ChangedHandler(int cmdID, const KeyBind& bind, int ctrlID)
+{
+	if (bind.nControlID == ctrlID ||
+			ctrlID == IDC_CO && bind.nControlID == IDC_CO2 ||
+			bind.nControlID == IDC_CO && ctrlID == IDC_CO2)
+		m_Changed[cmdID] = true;
+}
+
+BOOL CPropertiesBasic::OnInitDialog() 
+{
+	CPropertyPage::OnInitDialog();
+	if (m_ToolTip.Create(this))
+		CmdTable::EnumCommands(this, &CPropertiesBasic::OnInitDialogHandler, 0);
+	return TRUE;  // return TRUE unless you set the focus to a control
+	              // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void CPropertiesBasic::OnInitDialogHandler(int cmdID, const KeyBind& bind, int)
+{
+	if (GetDlgItem(bind.nControlID))
+		m_ToolTip.AddTool(GetDlgItem(bind.nControlID), CString(MAKEINTRESOURCE(CmdTable::ToolTipID(cmdID))));
 }
 
 int CPropertiesBasic::OnCreate(LPCREATESTRUCT lpCreateStruct) 
 {
 	if (CPropertyPage::OnCreate(lpCreateStruct) == -1)
 		return -1;
-
-	m_pProperties = (CProperties *)GetParent()->GetParent();
-
+	m_pProperties = static_cast<CProperties *>(GetParent()->GetParent());
 	return 0;
-}
-
-void CPropertiesBasic::GetDialogData()
-{
-	UpdateData();
-	const int nAppID = m_pProperties->GetApplicationID();
-	if (nAppID == MAX_APP)
-		return;
-	for (int nComID = 0; nComID < MAX_COMMAND; ++nComID) {
-		const LPCTSTR szComName = CCommands::GetCommandName(nComID);
-		if (!szComName[0])
-			return;
-		for (int i = 0; const int nKey = CCommands::GetDefaultCommandKey(nComID, i); ++i) {
-			const int nType = CCommands::GetDefaultCommandType(nComID, i);
-			const int nControlID = CCommands::GetDefaultControlID(nComID, i);
-			if (!m_bChanged[nComID])
-				continue;
-			if (IsDlgButtonChecked(nControlID)) {
-				CProfile::SetCmdID(nAppID, nType, nKey, nComID);
-				CDotXkeymacs::RemoveKey(nAppID, nType, nKey);
-			} else if (nControlID != IDC_CO2)
-				CProfile::SetCmdID(nAppID, nType, nKey, 0);
-		}
-	}
 }
 
 void CPropertiesBasic::OnAlt() 
@@ -517,94 +541,6 @@ void CPropertiesBasic::OnRightAlt()
 void CPropertiesBasic::OnSquareBra() 
 {
 	Changed(IDC_SQUARE_BRA);
-}
-
-void CPropertiesBasic::Changed(int nObjectID)
-{
-	for (int nComID = 0; nComID < MAX_COMMAND; ++nComID) {
-		CString szCommandName = CCommands::GetCommandName(nComID);
-		if (szCommandName.IsEmpty()) {
-			break;
-		}
-
-		for (int i = 0; ; ++i) {
-			if (CCommands::GetDefaultCommandKey(nComID, i) == 0) {
-				break;
-			}
-
-			int nControlID = CCommands::GetDefaultControlID(nComID, i);
-			if ((nControlID == nObjectID)
-			 || ((nObjectID == IDC_CO) && (nControlID == IDC_CO2))
-			 || ((nObjectID == IDC_CO2) && (nControlID == IDC_CO))) {
-				m_bChanged[nComID] = TRUE;
-			}
-		}
-	}
-}
-
-BOOL CPropertiesBasic::OnKillActive() 
-{
-	GetDialogData();
-
-	return CPropertyPage::OnKillActive();
-}
-
-void CPropertiesBasic::EnableControl()
-{
-	BOOL bEnable = m_pProperties->IsEnableControl();
-
-	for (int nComID = 0; nComID < MAX_COMMAND; ++nComID) {
-		CString szCommandName = CCommands::GetCommandName(nComID);
-		if (szCommandName.IsEmpty()) {
-			break;
-		}
-
-		for (int i = 0; ; ++i) {
-			int nKey = CCommands::GetDefaultCommandKey(nComID, i);
-			int nControlID = CCommands::GetDefaultControlID(nComID, i);
-			if (nKey == 0) {
-				break;
-			}
-			if (GetDlgItem(nControlID)) {
-				GetDlgItem(nControlID)->EnableWindow(bEnable);
-			}
-		}
-	}
-}
-
-BOOL CPropertiesBasic::PreTranslateMessage(MSG* pMsg) 
-{
-	m_ToolTip.RelayEvent(pMsg);
-
-	return CPropertyPage::PreTranslateMessage(pMsg);
-}
-
-BOOL CPropertiesBasic::OnInitDialog() 
-{
-	CPropertyPage::OnInitDialog();
-
-	if (m_ToolTip.Create(this)) {
-		for (int nComID = 0; nComID < MAX_COMMAND; ++nComID) {
-			CString szCommandName = CCommands::GetCommandName(nComID);
-			if (szCommandName.IsEmpty()) {
-				break;
-			}
-
-			for (int i = 0; ; ++i) {
-				int nKey = CCommands::GetDefaultCommandKey(nComID, i);
-				int nControlID = CCommands::GetDefaultControlID(nComID, i);
-				if (nKey == 0) {
-					break;
-				}
-				if (GetDlgItem(nControlID)) {
-					m_ToolTip.AddTool(GetDlgItem(nControlID), CString(MAKEINTRESOURCE(CCommands::GetToolTipID(nComID))));
-				}
-			}
-		}
-	}
-
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void CPropertiesBasic::OnMdel() 

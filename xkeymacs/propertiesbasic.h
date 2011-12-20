@@ -9,7 +9,7 @@ class CProperties;
 //
 
 #include "resource.h"
-#include "../xkeymacsdll/Commands.h"
+#include "../xkeymacsdll/CmdTable.h"
 class CProperties;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -21,11 +21,6 @@ class CPropertiesBasic : public CPropertyPage
 
 // Construction
 public:
-	void EnableControl();
-	void GetDialogData();
-	void InitChanged(BOOL bChanged);
-	void SetDialogData();
-	void SetAllDialogData(UINT nCheck, BOOL bChanged);
 	CPropertiesBasic();
 	~CPropertiesBasic();
 
@@ -33,7 +28,6 @@ public:
 	//{{AFX_DATA(CPropertiesBasic)
 	enum { IDD = IDD_PROPERTIES_BASIC };
 	//}}AFX_DATA
-
 
 // Overrides
 	// ClassWizard generate virtual function overrides
@@ -46,10 +40,17 @@ public:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
 
-// Implementation
+public:
+	void EnableControl();
+	void GetDialogData();
+	void SetDialogData();
+	void SetDefaultBind(UINT nCheck);
+
+	// Implementation
 protected:
 	// Generated message map functions
 	//{{AFX_MSG(CPropertiesBasic)
+	virtual BOOL OnInitDialog();
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnAlt();
 	afx_msg void OnC_();
@@ -112,7 +113,6 @@ protected:
 	afx_msg void OnRightAlt();
 	afx_msg void OnEscape();
 	afx_msg void OnSquareBra();
-	virtual BOOL OnInitDialog();
 	afx_msg void OnMdel();
 	afx_msg void OnMf12();
 	afx_msg void OnMt();
@@ -123,10 +123,16 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 private:
-	CToolTipCtrl m_ToolTip;
-	void Changed(int nObjectID);
 	CProperties* m_pProperties;
-	BOOL m_bChanged[MAX_COMMAND];
+	BOOL m_Changed[MAX_COMMAND];
+	CToolTipCtrl m_ToolTip;
+	void EnableControlHandler(int cmdID, const KeyBind& bind, int enable);
+	void GetDialogDataHandler(int cmdID, const KeyBind& bind, int appID);
+	void SetDialogDataHandler(int cmdID, const KeyBind& bind, int appID);
+	void SetDefaultBindHandler(int cmdID, const KeyBind& bind, int checked);
+	void Changed(int ctrlID);
+	void ChangedHandler(int cmdID, const KeyBind& bind, int ctrlID);
+	void OnInitDialogHandler(int cmdID, const KeyBind& bind, int arg);
 };
 
 //{{AFX_INSERT_LOCATION}}

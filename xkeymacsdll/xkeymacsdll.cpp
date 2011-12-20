@@ -4,6 +4,7 @@
 #include "xkeymacsdll.h"
 #include "Utils.h"
 #include "Commands.h"
+#include "CmdTable.h"
 #include "../xkeymacs/resource.h"
 #include <math.h>
 #include <Imm.h>
@@ -530,7 +531,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		break;
 	}
 
-#define fCommand(type) (Commands[m_CurrentConfig->CmdID[(type)][nKey]].fCommand)
+#define fCommand(nType) (CmdTable::Command(m_CurrentConfig->CmdID[(nType)][nKey]))
 #define FuncID (m_CurrentConfig->FuncID[nType][nKey])
 
 	if (bRelease) {
@@ -827,7 +828,7 @@ int CXkeymacsDll::IsPassThrough(BYTE nKey)
 	BYTE bVk = 0;
 	const BYTE *pnID = m_CurrentConfig->CmdID[NONE]; 
 	do {
-		if (IsDown(bVk) && Commands[pnID[bVk]].fCommand == CCommands::PassThrough) {
+		if (IsDown(bVk) && CmdTable::Command(pnID[bVk]) == CCommands::PassThrough) {
 			if (bVk == nKey)
 				return GOTO_HOOK;
 			return GOTO_DO_NOTHING;
@@ -841,8 +842,8 @@ void CXkeymacsDll::InvokeM_x(LPCTSTR szPath)
 //	CUtils::Log("M-x: szPath=_%s_", szPath);
 	int (*fCommand)() = NULL;
 	for (int i = 0; i < MAX_COMMAND; ++i)
-		if (_tcsicmp(szPath, Commands[i].szCommandName) == 0) {
-			fCommand = Commands[i].fCommand;
+		if (_tcsicmp(szPath, CmdTable::Name(i)) == 0) {
+			fCommand = CmdTable::Command(i);
 			break;
 		}
 	if (fCommand) {
@@ -1031,7 +1032,7 @@ BOOL CXkeymacsDll::IsDepressedModifier(int (__cdecl *Modifier)(void), BOOL bPhys
 		case 0xf0: // Eisu key. GetAsyncKeyState returns the wrong state of Eisu key.
 			continue;
 		}
-		if (IsDown(bVk, bPhysicalKey) && Commands[pnID[bVk]].fCommand == Modifier)
+		if (IsDown(bVk, bPhysicalKey) && CmdTable::Command(pnID[bVk]) == Modifier)
 			return TRUE;
 	} while (++bVk);
 	return FALSE;
@@ -1189,7 +1190,7 @@ void CXkeymacsDll::CallFunction(int FuncID)
 	for (std::vector<KeyBind>::const_iterator p = keybinds.begin(); p != keybinds.end(); ++p) {
 		int nType = p->nType;
 		BYTE bVk = p->bVk;
-		int (*fCommand)() = nType < MAX_COMMAND_TYPE ? Commands[m_CurrentConfig->CmdID[nType][bVk]].fCommand : NULL;
+		int (*fCommand)() = nType < MAX_COMMAND_TYPE ? CmdTable::Command(m_CurrentConfig->CmdID[nType][bVk]) : NULL;
 		if (fCommand) {
 			if (fCommand == CCommands::ExecuteExtendedCommand)
 				bM_x = TRUE;

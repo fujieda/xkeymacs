@@ -203,6 +203,8 @@
     <ClCompile Include="AppName.cpp" />
     <ClCompile Include="ClipboardFormatSnap.cpp" />
     <ClCompile Include="ClipboardSnap.cpp" />
+    <ClCompile Include="CmdTable.cpp" />
+    <ClCompile Include="CmdTableData.cpp" />
     <ClCompile Include="Commands.cpp" />
     <ClCompile Include="FunctionDefinition.cpp" />
     <ClCompile Include="KbdMacro.cpp" />
@@ -223,6 +225,7 @@
     <ClInclude Include="AppName.h" />
     <ClInclude Include="ClipboardFormatSnap.h" />
     <ClInclude Include="ClipboardSnap.h" />
+    <ClInclude Include="CmdTable.h" />
     <ClInclude Include="Commands.h" />
     <ClInclude Include="defs.h" />
     <ClInclude Include="FunctionDefinition.h" />

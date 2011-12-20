@@ -121,7 +121,7 @@ void CProfile::AddKeyBind2C_(LPCTSTR appName, BYTE bVk)
 {
 	int nComID;
 	for (nComID = 0; nComID < MAX_COMMAND; ++nComID)
-		if (Commands[nComID].fCommand == CCommands::C_)
+		if (CmdTable::Command(nComID) == CCommands::C_)
 			break;
 	SaveKeyBind(appName, nComID, NONE, bVk);
 }
@@ -154,7 +154,7 @@ void CProfile::LoadRegistry()
 
 		const CString regApp = CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)) + _T("\\") + appName;
 		for (BYTE nComID = 1; nComID < MAX_COMMAND; ++nComID) {
-			entry = CCommands::GetCommandName(nComID);
+			entry = CmdTable::Name(nComID);
 			HKEY hKey;
 			const CString regKey = regApp + _T("\\") + entry;
 			if (RegOpenKeyEx(HKEY_CURRENT_USER, regKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
@@ -169,11 +169,13 @@ void CProfile::LoadRegistry()
 				RegCloseKey(hKey);
 			} else {
 				// Set the default assignment
-				for (int i = 0; int nKey = CCommands::GetDefaultCommandKey(nComID, i); ++i) {
-					if (CCommands::GetDefaultControlID(nComID, i) == IDC_CO2)
+				for (int i = 0; i < MAX_KEY_BIND; ++i) {
+					KeyBind bind = CmdTable::Bind(nComID, i);
+					if (bind.bVk == 0)
+						break;
+					if (bind.nControlID == IDC_CO2)
 						continue;
-					int nType = CCommands::GetDefaultCommandType(nComID, i);
-					appConfig.CmdID[nType][nKey] = nComID;
+					appConfig.CmdID[bind.nType][bind.bVk] = nComID;
 				}
 			}
 		}
@@ -299,7 +301,7 @@ void CProfile::SaveKeyBind(LPCTSTR appName, int comID, int type, int key)
 {
 	if (!comID)
 		return;
-	LPCTSTR comName = CCommands::GetCommandName(comID);
+	LPCTSTR comName = CmdTable::Name(comID);
 	if (!comName[0])
 		return;
 	SaveKeyBind(appName, comName, type, key);
@@ -414,20 +416,20 @@ void CProfile::SetAppTitle(int nAppID, const CString& appTitle)
 int CProfile::GetCmdID(int nAppID, int nType, int nKey)
 {
 	int nComID = m_Config.AppConfig[nAppID].CmdID[nType][nKey];
-	if (nKey == 0xf0 && Commands[nComID].fCommand == CCommands::C_Eisu)
+	if (nKey == 0xf0 && CmdTable::Command(nComID) == CCommands::C_Eisu)
 		// Change CommandID C_
 		for (nComID = 1; nComID < MAX_COMMAND; nComID++)
-			if (Commands[nComID].fCommand == CCommands::C_)
+			if (CmdTable::Command(nComID) == CCommands::C_)
 				break;
 	return nComID;
 }
 
 void CProfile::SetCmdID(int nAppID, int nType, int nKey, int nComID)
 {
-	if (nKey == 0xf0 && Commands[nComID].fCommand == CCommands::C_)
+	if (nKey == 0xf0 && CmdTable::Command(nComID) == CCommands::C_)
 		// Change CommandID C_Eisu
 		for (nComID = 1; nComID < MAX_COMMAND; ++nComID)
-			if (Commands[nComID].fCommand == CCommands::C_Eisu)
+			if (CmdTable::Command(nComID) == CCommands::C_Eisu)
 				break;
 	m_Config.AppConfig[nAppID].CmdID[nType][nKey] = static_cast<BYTE>(nComID);
 }

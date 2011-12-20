@@ -155,49 +155,11 @@ BOOL CPropertiesAdvanced::OnInitDialog()
 
 void CPropertiesAdvanced::InitCategoryList()
 {
-	int nCategoryIDs[128] = {'\0'};
+	for (const int *c = CmdTable::Categories(); *c; ++c)
+		m_cCategory.InsertString(-1, CString(MAKEINTRESOURCE(*c)));
 
-	// get all category type
-	m_cCategory.ResetContent();
-	for (int nComID = 1; nComID < MAX_COMMAND; ++nComID) {
-		CString szCommandName = CCommands::GetCommandName(nComID);
-		if (szCommandName.IsEmpty()) {
-			break;
-		}
-		int nCategoryID = CCommands::GetCategoryID(nComID);
-		if (!nCategoryID) {
-			continue;
-		}
-
-		BOOL bExist = FALSE;
-		int i;
-		for (i = 0; nCategoryIDs[i]; ++i) {
-			if (nCategoryIDs[i] == nCategoryID) {
-				bExist = TRUE;
-			}
-		}
-		if (!bExist) {
-			nCategoryIDs[i] = nCategoryID;
-		}
-	}
-
-	// sort category type in combo box
-	int nMinimumID = 0;
-	for (int i = 0; nCategoryIDs[i]; ++i) {
-		int nID = 0;
-		for (int j = 0; nCategoryIDs[j]; ++j) {
-			if (nMinimumID < nCategoryIDs[j]
-			 && (nID == 0 || nCategoryIDs[j] < nID)) {
-				nID = nCategoryIDs[j];
-			}
-		}
-		m_cCategory.InsertString(-1, CString(MAKEINTRESOURCE(nID)));
-		nMinimumID = nID;
-	}
-
-	if (CDotXkeymacs::GetFunctionNumber()) {
+	if (CDotXkeymacs::GetFunctionNumber())
 		m_cCategory.InsertString(-1, CString(MAKEINTRESOURCE(IDS_ORIGINAL)));
-	}
 
 	m_cCategory.SetCurSel(0);
 }
@@ -210,12 +172,12 @@ void CPropertiesAdvanced::SetCommands()
 	m_cCategory.GetLBText(m_cCategory.GetCurSel(), szCategory);
 	if (szCategory.Compare(CString(MAKEINTRESOURCE(IDS_ORIGINAL)))) {
 		for (int nComID = 1; nComID < MAX_COMMAND; ++nComID) {
-			CString szCommandName = CCommands::GetCommandName(nComID);
+			CString szCommandName = CmdTable::Name(nComID);
 			if (szCommandName.IsEmpty()) {
 				break;
 			}
 
-			if (szCategory == CString(MAKEINTRESOURCE(CCommands::GetCategoryID(nComID)))) {
+			if (szCategory == CString(MAKEINTRESOURCE(CmdTable::CategoryID(nComID)))) {
 				m_cCommands.AddString(szCommandName);
 			}
 		}
@@ -223,7 +185,7 @@ void CPropertiesAdvanced::SetCommands()
 		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID) {
 			BOOL bOriginal = TRUE;
 			for (int nComID = 1; nComID < MAX_COMMAND; ++nComID) {
-				CString szCommandName = CCommands::GetCommandName(nComID);
+				CString szCommandName = CmdTable::Name(nComID);
 				if (szCommandName.IsEmpty()) {
 					break;
 				}
@@ -257,7 +219,7 @@ void CPropertiesAdvanced::SetCurrentKeys()
 	if (szCategory.Compare(CString(MAKEINTRESOURCE(IDS_ORIGINAL)))) {
 		for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType) {
 			for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-				if (CCommands::GetCommandName(CProfile::GetCmdID(m_nAppID, nType, nKey)) == szCurrentCommandName) {
+				if (CmdTable::Name(CProfile::GetCmdID(m_nAppID, nType, nKey)) == szCurrentCommandName) {
 					m_cCurrentKeys.AddString(CProfile::KeyToString(nType, nKey));
 				}
 			}
@@ -265,7 +227,7 @@ void CPropertiesAdvanced::SetCurrentKeys()
 
 		CString szCommandName;
 		for (int nComID = 0; nComID < MAX_COMMAND; ++nComID) {
-			szCommandName = CCommands::GetCommandName(nComID);
+			szCommandName = CmdTable::Name(nComID);
 			if (szCommandName.IsEmpty()) {
 				break;
 			}
@@ -275,7 +237,7 @@ void CPropertiesAdvanced::SetCurrentKeys()
 			}
 		}
 
-		m_cDescription.SetWindowText(CString(MAKEINTRESOURCE(CCommands::GetDescriptionID(m_nCommandID))));
+		m_cDescription.SetWindowText(CString(MAKEINTRESOURCE(CmdTable::DescriptionID(m_nCommandID))));
 
 		// overwrite by original command's description if needed
 		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID) {
@@ -457,7 +419,7 @@ void CPropertiesAdvanced::SetNewKey()
 		CString szCurrentlyAssigned(_T("Currently assigned to:\n"));
 
 		if (m_nCommandIDs[m_nAssignCommandType][m_nAssignKey] || CDotXkeymacs::GetIndex(m_nAppID, m_nAssignCommandType, m_nAssignKey) == -1) {
-			szCurrentlyAssigned += CCommands::GetCommandName(m_nCommandIDs[m_nAssignCommandType][m_nAssignKey]);
+			szCurrentlyAssigned += CmdTable::Name(m_nCommandIDs[m_nAssignCommandType][m_nAssignKey]);
 		} else {
 			szCurrentlyAssigned += CDotXkeymacs::GetFunctionSymbol(CDotXkeymacs::GetIndex(m_nAppID, m_nAssignCommandType, m_nAssignKey));
 		}
@@ -474,7 +436,7 @@ void CPropertiesAdvanced::SetCmdID(int nType, int nKey, int nComID)
 		// Get CommandID of C-x.
 		int nCommandIDofC_x;
 		for (nCommandIDofC_x = 0; nCommandIDofC_x < MAX_COMMAND; ++nCommandIDofC_x) {
-			if (!_tcsicmp(CCommands::GetCommandName(nCommandIDofC_x), _T("C-x"))) {
+			if (!_tcsicmp(CmdTable::Name(nCommandIDofC_x), _T("C-x"))) {
 				break;
 			}
 		}
@@ -553,7 +515,7 @@ BOOL CPropertiesAdvanced::IsShiftDown()
 BOOL CPropertiesAdvanced::IsFooDown(CString szCommandName)
 {
 	for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
-		if (CCommands::GetCommandName(CProfile::GetCmdID(0, NONE, nKey)) == szCommandName) {	// FIXME
+		if (CmdTable::Name(CProfile::GetCmdID(0, NONE, nKey)) == szCommandName) {	// FIXME
 			if (GetKeyState(nKey) < 0) {
 				return TRUE;
 			}
