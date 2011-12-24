@@ -142,6 +142,8 @@ void CProperties::GetDialogData()
 		return;
 	}
 	m_nAppID = CProfile::AssignAppID(m_appName);
+	if (m_nAppID == MAX_APP)
+		return;
 	CProfile::SetSettingStyle(m_nAppID, m_nSettingStyle);
 	CProfile::SetAppTitle(m_nAppID, m_appTitle);
 	CProfile::SetKillRingMax(m_nAppID, m_nKillRingMax);
@@ -335,11 +337,7 @@ void CProperties::OnSettingSpecific()
 {
 	UpdateData();
 	EnableControl(ACTIVE_TAB);
-
-	if (CProfile::GetAppID(m_appName) == MAX_APP) {
-		CProfile::CopyDefault(m_appName);
-		SetDialogData();
-	}
+	m_nAppID = CProfile::AssignAppID(m_appName);
 }
 
 BOOL CProperties::IsEnableControl()

@@ -29,6 +29,7 @@ public:
 	static void GetAppList(TCHAR (&appTitle)[MAX_APP][WINDOW_TEXT_LENGTH], TCHAR (&appName)[MAX_APP][CLASS_NAME_LENGTH]);
 	static void ClearData(LPCTSTR appName);
 	static void CopyDefault(LPCTSTR appName);
+	static void CopyDefault(int dst);
 	static int AssignAppID(LPCTSTR appName);
 	static int DefaultAppID();
 	static int GetAppID(LPCTSTR appName);

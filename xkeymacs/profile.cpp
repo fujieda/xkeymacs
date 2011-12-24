@@ -345,7 +345,11 @@ void CProfile::ClearData(LPCTSTR appName)
 
 void CProfile::CopyDefault(LPCTSTR appName)
 {
-	int dst = AssignAppID(appName);
+	CopyDefault(GetAppID(appName));
+}
+
+void CProfile::CopyDefault(int dst)
+{
 	int src = DefaultAppID();
 	if (src == MAX_APP || dst == MAX_APP)
 		return;
@@ -356,17 +360,18 @@ void CProfile::CopyDefault(LPCTSTR appName)
 
 int CProfile::AssignAppID(LPCTSTR appName)
 {
-	int nAppID = GetAppID(appName);
-	if (nAppID != MAX_APP)
-		return nAppID;
-	for (nAppID = 0; nAppID < MAX_APP; ++nAppID) {
-		AppConfig& appConfig = m_Config.AppConfig[nAppID];
+	int id = GetAppID(appName);
+	if (id != MAX_APP)
+		return id;
+	for (id = 0; id < MAX_APP; ++id) {
+		AppConfig& appConfig = m_Config.AppConfig[id];
 		if (!appConfig.AppName[0]) {
 			_tcsncpy_s(appConfig.AppName, appName, _TRUNCATE);
-			return nAppID;
+			CopyDefault(id);
+			return id;
 		}
 	}
-	return nAppID;
+	return id;
 }
 
 int CProfile::DefaultAppID()
