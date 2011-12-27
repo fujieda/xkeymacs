@@ -672,19 +672,15 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 			memset(szPath, 0, sizeof(szPath));
 			goto HOOK;
 		} else if (nKey && index < MAX_PATH - 1) {
-			BOOL bIsShiftDown = IsDown(VK_SHIFT, FALSE);
-			TCHAR nAscii = 0;
-			do { // 1-127
-				if (a2v(++nAscii) == nKey && bIsShiftDown == IsShift(nAscii)) {
-//					CUtils::Log("M-x: %#X (%c), %#X (%c)", nKey, nKey, nAscii, nAscii);
-					if (index < _tcslen(szPath))
-						memmove(szPath + index + 1, szPath + index, MAX_PATH - index - 1);
-					szPath[index++] = nAscii;
-//					CUtils::Log("M-x: %c(%#04x)", nAscii, nAscii);
-					SetM_xTip(szPath);
-					goto HOOKX;
-				}
-			} while (nAscii != 127);
+			if (SHORT ascii = ConvVkey(nKey | (static_cast<BYTE>(IsDown(VK_SHIFT, FALSE)) << 8), 1)) {
+//				CUtils::Log("M-x: %#X (%c), %#X (%c)", nKey, nKey, ascii, ascii);
+				if (index < _tcslen(szPath))
+					memmove(szPath + index + 1, szPath + index, MAX_PATH - index - 1);
+				szPath[index++] = static_cast<TCHAR>(ascii);
+//				CUtils::Log("M-x: %c(%#04x)", ascii, ascii);
+				SetM_xTip(szPath);
+				goto HOOKX;
+			}
 		}
 	}
 
@@ -1206,16 +1202,8 @@ void CXkeymacsDll::CallFunction(int FuncID)
 		if (bM_x) {
 			if (bVk == VK_RETURN)
 				InvokeM_x(szPath);
-			else if (bVk != 0) {
-				TCHAR nAscii = 0;
-				do { // 1-127
-					if (a2v(++nAscii) == bVk && ((nType & SHIFT) != 0) == IsShift(nAscii)) {
-//						CUtils::Log("M-x: %#X (%c), %#X (%c)", bVk, bVk, nAscii, nAscii);
-						szPath[index++] = nAscii;
-						break;
-					}
-				} while (nAscii != 127);
-			}
+			else if (bVk != 0)
+				szPath[index++] = static_cast<TCHAR>(ConvVkey((bVk | (nType << 8)) & 0x7ff /* drop CONTROLX */, 1));
 			continue;
 		}
 		if (!bInitialized) {
@@ -1263,8 +1251,6 @@ KeyBind CXkeymacsDll::ParseKey(LPCTSTR& def)
 			}
 		}
 	}
-	if (IsShift(*def) && !(keybind.nType & (WIN_CTRL | WIN_ALT | WIN_WIN)))
-		keybind.nType |= SHIFT;
 	int i = 0;
 	for (; i < MAX_KEYNAME; ++i) {
 		size_t len = _tcslen(KeyNames[i].name);
@@ -1273,158 +1259,44 @@ KeyBind CXkeymacsDll::ParseKey(LPCTSTR& def)
 			break;
 		}
 	}
-	keybind.bVk = i < MAX_KEYNAME ? KeyNames[i].bVk : a2v(*def++);
+	if (i < MAX_KEYNAME) {
+		keybind.bVk = KeyNames[i].bVk;
+		return keybind;
+	}
+	SHORT r = ConvVkey(*def++, 0);
+	if (r & (1 << 8) && !(keybind.nType & (WIN_CTRL | WIN_ALT | WIN_WIN)))
+		keybind.nType |= SHIFT;
+	keybind.bVk = static_cast<BYTE>(r);
 	return keybind;
 }
 
-BOOL CXkeymacsDll::IsShift(TCHAR nAscii)
+SHORT CXkeymacsDll::ConvVkey(SHORT in, int mode)
 {
-	switch (nAscii) {
-	case _T(' '):
-		return FALSE;
-	case _T('!'):
-	case _T('"'):
-	case _T('#'):
-	case _T('$'):
-	case _T('%'):
-	case _T('&'):
-		return TRUE;
-	case _T('\''):
-		return m_Config.Is106Keyboard;
-	case _T('('):
-	case _T(')'):
-	case _T('*'):
-	case _T('+'):
-		return TRUE;
-	case _T(','):
-	case _T('-'):
-	case _T('.'):
-	case _T('/'):
-	case _T('0'): case _T('1'): case _T('2'): case _T('3'): case _T('4'): case _T('5'): case _T('6'): case _T('7'): case _T('8'): case _T('9'):
-		return FALSE;
-	case _T(':'):
-		return !m_Config.Is106Keyboard;
-	case _T(';'):
-		return FALSE;
-	case _T('<'):
-		return TRUE;
-	case _T('='):
-		return m_Config.Is106Keyboard;
-	case _T('>'):
-	case _T('?'):
-		return TRUE;
-	case _T('@'):
-		return !m_Config.Is106Keyboard;
-	case _T('A'): case _T('B'): case _T('C'): case _T('D'): case _T('E'): case _T('F'): case _T('G'): case _T('H'): case _T('I'): case _T('J'): 
-	case _T('K'): case _T('L'): case _T('M'): case _T('N'): case _T('O'): case _T('P'): case _T('Q'): case _T('R'): case _T('S'): case _T('T'): 
-	case _T('U'): case _T('V'): case _T('W'): case _T('X'): case _T('Y'): case _T('Z'): 
-		return TRUE;
-	case _T('['):
-	case _T('\\'):
-	case _T(']'):
-		return FALSE;
-	case _T('^'):
-		return !m_Config.Is106Keyboard;
-	case _T('_'):
-		return TRUE;
-	case _T('`'):
-		return m_Config.Is106Keyboard;
-	case _T('a'): case _T('b'): case _T('c'): case _T('d'): case _T('e'): case _T('f'): case _T('g'): case _T('h'): case _T('i'): case _T('j'): 
-	case _T('k'): case _T('l'): case _T('m'): case _T('n'): case _T('o'): case _T('p'): case _T('q'): case _T('r'): case _T('s'): case _T('t'): 
-	case _T('u'): case _T('v'): case _T('w'): case _T('x'): case _T('y'): case _T('z'): 
-		return FALSE;
-	case _T('{'):
-	case _T('|'):
-	case _T('}'):
-	case _T('~'):
-		return TRUE;
-	default:
-		return FALSE;
+	HKL h = GetKeyboardLayout(0);
+	if (mode == 0) { // ASCII to VKey and state
+		SHORT r = VkKeyScanEx(static_cast<TCHAR>(in), h);
+		if (r < 0) // no key correcpont to the char
+			return 0;
+		return r & 0x7ff; // drop state flags of Hankaku and others
 	}
-}
-
-BYTE CXkeymacsDll::a2v(TCHAR nAscii)
-{
-	switch (nAscii) {
-	case _T(' '):
-		return VK_SPACE;
-	case _T('!'):
-		return '1';
-	case _T('"'):
-		return m_Config.Is106Keyboard ? '2' : (BYTE) 0xde;	// VK_OEM_7
-	case _T('#'):
-		return '3';
-	case _T('$'):
-		return '4';
-	case _T('%'):
-		return '5';
-	case _T('&'):
-		return m_Config.Is106Keyboard ? '6' : '7';
-	case _T('\''):
-		return m_Config.Is106Keyboard ? '7' : (BYTE) 0xde;	// VK_OEM_7
-	case _T('('):
-		return m_Config.Is106Keyboard ? '8' : '9';
-	case _T(')'):
-		return m_Config.Is106Keyboard ? '9' : '0';
-	case _T('*'):
-		return m_Config.Is106Keyboard ? (BYTE) 0xba : '8';	// VK_OEM_1
-	case _T('+'):
-		return 0xbb;	// VK_OEM_PLUS
-	case _T(','):
-		return 0xbc;	// VK_OEM_COMMA
-	case _T('-'):
-		return 0xbd;	// VK_OEM_MINUS
-	case _T('.'):
-		return 0xbe;	// VK_OEM_PERIOD
-	case _T('/'):
-		return 0xbf;	// VK_OEM_2
-	case _T('0'): case _T('1'): case _T('2'): case _T('3'): case _T('4'): case _T('5'): case _T('6'): case _T('7'): case _T('8'): case _T('9'):
-		return nAscii;
-	case _T(':'):
-		return 0xba;	// VK_OEM_1
-	case _T(';'):
-		return m_Config.Is106Keyboard ? (BYTE) 0xbb : (BYTE) 0xba;	// VK_OEM_PLUS	VK_OEM_1
-	case _T('<'):
-		return 0xbc;	// VK_OEM_COMMA
-	case _T('='):
-		return m_Config.Is106Keyboard ? (BYTE) 0xbd : (BYTE) 0xbb;	// VK_OEM_MINUS	VK_OEM_PLUS
-	case _T('>'):
-		return 0xbe;	// VK_OEM_PERIOD
-	case _T('?'):
-		return 0xbf;	// VK_OEM_2
-	case _T('@'):
-		return m_Config.Is106Keyboard ? (BYTE) 0xc0 : '2';
-	case _T('A'): case _T('B'): case _T('C'): case _T('D'): case _T('E'): case _T('F'): case _T('G'): case _T('H'): case _T('I'): case _T('J'): 
-	case _T('K'): case _T('L'): case _T('M'): case _T('N'): case _T('O'): case _T('P'): case _T('Q'): case _T('R'): case _T('S'): case _T('T'): 
-	case _T('U'): case _T('V'): case _T('W'): case _T('X'): case _T('Y'): case _T('Z'): 
-		return nAscii;
-	case _T('['):
-		return 0xdb;	// VK_OEM_4
-	case _T('\\'):
-		return 0xdc;	// VK_OEM_5
-	case _T(']'):
-		return 0xdd;	// VK_OEM_6
-	case _T('^'):
-		return m_Config.Is106Keyboard ? (BYTE) 0xde : '6';	// VK_OEM_7
-	case _T('_'):
-		return m_Config.Is106Keyboard ? (BYTE) 0xe2 : (BYTE) 0xbd;	// VK_OEM_102	VK_OEM_MINUS
-	case _T('`'):
-		return 0xc0;	// VK_OEM_3
-	case _T('a'): case _T('b'): case _T('c'): case _T('d'): case _T('e'): case _T('f'): case _T('g'): case _T('h'): case _T('i'): case _T('j'): 
-	case _T('k'): case _T('l'): case _T('m'): case _T('n'): case _T('o'): case _T('p'): case _T('q'): case _T('r'): case _T('s'): case _T('t'): 
-	case _T('u'): case _T('v'): case _T('w'): case _T('x'): case _T('y'): case _T('z'): 
-		return (BYTE) (nAscii - (_T('a') - _T('A')));
-	case _T('{'):
-		return 0xdb;	// VK_OEM_4
-	case _T('|'):
-		return 0xdc;	// VK_OEM_5
-	case _T('}'):
-		return 0xdd;	// VK_OEM_6
-	case _T('~'):
-		return m_Config.Is106Keyboard ? (BYTE) 0xde : (BYTE) 0xc0;	// VK_OEM_7	VK_OEM_3
-	default:
+	// VKey and state to ASCII
+	const BYTE down = 0x80;
+	BYTE state[256] = {0};
+	if (in & (1 << 8))
+		state[VK_SHIFT] = down;
+	if (in & (2 << 8))
+		state[VK_CONTROL] = down;
+	if (in & (4 << 8))
+		state[VK_MENU] = down;
+	UINT vkey = in & 0xff;
+	state[vkey] = down;
+	WORD word = 0;
+	int r = ToAsciiEx(vkey, MapVirtualKeyEx(vkey, MAPVK_VK_TO_VSC, h), state, &word, 0, h);
+	if (r == 0)
 		return 0;
-	}
+	if (r == 1)
+		return static_cast<SHORT>(word);
+	return static_cast<SHORT>(word >> 8); // drop a dead key
 }
 
 void CXkeymacsDll::SetAccelerate(int nAccelerate)

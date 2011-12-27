@@ -90,8 +90,7 @@ private:
 	static KbdMacro* m_kbdMacro;
 	static void CallFunction(int nFuncID);
 	static KeyBind ParseKey(LPCTSTR& def);
-	static BOOL IsShift(TCHAR nAscii);
-	static BYTE a2v(TCHAR nAscii);
+	static SHORT ConvVkey(SHORT in, int mode);
 	static int m_nAccelerate;
 	static int m_nKeyboardSpeed;
 	static HCURSOR m_hCurrentCursor;
