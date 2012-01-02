@@ -975,10 +975,9 @@ void CXkeymacsDll::SetModifierState(UINT after, UINT before)
 	else if (!(after & SHIFT) && before & SHIFT)
 		ReleaseKey(VK_SHIFT);
 
-	if (after & CONTROL && !(before & CONTROL)) {
-		UpdateKeyboardState(VK_CONTROL, 1);
+	if (after & CONTROL && !(before & CONTROL))
 		DepressKey(VK_CONTROL);
-	} else if (!(after & CONTROL) && before & CONTROL) {
+	else if (!(after & CONTROL) && before & CONTROL) {
 		ReleaseKey(VK_CONTROL);
 		UpdateKeyboardState(VK_CONTROL, 0);
 	}
