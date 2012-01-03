@@ -9,8 +9,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "StdAfx.h"
-
 class AFX_EXT_CLASS CUtils  
 {
 public:

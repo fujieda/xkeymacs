@@ -7,7 +7,6 @@
 // PropertiesList.h : header file
 //
 
-#include "stdafx.h"
 #include "resource.h"
 enum SORT_TYPE { SORT_CATEGORY, SORT_COMMAND, SORT_KEY };
 class CProperties;

@@ -9,7 +9,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "StdAfx.h"
 #include "defs.h"
 
 class AFX_EXT_CLASS CFunctionDefinition

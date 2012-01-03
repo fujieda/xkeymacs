@@ -7,7 +7,6 @@
 // PropertiesAdvanced.h : header file
 //
 
-#include "stdafx.h"
 #include "resource.h"
 #include "../xkeymacsdll/Commands.h"
 class CProperties;

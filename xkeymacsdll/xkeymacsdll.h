@@ -9,7 +9,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "StdAfx.h"
 #include "KbdMacro.h"
 #include "ClipboardSnap.h"
 #include "defs.h"
