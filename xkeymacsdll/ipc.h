@@ -18,7 +18,7 @@ struct AppConfig {
 	TCHAR WindowText[WINDOW_TEXT_LENGTH];
 	BYTE SettingStyle;
 	BYTE CmdID[MAX_COMMAND_TYPE][MAX_KEY];
-	BYTE FuncID[MAX_COMMAND_TYPE][MAX_KEY];
+	char FuncID[MAX_COMMAND_TYPE][MAX_KEY];
 	BYTE KillRingMax;
 	bool Is326Compatible;
 	bool EnableCUA;
@@ -29,7 +29,7 @@ struct AppConfig {
 
 struct Config {
 	AppConfig AppConfig[MAX_APP];
-	TCHAR FuncDef[MAX_FUNCTION][MAX_DEFINITION];
+	TCHAR FuncDefs[MAX_FUNCTION][MAX_DEFINITION];
 	bool Is106Keyboard;
 };
 

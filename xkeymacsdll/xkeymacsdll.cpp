@@ -224,6 +224,8 @@ HCURSOR CXkeymacsDll::m_hCursor[MAX_STATUS] = {'\0'};
 #pragma data_seg()
 
 AppConfig* CXkeymacsDll::m_CurrentConfig = NULL;
+BYTE (*CXkeymacsDll::m_CmdID)[MAX_KEY];
+char (*CXkeymacsDll::m_FuncID)[MAX_KEY];
 HHOOK CXkeymacsDll::m_hHookCallWnd = NULL;
 HHOOK CXkeymacsDll::m_hHookCallWndRet = NULL;
 HHOOK CXkeymacsDll::m_hHookGetMessage = NULL;
@@ -467,6 +469,8 @@ void CXkeymacsDll::InitKeyboardProc(bool imeState)
 			!imeState && CUtils::IsDialog() && m_CurrentConfig->UseDialogSetting)
 		// Use Dialog Setting
 		m_CurrentConfig = GetAppConfig(_T("Dialog"), m_CurrentConfig);
+	m_CmdID = m_CurrentConfig->CmdID;
+	m_FuncID = m_CurrentConfig->FuncID;
 
 	IconMsg msg[3] = {
 		{CX_ICON, OFF_ICON, ""},
@@ -531,9 +535,6 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		break;
 	}
 
-#define fCommand(nType) (CmdTable::Command(m_CurrentConfig->CmdID[(nType)][nKey]))
-#define FuncID (m_CurrentConfig->FuncID[nType][nKey])
-
 	if (bRelease) {
 		switch (nOrigKey) {
 		case VK_MENU:
@@ -549,7 +550,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 		case VK_RWIN:
 		case VK_APPS:
 			for (int i = 0; i < MAX_COMMAND_TYPE; ++i) {
-				int (*fCommand)() = fCommand(i);
+				int (*fCommand)() = CmdTable::Command(m_CmdID[i][nKey]);
 				if (fCommand && !(nOrigKey == VK_MENU && fCommand == CCommands::MetaAlt))
 					goto HOOK;
 			}
@@ -584,7 +585,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	// set command type
 	int nType = IsDown(VK_SHIFT) * SHIFT | IsControl() * CONTROL | IsMeta() * META | CCommands::bC_x() * CONTROLX;
 	// Ignore undefined C-x ?
-	if (nType & CONTROLX && fCommand(nType) == NULL && FuncID < 0) {
+	if (nType & CONTROLX && m_CmdID[nType][nKey] == 0 && m_FuncID[nType][nKey] < 0) {
 		if (m_CurrentConfig->IgnoreUndefC_x) {
 			CCommands::Reset(GOTO_HOOK);
 			goto HOOK;
@@ -593,7 +594,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	}
 	// Ignore undefined Meta Ctrl+?
 	if (CCommands::bM_() && nType & CONTROL) {
-		if (fCommand(nType) == NULL && FuncID < 0) {
+		if (m_CmdID[nType][nKey] == 0 && m_FuncID[nType][nKey] < 0) {
 			if (m_CurrentConfig->IgnoreUndefMetaCtrl) {
 				if (CheckOriginal(CONTROL, nKey))
 					goto DO_NOTHING;
@@ -612,7 +613,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	if (CheckOriginal(nVirtualType, nOrigKey))
 		goto DO_NOTHING;
 
-	int (*fCommand)() = fCommand(nType);
+	int (*fCommand)() = CmdTable::Command(m_CmdID[nType][nKey]);
 	if (fCommand == CCommands::EnableOrDisableXKeymacs) {
 		ToggleKeyboardHookState();
 		goto HOOK;
@@ -696,13 +697,13 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	}
 
 #define OneShotModifier(type, vk, mod) \
-	if (fCommand(nType & ~type) == CCommands::OneShotModifier ## mod || \
-			fCommand(nType) == CCommands::OneShotModifier ## mod ## Repeat) { \
+	if (CmdTable::Command(m_CmdID[nType & ~type][nKey]) == CCommands::OneShotModifier ## mod || \
+			CmdTable::Command(m_CmdID[nType][nKey]) == CCommands::OneShotModifier ## mod ## Repeat) { \
 		nOneShotModifier[nKey] = vk; \
 		DepressKey(vk); \
 		bCherryOneShotModifier = TRUE; \
 		goto HOOK; \
-	} else if (fCommand(nType & ~CONTROL) == CCommands::OneShotModifier ## mod ## Repeat) { \
+	} else if (CmdTable::Command(m_CmdID[nType & ~CONTROL][nKey]) == CCommands::OneShotModifier ## mod ## Repeat) { \
 		ReleaseKey(vk); \
 		bCherryOneShotModifier = FALSE; \
 		Kdu(nKey); \
@@ -719,13 +720,12 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	if (i == MAX_KEY)
 		bCherryOneShotModifier = FALSE;
 
-	if (0 <= FuncID && FuncID < MAX_FUNCTION && m_Config.FuncDef[FuncID][0]) {
-		CallFunction(FuncID);
+	int id = m_FuncID[nType][nKey];
+	if (0 <= id && id < MAX_FUNCTION && m_Config.FuncDefs[id][0]) {
+		CallFunction(id);
 		CCommands::Reset(GOTO_HOOK);
 		goto HOOK;
 	}
-#undef fCommand
-#undef FuncID
 
 	if (!fCommand) {
 		if (nOrigKey == VK_CONTROL || nOrigKey == VK_MENU || nOrigKey == VK_SHIFT)
@@ -822,7 +822,7 @@ exit:
 int CXkeymacsDll::IsPassThrough(BYTE nKey)
 {
 	BYTE bVk = 0;
-	const BYTE *pnID = m_CurrentConfig->CmdID[NONE]; 
+	const BYTE *pnID = m_CmdID[NONE]; 
 	do {
 		if (IsDown(bVk) && CmdTable::Command(pnID[bVk]) == CCommands::PassThrough) {
 			if (bVk == nKey)
@@ -1018,7 +1018,7 @@ BOOL CXkeymacsDll::IsMeta()
 BOOL CXkeymacsDll::IsDepressedModifier(int (__cdecl *Modifier)(void), BOOL bPhysicalKey)
 {
 	BYTE bVk = 0;
-	const BYTE *pnID = m_CurrentConfig->CmdID[NONE];
+	const BYTE *pnID = m_CmdID[NONE];
 	do {
 		switch (bVk) {
 		case VK_SHIFT:
@@ -1143,11 +1143,11 @@ void CXkeymacsDll::SetKbMacro(KbdMacro* kbdMacro)
 }
 
 // call an original command which is defined in dot.xkeymacs
-void CXkeymacsDll::CallFunction(int FuncID)
+void CXkeymacsDll::CallFunction(int id)
 {
-	if (FuncID < 0 || FuncID >= MAX_FUNCTION)
+	if (id < 0 || id >= MAX_FUNCTION)
 		return;
-	LPCTSTR def = m_Config.FuncDef[FuncID];
+	LPCTSTR def = m_Config.FuncDefs[id];
 	if (!def[0])
 		return;
 	std::vector<KeyBind> keybinds;
@@ -1185,7 +1185,7 @@ void CXkeymacsDll::CallFunction(int FuncID)
 	for (std::vector<KeyBind>::const_iterator p = keybinds.begin(); p != keybinds.end(); ++p) {
 		int nType = p->nType;
 		BYTE bVk = p->bVk;
-		int (*fCommand)() = nType < MAX_COMMAND_TYPE ? CmdTable::Command(m_CurrentConfig->CmdID[nType][bVk]) : NULL;
+		int (*fCommand)() = nType < MAX_COMMAND_TYPE ? CmdTable::Command(m_CmdID[nType][bVk]) : NULL;
 		if (fCommand) {
 			if (fCommand == CCommands::ExecuteExtendedCommand)
 				bM_x = TRUE;

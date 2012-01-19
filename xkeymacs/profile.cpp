@@ -269,7 +269,7 @@ void CProfile::SaveRegistry()
 void CProfile::SetDllData()
 {
 	for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID)
-		_tcscpy_s(m_Config.FuncDef[nFuncID], CDotXkeymacs::GetFunctionDefinition(nFuncID));
+		_tcscpy_s(m_Config.FuncDefs[nFuncID], CDotXkeymacs::GetFunctionDefinition(nFuncID));
 	for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
 		AppConfig& appConfig = m_Config.AppConfig[nAppID];
 		appConfig.CmdID[CONTROL]['X'] = 0; // C-x is unassigned.

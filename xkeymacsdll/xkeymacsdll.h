@@ -55,6 +55,8 @@ public:
 private:
 	static Config m_Config;
 	static AppConfig* m_CurrentConfig;
+	static BYTE (*m_CmdID)[MAX_KEY];
+	static char (*m_FuncID)[MAX_KEY];
 	static HHOOK m_hHookCallWnd;
 	static HHOOK m_hHookCallWndRet;
 	static HHOOK m_hHookGetMessage;
