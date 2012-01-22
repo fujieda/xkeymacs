@@ -208,7 +208,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="dotxkeymacs.cpp">
+    <ClCompile Include="FuncDefs.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -276,7 +276,7 @@
     <ClInclude Include="109keyboard.h" />
     <ClInclude Include="about.h" />
     <ClInclude Include="AppList.h" />
-    <ClInclude Include="dotxkeymacs.h" />
+    <ClInclude Include="FuncDefs.h" />
     <ClInclude Include="imelist.h" />
     <ClInclude Include="key.h" />
     <ClInclude Include="keyboardlayout.h" />

@@ -29,7 +29,7 @@ struct AppConfig {
 
 struct Config {
 	AppConfig AppConfig[MAX_APP];
-	TCHAR FuncDefs[MAX_FUNCTION][MAX_DEFINITION];
+	KeyBind FuncDefs[MAX_FUNCTION][MAX_DEFINITION];
 	bool Is106Keyboard;
 };
 

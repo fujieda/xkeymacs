@@ -206,7 +206,6 @@
     <ClCompile Include="CmdTable.cpp" />
     <ClCompile Include="CmdTableData.cpp" />
     <ClCompile Include="Commands.cpp" />
-    <ClCompile Include="FunctionDefinition.cpp" />
     <ClCompile Include="KbdMacro.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -228,7 +227,6 @@
     <ClInclude Include="CmdTable.h" />
     <ClInclude Include="Commands.h" />
     <ClInclude Include="defs.h" />
-    <ClInclude Include="FunctionDefinition.h" />
     <ClInclude Include="ipc.h" />
     <ClInclude Include="KbdMacro.h" />
     <ClInclude Include="resource.h" />

@@ -4,7 +4,7 @@
 
 #include "profile.h"
 #include "xkeymacs.h"
-#include "dotxkeymacs.h"
+#include "FuncDefs.h"
 #include "mainfrm.h"
 #include "../xkeymacsdll/xkeymacsdll.h"
 #include "../xkeymacsdll/Utils.h"
@@ -21,7 +21,7 @@ TCHAR CProfile::m_AppTitle[MAX_APP][WINDOW_TEXT_LENGTH];
 
 void CProfile::LoadData()
 {
-	CDotXkeymacs::Load();
+	FuncDefs::Load();
 	LevelUp();
 	LoadRegistry();
 }
@@ -96,17 +96,16 @@ void CProfile::LevelUp()
 		// fall through
 		case 3:
 			// rename original function to remove IDS_REG_ORIGINAL_PREFIX
-			for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID) {
+			for (int nFuncID = 0; nFuncID < FuncDefs::GetNumOfDefs(); ++nFuncID) {
 				HKEY hKey = NULL;
-				const CString subKey = CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)) + _T("\\") + appName + _T("\\") + CString(MAKEINTRESOURCE(IDS_REG_ORIGINAL_PREFIX)) + CDotXkeymacs::GetFunctionSymbol(nFuncID);
+				const CString subKey = CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)) + _T("\\") + appName + _T("\\") + CString(MAKEINTRESOURCE(IDS_REG_ORIGINAL_PREFIX)) + FuncDefs::GetName(nFuncID);
 				if (RegOpenKeyEx(HKEY_CURRENT_USER, subKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
-					// Use registry data
 					TCHAR szKeyBind[128];
 					DWORD dwKeyBind = sizeof(szKeyBind);
 					for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; ++dwIndex) {
 						int nType, nKey;
 						StringToKey(szKeyBind, nType, nKey);
-						SaveKeyBind(appName, CDotXkeymacs::GetFunctionSymbol(nFuncID), nType, nKey);
+						SaveKeyBind(appName, FuncDefs::GetName(nFuncID), nType, nKey);
 						dwKeyBind = sizeof(szKeyBind);
 					}
 					RegCloseKey(hKey);
@@ -179,17 +178,17 @@ void CProfile::LoadRegistry()
 				}
 			}
 		}
-		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID) {
+		memset(appConfig.FuncID, -1, sizeof(appConfig.FuncID));
+		for (int nFuncID = 0; nFuncID < FuncDefs::GetNumOfDefs(); ++nFuncID) {
 			HKEY hKey;
-			const CString regKey = regApp + _T("\\") + CDotXkeymacs::GetFunctionSymbol(nFuncID);
+			CString regKey = regApp + _T("\\") + FuncDefs::GetName(nFuncID);
 			if (RegOpenKeyEx(HKEY_CURRENT_USER, regKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
-				CDotXkeymacs::ClearKey(nFuncID, nAppID);
 				TCHAR szKeyBind[128];
 				DWORD dwKeyBind = _countof(szKeyBind);
 				for (DWORD dwIndex = 0; RegEnumKeyEx(hKey, dwIndex, szKeyBind, &dwKeyBind, NULL, NULL, NULL, NULL) == ERROR_SUCCESS; ++dwIndex) {
 					int nType, nKey;
 					StringToKey(szKeyBind, nType, nKey);
-					CDotXkeymacs::SetKey(nFuncID, nAppID, nType, nKey);
+					appConfig.FuncID[nType][nKey] = static_cast<char>(nFuncID);
 					dwKeyBind = _countof(szKeyBind);
 				}
 				RegCloseKey(hKey);
@@ -240,13 +239,11 @@ void CProfile::SaveRegistry()
 		for (int nComID = 1; nComID < MAX_COMMAND; ++nComID)
 			SaveKeyBind(appName, nComID, 0, 0);
 		for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType)
-			for (int nKey = 0; nKey < MAX_KEY; ++nKey)
+			for (int nKey = 0; nKey < MAX_KEY; ++nKey) {
 				SaveKeyBind(appName, appConfig.CmdID[nType][nKey], nType, nKey);
-		for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID)
-			for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nFuncID, nAppID); ++nKeyID) {
-				int nType, nKey;
-				CDotXkeymacs::GetKey(nFuncID, nAppID, nKeyID, &nType, &nKey);
-				SaveKeyBind(appName, CDotXkeymacs::GetFunctionSymbol(nFuncID), nType, nKey);
+				int id = appConfig.FuncID[nType][nKey];
+				if (id >= 0)
+					SaveKeyBind(appName, FuncDefs::GetName(id), nType, nKey);
 			}
 
 		entry.LoadString(IDS_REG_ENTRY_KILL_RING_MAX);
@@ -268,24 +265,14 @@ void CProfile::SaveRegistry()
 
 void CProfile::SetDllData()
 {
-	for (int nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID)
-		_tcscpy_s(m_Config.FuncDefs[nFuncID], CDotXkeymacs::GetFunctionDefinition(nFuncID));
+	memcpy(m_Config.FuncDefs, FuncDefs::GetDefs(), sizeof(m_Config.FuncDefs));
 	for (int nAppID = 0; nAppID < MAX_APP; ++nAppID) {
 		AppConfig& appConfig = m_Config.AppConfig[nAppID];
 		appConfig.CmdID[CONTROL]['X'] = 0; // C-x is unassigned.
 		for (int nType = 0; nType < MAX_COMMAND_TYPE; ++nType)
 			for (int nKey = 0; nKey < MAX_KEY; ++nKey)
-				if ((nType & CONTROLX) && appConfig.CmdID[nType][nKey])
+				if ((nType & CONTROLX) && (appConfig.CmdID[nType][nKey] || appConfig.FuncID[nType][nKey] >= 0))
 					appConfig.CmdID[CONTROL]['X'] = 1; // C-x is available.
-		memset(appConfig.FuncID, -1, sizeof(appConfig.FuncID));
-		for (BYTE nFuncID = 0; nFuncID < CDotXkeymacs::GetFunctionNumber(); ++nFuncID)
-			for (int nKeyID = 0; nKeyID < CDotXkeymacs::GetKeyNumber(nFuncID, nAppID); ++nKeyID) {
-				int nType, nKey;
-				CDotXkeymacs::GetKey(nFuncID, nAppID, nKeyID, &nType, &nKey);
-				appConfig.FuncID[nType][nKey] = nFuncID;
-				if (nType & CONTROLX)
-					appConfig.CmdID[CONTROL]['X'] = 1; // C-x is available.
-			}
 	}
 	m_Config.Is106Keyboard = Is106Keyboard();
 	CXkeymacsDll::SetConfig(m_Config);
@@ -432,6 +419,16 @@ void CProfile::SetCmdID(int nAppID, int nType, int nKey, int nComID)
 			if (CmdTable::Command(nComID) == CCommands::C_Eisu)
 				break;
 	m_Config.AppConfig[nAppID].CmdID[nType][nKey] = static_cast<BYTE>(nComID);
+}
+
+int CProfile::GetFuncID(int nAppID, int nType, int nKey)
+{
+	return m_Config.AppConfig[nAppID].FuncID[nType][nKey];
+}
+
+void CProfile::SetFuncID(int nAppID, int nType, int nKey, int nFuncID)
+{
+	m_Config.AppConfig[nAppID].FuncID[nType][nKey] = static_cast<BYTE>(nFuncID);
 }
 
 bool CProfile::GetUseDialogSetting(int nAppID)

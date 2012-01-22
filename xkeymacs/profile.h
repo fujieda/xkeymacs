@@ -38,6 +38,8 @@ public:
 	static void SetAppTitle(int nAppID, const CString& appTitle);
 	static int GetCmdID(int nAppID, int nType, int nKey);
 	static void SetCmdID(int nAppID, int nType, int nKey, int nComID);
+	static int GetFuncID(int nAppID, int nType, int nKey);
+	static void SetFuncID(int nAppID, int nType, int nKey, int nFuncID);
 	static bool GetUseDialogSetting(int nAppID);
 	static void SetUseDialogSetting(int nAppID, bool setting);
 	static void SetEnableCUA(int nAppID, bool enable);

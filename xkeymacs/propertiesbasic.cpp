@@ -4,7 +4,6 @@
 #include "propertiesbasic.h"
 #include "resource.h"
 #include "profile.h"
-#include "dotxkeymacs.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -159,7 +158,7 @@ void CPropertiesBasic::GetDialogDataHandler(int cmdID, const KeyBind& bind, int 
 		return;
 	if (IsDlgButtonChecked(bind.nControlID)) {
 		CProfile::SetCmdID(appID, bind.nType, bind.bVk, cmdID);
-		CDotXkeymacs::RemoveKey(appID, bind.nType, bind.bVk);
+		CProfile::SetFuncID(appID, bind.nType, bind.bVk, -1);
 	} else if (bind.nControlID != IDC_CO2)
 		CProfile::SetCmdID(appID, bind.nType, bind.bVk, 0);
 }

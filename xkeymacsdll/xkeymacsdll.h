@@ -46,6 +46,7 @@ public:
 	static bool Get326Compatible();
 	static bool Is106Keyboard();
 	static void SetKbMacro(KbdMacro* kbdMacro);
+	static SHORT ConvVkey(SHORT in, int mode);
 	static int GetAccelerate(void);
 	static void SetAccelerate(int nAccelerate);
 	static void SetKeyboardSpeed(int nKeyboardSpeed);
@@ -90,9 +91,7 @@ private:
 	static CList<CClipboardSnap *, CClipboardSnap *> m_oKillRing;
 	static int m_nKillRing;
 	static KbdMacro* m_kbdMacro;
-	static void CallFunction(int nFuncID);
-	static KeyBind ParseKey(LPCTSTR& def);
-	static SHORT ConvVkey(SHORT in, int mode);
+	static void CallFunction(int id);
 	static int m_nAccelerate;
 	static int m_nKeyboardSpeed;
 	static HCURSOR m_hCurrentCursor;
