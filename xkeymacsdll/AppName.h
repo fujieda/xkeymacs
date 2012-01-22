@@ -8,6 +8,7 @@ public:
 	static void Init();
 	static LPCTSTR GetAppName();
 	static void SetIMEState(bool on);
+	static bool GetIMEState();
 	static void CorrectAppName(TCHAR (&text)[WINDOW_TEXT_LENGTH], TCHAR (&appName)[CLASS_NAME_LENGTH]);
 	static bool IsConsole();
 	static bool Match(LPCTSTR name);

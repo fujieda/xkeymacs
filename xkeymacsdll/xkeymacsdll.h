@@ -69,7 +69,7 @@ private:
 	static LRESULT CALLBACK CallWndRetProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK ShellProc(int nCode, WPARAM wParam, LPARAM lParam);
-	static void InitKeyboardProc(bool imeState);
+	static void InitKeyboardProc();
 	static AppConfig* GetAppConfig(LPCTSTR szName, AppConfig* fallback);
 	static BOOL m_bRightShift;
 	static BOOL m_bRightControl;

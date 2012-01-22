@@ -37,6 +37,7 @@ LPCTSTR AppName::GetAppName()
 
 void AppName::SetIMEState(bool on)
 {
+	AppName::Init();
 	m_IMEState = on;
 	if (!on)
 		return;
@@ -49,6 +50,11 @@ void AppName::SetIMEState(bool on)
 	// ImmIsIME returns false if you use TSF aware applications with a TIF (aka IME).
 	// The following take the preserved IME file name of it.
 	_tcscpy_s(m_IMEName, m_FallbackIMEName);
+}
+
+bool AppName::GetIMEState()
+{
+	return m_IMEState;
 }
 
 // The code starting here is derived from work by co <cogood—gmail.com>.
@@ -128,7 +134,7 @@ bool AppName::IsCmdExe(const CString& text)
 		_T("syswow64\\cmd.exe")
 	};
 	for (int i = 0; i < _countof(prompts); ++i)
-		if (text.Right(_tcslen(prompts[i])).CompareNoCase(prompts[i]) == 0)
+		if (text.Right(static_cast<int>(_tcslen(prompts[i]))).CompareNoCase(prompts[i]) == 0)
 			return true;
 	return false;
 }

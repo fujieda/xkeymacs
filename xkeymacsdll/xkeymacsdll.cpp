@@ -248,20 +248,24 @@ LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lPar
 		const CWPSTRUCT *cwps = reinterpret_cast<CWPSTRUCT *>(lParam);
 		switch (cwps->message) {
 		case WM_IME_STARTCOMPOSITION:
-			InitKeyboardProc(true);
+			AppName::SetIMEState(true);
+			InitKeyboardProc();
 			break;
 		case WM_IME_ENDCOMPOSITION:
-			InitKeyboardProc(false);
+			AppName::SetIMEState(false);
+			InitKeyboardProc();
 			break;
 		case WM_SETFOCUS:
 			if (cwps->hwnd == GetForegroundWindow()) {
-				InitKeyboardProc(false);
+				AppName::SetIMEState(false);
+				InitKeyboardProc();
 				ShowKeyboardHookState();
 			}
 			break;
 		case WM_NCACTIVATE:
 			if (cwps->wParam && cwps->hwnd == GetForegroundWindow()) {
-				InitKeyboardProc(false);
+				AppName::SetIMEState(false);
+				InitKeyboardProc();
 				ShowKeyboardHookState();
 			}
 			break;
@@ -278,7 +282,7 @@ LRESULT CALLBACK CXkeymacsDll::CallWndRetProc(int nCode, WPARAM wParam, LPARAM l
 		switch (cwprets->message) {
 		case WM_SETTEXT:
 			if (cwprets->hwnd == GetForegroundWindow())
-				InitKeyboardProc(false);
+				InitKeyboardProc();
 			break;
 		case WM_SETCURSOR:
 			DoSetCursor();
@@ -295,10 +299,12 @@ LRESULT CALLBACK CXkeymacsDll::GetMsgProc(int nCode, WPARAM wParam, LPARAM lPara
 		const MSG *msg = reinterpret_cast<MSG *>(lParam);
 		switch (msg->message) {
 		case WM_IME_STARTCOMPOSITION:
-			InitKeyboardProc(true);
+			AppName::SetIMEState(true);
+			InitKeyboardProc();
 			break;
 		case WM_IME_ENDCOMPOSITION:
-			InitKeyboardProc(false);
+			AppName::SetIMEState(false);
+			InitKeyboardProc();
 			break;
 		}
 	}
@@ -312,18 +318,17 @@ LRESULT CALLBACK CXkeymacsDll::ShellProc(int nCode, WPARAM wParam, LPARAM lParam
 		TCHAR className[CLASS_NAME_LENGTH];
 		GetClassName(reinterpret_cast<HWND>(wParam), className, CLASS_NAME_LENGTH);
 		if (!_tcsicmp(className, _T("ConsoleWindowClass"))) {
-			InitKeyboardProc(false);
+			AppName::SetIMEState(false);
+			InitKeyboardProc();
 			ShowKeyboardHookState();
 		}
 	}
 	return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
-void CXkeymacsDll::InitKeyboardProc(bool imeState)
+void CXkeymacsDll::InitKeyboardProc()
 {
 	AppName::Init();
-	AppName::SetIMEState(imeState);
-
 	if (m_CurrentConfig == NULL ||
 			_tcsnicmp(m_CurrentConfig->AppName, AppName::GetAppName(), 0xF) || 	// PROCESSENTRY32 has only 0xF bytes of Name
 			!CUtils::IsMatchWindowText(m_CurrentConfig->WindowText)) {
@@ -348,7 +353,7 @@ void CXkeymacsDll::InitKeyboardProc(bool imeState)
 	}
 	if (m_CurrentConfig->SettingStyle != SETTING_DISABLE &&
 			(_tcsicmp(m_CurrentConfig->AppName, _T("Default")) || !CUtils::IsDefaultIgnoreApplication()) &&
-			!imeState && CUtils::IsDialog() && m_CurrentConfig->UseDialogSetting)
+			!AppName::GetIMEState() && CUtils::IsDialog() && m_CurrentConfig->UseDialogSetting)
 		// Use Dialog Setting
 		m_CurrentConfig = GetAppConfig(_T("Dialog"), m_CurrentConfig);
 	m_CmdID = m_CurrentConfig->CmdID;
