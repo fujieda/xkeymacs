@@ -173,7 +173,7 @@ public:
 	static int ForwardChar();
 
 private:
-	static KbdMacro m_kbdMacro;
+	static KbdMacro m_KbdMacro;
 	static BOOL CutFollowingWord();
 	static int CaseWord(CASE_WORD nCase);
 	static BOOL CopyCurrentLine();

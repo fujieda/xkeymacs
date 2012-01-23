@@ -10,27 +10,24 @@
 #include <math.h>
 #include <Imm.h>
 
-#pragma data_seg(".xkmcs")
-DWORD CCommands::m_nNumericArgument = 1;
-BOOL CCommands::m_bSetMark = FALSE;
-BOOL CCommands::m_bC_ = FALSE;
-BOOL CCommands::m_bC_x = FALSE;
-BOOL CCommands::m_bM_ = FALSE;
-BOOL CCommands::m_bM_x = FALSE;
-BOOL CCommands::m_bDefaultNumericArgument = TRUE;
-BOOL CCommands::m_bNegativeNumericArgument = FALSE;
-BOOL CCommands::m_bC_u = FALSE;
-SEARCH_DIRECTION CCommands::m_SearchDirection = NA;
-BOOL CCommands::m_bFirstFindDialog = FALSE;
-BOOL CCommands::m_bTemporarilyDisableXKeymacs = FALSE;
+KbdMacro CCommands::m_KbdMacro;
 OriginalWindowPosition CCommands::m_OriginalWindowPosition[MAX_WINDOW] = {'\0'};
-BOOL CCommands::m_bIsSu = FALSE;
-#pragma data_seg()
-
-KbdMacro CCommands::m_kbdMacro;
+CArray<CClipboardSnap *, CClipboardSnap *> CCommands::m_oClipboardData;
+BOOL CCommands::m_bTemporarilyDisableXKeymacs = FALSE;
+BOOL CCommands::m_bFirstFindDialog = FALSE;
+BOOL CCommands::m_bC_ = FALSE;
 int (*CCommands::m_LastKillCommand)() = NULL;
 int (*CCommands::m_LastCommand)() = NULL;
-CArray<CClipboardSnap *, CClipboardSnap *> CCommands::m_oClipboardData;
+SEARCH_DIRECTION CCommands::m_SearchDirection = NA;
+BOOL CCommands::m_bC_u = FALSE;
+BOOL CCommands::m_bNegativeNumericArgument = FALSE;
+BOOL CCommands::m_bDefaultNumericArgument = TRUE;
+BOOL CCommands::m_bM_x = FALSE;
+BOOL CCommands::m_bM_ = FALSE;
+BOOL CCommands::m_bC_x = FALSE;
+BOOL CCommands::m_bSetMark = FALSE;
+DWORD CCommands::m_nNumericArgument = 1;
+BOOL CCommands::m_bIsSu = FALSE;
 
 void CCommands::DepressKey(BYTE bVk)
 {
@@ -2533,9 +2530,9 @@ int CCommands::StartKbdMacro()
 		SdKduSu(VK_F1);
 	else {
 		if (bC_u())
-			m_kbdMacro.Call();
-		m_kbdMacro.Start();
-		CXkeymacsDll::SetKbMacro(&m_kbdMacro);
+			m_KbdMacro.Call();
+		m_KbdMacro.Start();
+		CXkeymacsDll::SetKbMacro(&m_KbdMacro);
 	}
 	return Reset(GOTO_HOOK);
 }
@@ -2548,7 +2545,7 @@ int CCommands::EndKbdMacro()
 	else if (CUtils::IsHidemaru())
 		SdKduSu(VK_F1);
 	else {
-		m_kbdMacro.End();
+		m_KbdMacro.End();
 		CXkeymacsDll::SetKbMacro(NULL);
 	}
 	return Reset(GOTO_HOOK);
@@ -2569,7 +2566,7 @@ int CCommands::CallLastKbdMacro()
 	} else {
 		EndKbdMacro();
 		while (m_nNumericArgument--)
-			m_kbdMacro.Call();
+			m_KbdMacro.Call();
 	}
 	return Reset(GOTO_HOOK);
 }
