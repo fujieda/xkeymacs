@@ -2904,7 +2904,7 @@ BOOL CCommands::IsTemporarilyDisableXKeymacs()
 void CCommands::SetTemporarilyDisableXKeymacs(BOOL bTemporarilyDisableXKeymacs)
 {
 	m_bTemporarilyDisableXKeymacs = bTemporarilyDisableXKeymacs;
-	CXkeymacsDll::ShowKeyboardHookState();
+	CXkeymacsDll::ShowHookState();
 }
 
 int CCommands::New()

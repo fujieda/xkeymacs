@@ -91,7 +91,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 #pragma data_seg(".xkmcs")
 Config CXkeymacsDll::m_Config = {0};
 bool CXkeymacsDll::m_bEnableKeyboardHook = false;
-BOOL CXkeymacsDll::m_bHook = TRUE;
+bool CXkeymacsDll::m_bHook = true;
 int CXkeymacsDll::m_nAccelerate = 0;
 int CXkeymacsDll::m_nKeyboardSpeed = 31;
 HCURSOR CXkeymacsDll::m_hCurrentCursor = NULL;
@@ -206,18 +206,23 @@ void CXkeymacsDll::ReleaseKeyboardHook()
 		unhook(*phHook);
 }
 
-void CXkeymacsDll::ToggleKeyboardHookState()
+void CXkeymacsDll::ToggleHookState()
 {
-	m_bHook = !m_bHook;
-	ShowKeyboardHookState();
+	SetHookState(!m_bHook);
 }
 
-BOOL CXkeymacsDll::IsKeyboardHook()
+void CXkeymacsDll::SetHookState(bool enable)
+{
+	m_bHook = enable;
+	ShowHookState();
+}
+
+bool CXkeymacsDll::GetHookState()
 {
 	return m_bHook;
 }
 
-void CXkeymacsDll::ShowKeyboardHookState()
+void CXkeymacsDll::ShowHookState()
 {
 	IconMsg msg = {MAIN_ICON,};
 	if (m_bHook) {
@@ -259,14 +264,14 @@ LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lPar
 			if (cwps->hwnd == GetForegroundWindow()) {
 				AppName::SetIMEState(false);
 				InitKeyboardProc();
-				ShowKeyboardHookState();
+				ShowHookState();
 			}
 			break;
 		case WM_NCACTIVATE:
 			if (cwps->wParam && cwps->hwnd == GetForegroundWindow()) {
 				AppName::SetIMEState(false);
 				InitKeyboardProc();
-				ShowKeyboardHookState();
+				ShowHookState();
 			}
 			break;
 		}
@@ -320,7 +325,7 @@ LRESULT CALLBACK CXkeymacsDll::ShellProc(int nCode, WPARAM wParam, LPARAM lParam
 		if (!_tcsicmp(className, _T("ConsoleWindowClass"))) {
 			AppName::SetIMEState(false);
 			InitKeyboardProc();
-			ShowKeyboardHookState();
+			ShowHookState();
 		}
 	}
 	return CallNextHookEx(NULL, nCode, wParam, lParam);
@@ -502,17 +507,15 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 
 	int (*fCommand)() = CmdTable::Command(m_CmdID[nType][nKey]);
 	if (fCommand == CCommands::EnableOrDisableXKeymacs) {
-		ToggleKeyboardHookState();
+		ToggleHookState();
 		goto HOOK;
 	}
 	if (fCommand == CCommands::EnableXKeymacs) {
-		if (!m_bHook)
-			ToggleKeyboardHookState();
+		SetHookState(true);
 		goto HOOK;
 	}
 	if (fCommand == CCommands::DisableXKeymacs) {
-		if (m_bHook)
-			ToggleKeyboardHookState();
+		SetHookState(false);
 		goto HOOK;
 	}
 	if (!m_bHook)

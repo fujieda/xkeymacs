@@ -28,9 +28,9 @@ public:
 	static void ResetHooks();
 	static void ReleaseHooks();
 	static void ReleaseKeyboardHook();
-	static void ToggleKeyboardHookState();
-	static BOOL IsKeyboardHook();
-	static void ShowKeyboardHookState();
+	static void ToggleHookState();
+	static bool GetHookState();
+	static void ShowHookState();
 	static void SetM_xTip(LPCTSTR szPath);
 	static BOOL SendIconMessage(IconMsg *pMsg, DWORD num);
 	static BOOL IsDown(BYTE bVk, BOOL bPhysicalKey = TRUE);
@@ -63,7 +63,8 @@ private:
 	static HHOOK m_hHookGetMessage;
 	static HHOOK m_hHookShell;
 	static bool m_bEnableKeyboardHook;
-	static BOOL m_bHook;
+	static bool m_bHook;
+	static void SetHookState(bool enable);
 	static DWORD m_nHookAltRelease;
 	static LRESULT CALLBACK CallWndProc(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK CallWndRetProc(int nCode, WPARAM wParam, LPARAM lParam);

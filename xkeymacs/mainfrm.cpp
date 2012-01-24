@@ -352,7 +352,7 @@ void CMainFrame::ShowRightMenu(const ICON_TYPE icon)
 		popUp->SetDefaultItem(IDC_PROPERTIES);
 
 		CString szDisable(MAKEINTRESOURCE(IDS_ENABLE));
-		if (CXkeymacsDll::IsKeyboardHook()) {
+		if (CXkeymacsDll::GetHookState()) {
 			szDisable.LoadString(IDS_DISABLE);
 		}
 		szDisable += _T("\tCtrl+Q");
@@ -447,7 +447,7 @@ void CMainFrame::OnOptions()
 // stop/start keyboard hook
 void CMainFrame::OnDisable() 
 {
-	CXkeymacsDll::ToggleKeyboardHookState();
+	CXkeymacsDll::ToggleHookState();
 }
 
 // Close the Dialog if it is opened.
