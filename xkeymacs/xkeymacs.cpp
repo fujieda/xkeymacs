@@ -114,15 +114,14 @@ BOOL CXkeymacsApp::Start64bitProcess()
 	return TRUE;
 }
 
-BOOL CXkeymacsApp::SendIPCMessage(DWORD msg)
+void CXkeymacsApp::SendIPC64Message(DWORD msg)
 {
 	if (!m_bIsWow64)
-		return TRUE;
+		return;
 	DWORD ack, read;
 	for (int i = 0; i < 10; Sleep(100), ++i)
-		if (CallNamedPipe(IPC_PIPE, &msg, sizeof(msg), &ack, sizeof(DWORD), &read, NMPWAIT_WAIT_FOREVER))
-			return TRUE;
-	return FALSE;
+		if (CallNamedPipe(XKEYMACS64_PIPE, &msg, sizeof(msg), &ack, sizeof(DWORD), &read, NMPWAIT_WAIT_FOREVER))
+			return;;
 }
 
 int CXkeymacsApp::ExitInstance() 

@@ -28,11 +28,12 @@ public:
 	static void ResetHooks();
 	static void ReleaseHooks();
 	static void ReleaseKeyboardHook();
+	static void SetHookStateDirect(bool enable);
 	static void ToggleHookState();
 	static bool GetHookState();
 	static void ShowHookState();
 	static void SetM_xTip(LPCTSTR szPath);
-	static BOOL SendIconMessage(IconMsg *pMsg, DWORD num);
+	static void SendIconMessage(IconState *state, int num);
 	static BOOL IsDown(BYTE bVk, BOOL bPhysicalKey = TRUE);
 	static void Kdu(BYTE bVk, DWORD n = 1, BOOL bOriginal = TRUE);
 	static void DepressKey(BYTE bVk, BOOL bOriginal = TRUE);

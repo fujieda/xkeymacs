@@ -39,7 +39,7 @@ BOOL CXkeymacsApp::InitInstance()
 
 UINT PollIPCMessage(LPVOID param)
 {
-	HANDLE hPipe = CreateNamedPipe(IPC_PIPE, PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1, 512, 512, 0, NULL);
+	HANDLE hPipe = CreateNamedPipe(XKEYMACS64_PIPE, PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1, 512, 512, 0, NULL);
 	if (hPipe == INVALID_HANDLE_VALUE)
 		return 1;
 	for (; ;) {
@@ -49,22 +49,28 @@ UINT PollIPCMessage(LPVOID param)
 		DWORD read;
 		if (!ReadFile(hPipe, &msg, sizeof(msg), &read, NULL) || read != sizeof(msg)) 
 			break;
-		DWORD written, nul = 0;
-		if (!WriteFile(hPipe, &nul, sizeof(DWORD), &written, NULL) || written != sizeof(DWORD)
-				|| !FlushFileBuffers(hPipe) || !DisconnectNamedPipe(hPipe))
-			break;
 		switch (msg)
 		{
-		case XKEYMACS_EXIT:
+		case IPC64_EXIT:
 			goto exit;
 			break;
-		case XKEYMACS_RELOAD:
+		case IPC64_RELOAD:
 			CXkeymacsDll::LoadConfig();
 			break;
-		case XKEYMACS_RESET:
+		case IPC64_RESET:
 			CXkeymacsDll::ResetHooks();
 			break;
+		case IPC64_DISABLE:
+			CXkeymacsDll::SetHookStateDirect(false);
+			break;
+		case IPC64_ENABLE:
+			CXkeymacsDll::SetHookStateDirect(true);
+			break;
 		}
+		DWORD written, ack = 0;
+		if (!WriteFile(hPipe, &ack, sizeof(DWORD), &written, NULL) || written != sizeof(DWORD)
+				|| !FlushFileBuffers(hPipe) || !DisconnectNamedPipe(hPipe))
+			break;
 	}
 exit:
 	CloseHandle(hPipe);

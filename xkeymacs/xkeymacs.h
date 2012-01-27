@@ -38,7 +38,7 @@ public:
 		//    DO NOT EDIT what you see in these blocks of generated code !
 	//}}AFX_MSG
 	BOOL IsWow64();
-	BOOL SendIPCMessage(DWORD msg);
+	void SendIPC64Message(DWORD msg);
 	BOOL Start64bitProcess();
 	DECLARE_MESSAGE_MAP()
 private:

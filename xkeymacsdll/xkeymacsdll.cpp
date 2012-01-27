@@ -206,6 +206,11 @@ void CXkeymacsDll::ReleaseKeyboardHook()
 		unhook(*phHook);
 }
 
+void CXkeymacsDll::SetHookStateDirect(bool enable)
+{
+	m_bHook = enable;
+}
+
 void CXkeymacsDll::ToggleHookState()
 {
 	SetHookState(!m_bHook);
@@ -213,7 +218,12 @@ void CXkeymacsDll::ToggleHookState()
 
 void CXkeymacsDll::SetHookState(bool enable)
 {
-	m_bHook = enable;
+	DWORD ack, read;
+	IPC32Message msg;
+	msg.Type = IPC32_HOOKSTATE;
+	msg.Enable = enable;
+	CallNamedPipe(XKEYMACS32_PIPE, &msg, offsetof(IPC32Message, Enable) + sizeof(bool), &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT);
+
 	ShowHookState();
 }
 
@@ -224,25 +234,23 @@ bool CXkeymacsDll::GetHookState()
 
 void CXkeymacsDll::ShowHookState()
 {
-	IconMsg msg = {MAIN_ICON,};
+	IconState main = { MAIN_ICON, STATUS_ENABLE };
 	if (m_bHook) {
 		if (CCommands::IsTemporarilyDisableXKeymacs()) {
-			msg.nState = STATUS_DISABLE_TMP;
+			main.State = STATUS_DISABLE_TMP;
 			m_hCurrentCursor = m_hCursor[STATUS_DISABLE_TMP];
 		} else {
-			msg.nState = STATUS_ENABLE;
+			main.State = STATUS_ENABLE;
 			m_hCurrentCursor = m_hCursor[STATUS_ENABLE];
 		}
-	} else {
-		msg.nState = STATUS_DISABLE_WOCQ;
-	}
-	if (m_CurrentConfig->SettingStyle == SETTING_DISABLE
-	 || (!_tcsicmp(m_CurrentConfig->AppName, _T("Default"))
-	  && CUtils::IsDefaultIgnoreApplication())) {
-		msg.nState = STATUS_DISABLE;
+	} else
+		main.State = STATUS_DISABLE_WOCQ;
+	if (m_CurrentConfig->SettingStyle == SETTING_DISABLE ||
+			(!_tcsicmp(m_CurrentConfig->AppName, _T("Default")) && CUtils::IsDefaultIgnoreApplication())) {
+		main.State = STATUS_DISABLE;
 		m_hCurrentCursor = m_hCursor[STATUS_DISABLE];
 	}
-	SendIconMessage(&msg, 1);
+	SendIconMessage(&main, 1);
 	DoSetCursor();
 }
 
@@ -364,7 +372,7 @@ void CXkeymacsDll::InitKeyboardProc()
 	m_CmdID = m_CurrentConfig->CmdID;
 	m_FuncID = m_CurrentConfig->FuncID;
 
-	IconMsg msg[3] = {
+	IconState msg[3] = {
 		{CX_ICON, OFF_ICON, ""},
 		{MX_ICON, OFF_ICON, ""},
 		{META_ICON, OFF_ICON, ""}
@@ -743,7 +751,7 @@ void CXkeymacsDll::InvokeM_x(LPCTSTR szPath)
 
 void CXkeymacsDll::SetModifierIcons()
 {
-	IconMsg msg[6] = {
+	IconState icons[6] = {
 		{MX_ICON, CCommands::bM_x(), ""},
 		{CX_ICON, CCommands::bC_x(), ""},
 		{META_ICON, CCommands::bM_(), ""},
@@ -751,8 +759,8 @@ void CXkeymacsDll::SetModifierIcons()
 		{CTRL_ICON, IsControl(), ""},
 		{ALT_ICON, IsDown(VK_MENU, FALSE), ""}
 	};
-	_tcscpy_s(msg[0].szTip, m_M_xTip);
-	SendIconMessage(msg, 6);
+	_tcscpy_s(icons[0].Tip, m_M_xTip);
+	SendIconMessage(icons, 6);
 }
 
 void CXkeymacsDll::SetM_xTip(LPCTSTR szPath)
@@ -762,10 +770,13 @@ void CXkeymacsDll::SetM_xTip(LPCTSTR szPath)
 		_stprintf_s(m_M_xTip, "M-x %s", szPath);
 }
 
-BOOL CXkeymacsDll::SendIconMessage(IconMsg *pMsg, DWORD num)
+void CXkeymacsDll::SendIconMessage(IconState *state, int num)
 {
 	DWORD ack, read;
-	return CallNamedPipe(ICON_PIPE, pMsg, sizeof(IconMsg) * num, &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT) && read == sizeof(DWORD);
+	IPC32Message msg;
+	msg.Type = IPC32_ICON;
+	memcpy(msg.IconState, state, num * sizeof(IconState));
+	CallNamedPipe(XKEYMACS32_PIPE, &msg, offsetof(IPC32Message, IconState) + sizeof(IconState) * num, &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT);
 }
 
 void CXkeymacsDll::Kdu(BYTE bVk, DWORD n, BOOL bOriginal)

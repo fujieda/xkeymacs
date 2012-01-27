@@ -281,7 +281,7 @@ void CProfile::SetDllData()
 		return;
 	if (!CXkeymacsDll::SaveConfig())
 		return;
-	pApp->SendIPCMessage(XKEYMACS_RELOAD);
+	pApp->SendIPC64Message(IPC64_RELOAD);
 }
 
 void CProfile::SaveKeyBind(LPCTSTR appName, int comID, int type, int key)

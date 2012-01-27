@@ -22,7 +22,6 @@ HICON CMainFrame::m_hIcon[MAX_ICON_TYPE][MAX_STATUS];
 DWORD CMainFrame::m_dwOldMessage[MAX_ICON_TYPE];
 NOTIFYICONDATA CMainFrame::m_stNtfyIcon[MAX_ICON_TYPE];
 NOTIFYICONDATA CMainFrame::m_stOldNtfyIcon[MAX_ICON_TYPE];
-bool CMainFrame::m_bPollIconMessage;
 
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
@@ -157,47 +156,62 @@ int CMainFrame::OnCreate(const LPCREATESTRUCT lpCreateStruct)
 
 void CMainFrame::StartPollThread()
 {
-	m_bPollIconMessage = TRUE;
-	m_hThread = CreateThread(NULL, 0, PollIconMessage, this, 0, NULL);
+	m_hThread = CreateThread(NULL, 0, PollMessage, this, 0, NULL);
 }
 
 void CMainFrame::TerminatePollThread()
 {
-	m_bPollIconMessage = FALSE;
-	IconMsg nul = {MAIN_ICON,};
-	if (CXkeymacsDll::SendIconMessage(&nul, 1))
-		WaitForSingleObject(m_hThread, 5000);
+	DWORD ack, read;
+	IPC32Message msg;
+	msg.Type = IPC32_TERMINATE;
+	CallNamedPipe(XKEYMACS32_PIPE, &msg, sizeof(msg.Type), &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT);
 	CloseHandle(m_hThread);
 }
 
-DWORD WINAPI CMainFrame::PollIconMessage(LPVOID)
+bool SendAck(HANDLE pipe)
 {
-	HANDLE hPipe = CreateNamedPipe(ICON_PIPE, PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1,
-									sizeof(DWORD), sizeof(IconMsg) * MAX_ICON_TYPE, 0, NULL);
-	if (hPipe == INVALID_HANDLE_VALUE)
+	DWORD written, ack = 0;
+	return WriteFile(pipe, &ack, sizeof(DWORD), &written, NULL) && written == sizeof(DWORD) &&
+			FlushFileBuffers(pipe) && DisconnectNamedPipe(pipe);
+}
+
+DWORD WINAPI CMainFrame::PollMessage(LPVOID)
+{
+	HANDLE pipe = CreateNamedPipe(XKEYMACS32_PIPE, PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1,
+									sizeof(DWORD), sizeof(IPC32Message), 0, NULL);
+	if (pipe == INVALID_HANDLE_VALUE)
 		return 1;
 	for (; ;) {
-		if (ConnectNamedPipe(hPipe, NULL) ? FALSE : (GetLastError() != ERROR_PIPE_CONNECTED))
+		if (ConnectNamedPipe(pipe, NULL) ? FALSE : (GetLastError() != ERROR_PIPE_CONNECTED))
 			break;
-		IconMsg msg[MAX_ICON_TYPE];
+		IPC32Message msg;
 		DWORD read;
-		if (!ReadFile(hPipe, msg, sizeof(msg), &read, NULL))
+		if (!ReadFile(pipe, &msg, sizeof(msg), &read, NULL))
 			break;
-		DWORD written, ack = 0;
-		// return ack ASAP to release hooks from blocking state.
-		if (!WriteFile(hPipe, &ack, sizeof(DWORD), &written, NULL) || written != sizeof(DWORD) ||
-				!FlushFileBuffers(hPipe) || !DisconnectNamedPipe(hPipe))
-			break;
-		if (!m_bPollIconMessage)
-			break;
-		for (DWORD i = 0; i < read / sizeof(IconMsg); ++i) {
-			m_stNtfyIcon[msg[i].nType].hIcon = m_hIcon[msg[i].nType][msg[i].nState];
-			if (msg[i].nType == MX_ICON && msg[i].szTip[0] != 0)
-				memcpy(m_stNtfyIcon[MX_ICON].szTip, msg[i].szTip, 128);
-			DoShell_NotifyIcon(msg[i].nType, NIM_MODIFY);
+		switch (msg.Type) {
+		case IPC32_TERMINATE:
+			SendAck(pipe);
+			goto exit;
+		case IPC32_HOOKSTATE:
+			CXkeymacsDll::SetHookStateDirect(msg.Enable);
+			static_cast<CXkeymacsApp *>(AfxGetApp())->SendIPC64Message(msg.Enable ? IPC64_ENABLE : IPC64_DISABLE);
+			if (!SendAck(pipe))
+				goto exit;
+			continue;
+		case IPC32_ICON:
+			// return ack ASAP to release hooks from blocking state.
+			if (!SendAck(pipe))
+				goto exit;
+			for (DWORD i = 0; i < (read - offsetof(IPC32Message, IconState)) / sizeof(IconState); ++i) {
+				m_stNtfyIcon[msg.IconState[i].Type].hIcon = m_hIcon[msg.IconState[i].Type][msg.IconState[i].State];
+				if (msg.IconState[i].Type == MX_ICON && msg.IconState[i].Tip[0] != 0)
+					memcpy(m_stNtfyIcon[MX_ICON].szTip, msg.IconState[i].Tip, 128);
+				DoShell_NotifyIcon(msg.IconState[i].Type, NIM_MODIFY);
+			}
 		}
 	}
-	CloseHandle(hPipe);
+exit:
+	CloseHandle(pipe);
 	return 0;
 }
 
@@ -471,7 +485,7 @@ void CMainFrame::OnQuit()
 
 	CXkeymacsDll::ReleaseHooks();
 	TerminatePollThread();
-	static_cast<CXkeymacsApp *>(AfxGetApp())->SendIPCMessage(XKEYMACS_EXIT);
+	static_cast<CXkeymacsApp *>(AfxGetApp())->SendIPC64Message(IPC64_EXIT);
 	DeleteAllShell_NotifyIcon();
 
 	PostQuitMessage(0);
@@ -522,9 +536,7 @@ void CMainFrame::OnReset()
 	TerminatePollThread();
 	CXkeymacsDll::ResetHooks();
 	StartPollThread();
-	CXkeymacsApp *pApp = static_cast<CXkeymacsApp *>(AfxGetApp());
-	if (!pApp->SendIPCMessage(XKEYMACS_RESET))
-		pApp->Start64bitProcess(); // try to restart 64bit app
+	static_cast<CXkeymacsApp *>(AfxGetApp())->SendIPC64Message(IPC64_RESET);
 }
 
 void CMainFrame::OnHelpFinder() 

@@ -101,11 +101,10 @@ private:
 	static void DoShell_NotifyIcon(ICON_TYPE icon, DWORD dwMessage);
 	static void DeleteAllShell_NotifyIcon();
 	static void AddAllShell_NotifyIcon();
-	static bool m_bPollIconMessage;
 	HANDLE m_hThread;
 	void StartPollThread();
 	void TerminatePollThread();
-	static DWORD WINAPI PollIconMessage(LPVOID lpParam);
+	static DWORD WINAPI PollMessage(LPVOID lpParam);
 public:
 	void EnableShell_NotifyIcon(ICON_TYPE icon, BOOL bEnable);
 };

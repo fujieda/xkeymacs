@@ -7,12 +7,6 @@
 
 #include "defs.h"
 
-struct IconMsg {
-	ICON_TYPE nType;
-	int nState;
-	TCHAR szTip[128];
-};
-
 struct AppConfig {
 	TCHAR AppName[CLASS_NAME_LENGTH];
 	TCHAR WindowText[WINDOW_TEXT_LENGTH];
@@ -33,8 +27,23 @@ struct Config {
 	bool Is106Keyboard;
 };
 
-enum XKEYMACS_IPC { XKEYMACS_EXIT, XKEYMACS_RELOAD, XKEYMACS_RESET };
+enum XKEYMACS_IPC32 { IPC32_TERMINATE, IPC32_ICON, IPC32_HOOKSTATE };
+enum XKEYMACS_IPC64 { IPC64_EXIT, IPC64_RELOAD, IPC64_RESET, IPC64_DISABLE, IPC64_ENABLE };
 
-#define ICON_PIPE _T("\\\\.\\pipe\\XKEYMACS_ICON")
-#define IPC_PIPE _T("\\\\.\\pipe\\XKEYMACS_IPC")
+struct IconState {
+	ICON_TYPE Type;
+	int State;
+	TCHAR Tip[128];
+};
+
+struct IPC32Message {
+	XKEYMACS_IPC32 Type;
+	union {
+		bool Enable;
+		IconState IconState[MAX_ICON_TYPE];
+	};
+};
+
+#define XKEYMACS32_PIPE _T("\\\\.\\pipe\\XKEYMACS_IPC32")
+#define XKEYMACS64_PIPE _T("\\\\.\\pipe\\XKEYMACS_IPC64")
 #endif
