@@ -91,11 +91,11 @@ void AppName::CorrectAppName(TCHAR (&text)[WINDOW_TEXT_LENGTH], TCHAR (&appName)
 			_tcscpy_s(text, s);
 		}
 	} else if (!_tcsicmp(appName, _T("javaw.exe"))) {
-		if (s.Find(_T(" - Eclipse Platform")) || s == _T("Find/Replace"))
+		if (s.Find(_T(" - Eclipse Platform")) >= 0 || s == _T("Find/Replace"))
 			_tcscpy_s(appName, "eclipse.exe");
-		else if (s.Find(_T("BlueJ")))
+		else if (s.Find(_T("BlueJ")) >= 0)
 			_tcscpy_s(appName, "bluej.exe");
-		else if (s.Find(_T("JUDE")))
+		else if (s.Find(_T("JUDE")) >= 0)
 			_tcscpy_s(appName, "jude.exe");
 	}
 }
