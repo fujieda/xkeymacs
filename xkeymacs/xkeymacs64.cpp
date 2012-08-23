@@ -1,6 +1,7 @@
 #include "xkeymacs64.h"
 #include "mainfrm64.h"
 #include "../xkeymacsdll/xkeymacsdll.h"
+#include "../xkeymacsdll/Utils.h"
 
 CXkeymacsApp::CXkeymacsApp()
 {
@@ -37,18 +38,54 @@ BOOL CXkeymacsApp::InitInstance()
 	return TRUE;
 }
 
+bool SendAck(HANDLE pipe)
+{
+	DWORD written, ack = 0;
+	if (!WriteFile(pipe, &ack, sizeof(DWORD), &written, NULL) && written != sizeof(DWORD)) {
+#ifdef DEBUG_IPC
+		CUtils::Log(_T("SendAck: WriteFile failed. (%d)"), GetLastError());
+#endif
+		return false;
+	}
+	if (!FlushFileBuffers(pipe)) {
+#ifdef DEBUG_IPC
+		CUtils::Log(_T("SendAck: FlushFileBuffers failed. (%d)"), GetLastError());
+#endif
+		return false;
+	}
+	if (!DisconnectNamedPipe(pipe)) {
+#ifdef DEBUG_IPC
+		CUtils::Log(_T("SendAck: DisconnectNamedPipe failed. (%d)"), GetLastError());
+#endif
+		return false;
+	}
+	return true;
+}
+
 UINT PollIPCMessage(LPVOID param)
 {
 	HANDLE hPipe = CreateNamedPipe(XKEYMACS64_PIPE, PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1, 512, 512, 0, NULL);
-	if (hPipe == INVALID_HANDLE_VALUE)
+	if (hPipe == INVALID_HANDLE_VALUE) {
+#ifdef DEBUG_IPC
+		CUtils::Log(_T("PollIPCMessage: CreateNamedPipe failed. (%d)"), GetLastError());
+#endif
 		return 1;
+	}
 	for (; ;) {
-		if (ConnectNamedPipe(hPipe, NULL) ? FALSE : (GetLastError() != ERROR_PIPE_CONNECTED))
+		if (ConnectNamedPipe(hPipe, NULL) ? FALSE : (GetLastError() != ERROR_PIPE_CONNECTED)) {
+#ifdef DEBUG_IPC
+			CUtils::Log(_T("PollIPCMessage: ConnectNamedPipe failed. (%d)"), GetLastError());
+#endif
 			break;
+		}
 		DWORD msg;
 		DWORD read;
-		if (!ReadFile(hPipe, &msg, sizeof(msg), &read, NULL) || read != sizeof(msg)) 
+		if (!ReadFile(hPipe, &msg, sizeof(msg), &read, NULL) || read != sizeof(msg)) {
+#ifdef DEBUG_IPC
+			CUtils::Log(_T("PollIPCMessage: ReadFile failed. (%d)"), GetLastError());
+#endif
 			break;
+		}
 		switch (msg)
 		{
 		case IPC64_EXIT:
@@ -67,10 +104,7 @@ UINT PollIPCMessage(LPVOID param)
 			CXkeymacsDll::SetHookStateDirect(true);
 			break;
 		}
-		DWORD written, ack = 0;
-		if (!WriteFile(hPipe, &ack, sizeof(DWORD), &written, NULL) || written != sizeof(DWORD)
-				|| !FlushFileBuffers(hPipe) || !DisconnectNamedPipe(hPipe))
-			break;
+		SendAck(hPipe);
 	}
 exit:
 	CloseHandle(hPipe);

@@ -5,6 +5,7 @@
 #include "xkeymacs.h"
 #include "profile.h"
 #include "../xkeymacsdll/xkeymacsdll.h"
+#include "../xkeymacsdll/Utils.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -171,23 +172,52 @@ void CMainFrame::TerminatePollThread()
 bool SendAck(HANDLE pipe)
 {
 	DWORD written, ack = 0;
-	return WriteFile(pipe, &ack, sizeof(DWORD), &written, NULL) && written == sizeof(DWORD) &&
-			FlushFileBuffers(pipe) && DisconnectNamedPipe(pipe);
+	if (!WriteFile(pipe, &ack, sizeof(DWORD), &written, NULL) && written != sizeof(DWORD)) {
+#ifdef DEBUG_IPC
+		CUtils::Log(_T("SendAck: WriteFile failed. (%d)"), GetLastError());
+#endif
+		return false;
+	}
+	if (!FlushFileBuffers(pipe)) {
+#ifdef DEBUG_IPC
+		CUtils::Log(_T("SendAck: FlushFileBuffers failed. (%d)"), GetLastError());
+#endif
+		return false;
+	}
+	if (!DisconnectNamedPipe(pipe)) {
+#ifdef DEBUG_IPC
+		CUtils::Log(_T("SendAck: DisconnectNamedPipe failed. (%d)"), GetLastError());
+#endif
+		return false;
+	}
+	return true;
 }
 
 DWORD WINAPI CMainFrame::PollMessage(LPVOID)
 {
 	HANDLE pipe = CreateNamedPipe(XKEYMACS32_PIPE, PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1,
 									sizeof(DWORD), sizeof(IPC32Message), 0, NULL);
-	if (pipe == INVALID_HANDLE_VALUE)
+	if (pipe == INVALID_HANDLE_VALUE) {
+#ifdef DEBUG_IPC
+		CUtils::Log(_T("PollMessage: CreateNamedPipe failed. (%d)"), GetLastError());
+#endif
 		return 1;
+	}
 	for (; ;) {
-		if (ConnectNamedPipe(pipe, NULL) ? FALSE : (GetLastError() != ERROR_PIPE_CONNECTED))
+		if (ConnectNamedPipe(pipe, NULL) ? FALSE : (GetLastError() != ERROR_PIPE_CONNECTED)) {
+#ifdef DEBUG_IPC
+			CUtils::Log(_T("PollMessage: ConnectNamedPipe failed. (%d)"), GetLastError());
+#endif
 			break;
+		}
 		IPC32Message msg;
 		DWORD read;
-		if (!ReadFile(pipe, &msg, sizeof(msg), &read, NULL))
+		if (!ReadFile(pipe, &msg, sizeof(msg), &read, NULL)) {
+#ifdef DEBUG_IPC
+			CUtils::Log(_T("PollMessage: ReadFile failed. (%d)"), GetLastError());
+#endif
 			break;
+		}
 		switch (msg.Type) {
 		case IPC32_TERMINATE:
 			SendAck(pipe);
