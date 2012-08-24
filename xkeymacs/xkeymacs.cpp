@@ -109,6 +109,9 @@ BOOL CXkeymacsApp::Start64bitProcess()
 	ZeroMemory(&pi, sizeof(pi));
 	if (!CreateProcess(path, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
 		return FALSE;
+	// wait until the child process starts.
+	if (WaitForInputIdle(pi.hProcess, INFINITE))
+		return FALSE;
 	// close unused handles
 	CloseHandle(pi.hProcess);
 	CloseHandle(pi.hThread);
