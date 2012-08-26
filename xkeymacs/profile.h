@@ -23,7 +23,7 @@ class CProfile
 public:
 	static void LoadData();
 	static void SaveData();
-	static void InitDllData();
+	static void SetDllData();
 	static void StringToKey(LPCTSTR str, int& type, int& key);
 	static CString KeyToString(int type, int key);
 	static void GetAppList(TCHAR (&appTitle)[MAX_APP][WINDOW_TEXT_LENGTH], TCHAR (&appName)[MAX_APP][CLASS_NAME_LENGTH]);
@@ -64,7 +64,6 @@ private:
 	static void AddKeyBind2C_(LPCTSTR szApplicationName, BYTE bVk);
 	static void LoadRegistry();
 	static void SaveRegistry();
-	static void SetDllData();
 	static void SaveKeyBind(LPCTSTR appName, int comID, int type, int key);
 	static void SaveKeyBind(LPCTSTR appName, LPCTSTR comName, int type, int key);
 	static BOOL DiableTokenPrivileges();

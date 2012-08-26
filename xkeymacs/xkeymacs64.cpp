@@ -94,9 +94,6 @@ UINT PollIPCMessage(LPVOID param)
 		case IPC64_RELOAD:
 			CXkeymacsDll::LoadConfig();
 			break;
-		case IPC64_RESET:
-			CXkeymacsDll::ResetHooks();
-			break;
 		case IPC64_DISABLE:
 			CXkeymacsDll::SetHookStateDirect(false);
 			break;

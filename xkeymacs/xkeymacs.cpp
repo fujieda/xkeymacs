@@ -4,6 +4,7 @@
 #include "xkeymacs.h"
 #include "mainfrm.h"
 #include "profile.h"
+#include "../xkeymacsdll/ipc.h"
 #include "../xkeymacsdll/Utils.h"
 
 #ifdef _DEBUG
@@ -14,6 +15,8 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CXkeymacsApp
+
+HANDLE CXkeymacsApp::m_64bitProcessHandle = INVALID_HANDLE_VALUE;
 
 BEGIN_MESSAGE_MAP(CXkeymacsApp, CWinApp)
 	//{{AFX_MSG_MAP(CXkeymacsApp)
@@ -28,7 +31,6 @@ END_MESSAGE_MAP()
 CXkeymacsApp::CXkeymacsApp()
 {
 	m_hMutex = NULL;
-	m_bIsWow64 = FALSE;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -73,54 +75,65 @@ BOOL CXkeymacsApp::InitInstance()
 	m_pMainWnd->UpdateWindow();
 	SetClassLongPtr(m_pMainWnd->m_hWnd, GCLP_HICON, (LONG_PTR)LoadIcon(IDR_MAINFRAME));
 
-	if (!Start64bitProcess())
+	if (IsWow64() && !Start64bitProcess())
 		return FALSE;
-	CProfile::InitDllData();
+	CProfile::LoadData();
+	CProfile::SetDllData();
 
 	return TRUE;
 }
 
-BOOL CXkeymacsApp::IsWow64()
+bool CXkeymacsApp::IsWow64()
 {
-	return m_bIsWow64;
+	typedef BOOL (WINAPI *IsWow64ProcessType)(HANDLE, PBOOL);
+	IsWow64ProcessType proc = reinterpret_cast<IsWow64ProcessType>(GetProcAddress(GetModuleHandle(_T("kernel32")), _T("IsWow64Process")));
+	if (!proc)
+		return false; // IsWow64Process not exists
+	BOOL ret;
+	if (!proc(GetCurrentProcess(), &ret))
+		return false; // error
+	return ret == TRUE;
 }
 
-BOOL CXkeymacsApp::Start64bitProcess()
+bool CXkeymacsApp::Start64bitProcess()
 {
-	typedef BOOL (WINAPI *PFIsWow64Process)(HANDLE, PBOOL);
-	PFIsWow64Process func = (PFIsWow64Process)GetProcAddress(GetModuleHandle(_T("kernel32")), _T("IsWow64Process"));
-	if (!func)
-		return TRUE; // IsWow64Process not exists
-	if (!func(GetCurrentProcess(), &m_bIsWow64))
-		return FALSE; // error
-	if (!m_bIsWow64)
-		return TRUE; // do nothing
-	
 	TCHAR buf[MAX_PATH];
 	if (!GetModuleFileName(NULL, buf, MAX_PATH))
-		return FALSE;
+		return false;
 	CString path = buf;
 	if (!path.Replace(_T("xkeymacs.exe"), _T("xkeymacs64.exe")))
-		return FALSE;
+		return false;
 	STARTUPINFO si;
 	ZeroMemory(&si, sizeof(si));
 	si.cb = sizeof(si);
 	PROCESS_INFORMATION pi;
 	ZeroMemory(&pi, sizeof(pi));
 	if (!CreateProcess(path, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
-		return FALSE;
+		return false;
+	m_64bitProcessHandle = pi.hProcess;
 	// wait until the child process starts.
-	if (WaitForInputIdle(pi.hProcess, INFINITE))
-		return FALSE;
+	if (WaitForInputIdle(m_64bitProcessHandle, INFINITE))
+		return false;
 	// close unused handles
-	CloseHandle(pi.hProcess);
 	CloseHandle(pi.hThread);
-	return TRUE;
+	return true;
+}
+
+void CXkeymacsApp::Terminate64bitProcess()
+{
+	SendIPC64Message(IPC64_EXIT);
+	if (WaitForSingleObject(m_64bitProcessHandle, 5000) != WAIT_OBJECT_0) {
+		TerminateProcess(m_64bitProcessHandle, 0);
+		WaitForSingleObject(m_64bitProcessHandle, INFINITE);
+	}
+	CloseHandle(m_64bitProcessHandle);
+	m_64bitProcessHandle = INVALID_HANDLE_VALUE;
+	return;
 }
 
 void CXkeymacsApp::SendIPC64Message(DWORD msg)
 {
-	if (!m_bIsWow64)
+	if (!IsWow64())
 		return;
 	DWORD ack, read;
 	for (int i = 0; i < 10; Sleep(100), ++i)

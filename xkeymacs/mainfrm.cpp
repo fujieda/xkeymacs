@@ -166,6 +166,7 @@ void CMainFrame::TerminatePollThread()
 	IPC32Message msg;
 	msg.Type = IPC32_TERMINATE;
 	CallNamedPipe(XKEYMACS32_PIPE, &msg, sizeof(msg.Type), &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT);
+	WaitForSingleObject(m_hThread, 5000);
 	CloseHandle(m_hThread);
 }
 
@@ -224,7 +225,7 @@ DWORD WINAPI CMainFrame::PollMessage(LPVOID)
 			goto exit;
 		case IPC32_HOOKSTATE:
 			CXkeymacsDll::SetHookStateDirect(msg.Enable);
-			static_cast<CXkeymacsApp *>(AfxGetApp())->SendIPC64Message(msg.Enable ? IPC64_ENABLE : IPC64_DISABLE);
+			CXkeymacsApp::SendIPC64Message(msg.Enable ? IPC64_ENABLE : IPC64_DISABLE);
 			if (!SendAck(pipe))
 				goto exit;
 			continue;
@@ -515,7 +516,7 @@ void CMainFrame::OnQuit()
 
 	CXkeymacsDll::ReleaseHooks();
 	TerminatePollThread();
-	static_cast<CXkeymacsApp *>(AfxGetApp())->SendIPC64Message(IPC64_EXIT);
+	CXkeymacsApp::Terminate64bitProcess();
 	DeleteAllShell_NotifyIcon();
 
 	PostQuitMessage(0);
@@ -553,7 +554,8 @@ void CMainFrame::PopUpKeyboardDialog(const HKEY_TYPE hkeyType)
 void CMainFrame::OnImport() 
 {
 	CProfile::ImportProperties();
-	CProfile::InitDllData();
+	CProfile::LoadData();
+	CProfile::SetDllData();
 }
 
 void CMainFrame::OnExport() 
@@ -563,10 +565,12 @@ void CMainFrame::OnExport()
 
 void CMainFrame::OnReset() 
 {
-	TerminatePollThread();
 	CXkeymacsDll::ResetHooks();
+	TerminatePollThread();
 	StartPollThread();
-	static_cast<CXkeymacsApp *>(AfxGetApp())->SendIPC64Message(IPC64_RESET);
+	CXkeymacsApp::Terminate64bitProcess();
+	CXkeymacsApp::Start64bitProcess();
+	CProfile::SetDllData();
 }
 
 void CMainFrame::OnHelpFinder() 

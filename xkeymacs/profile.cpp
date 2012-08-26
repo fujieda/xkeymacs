@@ -33,12 +33,6 @@ void CProfile::SaveData()
 	SetDllData();
 }
 
-void CProfile::InitDllData()
-{
-	LoadData();
-	SetDllData();
-}
-
 void CProfile::DeleteAllRegistryData()
 {
 	HKEY hkey = NULL;
@@ -276,12 +270,11 @@ void CProfile::SetDllData()
 	}
 	m_Config.Is106Keyboard = Is106Keyboard();
 	CXkeymacsDll::SetConfig(m_Config);
-	CXkeymacsApp *pApp = static_cast<CXkeymacsApp *>(AfxGetApp());
-	if (!pApp->IsWow64())
+	if (!CXkeymacsApp::IsWow64())
 		return;
 	if (!CXkeymacsDll::SaveConfig())
 		return;
-	pApp->SendIPC64Message(IPC64_RELOAD);
+	CXkeymacsApp::SendIPC64Message(IPC64_RELOAD);
 }
 
 void CProfile::SaveKeyBind(LPCTSTR appName, int comID, int type, int key)
