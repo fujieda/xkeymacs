@@ -17,6 +17,7 @@ static char THIS_FILE[] = __FILE__;
 // CXkeymacsApp
 
 HANDLE CXkeymacsApp::m_64bitProcessHandle = INVALID_HANDLE_VALUE;
+PipeName CXkeymacsApp::m_PipeNameForIPC64;
 
 BEGIN_MESSAGE_MAP(CXkeymacsApp, CWinApp)
 	//{{AFX_MSG_MAP(CXkeymacsApp)
@@ -77,6 +78,7 @@ BOOL CXkeymacsApp::InitInstance()
 
 	if (IsWow64() && !Start64bitProcess())
 		return FALSE;
+	m_PipeNameForIPC64.Init(PIPENAME_IPC64);
 	CProfile::LoadData();
 	CProfile::SetDllData();
 
@@ -137,7 +139,7 @@ void CXkeymacsApp::SendIPC64Message(DWORD msg)
 		return;
 	DWORD ack, read;
 	for (int i = 0; i < 10; Sleep(100), ++i)
-		if (CallNamedPipe(XKEYMACS64_PIPE, &msg, sizeof(msg), &ack, sizeof(DWORD), &read, NMPWAIT_WAIT_FOREVER))
+		if (CallNamedPipe(m_PipeNameForIPC64.GetName(), &msg, sizeof(msg), &ack, sizeof(DWORD), &read, NMPWAIT_WAIT_FOREVER))
 			return;
 #ifdef DEBUG_IPC
 		else

@@ -2,6 +2,7 @@
 #include "mainfrm64.h"
 #include "../xkeymacsdll/xkeymacsdll.h"
 #include "../xkeymacsdll/Utils.h"
+#include "../xkeymacsdll/PipeName.h"
 
 CXkeymacsApp::CXkeymacsApp()
 {
@@ -34,7 +35,6 @@ BOOL CXkeymacsApp::InitInstance()
 	AfxBeginThread(PollIPCMessage, m_pMainWnd);
 	if (start32bit)
 		Start32bitProcess();
-	CXkeymacsDll::SetHooks();
 	return TRUE;
 }
 
@@ -64,7 +64,7 @@ bool SendAck(HANDLE pipe)
 
 UINT PollIPCMessage(LPVOID param)
 {
-	HANDLE hPipe = CreateNamedPipe(XKEYMACS64_PIPE, PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1, 512, 512, 0, NULL);
+	HANDLE hPipe = CreateNamedPipe(PipeName(PIPENAME_IPC64).GetName(), PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1, 512, 512, 0, NULL);
 	if (hPipe == INVALID_HANDLE_VALUE) {
 #ifdef DEBUG_IPC
 		CUtils::Log(_T("PollIPCMessage: CreateNamedPipe failed. (%d)"), GetLastError());
@@ -92,7 +92,8 @@ UINT PollIPCMessage(LPVOID param)
 			goto exit;
 			break;
 		case IPC64_RELOAD:
-			CXkeymacsDll::LoadConfig();
+			if (CXkeymacsDll::LoadConfig())
+				CXkeymacsDll::ResetHooks();
 			break;
 		case IPC64_DISABLE:
 			CXkeymacsDll::SetHookStateDirect(false);

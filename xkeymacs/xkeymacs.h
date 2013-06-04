@@ -18,6 +18,7 @@
 // CXkeymacsApp:
 // See xkeymacs.cpp for the implementation of this class
 //
+#include "../xkeymacsdll/PipeName.h"
 
 class CXkeymacsApp : public CWinApp
 {
@@ -45,6 +46,8 @@ public:
 private:
 	HANDLE m_hMutex;
 	static HANDLE m_64bitProcessHandle;
+	static PipeName m_PipeNameForIPC64;
+
 };
 
 //{{AFX_INSERT_LOCATION}}

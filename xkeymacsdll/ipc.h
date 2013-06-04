@@ -1,9 +1,4 @@
-#ifndef IPC_H_INCLUDED
-#define IPC_H_INCLUDED
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "defs.h"
 
@@ -21,10 +16,13 @@ struct AppConfig {
 	bool IgnoreUndefMetaCtrl;
 };
 
+#define PIPENAME_MAX 256
+
 struct Config {
 	AppConfig AppConfig[MAX_APP];
 	KeyBind FuncDefs[MAX_FUNCTION][MAX_DEFINITION];
 	bool Is106Keyboard;
+	TCHAR PipeNameForIPC32[PIPENAME_MAX + 1];
 };
 
 enum XKEYMACS_IPC32 { IPC32_TERMINATE, IPC32_ICON, IPC32_HOOKSTATE };
@@ -44,6 +42,5 @@ struct IPC32Message {
 	};
 };
 
-#define XKEYMACS32_PIPE _T("\\\\.\\pipe\\XKEYMACS_IPC32")
-#define XKEYMACS64_PIPE _T("\\\\.\\pipe\\XKEYMACS_IPC64")
-#endif
+#define PIPENAME_IPC32 _T("xkeymacs32")
+#define PIPENAME_IPC64 _T("xkeymacs64")

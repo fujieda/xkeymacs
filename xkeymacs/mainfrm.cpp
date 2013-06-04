@@ -165,7 +165,7 @@ void CMainFrame::TerminatePollThread()
 	DWORD ack, read;
 	IPC32Message msg;
 	msg.Type = IPC32_TERMINATE;
-	CallNamedPipe(XKEYMACS32_PIPE, &msg, sizeof(msg.Type), &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT);
+	CallNamedPipe(PipeName(PIPENAME_IPC32).GetName(), &msg, sizeof(msg.Type), &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT);
 	WaitForSingleObject(m_hThread, 5000);
 	CloseHandle(m_hThread);
 }
@@ -196,7 +196,7 @@ bool SendAck(HANDLE pipe)
 
 DWORD WINAPI CMainFrame::PollMessage(LPVOID)
 {
-	HANDLE pipe = CreateNamedPipe(XKEYMACS32_PIPE, PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1,
+	HANDLE pipe = CreateNamedPipe(PipeName(PIPENAME_IPC32).GetName(), PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1,
 									sizeof(DWORD), sizeof(IPC32Message), 0, NULL);
 	if (pipe == INVALID_HANDLE_VALUE) {
 #ifdef DEBUG_IPC

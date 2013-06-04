@@ -8,6 +8,7 @@
 #include "mainfrm.h"
 #include "../xkeymacsdll/xkeymacsdll.h"
 #include "../xkeymacsdll/Utils.h"
+#include "../xkeymacsdll/PipeName.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -269,6 +270,7 @@ void CProfile::SetDllData()
 					appConfig.CmdID[CONTROL]['X'] = 1; // C-x is available.
 	}
 	m_Config.Is106Keyboard = Is106Keyboard();
+	_tcscpy_s(m_Config.PipeNameForIPC32, PipeName(PIPENAME_IPC32).GetName());
 	CXkeymacsDll::SetConfig(m_Config);
 	if (!CXkeymacsApp::IsWow64())
 		return;

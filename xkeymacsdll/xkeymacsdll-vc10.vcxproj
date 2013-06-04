@@ -106,7 +106,7 @@
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>C:\WinDDK\7600.16385.1\lib\Mfc\i386;C:\WinDDK\7600.16385.1\lib\ATL\i386</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>xkeymacsdll.def</ModuleDefinitionFile>
-      <AdditionalDependencies>Imm32.lib</AdditionalDependencies>
+      <AdditionalDependencies>Secur32.lib;Imm32.lib</AdditionalDependencies>
       <ImportLibrary>$(IntDir)$(TargetName).lib</ImportLibrary>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
@@ -131,7 +131,7 @@
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>C:\WinDDK\7600.16385.1\lib\Mfc\amd64;C:\WinDDK\7600.16385.1\lib\ATL\amd64</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>xkeymacs64dll.def</ModuleDefinitionFile>
-      <AdditionalDependencies>Imm32.lib</AdditionalDependencies>
+      <AdditionalDependencies>Secur32.lib;Imm32.lib</AdditionalDependencies>
       <ImportLibrary>$(IntDir)$(TargetName).lib</ImportLibrary>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
@@ -162,7 +162,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>C:\WinDDK\7600.16385.1\lib\Mfc\i386;C:\WinDDK\7600.16385.1\lib\ATL\i386</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>xkeymacsdll.def</ModuleDefinitionFile>
-      <AdditionalDependencies>Imm32.lib</AdditionalDependencies>
+      <AdditionalDependencies>Secur32.lib;Imm32.lib</AdditionalDependencies>
       <ImportLibrary>$(IntDir)$(TargetName).lib</ImportLibrary>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
@@ -192,7 +192,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>C:\WinDDK\7600.16385.1\lib\Mfc\amd64;C:\WinDDK\7600.16385.1\lib\ATL\amd64</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>xkeymacs64dll.def</ModuleDefinitionFile>
-      <AdditionalDependencies>Imm32.lib</AdditionalDependencies>
+      <AdditionalDependencies>Secur32.lib;Imm32.lib</AdditionalDependencies>
       <ImportLibrary>$(IntDir)$(TargetName).lib</ImportLibrary>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
     </Link>
@@ -207,6 +207,7 @@
     <ClCompile Include="CmdTable.cpp" />
     <ClCompile Include="CmdTableData.cpp" />
     <ClCompile Include="Commands.cpp" />
+    <ClCompile Include="PipeName.cpp" />
     <ClCompile Include="KbdMacro.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -229,9 +230,11 @@
     <ClInclude Include="Commands.h" />
     <ClInclude Include="defs.h" />
     <ClInclude Include="ipc.h" />
+    <ClInclude Include="PipeName.h" />
     <ClInclude Include="KbdMacro.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="tstring.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="xkeymacsdll.h" />
   </ItemGroup>

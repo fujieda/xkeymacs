@@ -222,7 +222,7 @@ void CXkeymacsDll::SetHookState(bool enable)
 	IPC32Message msg;
 	msg.Type = IPC32_HOOKSTATE;
 	msg.Enable = enable;
-	if (!CallNamedPipe(XKEYMACS32_PIPE, &msg, offsetof(IPC32Message, Enable) + sizeof(bool), &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT))
+	if (!CallNamedPipe(m_Config.PipeNameForIPC32, &msg, offsetof(IPC32Message, Enable) + sizeof(bool), &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT))
 		CUtils::Log(_T("SetHookState: CallNamedPipe failed. (%d)"), GetLastError());
 
 	ShowHookState();
@@ -777,7 +777,7 @@ void CXkeymacsDll::SendIconMessage(IconState *state, int num)
 	IPC32Message msg;
 	msg.Type = IPC32_ICON;
 	memcpy(msg.IconState, state, num * sizeof(IconState));
-	if (!CallNamedPipe(XKEYMACS32_PIPE, &msg, offsetof(IPC32Message, IconState) + sizeof(IconState) * num, &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT)) {
+	if (!CallNamedPipe(m_Config.PipeNameForIPC32, &msg, offsetof(IPC32Message, IconState) + sizeof(IconState) * num, &ack, sizeof(DWORD), &read, NMPWAIT_NOWAIT)) {
 #ifdef DEBUG_IPC
 		CUtils::Log(_T("SendIconMessage: CallNamedPipe failed. (%d)"), GetLastError());
 #endif
