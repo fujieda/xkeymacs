@@ -5,6 +5,7 @@
 #include "Utils.h"
 #include "Commands.h"
 #include "CmdTable.h"
+#include "TLS.h"
 #include "../xkeymacs/resource.h"
 #include <math.h>
 #include <Imm.h>
@@ -19,13 +20,11 @@ static char THIS_FILE[] = __FILE__;
 static AFX_EXTENSION_MODULE XkeymacsdllDLL = { NULL, NULL };
 
 static HINSTANCE g_hDllInst = NULL;
-static DWORD g_TlsIndex = 0;
 
 extern "C" int APIENTRY
 DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 {
 	g_hDllInst = hInstance;
-	LPVOID lpData;
 	
 	// Remove this if you use lpReserved
 	UNREFERENCED_PARAMETER(lpReserved);
@@ -58,27 +57,20 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 			e->Delete();
 //			CUtils::Log("DllMain: 'new' threw an exception");
 		}
-
-		if ((g_TlsIndex = TlsAlloc()) == TLS_OUT_OF_INDEXES)
+		if (!TLS::Alloc())
 			return FALSE;
-		// fall through
 	case DLL_THREAD_ATTACH:
-		if ((lpData = LocalAlloc(LPTR, sizeof(HHOOK))) != NULL)
-			TlsSetValue(g_TlsIndex, lpData);
 		break;
 	case DLL_PROCESS_DETACH:
 		TRACE0("XKEYMACSDLL.DLL Terminating!\n");
 		// Terminate the library before destructors are called
 		AfxTermExtensionModule(XkeymacsdllDLL);
 		CXkeymacsDll::ReleaseKeyboardHook();
-		if ((lpData = TlsGetValue(g_TlsIndex)) != NULL)
-			LocalFree(lpData);
-		TlsFree(g_TlsIndex);
+		TLS::Free();
 		break;
 	case DLL_THREAD_DETACH:
 		CXkeymacsDll::ReleaseKeyboardHook();
-		if ((lpData = TlsGetValue(g_TlsIndex)) != NULL)
-			LocalFree(lpData);
+		TLS::FreeLocal();
 		break;
 	}
 	return 1;   // ok
@@ -164,17 +156,8 @@ void CXkeymacsDll::SetHooks()
 
 void CXkeymacsDll::SetKeyboardHook(DWORD threadId)
 {
-	LPVOID lpData = TlsGetValue(g_TlsIndex);
-	if (!lpData) {
-		lpData = LocalAlloc(LPTR, sizeof(HHOOK));
-		if (!lpData)
-			return;
-		if (!TlsSetValue(g_TlsIndex, lpData))
-			return;
-	}
-	HHOOK *phHook = reinterpret_cast<HHOOK *>(lpData);
-	if (!*phHook)
-		*phHook = SetWindowsHookEx(WH_KEYBOARD, KeyboardProc, g_hDllInst, threadId ? threadId : GetCurrentThreadId());
+	if (!TLS::GetKeyboardHook())
+		TLS::PutKeyboardHook(SetWindowsHookEx(WH_KEYBOARD, KeyboardProc, g_hDllInst, threadId ? threadId : GetCurrentThreadId()));
 }
 
 inline void unhook(HHOOK &hh)
@@ -201,9 +184,10 @@ void CXkeymacsDll::ReleaseHooks()
 
 void CXkeymacsDll::ReleaseKeyboardHook()
 {
-	HHOOK *phHook = reinterpret_cast<HHOOK *>(TlsGetValue(g_TlsIndex));
-	if (phHook)
-		unhook(*phHook);
+	HHOOK hook = TLS::GetKeyboardHook();
+	if (!hook)
+		return;
+	UnhookWindowsHookEx(hook);
 }
 
 void CXkeymacsDll::SetHookStateDirect(bool enable)

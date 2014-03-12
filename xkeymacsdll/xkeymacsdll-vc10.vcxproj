@@ -215,6 +215,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TLS.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="xkeymacsdll.cpp" />
   </ItemGroup>
@@ -234,6 +235,7 @@
     <ClInclude Include="KbdMacro.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="TLS.h" />
     <ClInclude Include="tstring.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="xkeymacsdll.h" />
