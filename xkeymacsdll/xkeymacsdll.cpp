@@ -270,11 +270,9 @@ LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lPar
 			InitKeyboardProc();
 			break;
 		case WM_SETFOCUS:
-			if (cwps->hwnd == GetForegroundWindow()) {
-				AppName::SetIMEState(false);
-				InitKeyboardProc();
-				ShowHookState();
-			}
+			AppName::SetIMEState(false);
+			InitKeyboardProc();
+			ShowHookState();
 			break;
 		case WM_NCACTIVATE:
 			if (cwps->wParam && cwps->hwnd == GetForegroundWindow()) {
