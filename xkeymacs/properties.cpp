@@ -186,11 +186,12 @@ void CProperties::AddItem(const CString& appTitle, const CString& appName)
 	for (int i = 0; i < m_cAppList.GetCount(); ++i) {
 		CString tmpTitle, tmpName;
 		GetAppTitleAndName(i, tmpTitle, tmpName);
-		if (appName == tmpName)
+		if (!appName.CompareNoCase(tmpName))
 			return;
 	}
+	CString trimmed = CString(appTitle).Trim();
 	CString item;
-	item.Format(IDS_APPLICATION_LIST_ITEM, appTitle, appName);
+	item.Format(IDS_APPLICATION_LIST_ITEM, trimmed, appName);
 	m_cAppList.AddString(item);
 }
 

@@ -371,7 +371,7 @@ int CProfile::GetAppID(LPCTSTR appName)
 {
 	int nAppID = 0;
 	for (nAppID = 0; nAppID < MAX_APP; ++nAppID)
-		if (!_tcscmp(appName, m_Config.AppConfig[nAppID].AppName))
+		if (!_tcsicmp(appName, m_Config.AppConfig[nAppID].AppName))
 			break;
 	return nAppID;
 }
