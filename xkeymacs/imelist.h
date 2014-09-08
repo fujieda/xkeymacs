@@ -10,8 +10,8 @@
 
 struct IMEInfo
 {
-	TCHAR szDescription[WINDOW_TEXT_LENGTH];
-	TCHAR szFileName[MAX_PATH];
+	TCHAR description[WINDOW_TEXT_LENGTH];
+	TCHAR filename[MAX_PATH];
 };
 
 typedef std::list<IMEInfo>::const_iterator IMEListIterator;

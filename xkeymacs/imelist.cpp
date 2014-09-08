@@ -30,8 +30,8 @@ void IMEList::GetIMM()
 	GetKeyboardLayoutList(n, &hkls[0]);
 	for (std::vector<HKL>::const_iterator p = hkls.begin(); p != hkls.end(); ++p) {
 		IMEInfo info;
-		if (ImmGetDescription(*p, info.szDescription, WINDOW_TEXT_LENGTH) &&
-				ImmGetIMEFileName(*p, info.szFileName, MAX_PATH))
+		if (ImmGetDescription(*p, info.description, WINDOW_TEXT_LENGTH) &&
+				ImmGetIMEFileName(*p, info.filename, MAX_PATH))
 			list.push_back(info);
 	}
 }
@@ -39,47 +39,34 @@ void IMEList::GetIMM()
 void IMEList::GetTSF()
 {
 	CoInitialize(NULL);
-	HRESULT hr;
-	ITfInputProcessorProfiles *pProfiles;
-	hr = CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_ITfInputProcessorProfiles, reinterpret_cast<LPVOID*>(&pProfiles));
-	if (FAILED(hr)) {
+	ITfInputProcessorProfiles *ipp;
+	if (FAILED(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&ipp)))) {
 		CoUninitialize();
 		return;
 	}
-	const LANGID langid = GetUserDefaultLangID();
-	IEnumTfLanguageProfiles *pEnum;
-	hr = pProfiles->EnumLanguageProfiles(langid, &pEnum);
-	if (FAILED(hr))
+	ITfInputProcessorProfileMgr *mgr;
+	if (FAILED(ipp->QueryInterface(&mgr)))
 		goto fail;
-	TF_LANGUAGEPROFILE prof;
-	ULONG fetch;
-	while (pEnum->Next(1, &prof, &fetch) == S_OK) {
-		if (!prof.fActive)
-			continue;
-		BSTR bstr;
-		hr = pProfiles->GetLanguageProfileDescription(prof.clsid, langid, prof.guidProfile, &bstr);
-		if (FAILED(hr))
-			continue;
-		IMEInfo info;
-#ifdef _MBCS
-		WideCharToMultiByte(CP_ACP, 0, bstr, -1, info.szDescription, MAX_PATH, NULL, NULL);
-#else
-		wcscpy_s(info.szDescription, WINDOW_TEXT_LENGTH, bstr);
-#endif
-		bool exist = false;
-		for (IMEListIterator p = list.begin(); p != list.end(); ++p)
-			if (!_tcscmp(info.szDescription, p->szDescription)) { // already get via IMM
-				exist = true;
-				break;
-			}
-		if (!exist) {
-			_tcscpy_s(info.szFileName, _T("IME"));
-			list.push_back(info);
-			break;
-		}
+	TF_INPUTPROCESSORPROFILE prof;
+	if (FAILED(mgr->GetActiveProfile(GUID_TFCAT_TIP_KEYBOARD, &prof))) {
+		mgr->Release();
+		goto fail;
 	}
-	pEnum->Release();
+	mgr->Release();
+	if (prof.dwProfileType != TF_PROFILETYPE_INPUTPROCESSOR) // current IME is not TIP
+		goto fail;
+	BSTR bstr;
+	if (FAILED(ipp->GetLanguageProfileDescription(prof.clsid, prof.langid, prof.guidProfile, &bstr)))
+		goto fail;
+	IMEInfo info;
+#ifdef _MBCS
+	WideCharToMultiByte(CP_ACP, 0, bstr, -1, info.description, WINDOW_TEXT_LENGTH, NULL, NULL);
+#else
+	wcscpy_s(info.description, WINDOW_TEXT_LENGTH, bstr);
+#endif
+	_tcscpy_s(info.filename, _T("IME"));
+	list.push_back(info);
 fail:
-	pProfiles->Release();
+	ipp->Release();
 	CoUninitialize();
 }

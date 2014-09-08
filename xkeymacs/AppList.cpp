@@ -128,5 +128,5 @@ void AppList::AddIMEInfo(CProperties& cProperties)
 {
 	IMEList imeList;
 	for (IMEListIterator p = imeList.begin(); p != imeList.end(); ++p)
-		cProperties.AddItem(p->szDescription, p->szFileName);
+		cProperties.AddItem(p->description, p->filename);
 }
