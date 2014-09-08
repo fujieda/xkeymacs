@@ -417,26 +417,29 @@ void CUtils::Log(LPCTSTR fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
-	TCHAR log[1024];
-	_set_invalid_parameter_handler(invalid_parameter_handler);
-	if (_vstprintf_s(log, fmt, ap) < 0)
-		_tcscpy_s(log, _T("invalid format"));
-
+	TCHAR log[1024], msg[1024];
 	static int n = 0;
+	_set_invalid_parameter_handler(invalid_parameter_handler);
+	if (_vstprintf_s(msg, fmt, ap) < 0)
+		_tcscpy_s(msg, _T("invalid format"));
+	va_end(ap);
+	_stprintf_s(log, _T("%4d %8x: %s\t%s\r\n"), n++, GetCurrentThreadId(), AppName::GetAppName(), msg);
 	TCHAR path[MAX_PATH];
 	if (GetTempPath(MAX_PATH, path)) {
 #ifndef _WIN64
-		_tmakepath_s(path, NULL, path, _T("xkeylog"), _T("txt"));
+		_tmakepath_s(path, nullptr, path, _T("xkeylog"), _T("txt"));
 #else
-		_tmakepath_s(path, NULL, path, _T("xkeylog64"), _T("txt"));
+		_tmakepath_s(path, nullptr, path, _T("xkeylog64"), _T("txt"));
 #endif
 	} else
 		_tcscpy_s(path, _T("c:\\xkeylog.txt"));
-
-	FILE *fp;
-	_tfopen_s(&fp, path, _T("a"));
-	_ftprintf(fp, _T("%8d: %s\t%s\n"), n++, AppName::GetAppName(), log);
-	fclose(fp);
+	HANDLE fh = CreateFile(path, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (fh == INVALID_HANDLE_VALUE)
+		return;
+	SetFilePointer(fh, 0, nullptr, FILE_END);
+	DWORD written;
+	WriteFile(fh, log, static_cast<DWORD>(strlen(log)), &written, nullptr);
+	CloseHandle(fh);
 }
 
 BOOL CUtils::IsSh()
