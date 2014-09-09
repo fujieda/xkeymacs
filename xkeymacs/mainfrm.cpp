@@ -6,6 +6,8 @@
 #include "profile.h"
 #include "../xkeymacsdll/xkeymacsdll.h"
 #include "../xkeymacsdll/Utils.h"
+#include <Sddl.h>
+#include <AclAPI.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -196,14 +198,9 @@ bool SendAck(HANDLE pipe)
 
 DWORD WINAPI CMainFrame::PollMessage(LPVOID)
 {
-	HANDLE pipe = CreateNamedPipe(PipeName(PIPENAME_IPC32).GetName(), PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1,
-									sizeof(DWORD), sizeof(IPC32Message), 0, NULL);
-	if (pipe == INVALID_HANDLE_VALUE) {
-#ifdef DEBUG_IPC
-		CUtils::Log(_T("PollMessage: CreateNamedPipe failed. (%d)"), GetLastError());
-#endif
+	HANDLE pipe = CreateNamedPipeWithLowIntegrityAccess();
+	if (pipe == INVALID_HANDLE_VALUE)
 		return 1;
-	}
 	for (; ;) {
 		if (ConnectNamedPipe(pipe, NULL) ? FALSE : (GetLastError() != ERROR_PIPE_CONNECTED)) {
 #ifdef DEBUG_IPC
@@ -244,6 +241,31 @@ DWORD WINAPI CMainFrame::PollMessage(LPVOID)
 exit:
 	CloseHandle(pipe);
 	return 0;
+}
+
+HANDLE CMainFrame::CreateNamedPipeWithLowIntegrityAccess()
+{
+	LPCTSTR LOW_INTEGRITY_SDDL_SACL = _T("S:(ML;;NW;;;LW)");
+	PSECURITY_DESCRIPTOR sd;
+	if (!ConvertStringSecurityDescriptorToSecurityDescriptor(LOW_INTEGRITY_SDDL_SACL, SDDL_REVISION_1, &sd, nullptr)) {
+#ifdef DEBUG_IPC
+		CUtils::Log(_T("ConvertStringSecurityDescriptorToSecurityDescriptor failed. (%d)"), GetLastError());
+#endif
+		return INVALID_HANDLE_VALUE;
+	}
+	SECURITY_ATTRIBUTES sa;
+	sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+	sa.lpSecurityDescriptor = sd;
+	sa.bInheritHandle = false;
+	HANDLE pipe = CreateNamedPipe(PipeName(PIPENAME_IPC32).GetName(), PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, 1,
+		sizeof(DWORD), sizeof(IPC32Message), 0, &sa);
+	if (pipe == INVALID_HANDLE_VALUE) {
+#ifdef DEBUG_IPC
+		CUtils::Log(_T("CreateNamedPipeWithLowIntegrityAccess failed. (%d)"), GetLastError());
+#endif
+	}
+	LocalFree(sd);
+	return pipe;
 }
 
 void CMainFrame::SetIconData(ICON_TYPE icon, int tip, int on, int off, int reg)

@@ -105,6 +105,7 @@ private:
 	void StartPollThread();
 	void TerminatePollThread();
 	static DWORD WINAPI PollMessage(LPVOID lpParam);
+	static HANDLE CreateNamedPipeWithLowIntegrityAccess();
 public:
 	void EnableShell_NotifyIcon(ICON_TYPE icon, BOOL bEnable);
 };
