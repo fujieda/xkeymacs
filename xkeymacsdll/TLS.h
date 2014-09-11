@@ -1,4 +1,6 @@
 #pragma once
+#include "TSFHandler.h"
+
 class TLS
 {
 public:
@@ -7,11 +9,13 @@ public:
 	static void FreeLocal();
 	static HHOOK GetKeyboardHook();
 	static void PutKeyboardHook(HHOOK hook);
+	static TSFHandler *GetTSFHandler();
+	static void PutTSFHandler(TSFHandler *tsf);
 
 private:
 	static DWORD m_TlsIndex;
-	static TLS *m_LocalData;
-	HHOOK m_KeyboardHook;
 	static TLS *AllocLocal();
+	HHOOK m_KeyboardHook;
+	TSFHandler *m_TSFHandler;
 };
 

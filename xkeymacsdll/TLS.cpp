@@ -36,6 +36,9 @@ void TLS::FreeLocal()
 	LPVOID data = TlsGetValue(m_TlsIndex);
 	if (!data)
 		return;
+	TSFHandler *tmp = reinterpret_cast<TLS *>(data)->m_TSFHandler;
+	if (tmp)
+		tmp->Release();
 	LocalFree(data);
 	TlsSetValue(m_TlsIndex, nullptr);
 }
@@ -51,4 +54,17 @@ void TLS::PutKeyboardHook(HHOOK hook)
 	TLS *tls = AllocLocal();
 	if (tls)
 		tls->m_KeyboardHook = hook;
+}
+
+TSFHandler *TLS::GetTSFHandler()
+{
+	TLS *tls = AllocLocal();
+	return tls ? tls->m_TSFHandler : nullptr;
+}
+
+void TLS::PutTSFHandler(TSFHandler *tsf)
+{
+	TLS *tls = AllocLocal();
+	if (tls)
+		tls->m_TSFHandler = tsf;
 }

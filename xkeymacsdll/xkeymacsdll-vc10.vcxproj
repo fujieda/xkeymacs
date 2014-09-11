@@ -216,6 +216,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TLS.cpp" />
+    <ClCompile Include="TSFHandler.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="xkeymacsdll.cpp" />
   </ItemGroup>
@@ -236,6 +237,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="TLS.h" />
+    <ClInclude Include="TSFHandler.h" />
     <ClInclude Include="tstring.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="xkeymacsdll.h" />

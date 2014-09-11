@@ -51,6 +51,9 @@
     <ClCompile Include="TLS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TSFHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="xkeymacsdll.def">
@@ -104,6 +107,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TLS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TSFHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

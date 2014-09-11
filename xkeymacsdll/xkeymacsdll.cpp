@@ -6,6 +6,7 @@
 #include "Commands.h"
 #include "CmdTable.h"
 #include "TLS.h"
+#include "TSFHandler.h"
 #include "../xkeymacs/resource.h"
 #include <math.h>
 #include <Imm.h>
@@ -242,26 +243,29 @@ void CXkeymacsDll::ShowHookState()
 LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	SetKeyboardHook();
+	TSFHandler::InitSink();
 	if (nCode >= 0) {
 		const CWPSTRUCT *cwps = reinterpret_cast<CWPSTRUCT *>(lParam);
 		switch (cwps->message) {
 		case WM_IME_STARTCOMPOSITION:
-			AppName::SetIMEState(true);
-			InitKeyboardProc();
+#ifdef DEBUG_IME
+			CUtils::Log(_T("WM_IME_STARTCOMPOSITION"));
+#endif
+			SetIMEState(true);
 			break;
 		case WM_IME_ENDCOMPOSITION:
-			AppName::SetIMEState(false);
-			InitKeyboardProc();
+#ifdef DEBUG_IME
+			CUtils::Log(_T("WM_IME_ENDCOMPOSITION"));
+#endif
+			SetIMEState(false);
 			break;
 		case WM_SETFOCUS:
-			AppName::SetIMEState(false);
-			InitKeyboardProc();
+			SetIMEState(false);
 			ShowHookState();
 			break;
 		case WM_NCACTIVATE:
 			if (cwps->wParam && cwps->hwnd == GetForegroundWindow()) {
-				AppName::SetIMEState(false);
-				InitKeyboardProc();
+				SetIMEState(false);
 				ShowHookState();
 			}
 			break;
@@ -295,16 +299,26 @@ LRESULT CALLBACK CXkeymacsDll::GetMsgProc(int nCode, WPARAM wParam, LPARAM lPara
 		const MSG *msg = reinterpret_cast<MSG *>(lParam);
 		switch (msg->message) {
 		case WM_IME_STARTCOMPOSITION:
-			AppName::SetIMEState(true);
-			InitKeyboardProc();
+#ifdef DEBUG_IME
+			CUtils::Log(_T("WM_IME_STARTCOMPOSITION"));
+#endif
+			SetIMEState(true);
 			break;
 		case WM_IME_ENDCOMPOSITION:
-			AppName::SetIMEState(false);
-			InitKeyboardProc();
+#ifdef DEBUG_IME
+			CUtils::Log(_T("WM_IME_ENDCOMPOSITION"));
+#endif
+			SetIMEState(false);
 			break;
 		}
 	}
 	return CallNextHookEx(NULL, nCode, wParam, lParam);
+}
+
+void CXkeymacsDll::SetIMEState(bool on)
+{
+	AppName::SetIMEState(on);
+	InitKeyboardProc();
 }
 
 LRESULT CALLBACK CXkeymacsDll::ShellProc(int nCode, WPARAM wParam, LPARAM lParam)

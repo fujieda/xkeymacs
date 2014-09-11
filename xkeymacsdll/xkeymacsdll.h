@@ -24,7 +24,6 @@ public:
 	static BOOL LoadConfig();
 	static void SetConfig(const Config& config);
 	static void SetHooks();
-	static void SetKeyboardHook(DWORD threadId = 0);
 	static void ResetHooks();
 	static void ReleaseHooks();
 	static void ReleaseKeyboardHook();
@@ -32,6 +31,7 @@ public:
 	static void ToggleHookState();
 	static bool GetHookState();
 	static void ShowHookState();
+	static void SetIMEState(bool on);
 	static void SetM_xTip(LPCTSTR szPath);
 	static void SendIconMessage(IconState *state, int num);
 	static BOOL IsDown(BYTE bVk, BOOL bPhysicalKey = TRUE);
@@ -64,6 +64,7 @@ private:
 	static HHOOK m_hHookGetMessage;
 	static HHOOK m_hHookShell;
 	static bool m_bEnableKeyboardHook;
+	static void SetKeyboardHook(DWORD threadId = 0);
 	static bool m_bHook;
 	static void SetHookState(bool enable);
 	static DWORD m_nHookAltRelease;
