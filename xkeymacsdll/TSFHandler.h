@@ -28,7 +28,7 @@ public:
 private:
 	ULONG m_RefCount;
 	ITfThreadMgr *m_ThreadMgr;
-	TfClientId m_ClientId;
+	DWORD m_Cookie;
 	ITfContext *m_Context;
 	bool m_CompositionState;
 };

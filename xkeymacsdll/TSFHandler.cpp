@@ -15,17 +15,15 @@ TSFHandler::TSFHandler()
 {
 	m_RefCount = 1;
 	m_ThreadMgr = nullptr;
-	m_ClientId = 0;
+	m_Cookie = TF_INVALID_COOKIE;
 	m_Context = nullptr;
 	m_CompositionState = false;
 }
 
 TSFHandler::~TSFHandler()
 {
-	if (m_ThreadMgr) {
-		m_ThreadMgr->Deactivate();
+	if (m_ThreadMgr)
 		m_ThreadMgr->Release();
-	}
 	if (m_Context)
 		m_Context->Release();
 }
@@ -50,16 +48,13 @@ void TSFHandler::InitSink()
 		return;
 	}
 	tsfh->m_ThreadMgr = thread;
-	if (FAILED(thread->Activate(&tsfh->m_ClientId))) {
-		DebugLog(_T("ThreadMgr->Activate failed."));
-		goto fail;
-	}
 	ITfSource *src;
 	if (FAILED(thread->QueryInterface(&src))) {
 		DebugLog(_T("ThreadMgr->QueryInterface failed."));
 		goto fail;
 	}
-	if (FAILED(src->AdviseSink(IID_ITfThreadMgrEventSink, static_cast<ITfThreadMgrEventSink *>(tsfh), &tsfh->m_ClientId))) {
+	DWORD cookie;
+	if (FAILED(src->AdviseSink(IID_ITfThreadMgrEventSink, static_cast<ITfThreadMgrEventSink *>(tsfh), &cookie))) {
 		DebugLog(_T("Souece->AdviseSink failed."));
 		src->Release();
 		goto fail;
@@ -122,20 +117,37 @@ STDMETHODIMP TSFHandler::OnSetFocus(ITfDocumentMgr *docMgr, ITfDocumentMgr *)
 	DebugLog(_T("OnSetFocus"));
 	if (docMgr == nullptr)
 		return S_OK;
+	if (m_Cookie != TF_INVALID_COOKIE) {
+		ITfSource *src;
+		if (FAILED(m_Context->QueryInterface(&src))) {
+			DebugLog(_T("Context->QueryInterface:0 failed."));
+			return S_OK;
+		}
+		HRESULT hr = src->UnadviseSink(m_Cookie);
+		src->Release();
+		if (FAILED(hr)) {
+			DebugLog(_T("Source->UnadviceThink failed."));
+			return S_OK;
+		}
+		m_Context->Release();
+		m_Context = nullptr;
+		m_Cookie = TF_INVALID_COOKIE;
+	}
 	ITfContext *cxt;
 	if (FAILED(docMgr->GetTop(&cxt))) {
 		DebugLog(_T("DocumentMgr->GetTop failed."));
 		return S_OK;
 	}
-	if (m_Context == cxt)
-		goto fail;
-	ITfSource *src = nullptr;
+	if (cxt == nullptr) {
+		DebugLog(_T("ITfContext is null."));
+		return S_OK;
+	}
+	ITfSource *src;
 	if (FAILED(cxt->QueryInterface(&src))) {
-		DebugLog(_T("Context->QueryInterface(ITfSource) failed."));
+		DebugLog(_T("Context->QueryInterface:1 failed."));
 		goto fail;
 	}
-	DWORD cookie;
-	if (FAILED(src->AdviseSink(IID_ITfTextEditSink, static_cast<ITfTextEditSink *>(this), &cookie))) {
+	if (FAILED(src->AdviseSink(IID_ITfTextEditSink, static_cast<ITfTextEditSink *>(this), &m_Cookie))) {
 		DebugLog(_T("Source->AdviseSink(ITfTextEditSink) failed."));
 		src->Release();
 		goto fail;
