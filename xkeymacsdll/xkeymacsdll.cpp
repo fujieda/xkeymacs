@@ -260,8 +260,10 @@ LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lPar
 			SetIMEState(false);
 			break;
 		case WM_SETFOCUS:
-			SetIMEState(false);
-			ShowHookState();
+			if (cwps->hwnd == GetForegroundWindow() || GetWindowLong(cwps->hwnd, GWL_STYLE) == 0x56000000) {
+				SetIMEState(false);
+				ShowHookState();
+			}
 			break;
 		case WM_NCACTIVATE:
 			if (cwps->wParam && cwps->hwnd == GetForegroundWindow()) {
