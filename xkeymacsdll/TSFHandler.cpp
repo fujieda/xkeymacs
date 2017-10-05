@@ -32,9 +32,6 @@ void TSFHandler::InitSink()
 {
 	if (TLS::GetTSFHandler())
 		return;
-	TSFHandler *tsfh = new TSFHandler();
-	TLS::PutTSFHandler(tsfh);
-
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 	if (FAILED(hr)) {
 		DebugLog(_T("CoInitializeEx failed."));
@@ -47,6 +44,8 @@ void TSFHandler::InitSink()
 		DebugLog(_T("CoCreateInstance for ThreadMgr failed."));
 		return;
 	}
+	TSFHandler *tsfh = new TSFHandler();
+	TLS::PutTSFHandler(tsfh);
 	tsfh->m_ThreadMgr = thread;
 	ITfSource *src;
 	if (FAILED(thread->QueryInterface(&src))) {
