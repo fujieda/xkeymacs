@@ -243,7 +243,6 @@ void CXkeymacsDll::ShowHookState()
 LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	SetKeyboardHook();
-	TSFHandler::InitSink();
 	if (nCode >= 0) {
 		const CWPSTRUCT *cwps = reinterpret_cast<CWPSTRUCT *>(lParam);
 		switch (cwps->message) {
@@ -341,6 +340,7 @@ LRESULT CALLBACK CXkeymacsDll::ShellProc(int nCode, WPARAM wParam, LPARAM lParam
 void CXkeymacsDll::InitKeyboardProc()
 {
 	AppName::Init();
+	TSFHandler::InitSink();
 	if (m_CurrentConfig == NULL ||
 			_tcsnicmp(m_CurrentConfig->AppName, AppName::GetAppName(), 0xF) || 	// PROCESSENTRY32 has only 0xF bytes of Name
 			!CUtils::IsMatchWindowText(m_CurrentConfig->WindowText)) {

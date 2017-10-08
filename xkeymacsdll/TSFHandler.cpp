@@ -32,15 +32,19 @@ void TSFHandler::InitSink()
 {
 	if (TLS::GetTSFHandler())
 		return;
-	HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-	if (FAILED(hr)) {
-		DebugLog("CoInitializeEx failed.");
-		return;
-	}
-	if (hr == S_FALSE)
-		CoUninitialize();
 	ITfThreadMgr *thread;
-	if (FAILED(CoCreateInstance(CLSID_TF_ThreadMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&thread)))) {
+	HRESULT hr = CoCreateInstance(CLSID_TF_ThreadMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&thread));
+	if (hr == CO_E_NOTINITIALIZED) {
+		hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+		if (FAILED(hr)) {
+			DebugLog("CoInitializeEx failed.");
+			return;
+		}
+		if (hr == S_FALSE)
+			CoUninitialize();
+		hr = CoCreateInstance(CLSID_TF_ThreadMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&thread));
+	}
+	if (FAILED(hr)) {
 		DebugLog("CoCreateInstance for ThreadMgr failed.");
 		return;
 	}
