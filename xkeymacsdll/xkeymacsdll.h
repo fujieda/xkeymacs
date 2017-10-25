@@ -78,7 +78,8 @@ private:
 	static BOOL m_bRightControl;
 	static BOOL m_bRightAlt;
 	static LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
-	static void CancelMarkWithShift(BYTE nKey, bool bRelease);
+	static void CancelMarkWithShift(byte nKey, bool bRelease);
+	static bool IsDepressedShiftKeyOnly(byte nKey);
 	static int IsPassThrough(BYTE nKey);
 	static void InvokeM_x(LPCTSTR szPath);
 	static TCHAR m_M_xTip[128];

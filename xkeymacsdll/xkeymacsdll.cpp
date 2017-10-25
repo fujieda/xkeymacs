@@ -693,27 +693,37 @@ HOOK_RECURSIVE_KEY:
 	return TRUE;
 }
 
-void CXkeymacsDll::CancelMarkWithShift(BYTE nKey, bool bRelease)
+void CXkeymacsDll::CancelMarkWithShift(byte nKey, bool bRelease)
 {
 	static bool bShift;
-	if (nKey != VK_SHIFT)
-		goto exit;
-	BYTE bVk = 0;
-	do {
-		if (bVk == VK_SHIFT || VK_LSHIFT || VK_RSHIFT)
-			continue;
-		if (IsDown(bVk, FALSE))
-			goto exit;
-	} while (++bVk);
-	if (!bRelease) {
-		bShift = true;
+	if (IsDepressedShiftKeyOnly(nKey)) 	{
+		if (bRelease) {
+			if (bShift)
+				CCommands::SetMark(false);
+		} else 	{
+			bShift = true;
+		}
 		return;
 	}
-	if (bShift)
-		CCommands::SetMark(FALSE);
-exit:
 	bShift = false;
-	return;
+}
+
+static bool IsShift(byte bVk)
+{
+	return bVk == VK_SHIFT || bVk == VK_LSHIFT || bVk == VK_RSHIFT;
+}
+
+bool CXkeymacsDll::IsDepressedShiftKeyOnly(byte nKey)
+{
+	if (!IsShift(nKey))
+		return false;
+	for (byte bVk = 1; bVk < 255; bVk++) {
+		if (IsShift(bVk))
+			continue;
+		if (IsDown(bVk))
+			return false;
+	}
+	return true;
 }
 
 int CXkeymacsDll::IsPassThrough(BYTE nKey)
