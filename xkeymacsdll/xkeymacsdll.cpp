@@ -398,7 +398,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	BYTE nKey = nOrigKey;
 
 	static BOOL bLocked = FALSE;
-	static const BYTE RECURSIVE_KEY = 0x07;
+	static const BYTE RECURSIVE_KEY = 14;
 	static int (*fLastCommand)() = NULL;
 	static BYTE nOneShotModifier[MAX_KEY] = {'\0'};
 	static BOOL bCherryOneShotModifier = FALSE;
