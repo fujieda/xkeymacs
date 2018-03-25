@@ -83,6 +83,12 @@ BOOL CProperties::OnInitDialog()
 	ScreenToClient(&rcSheet);
 	m_sheet.SetWindowPos(NULL, rcSheet.left - 11, rcSheet.top - 8, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
 
+	// Tmporary Fix: Buttons overlap due to font size change in Windos 8 or later
+	CRect rcDialog;
+	GetWindowRect(&rcDialog);
+	rcDialog.SetRect(rcDialog.left, rcDialog.top, rcDialog.right, rcDialog.bottom + (IsWindows8OrGreater ? 85 : 0));
+	MoveWindow(rcDialog, TRUE);
+
 	SetForegroundWindow();
 
 	InitAppList();

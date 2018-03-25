@@ -5,6 +5,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include <VersionHelpers.h>
+
 #include "propertiesbasic.h"
 #include "propertiesadvanced.h"
 #include "propertieslist.h"
