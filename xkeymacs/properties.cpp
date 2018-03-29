@@ -84,6 +84,7 @@ BOOL CProperties::OnInitDialog()
 	m_sheet.SetWindowPos(NULL, rcArea.left - 11, rcArea.top - 8, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
 
 	// Fix: Overlapped with buttons due to font size change in CJK Windows 8 or later
+	// https://github.com/fujieda/xkeymacs/issues/2
 	CRect rcSheet;
 	m_sheet.GetWindowRect(&rcSheet);
 	CRect rcDialog;
