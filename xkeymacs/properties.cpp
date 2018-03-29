@@ -78,16 +78,21 @@ BOOL CProperties::OnInitDialog()
 	m_sheet.ModifyStyleEx (0, WS_EX_CONTROLPARENT);
 	m_sheet.ModifyStyle( 0, WS_TABSTOP );
 
-	CRect rcSheet;
-	GetDlgItem(IDC_TAB)->GetWindowRect(&rcSheet);
-	ScreenToClient(&rcSheet);
-	m_sheet.SetWindowPos(NULL, rcSheet.left - 11, rcSheet.top - 8, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
+	CRect rcArea;
+	GetDlgItem(IDC_TAB)->GetWindowRect(&rcArea);
+	ScreenToClient(&rcArea);
+	m_sheet.SetWindowPos(NULL, rcArea.left - 11, rcArea.top - 8, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
 
-	// Tmporary Fix: Buttons overlap due to font size change in Windos 8 or later
+	// Fix: Overlapped with buttons due to font size change in CJK Windows 8 or later
+	CRect rcSheet;
+	m_sheet.GetWindowRect(&rcSheet);
 	CRect rcDialog;
 	GetWindowRect(&rcDialog);
-	rcDialog.SetRect(rcDialog.left, rcDialog.top, rcDialog.right, rcDialog.bottom + (IsWindows8OrGreater ? 85 : 0));
+	rcDialog.SetRect(rcDialog.left, rcDialog.top, rcDialog.right, rcSheet.bottom + 45);
 	MoveWindow(rcDialog, TRUE);
+
+	// Fix:  Window size can be changed due to dynamic layout effect
+	ModifyStyle(WS_THICKFRAME, DS_MODALFRAME);
 
 	SetForegroundWindow();
 
