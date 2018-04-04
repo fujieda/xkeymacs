@@ -11,26 +11,25 @@ Install
 -------
 1. Install the following runtime libraries. The latter is necessary
    only on 64bit versions of Windows.
-   - Microsoft Visual C++ 2010 Redistributable Package (x86)
-     <http://tinyurl.com/vc2010x86>
-   - Microsoft Visual C++ 2010 Redistributable Package (x64)
-     <http://tinyurl.com/vc2010x64>
-2. Get a zip file from the following site.
-   <http://sourceforge.jp/projects/xkeymacs/releases/>
-3. Extract a directory containing XKeymacs from the zip file.
-4. Move the directory in an appropriate directory.
-5. Run xkeymacs.exe in the directory.
+   - Visual C++ Redistributable for Visual Studio 2015 (x86)
+     <http://tinyurl.com/vc2015x86>
+   - Visual C++ Redistributable for Visual Studio 2015 (x64)
+     <http://tinyurl.com/vc2015x64>
+2. Extract the zip archive to an appropriate folder.
 
 Upgrade or Uninstall
 --------------------
 1. Disable the "Auto Run" option of XKeymacs.
-2. Exit XKeymacs as mentioned below.
-3. Logoff or reboot windows.
+2. Reboot windows.
 
-   If you want to upgrade XKeymacs, you can follow the install instruction.
+  On upgrade
 
-4. Delete the directory containing XKeymacs.
-5. Run regedit and delete the following values:
+3. Overwrite the existing files with the files in the zip of new version.
+
+On uninstall
+
+3. Delete the directory containing XKeymacs.
+4. Run regedit and delete the following values:
 
         HKEY_CURRENT_USER\Software\oishi\XKeymacs
         HKEY_CURRENT_USER\Software\oishi\XKeymacs2
@@ -38,49 +37,49 @@ Upgrade or Uninstall
 
 Usage
 -----
+
 ### Run and exit
 
 Run xkeymacs.exe. It automatically run xkeymacs64.exe on 64bit
 versions of Windows. The gold key icon appears in the notification
-area of the taskbar when XKeymacs is running.
+area when XKeymacs is running.
 
-Right-click the gold (or silver) key icon, and select Exit from the
-pop up menu.
+To exit XKeymacs, right-click the gold (or silver) key icon, and
+select Exit in the pop up menu.
 
 ### Properties
 
 Right-click the gold key icon and select "Properties...", you can
 set key assigns per application.
 
-Properties dialog has three tabs: Basic, Advanced and List tab.
-The same configuration is shown by a different format in each tab.
-In Basic tab, you can configure whether or not each key combination
-works like Emacs. In Advanced tab, you can configure keys
-assignments for each command. In Lis tab, you can take a look at the
-configuration.
+Properties dialog has three tabs: Basic, Advanced and List. The same
+configuration is shown by different formats in these tabs.  In Basic
+tab, you can configure whether or not each key combination works
+like Emacs. In Advanced tab, you can configure keys assignments for
+each command. In Lis tab, you can take a look at the configuration.
 
 ### Import and export properties
 
 Select "Import Properties...", you can import an exported file.
 Select "Export Properties...", you can export the configuration under the
 following registry key to a file. 
-**These features do not currently work on Windows 7.**
+**These features do not currently work.**
 
     HKEY_CURRENT_USER\Software\Oishi\XKeymacs2
 
 ### Options
 
 Select "Options...", you can set whether or not:
-1. run XKeymacs when you logon Windows.
-2. enable file completion on the Command Prompt.
-3. display C-x-, Shift, Ctrl and Alt LED in the notification area.
+1. run XKeymacs when you logon Windows
+2. enable file completion on the Command Prompt
+3. display C-x-, Shift, Ctrl and Alt LED in the notification area
 
 ### Keyboard layout
 
 Select "Keyboard Layout...", you can modify the keyboard layout.
 Drag & drop a key from the base keyboard to the remapped keyboard.
 The dropped key turns red. You can cancel the remap by clicking the red key.
-**This feature does not currently work on Windows 7.**
+**This feature does not currently work.**
 
 XKeymacs only uses the feature of remapping scan codes provided by Windows,
 so the remapping is not canceled after you disable or uninstall XKeymacs.
@@ -90,13 +89,19 @@ value by regedit.
     HKEY_CURRENT_USER\Keyboard Layout\Scancode Map
     HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\Scancode Map
 
+### Others
+
+Select "Disable" or "Enable" in the right-click menu when you
+disable or enable XKeymacs. You can toggle with C-q, too. Select
+"Reset" when XKeymacs becomes not effective by some chance.
+
 Support
 -------
 Web site
-<http://xkeymacs.sourceforge.jp/>
+<http://xkeymacs.osdn.jp/>
 
 Mailing list
-<http://lists.sourceforge.jp/mailman/listinfo/xkeymacs-users-en>
+<https://lists.osdn.me/mailman/listinfo/xkeymacs-users-en>
 
 Copyright
 ---------
@@ -104,7 +109,7 @@ Oishi-san <oishi@cam.hi-ho.ne.jp> owns the copyright of the code
 derived from XKeymacs 3.48.
 The following developers have the copyrights of their contributions.
 
-* Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+* Kazuhiro Fujieda <fujieda@users.osdn.me>
 * Tomohiro Kashiwada <kikairoya@gmail.com>
 * Harold Bamford <hbamford@users.sourceforge.net>
 * co <cogood@gmail.com>
@@ -134,4 +139,4 @@ We thank Oishi-san for creating XKeymacs and continuing to develop
 it for long years.
 
 ---
-Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+Kazuhiro Fujieda <fujieda@users.osdn.me>

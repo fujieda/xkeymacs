@@ -3,31 +3,32 @@
 ======================================================================
 
 --- History ---
-2011/xx/xx 4.0
-- Support 64bit versions of Windows.
-- Fix a bug where a text area on Internet Explorer 7 or later is
-  handled as a dialog.
-- Fix a bug where console applications can't be handled properly on
-  Windows 7
-- Fix a bug where C-g releases Ctrl on Visual Studio.
-- Fix a bug where incremental searches on it don't work.
-- Fix a bug where deactivating the mark don't work on it.
-- Fix a bug where M-v and M-f don't work at first time on Visual
-  Studio 2010.
-- Fix a bug where M-d don't work on Internet Explorer.
-- Fix a bug where reverting to the default setting mode for an
-  application on the properties dialog can't be saved.
-- Fix a bug where original commands defined with enclosed '"' don't
-  work well.
-- Fix a bug where VK_END is wrongly pressed on find dialogs after
-  input with IME.
-- Make XKeymacs not create the "etc" directory and empty files.
-- Support incremental search on Eclipse.
-- Support foward incremental search on Notepad++.
-- Make the properties dialog show all available IMEs based on IMM
-  and one of IMEs based of TSF.
-- Fix a bug where deactivating the mark doesn't work well on Firefox.
-- Some features don't work on Windows 7 yet.
+201x/xx/xx 4.0
+- New: Support 64bit versions of Windows
+- Fix: Text areas on IE7 or later is handled as a dialog
+- Fix: Console applications can't be handled properly on Windows 7 or later
+- Fix: C-g releases Ctrl on Visual Studio
+- Fix: Incremental searches don't work on Visual Studio
+- Fix: Deactivating the mark doesn't work on Visual Studio
+- Fix: M-v and M-f don't work at first on Visual Studio 2010
+- Fix: M-d don't work on Internet Explorer
+- Fix: Reverting to the default setting mode on the properties dialog can't be saved.
+- Fix: Original commands defined with enclosed '&#58;' don't work well
+- Fix: VK_END is pressed at the end of IME input on find dialogs
+- Change: Not create the "etc" directory and empty files.
+- New Incremental search on Eclipse.
+- New: Forward incremental search on Notepad++.
+- New: Properties dialog shows all available IMM based IMEs and one TSF based TIP
+- Fix: Canceling the mark doesn't work well on Firefox
+- Fix: Some Alt key combinations don't work on Google Chrome
+- Fix: C-k takes a while
+- Fix: Recognize all applications launched by javaw.exe as eclipse.exe
+- Change: Ignore minor differences in titles or file names of applications
+- Fix: On/off state don't change when the focus moves into IE10 or later
+- New: Support TSF-aware applications
+- Fix: The properties dialog corrupts on CJK versions of Windows 8 or later
+- Fix: Complex commands such as capitalize-word don't work on Windows 10
+- Some features don't work
 
 2008/07/27 version 3.48
 - Fixed the problem that C-s and C-r did not work well on Firefox 3.
