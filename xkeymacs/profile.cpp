@@ -528,8 +528,8 @@ void CProfile::ImportProperties()
 	CFileDialog oFileOpenDialog(TRUE, _T("reg"), _T("xkeymacs"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, CString(MAKEINTRESOURCE(IDS_REGISTRATION_FILTER)));
 	if (oFileOpenDialog.DoModal() == IDOK) {
 		CString szCommandLine;
-		szCommandLine.Format(_T("regedit \"%s\""), oFileOpenDialog.GetPathName());
-		CUtils::Run(szCommandLine, TRUE);	// regedit "x:\xkeymacs.reg"
+		szCommandLine.Format(_T("reg import \"%s\""), oFileOpenDialog.GetPathName());
+		CUtils::Run(szCommandLine, TRUE, TRUE);	// reg import "x:\xkeymacs.reg"
 	}
 
 	DiableTokenPrivileges();
@@ -545,8 +545,8 @@ void CProfile::ExportProperties()
 	CFileDialog oFileOpenDialog(FALSE, _T("reg"), _T("xkeymacs"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, CString(MAKEINTRESOURCE(IDS_REGISTRATION_FILTER)));
 	if (oFileOpenDialog.DoModal() == IDOK) {
 		CString szCommandLine;
-		szCommandLine.Format(_T("regedit /e \"%s\" HKEY_CURRENT_USER\\%s"), oFileOpenDialog.GetPathName(), CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)));
-		CUtils::Run(szCommandLine, TRUE);	// regedit /e "x:\xkeymacs.reg" HKEY_CURRENT_USER\Software\Oishi\XKeymacs2
+		szCommandLine.Format(_T("reg export HKEY_CURRENT_USER\\%s \"%s\" /y"), CString(MAKEINTRESOURCE(IDS_REGSUBKEY_DATA)), oFileOpenDialog.GetPathName());
+		CUtils::Run(szCommandLine, TRUE, TRUE);	// reg export HKEY_CURRENT_USER\Software\Oishi\XKeymacs2 "x:\xkeymacs.reg" /y
 	}
 
 	DiableTokenPrivileges();

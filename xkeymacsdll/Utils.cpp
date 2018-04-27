@@ -676,11 +676,15 @@ BOOL CUtils::IsBorlandCppBuilder()
 	return AppName::Match(_T("bcb.exe"));
 }
 
-BOOL CUtils::Run(CString szCommandLine, BOOL isWait)
+BOOL CUtils::Run(CString szCommandLine, BOOL isWait, BOOL isHide)
 {
 	STARTUPINFO si;
 	ZeroMemory(&si, sizeof(si));
 	si.cb = sizeof(si);
+	if (isHide) {
+		si.dwFlags = STARTF_USESHOWWINDOW;
+		si.wShowWindow = SW_HIDE;
+	}
 
 	PROCESS_INFORMATION pi;
 	ZeroMemory(&pi, sizeof(pi));

@@ -25,7 +25,7 @@ public:
 	static BOOL IsVisualSlickEdit();
 	static BOOL IsMSDN();
 	static BOOL IsJavaW();
-	static BOOL Run(CString szCommandLine, BOOL isWait = FALSE);
+	static BOOL Run(CString szCommandLine, BOOL isWait = FALSE, BOOL isHide = FALSE);
 	static BOOL IsBorlandCppBuilder();
 	static BOOL IsLispWorksPersonalEdition();
 	static BOOL IsTeraPad();
