@@ -13,7 +13,7 @@ XKeymacsはEmacsのようなキー割り当てを、Windows上のアプリケー
    - Visual Studio 2015 の Visual C++ 再頒布可能パッケージ (x86)
      <https://tinyurl.com/vc2015x86>
    - Visual Studio 2015 の Visual C++ 再頒布可能パッケージ (x64)
-     <hhttps://tinyurl.com/vc2015x64>
+     <https://tinyurl.com/vc2015x64>
 2. zipファイルを適切なフォルダに展開します。
 
 アップグレードとアンインストール
