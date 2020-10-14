@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// ì˙ñ{åÍ (ì˙ñ{) resources
+// Japanese (Japan) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
@@ -1525,12 +1525,12 @@ BEGIN
     IDS_REG_ENTRY_MX        "mx_icon"
 END
 
-#endif    // ì˙ñ{åÍ (ì˙ñ{) resources
+#endif    // Japanese (Japan) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// âpåÍ (ïƒçë) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -1541,15 +1541,16 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOG 0, 0, 150, 60
+IDD_ABOUTBOX DIALOGEX 0, 0, 151, 79
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About XKeymacs"
-FONT 8, "Tahoma"
+FONT 8, "Tahoma", 0, 0, 0x0
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,10,10,0,0
+    ICON            IDR_MAINFRAME,IDC_STATIC,10,10,21,20
     LTEXT           "XKeymacs Version x.xx",IDC_VERSION_INFORMATION,40,10,119,8,SS_NOPREFIX
     LTEXT           "http://xkeymacs.sourceforge.jp/",IDC_URL,40,22,140,8,SS_NOTIFY
-    DEFPUSHBUTTON   "OK",IDOK,50,40,50,14,WS_GROUP
+    DEFPUSHBUTTON   "OK",IDOK,49,53,50,14,WS_GROUP
+    LTEXT           "Built in VS2015, rgd786",IDC_STATIC,41,38,75,8
 END
 
 IDD_OPTIONS DIALOG 0, 0, 152, 251
@@ -2194,8 +2195,9 @@ BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
+        RIGHTMARGIN, 150
         TOPMARGIN, 7
-        BOTTOMMARGIN, 48
+        BOTTOMMARGIN, 67
     END
 
     IDD_OPTIONS, DIALOG
@@ -2360,21 +2362,37 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\xkeymacs.ico"
+
 IDR_MAIN_DISABLE_WOCQ   ICON                    "res\\disableWOCQ.ico"
+
 IDI_CTRL_ON             ICON                    "res\\ctrl_on.ico"
+
 IDI_CTRL_OFF            ICON                    "res\\ctrl_off.ico"
+
 IDI_CX_ON               ICON                    "res\\cx_on.ico"
+
 IDI_CX_OFF              ICON                    "res\\cx_off.ico"
+
 IDI_SHIFT_ON            ICON                    "res\\shift_on.ico"
+
 IDI_SHIFT_OFF           ICON                    "res\\shift_of.ico"
+
 IDI_ALT_ON              ICON                    "res\\alt_on.ico"
+
 IDI_ALT_OFF             ICON                    "res\\alt_off.ico"
+
 IDI_META_ON             ICON                    "res\\meta_on.ico"
+
 IDI_META_OFF            ICON                    "res\\meta_off.ico"
+
 IDR_MAIN_DISABLE        ICON                    "res\\disable.ico"
+
 IDR_MAIN_DISABLE_TMP    ICON                    "res\\disableTMP.ico"
+
 IDI_MX_ON               ICON                    "res\\mx_on.ico"
+
 IDI_MX_OFF              ICON                    "res\\mx_off.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2405,8 +2423,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,0
- PRODUCTVERSION 4,0,0,0
+ FILEVERSION 4,0,1,0
+ PRODUCTVERSION 4,0,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -2422,11 +2440,12 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "FileDescription", "XKeymacs"
-            VALUE "FileVersion", "4, 0, 0, 0"
+            VALUE "FileVersion", "4.0.1.0"
             VALUE "InternalName", "xkeymacs"
+            VALUE "LegalCopyright", "2017"
             VALUE "OriginalFilename", "xkeymacs.exe"
             VALUE "ProductName", "XKeymacs"
-            VALUE "ProductVersion", "4, 0, 0, 0"
+            VALUE "ProductVersion", "4.0.1.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -2442,10 +2461,15 @@ END
 //
 
 IDC_HAND_CURSOR         CURSOR                  "res\\hand.cur"
+
 IDC_DRAG_CURSOR         CURSOR                  "res\\drag.cur"
+
 IDC_DISABLE_CURSOR      CURSOR                  "res\\disable_.cur"
+
 IDC_DISABLE_WOCQ_CURSOR CURSOR                  "res\\disable_wocq.cur"
+
 IDC_DISABLE_TMP_CURSOR  CURSOR                  "res\\disable_tmp.cur"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2453,7 +2477,20 @@ IDC_DISABLE_TMP_CURSOR  CURSOR                  "res\\disable_tmp.cur"
 //
 
 IDB_SORT_ASCENDING      BITMAP                  "res\\sort_asc.bmp"
+
 IDB_SORT_DESCENDING     BITMAP                  "res\\sort_des.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_ABOUTBOX AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3197,7 +3234,7 @@ BEGIN
     IDS_REG_ENTRY_MX        "mx_icon"
 END
 
-#endif    // âpåÍ (ïƒçë) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
