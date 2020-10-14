@@ -1,1209 +1,1214 @@
 ======================================================================
- XKeymacs - Windows �p �L�[�{�[�h���[�e�B���e�B
+ XKeymacs - Windows 用 キーボードユーティリティ
 ======================================================================
 
---- ���� ---
-2011/xx/xx version 4.0
-- 64bit�ł�Windows���T�|�[�g�B
-- Windows 7�ŃR���\�[���A�v���P�[�V�����������������Ȃ��o�O���C���B
-- Internet Explorer 7�ȍ~�Ńe�L�X�g�G���A���_�C�A���O�{�b�N�X�����ɂȂ�
-  �o�O���C���B
-- Visual Studio��C-g��������Ctrl���������o�O���C���B
-- Visual Studio�ŃC���N�������^���T�[�`�������Ȃ��o�O���C���B
-- Visual Studio 2010�ŏ����M-f��M-v�Ȃǂ��@�\���Ȃ��o�O���C���B
-- Internet Explorer��M-d�������Ȃ��o�O���C���B
-- Visual Studio�Ń}�[�N�̃L�����Z���������Ȃ��o�O���C���B
-- �v���p�e�B�_�C�A���O�ŃA�v���P�[�V�����̐ݒ��W���̐ݒ�ɖ߂��Ă��A
-  ���ꂪ�ۑ�����Ȃ��o�O���C���B
-- �����_�C�A���O��IME�œ��͌�ɏ����VK_END�����͂����o�O���C���B
-- "�ň͂�Œ�`�����I���W�i���R�}���h���@�\���Ȃ��o�O���C���B
-- etc�f�B���N�g�����̃t�@�C�������Ȃ��悤�ɂ���B
-- Eclipse�ŃC���N�������^���T�[�`���T�|�[�g�B
-- Notepad++�őO�����̃C���N�������^���T�[�`���T�|�[�g�B
-- �v���p�e�B�_�C�A���O�����p�\��IMM��IME��S���ƁATSF��IME���ǂꂩ
-  ��\������悤�ɂ���B
-- Firefox�Ń}�[�N�̃L�����Z�������܂������Ȃ��o�O���C���B
-- �������̋@�\�͂܂�Windows 7�œ����܂���B
+--- 履歴 ---
+201x/xx/xx version 4.0
+- New: 64bit版のWindowsをサポート
+- Fix: Windows 7以降でコンソールアプリケーションを正しく扱えない
+- Fix: IE7以降でテキストエリアがダイアログボックス扱いになる
+- Fix: Visual StudioでC-gを押すとCtrlが離される
+- Fix: Visual Studioでインクリメンタルサーチが動かない
+- Fix: Visual Studio 2010で初回のM-fやM-vなどが機能しない
+- Fix: Internet ExplorerでM-dが動かない
+- Fix: Visual Studioでマークのキャンセルが効かないバグを修正。
+- Fix: プロパティダイアログで設定を標準の設定に戻しても保存されない
+- Fix: &quot;で囲んで定義したオリジナルコマンドが機能しない
+- Fix: 検索ダイアログでIMEで入力後に勝手にVK_ENDが入力される
+- Change: etcディレクトリや空のファイルを作らない
+- New: Eclipseでインクリメンタルサーチ
+- New: Notepad++で前方向のインクリメンタルサーチ
+- New: プロパティダイアログが利用可能なIMMのIME全部とTSFのTIPを一つ表示する
+- Fix: Firefoxでマークのキャンセルがうまく動かない
+- Fix: Google ChromeでAltとほかのキーの同時押しがうまく動かない
+- Fix: C-kに時間が掛かる
+- Fix: javaw.exeが起動するアプリケーションが全部eclipse.exeになる
+- Change: アプリケーションのタイトルやファイル名のささいな違いを無視する
+- Fix: フォーカスがIE10以降に移動したときにオンオフ状態が変わらない
+- New: TSF対応アプリケーションをサポートする
+- Fix: プロパティダイアログがCJK版のWindows 8以降で崩れる
+- いくつかの機能はまだ動きません。
 
 2008/07/27 version 3.48
-- Firefox 3 ��� C-s �� C-r �����Ғʂ�ɓ����Ȃ������C���B
-- Fn ���V���[�g�J�b�g�L�[�Ƃ��ė��p�ł���悤�ύX�B
+- Firefox 3 上で C-s と C-r が期待通りに動かない問題を修正。
+- Fn をショートカットキーとして利用できるよう変更。
 
 2008/04/05 version 3.47
-- Visual Studio ��� C-s/C-r ���C���N�������^���T�[�`�Ƃ��ċ@�\����
-�悤�ɕύX�B
-- execute-extended-command (M-x) ��ǉ��B
+- Visual Studio 上で C-s/C-r がインクリメンタルサーチとして機能する
+ように変更。
+- execute-extended-command (M-x) を追加。
 (Thanks to Harold-san)
 
 2007/12/08 version 3.46
-- PowerPoint �y�� Mozilla Thunderbird ��� M-d �����Ғʂ�ɓ����Ȃ�
-�����C���B
-- Mozilla Thunderbird ��� C-x C-s �����s����ƃL�[�{�[�h�t�H�[�J�X��
-�����̂Ƃ���Ɉړ���������C���B
+- PowerPoint 及び Mozilla Thunderbird 上で M-d が期待通りに動かない
+問題を修正。
+- Mozilla Thunderbird 上で C-x C-s を実行するとキーボードフォーカスが
+件名のところに移動する問題を修正。
 (Thanks to Dave-san, satoru-san)
 
 2007/11/25 version 3.45
-- ���݃��O�I�����Ă��郆�[�U�[�p�̃L�[�{�[�h���C�A�E�g�ƑS�Ẵ��[�U�[
-�p�̃L�[�{�[�h���C�A�E�g�̑o����ݒ�ł���悤�Ɋg���B
-�܂�A�ȉ��̐ݒ���s���@�\�𕜊��B
+- 現在ログオンしているユーザー用のキーボードレイアウトと全てのユーザー
+用のキーボードレイアウトの双方を設定できるように拡張。
+つまり、以下の設定を行う機能を復活。
 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\Scancode Map
 (Thanks to Koichi-san)
 
 2007/7/28 version 3.44
-- 64bit �̊��ŁAPoderosa �p�̐ݒ肪�K�p����Ȃ������C�������݂���������B
-(Thanks to ���䂳��)
+- 64bit の環境で、Poderosa 用の設定が適用されない問題を修正を試みるも効かず。
+(Thanks to 今井さん)
 
 2007/3/3 version 3.43
-- Excel ��ō��[�̗�̃Z����I�񂾏�Ԃ� C-k ������� Excel ���n���O��
-�邱�Ƃ���������C���B
-- Windows Vista ��ŃL�[�{�[�h���C�A�E�g��ύX�ł��Ȃ������C���B
-�L�[�{�[�h���C�A�E�g�_�C�A���O�ōs�����ݒ�̕ۑ��ꏊ��
+- Excel 上で左端の列のセルを選んだ状態で C-k をすると Excel がハングす
+ることがある問題を修正。
+- Windows Vista 上でキーボードレイアウトを変更できない問題を修正。
+キーボードレイアウトダイアログで行った設定の保存場所を
 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\Scancode Map
-����
+から
 HKEY_CURRENT_USER\Keyboard Layout\Scancode Map
-�ɕύX�B
+に変更。
 (Thanks to nissy-san)
 
 2007/1/8 version 3.42
-- ���O�I�����Ɏ��s����Ƃ��ɁA�^�X�N�o�[�̃X�e�[�^�X�̈�ɃA�C�R�����\
-������Ȃ����Ƃ���������C���B
-- �I���W�i���R�}���h�� Windows �L�[�Ƒ��̃L�[�𓯎��ɉ�����悤�� Win+
-���T�|�[�g�B
-(Thanks to lokuden-san�AKoichi-san�A���q������)
+- ログオン時に実行するときに、タスクバーのステータス領域にアイコンが表
+示されないことがある問題を修正。
+- オリジナルコマンドで Windows キーと他のキーを同時に押せるように Win+
+をサポート。
+(Thanks to lokuden-san、Koichi-san、ヤヒロさん)
 
 2006/11/23 version 3.41.1
-- �G�ۃG�f�B�^��ŁAM-l, M-u, M-c �����Ғʂ�ɓ����Ȃ������C���B
+- 秀丸エディタ上で、M-l, M-u, M-c が期待通りに動かない問題を修正。
 (Thanks to mets-san)
 
 2006/11/19 version 3.41
-- downcase-word (M-l), upcase-word (M-u), capitalize-word (M-c) ��ǉ��B
+- downcase-word (M-l), upcase-word (M-u), capitalize-word (M-c) を追加。
 (Thanks to amd64-fan-san)
 
 2006/11/5 version 3.40
-- OpenOffice.org Writer ��� M-w �����s����ƃ��j���[���J�������C���B
+- OpenOffice.org Writer 上で M-w を実行するとメニューが開く問題を修正。
 (Thanks to bon108-san)
 
 2006/10/14 version 3.39
-- ATOK ��ł� c-B �� LEFT �ł͂Ȃ� SHIFT+LEFT �Ƃ��ċ@�\����悤�ɕύX�B
-(Thanks to ���m�コ��A���삳��AOTA-san)
+- ATOK 上では c-B が LEFT ではなく SHIFT+LEFT として機能するように変更。
+(Thanks to 尾ノ上さん、中野さん、OTA-san)
 
 2006/8/9 version 3.38
-- �R�}���h�v�����v�g���� Vim ���N�������Ƃ��ɓƎ��̐ݒ肪�K�p����Ȃ�
-�����C���B
+- コマンドプロンプトから Vim を起動したときに独自の設定が適用されない
+問題を修正。
 
 2006/8/6 version 3.37
-- �X���[�v���畜�A�����Ƃ��� XKeymacs �������Ȃ��Ȃ�����C���B
-- Scientific WorkPlace ��ňꕔ�̃I���W�i���R�}���h�����Ғʂ�ɓ�����
-�������C���B
-(Thanks to jonathan-san�APradip-san)
+- スリープから復帰したときに XKeymacs が動かなくなる問題を修正。
+- Scientific WorkPlace 上で一部のオリジナルコマンドが期待通りに動かな
+い問題を修正。
+(Thanks to jonathan-san、Pradip-san)
 
 2006/7/16 version 3.36
-- Microsoft Word �y�� Mozilla Thunderbird ��� C-l �����Ғʂ�ɓ�����
-�������C���B
-(Thanks to �씨����)
+- Microsoft Word 及び Mozilla Thunderbird 上で C-l が期待通りに動かな
+い問題を修正。
+(Thanks to 川畑さん)
 
 2006/6/24 version 3.35
-- Mozilla Thunderbird ��ŁAc-p�Ac-n�Ac-f �Ȃǂ����Ғʂ�ɓ����Ȃ����
-���C���B(version 3.33 �̃T�C�h�C�t�F�N�g)
+- Mozilla Thunderbird 上で、c-p、c-n、c-f などが期待通りに動かない問題
+を修正。(version 3.33 のサイドイフェクト)
 (Thanks to lokuden-san)
 
 2006/6/18 version 3.34
-- Nif-X �̂悤�� ImmGetIMEFileName �����p�ł��Ȃ��A�v���P�[�V������
-IME �̐ݒ肪�������K�p����Ȃ������C���B(�A���A���O�ɗ��p���Ă���
-�A�v���P�[�V������ IME �̐ݒ�Ɉˑ����镔�������邽�߁A�A�v���P�[�V����
-���ɈقȂ� IME �𗘗p���Ă���悤�ȏꍇ�ɂ͊��Ғʂ�ɓ����Ȃ����Ƃ�����)
+- Nif-X のような ImmGetIMEFileName が利用できないアプリケーションで
+IME の設定が正しく適用されない問題を修正。(但し、直前に利用していた
+アプリケーションの IME の設定に依存する部分があるため、アプリケーション
+毎に異なる IME を利用しているような場合には期待通りに動かないことがある)
 (Thanks to lokuden-san)
 
 2006/6/11 version 3.33
-- XKeymacs �̏�Ԃ��J�[�\���ɔ��f������@�\��ǉ��B
-- �J�[�\���̈ړ����ɃL�[�{�[�h����������@�\��ǉ��B
+- XKeymacs の状態をカーソルに反映させる機能を追加。
+- カーソルの移動時にキーボードを加速する機能を追加。
 (Thanks to Nagato-san)
 
 2006/2/26 version 3.32
-- �N�����Ƀ^�X�N�o�[�̃X�e�[�^�X�̈�ɃA�C�R�����\���ł��Ȃ����Ƃ�����
-�����C���B
+- 起動時にタスクバーのステータス領域にアイコンが表示できないことがある
+問題を修正。
 (Thanks to lokuden-san)
 
 2006/2/19 version 3.31
-- �L�[�{�[�h���C�A�E�g�_�C�A���O�ŁA����L�[�����p�ł��Ȃ��Ȃ�悤��
-�ݒ��K�p���悤�Ƃ����ۂɌx���̃_�C�A���O���o���悤�ɕύX�B
-- �L�[�{�[�h���C�A�E�g�_�C�A���O�ŁA���C�A�E�g��ύX���ꂽ�L�[�𑾎�
-�ŕ\������悤�ɕύX�B
-(Thanks to �˒˂���)
+- キーボードレイアウトダイアログで、あるキーが利用できなくなるような
+設定を適用しようとした際に警告のダイアログを出すように変更。
+- キーボードレイアウトダイアログで、レイアウトを変更されたキーを太字
+で表示するように変更。
+(Thanks to 戸塚さん)
 
 2006/2/9 version 3.30
-- Lunascape ��� C-s �� C-r �����Ғʂ�ɓ����Ȃ������C���B
-(Thanks to �D�ꂳ��)
+- Lunascape 上で C-s と C-r が期待通りに動かない問題を修正。
+(Thanks to 札場さん)
 
 2006/1/26 version 3.29
-- �v���p�e�B�_�C�A���O���J���ƃ����������[�N��������C���B���̖���
-version 3.23 �ōs�����ύX�̃T�C�h�C�t�F�N�g�B
+- プロパティダイアログを開くとメモリがリークする問題を修正。この問題は
+version 3.23 で行った変更のサイドイフェクト。
 
 2006/1/16 version 3.28
-- Windows XP ��ŏڍׂȃe�L�X�g�T�[�r�X�̃T�|�[�g���v���O�����̂��ׂ�
-�Ɋg������ƁAXKeymacs �̃v���p�e�B�_�C�A���O�� IME ����������������
-���C���B
+- Windows XP 上で詳細なテキストサービスのサポートをプログラムのすべて
+に拡張すると、XKeymacs のプロパティダイアログで IME が文字化けする問題
+を修正。
 (Thanks to WUXIN-san)
 
 2006/1/9 version 3.27
-- �G�ۃG�f�B�^�A�y�сA�G�ۃ��[����� Ctrl+Shift+M �Ȃǂ����Ғʂ�ɓ���
-�Ȃ������C���B
+- 秀丸エディタ、及び、秀丸メール上で Ctrl+Shift+M などが期待通りに動か
+ない問題を修正。
 (Thanks to WUXIN-san)
 
 2006/1/6 version 3.26
-- �G�ۃG�f�B�^�A�y�сA�G�ۃ��[����� C-o �� open-line �ł͂Ȃ�
-new-line �ɂȂ��Ă��܂������C���B
+- 秀丸エディタ、及び、秀丸メール上で C-o が open-line ではなく
+new-line になってしまう問題を修正。
 (Thanks to WUXIN-san)
 
 2006/1/2 version 3.25
-- Visual Studio .NET ��� C-s �����s����ƁA�f�o�b�O���j���[���\������
-������ "���݂̃h�L�������g" ���I�����������C���B
+- Visual Studio .NET 上で C-s を実行すると、デバッグメニューが表示され
+たり常に "現在のドキュメント" が選択される問題を修正。
 (Thanks to William-san)
 
 2005/12/28 version 3.24
-- Visual Studio .NET ��� C-Space ��� C-g �����s���Ă��I������������
-�Ȃ������C���B
+- Visual Studio .NET 上で C-Space 後に C-g を実行しても選択が解除され
+ない問題を修正。
 (Thanks to William-san)
 
 2005/12/26 version 3.23
-- xkeymacs.exe �ׂ̗ɂ����� dot.xkeymacs �� etc �f�B���N�g���̉��Ɉړ��B
-- XKeymacs �̃R�}���h�̐U�������Adot.xkeymacs �ɐݒ肳�ꂽ�R�}���h��
-�㏑���ł���悤�ɕύX�B
-- ����̌���� Windows �ɍœK�������ݒ��ۑ����邽�߂̐ݒ�t�@�C��
-(ex. Japanese.xkeymacs) ���T�|�[�g�B
+- xkeymacs.exe の隣にあった dot.xkeymacs を etc ディレクトリの下に移動。
+- XKeymacs のコマンドの振舞いを、dot.xkeymacs に設定されたコマンドで
+上書きできるように変更。
+- 特定の言語の Windows に最適化した設定を保存するための設定ファイル
+(ex. Japanese.xkeymacs) をサポート。
 (Thanks to Otmar-san)
 
 2005/11/24 version 3.22
-- Alt �� Ctrl �ɃR�}���h�����蓖�Ă�Ɗ��Ғʂ�ɓ����Ȃ������C���B
-- Windows XP ��� Explorer �ŃE�B���h�E�� 2 ���J���� C-x C-c C-x C-c
-�����s���Ă��E�B���h�E�� 1 ���������Ȃ������C���B
-- �I���W�i���R�}���h�� C-x C-? (? �͔C�ӂ̃L�[) �����蓖�Ă�ƃR�}���h
-���s��� C-x �̃t���O���N���A����Ȃ������C���B
-(Thanks to �R�_�}����)
+- Alt や Ctrl にコマンドを割り当てると期待通りに動かない問題を修正。
+- Windows XP 上で Explorer でウィンドウを 2 枚開いて C-x C-c C-x C-c
+を実行してもウィンドウが 1 枚しか閉じない問題を修正。
+- オリジナルコマンドに C-x C-? (? は任意のキー) を割り当てるとコマンド
+実行後に C-x のフラグがクリアされない問題を修正。
+(Thanks to コダマさん)
 
 2005/11/4 version 3.21
-- Adobe Reader 7.0 ��� C-s �������ł͂Ȃ��ȈՌ����Ƃ��ē��������C���B
-- C-x t �� transpose-chars �����蓖�Ă�Ɗ��Ғʂ�ɓ����Ȃ������C���B
-- �I���W�i���R�}���h�� C-t �� transpose-chars �Ƃ��ē����Ȃ������C���B
-- �I���W�i���R�}���h�� Ctrl+left Ctrl+left �����Ғʂ�ɓ����Ȃ�����
-�C���B
+- Adobe Reader 7.0 上で C-s が検索ではなく簡易検索として動く問題を修正。
+- C-x t に transpose-chars を割り当てると期待通りに動かない問題を修正。
+- オリジナルコマンドで C-t が transpose-chars として動かない問題を修正。
+- オリジナルコマンドで Ctrl+left Ctrl+left が期待通りに動かない問題を
+修正。
 
 2005/10/20 version 3.20
-- M-t (transpose-words) ��ǉ��B
+- M-t (transpose-words) を追加。
 (Thanks to Jeroen-san)
 
 2005/9/22 version 3.19
-- Mozilla Thunderbird ��� M-w �����s����ƃL�����b�g���t�@�C���̐擪
-�Ɉړ���������C���B
-(Thanks to �씨����)
+- Mozilla Thunderbird 上で M-w を実行するとキャレットがファイルの先頭
+に移動する問題を修正。
+(Thanks to 川畑さん)
 
 2005/7/2 version 3.18
-- Shuriken Pro4 ��� C-k, C-t �����Ғʂ�ɓ����Ȃ������C���B
-- %APPDATA% (C:\Documents and Settings\�����[�U����\Application Data)
-�ɒu���� dot.xkeymacs ���Q�Ƃ���悤�ɕύX�B
-(Thanks to ��������)
+- Shuriken Pro4 上で C-k, C-t が期待通りに動かない問題を修正。
+- %APPDATA% (C:\Documents and Settings\＜ユーザ名＞\Application Data)
+に置いた dot.xkeymacs も参照するように変更。
+(Thanks to 村松さん)
 
 2005/2/14 version 3.17
-- �p��L�[�{�[�h�h���C�o�𗘗p���Ă���Ƃ��ɁA�ϊ��L�[�ȂǓ��{��L�[
-�{�[�h�Ǝ��̃L�[����ꊷ������Ԃ� "�L�[�{�[�h���C�A�E�g" �_�C�A���O��
-�N������� XKeymacs �� ABEND ��������C���B
-(Thanks to ���c����)
+- 英語キーボードドライバを利用しているときに、変換キーなど日本語キー
+ボード独自のキーを入れ換えた状態で "キーボードレイアウト" ダイアログを
+起動すると XKeymacs が ABEND する問題を修正。
+(Thanks to 太田さん)
 
 2005/2/8 version 3.16
-- Microsoft Word ��� M-d ���J�[�\���̍����̕������L�����Ă��܂�����
-�C���B
-- Visual SlickEdit, xyzzy, teraterm �ɑ΂��Ǝ��̐ݒ���g�p���Ă��Ȃ���
-���́A�_�C�A���O��ł� XKeymacs ��L���ɂ���悤�ɕύX�B
-(Thanks to ���삳��)
+- Microsoft Word 上で M-d がカーソルの左側の文字もキルしてしまう問題を
+修正。
+- Visual SlickEdit, xyzzy, teraterm に対し独自の設定を使用していないと
+きは、ダイアログ上では XKeymacs を有効にするように変更。
+(Thanks to 小野さん)
 
 2005/1/15 version 3.15
-- dot.xkeymacs �� [?\Alt+escape] �̂悤�� Modifier �� Control Key ��
-�g�ݍ��킹���T�|�[�g�B
-(Thanks to �R����)
+- dot.xkeymacs で [?\Alt+escape] のような Modifier と Control Key の
+組み合わせをサポート。
+(Thanks to 青山さん)
 
 2005/1/9 version 3.14
-- Eclipse, BlueJ, JUDE �ɁAjavaw.exe �p�̐ݒ�̑ւ��ɓƎ��̐ݒ肪��
-�蓖�Ă���悤�ɕύX�B
-(Thanks to �q����A�㓡����A��������)
+- Eclipse, BlueJ, JUDE に、javaw.exe 用の設定の替わりに独自の設定が割
+り当てられるように変更。
+(Thanks to 倉さん、後藤さん、中村さん)
 
 2004/12/24 version 3.13
-- Mozilla Firefox ��� M-v �����s����ƃ^�u���؂�ւ������C���B
+- Mozilla Firefox 上で M-v を実行するとタブが切り替わる問題を修正。
 
 2004/12/19 version 3.12
-- �I�[�v���������ԂɁA���ڂ��z����R�}���h Cycle items (Alt+Esc) ��
-Cycle items inversely (Alt+Shift+Esc) ��ǉ��B
-(Thanks to �R����)
+- オープンした順番に、項目を循環するコマンド Cycle items (Alt+Esc) と
+Cycle items inversely (Alt+Shift+Esc) を追加。
+(Thanks to 青山さん)
 
 2004/12/13 version 3.11
-- �|�b�v�A�b�v���j���[�Ƀ��Z�b�g��ǉ��B
-- �|�b�v�A�b�v���j���[�Ƀw���v��ǉ��B
-(Thanks to �㓡����AZenji-san�A���c����)
+- ポップアップメニューにリセットを追加。
+- ポップアップメニューにヘルプを追加。
+(Thanks to 後藤さん、Zenji-san、杉田さん)
 
 2004/11/23 version 3.10
-- Mozilla Firefox ��ŁAC-s �� C-r �����Ғʂ�ɓ����Ȃ������C���B
-- dot.xkeymacs �L�q�p�� Control Key �Ƃ��āAcapslock, browser-back,
-media-next-track �����T�|�[�g�B
-- dot.xkeymacs �� f1?, f2? �� f1, f2 �ƌ��􂳂������C���B
-- dot.xkeymacs �� escape �� Esc �ł͂Ȃ� Meta �Ƃ��ē��������C���B
-- dot.xkeymacs �Œ�`�����R�}���h�� Ctrl+Shift+? (? �͔C�ӂ̃L�[) ��
-���蓖�Ă��Ƃ��ɁA2 ��A���Ŏ��s�ł��Ȃ������C���B
-- dot.xkeymacs �� sample-mkdir �R�}���h��ǉ��B
-- backward-kill-word �Ƀf�t�H���g�Ŋ��蓖�Ă���L�[�� M-delete ����
-M-backspace �֕ύX�B
-(Thanks to Zenji-san�A�㓡����)
+- Mozilla Firefox 上で、C-s と C-r が期待通りに動かない問題を修正。
+- dot.xkeymacs 記述用の Control Key として、capslock, browser-back,
+media-next-track 等をサポート。
+- dot.xkeymacs で f1?, f2? が f1, f2 と見做される問題を修正。
+- dot.xkeymacs で escape が Esc ではなく Meta として動く問題を修正。
+- dot.xkeymacs で定義したコマンドに Ctrl+Shift+? (? は任意のキー) を
+割り当てたときに、2 回連続で実行できない問題を修正。
+- dot.xkeymacs に sample-mkdir コマンドを追加。
+- backward-kill-word にデフォルトで割り当てられるキーを M-delete から
+M-backspace へ変更。
+(Thanks to Zenji-san、後藤さん)
 
 2004/10/30 version 3.9
-- Microsoft Outlook ��ŁATo: ���̗��� C-k ���Ō�� 1 ������ kill
-�ł��Ȃ������C���B
-(Thanks to ��e����)
+- Microsoft Outlook 上で、To: 等の欄で C-k が最後の 1 文字を kill
+できない問題を修正。
+(Thanks to 大脇さん)
 
 2004/10/5 version 3.8
-- Microsoft Visual Studio ��� M-d �����Ғʂ�ɓ����Ȃ������C���B
+- Microsoft Visual Studio 上で M-d が期待通りに動かない問題を修正。
 
 2004/8/30 version 3.7
-- OpenJane ��� C-s �� C-r �����Ғʂ�ɓ����Ȃ������C���B
+- OpenJane 上で C-s と C-r が期待通りに動かない問題を修正。
 (Thanks to Zenji-san)
 
 2004/8/16 version 3.6
-- Windows XP ��ŃR�}���h�v�����v�g�� C Shell �ƔF������Ă��܂����Ƃ�
-��������C���B
-- Visual Studio .NET 2003 �R�}���h�v�����v�g���������F������Ȃ�����
-�C���B
+- Windows XP 上でコマンドプロンプトが C Shell と認識されてしまうことが
+ある問題を修正。
+- Visual Studio .NET 2003 コマンドプロンプトが正しく認識されない問題を
+修正。
 (Thanks to Jason-san)
 
 2004/8/10 version 3.5.1
-- Windows XP �g�p���ɁAMozilla Firefox ��� M-v ����������邱�Ƃ�����
-�����C���B
-(Thanks to �㓡����)
+- Windows XP 使用時に、Mozilla Firefox 上で M-v が無視されることがある
+問題を修正。
+(Thanks to 後藤さん)
 
 2004/8/9 version 3.5
-- C-s, C-r ���s���ɁA�ȑO�������������񂪏����Ă��܂������C���B
-- Mozilla Firefox ��� M-v ����������邱�Ƃ���������C���B
-- �f�t�H���g�� C-m �Ɋ��蓖�Ă���R�}���h���� Enter ���� newline ��
-�ύX�B
-- �v���p�e�B�_�C�A���O�ŃT�N���G�f�B�^�̃A�v���P�[�V�������𐳂����\��
-�ł��Ȃ������C���B
+- C-s, C-r 実行時に、以前検索した文字列が消えてしまう問題を修正。
+- Mozilla Firefox 上で M-v が無視されることがある問題を修正。
+- デフォルトで C-m に割り当てられるコマンド名を Enter から newline に
+変更。
+- プロパティダイアログでサクラエディタのアプリケーション名を正しく表示
+できない問題を修正。
 
 2004/8/6 version 3.4
-- Opera ��� C-s �����s����ƃE�B���h�E���ŏ���������������B
-- �W���ݒ�� XKeymacs �� Visual SlickEdit �ɂȂɂ��s��Ȃ��悤�ɕύX�B
+- Opera 上で C-s を実行するとウィンドウが最小化する問題を解消。
+- 標準設定で XKeymacs が Visual SlickEdit になにも行わないように変更。
 
 2004/8/1 version 3.3.1
-- Microsoft Visual Studio .NET �Ńr���h�ł��Ȃ����������B
-(Thanks to �㓡����)
+- Microsoft Visual Studio .NET でビルドできない問題を解消。
+(Thanks to 後藤さん)
 
 2004/7/25 version 3.3
-- PowerPoint �� C-s/C-r �����Ғʂ�ɓ����Ȃ����Ƃ�������������B
-- �v���p�e�B�_�C�A���O�̊�{�^�u�̃`�F�b�N�{�b�N�X���`�F�b�N���Ă��A
-�I���W�i���R�}���h�Ɋ��蓖�Ă�ꂽ�V���[�g�J�b�g���N���A����Ȃ�����
-�����B
+- PowerPoint で C-s/C-r が期待通りに動かないことがある問題を解消。
+- プロパティダイアログの基本タブのチェックボックスをチェックしても、
+オリジナルコマンドに割り当てられたショートカットがクリアされない問題を
+解消。
 (Thanks to shun-san)
 
 2004/7/8 version 3.2
-- �I���W�i���R�}���h�� Alt+ �����p�ł��Ȃ����������B
-- ���O�I�����Ɏ��s����� dot.xkeymacs ���ǂݍ��܂�Ȃ����������B
-(Thanks to �L�򂳂�A����������)
+- オリジナルコマンドで Alt+ が利用できない問題を解消。
+- ログオン時に実行すると dot.xkeymacs が読み込まれない問題を解消。
+(Thanks to 有沢さん、かおくさん)
 
 2004/6/17 version 3.1
-- One Shot ���f�B�t�@�C�����T�|�[�g�B
-- Microsoft Internet Explorer ��� PDF �t�@�C�����J���� C-x C-c �ŏI��
-�ł��Ȃ����Ƃ̂�������C���B
-- Microsoft Visual C++ ��� M-v ����������邱�Ƃ���������C���B
-(Thanks to Flost-san�A��������)
+- One Shot モディファイヤをサポート。
+- Microsoft Internet Explorer 上で PDF ファイルを開くと C-x C-c で終了
+できないことのある問題を修正。
+- Microsoft Visual C++ 上で M-v が無視されることがある問題を修正。
+(Thanks to Flost-san、村松さん)
 
 2004/6/16 version 3.0.1
-- �I���W�i���R�}���h�� C-x C-? �����蓖�Ă�Ǝ��s�ł��Ȃ������C���B
-(Thanks to ����������)
+- オリジナルコマンドに C-x C-? を割り当てると実行できない問題を修正。
+(Thanks to かおくさん)
 
 2004/6/13 version 3.0
-- �I���W�i���R�}���h���`���� dot.xkeymacs �t�@�C�����T�|�[�g�B
-- �J�[�\���̂���s���E�B���h�E�̐擪�Ɉړ�����R�}���h Retop ��ǉ��B
+- オリジナルコマンドを定義する dot.xkeymacs ファイルをサポート。
+- カーソルのある行をウィンドウの先頭に移動するコマンド Retop を追加。
 
 2004/5/26 version 2.69
-- �E�B���h�E�� Roll-up/Unroll (M-F12) ���T�|�[�g�B
-- MSDN ��� C-s �����s����ƁA�����_�C�A���O�ȊO�̃_�C�A���O���J��
-���������B
+- ウィンドウの Roll-up/Unroll (M-F12) をサポート。
+- MSDN 上で C-s を実行すると、検索ダイアログ以外のダイアログも開く
+問題を解消。
 (Thanks to Timothy-san)
 
 2004/5/23 version 2.68
-- M-! ���s���A���ϐ� XKEYMACS_SHELL �ɗL���ȃp�X���ݒ肳��Ă���΁A
-ComSpec �ɗD�悵�� XKEYMACS_SHELL �𗘗p����悤�ɕύX�B
-- 4NT �ɓK�؂Ȑݒ肪�K�p����Ȃ����������B
-- �C�ӂ̃L�[�� _ �Ƃ��ė��p�ł���悤�ɂ���@�\��ǉ��B
-(Thanks to Timothy-san�A�㓡����A���}����A�ɂ�������)
+- M-! 実行時、環境変数 XKEYMACS_SHELL に有効なパスが設定されていれば、
+ComSpec に優先して XKEYMACS_SHELL を利用するように変更。
+- 4NT に適切な設定が適用されない問題を解消。
+- 任意のキーを _ として利用できるようにする機能を追加。
+(Thanks to Timothy-san、後藤さん、藤枝さん、にったさん)
 
 2004/5/16 version 2.67
-- IME �𖳌��ɂ���O�ɁA���݂̕������ϊ����ʂƂ��Ċm�肷��R�}���h
-Complete & Close Input Method �� Complete & Toggle Input Method ���
-���B
-(Thanks to Flost-san�A�ɂ�������)
+- IME を無効にする前に、現在の文字列を変換結果として確定するコマンド
+Complete & Close Input Method と Complete & Toggle Input Method を追
+加。
+(Thanks to Flost-san、にったさん)
 
 2004/5/9 version 2.66
-- Excel ��� C-w/M-w �����Ғʂ�ɓ����Ȃ����Ƃ�������������B
-- Lotus Notes ��� C-w/M-w ���t�H���g�̏���ێ����Ȃ����������B
-- �������� Java �A�v���P�[�V������ C-x C-c �ŏI���ł��Ȃ����������B
-(Thanks to ���n����Arikuji-san)
+- Excel 上で C-w/M-w が期待通りに動かないことがある問題を解消。
+- Lotus Notes 上で C-w/M-w がフォントの情報を保持しない問題を解消。
+- いくつかの Java アプリケーションが C-x C-c で終了できない問題を解消。
+(Thanks to 福地さん、rikuji-san)
 
 2004/4/20 version 2.65.1
-- �����_�C�A���O���������� C-s, C-r �����p�ł��Ȃ��Ȃ���������B
+- 検索ダイアログを閉じた直後に C-s, C-r が利用できなくなる問題を解消。
 
 2004/4/18 version 2.65
-- C-Space ��ɁAXKeymacs �̃R�}���h�Ɋ��蓖�Ă��Ă��Ȃ��V���[�g�J�b
-�g����������Ă��܂����������B
-- Borland C++ Builder ��� C-s, C-r, M-%, C-M-% �����Ғʂ�ɓ����Ȃ�
-���������B
-- �ݒ�� regedit �Ɠ����`���ŏ����o��/��荞�݂���悤�ɕύX�B
-(Thanks to �����͂�����Ahop-san�A�l�c����)
+- C-Space 後に、XKeymacs のコマンドに割り当てられていないショートカッ
+トが無視されてしまう問題を解消。
+- Borland C++ Builder 上で C-s, C-r, M-%, C-M-% が期待通りに動かない
+問題を解消。
+- 設定を regedit と同じ形式で書き出し/取り込みするように変更。
+(Thanks to おおはしさん、hop-san、浜田さん)
 
 2004/4/11 version 2.64
-- �����A�v���P�[�V�����������A�v���P�[�V�����p�̐ݒ肪�K�p����Ȃ�
-���������B
-- �W���ݒ�� XKeymacs �� LispWorks Personal Edition �ɂȂɂ��s��Ȃ�
-�悤�ɕύX�B
+- 長いアプリケーション名を持つアプリケーション用の設定が適用されない
+問題を解消。
+- 標準設定で XKeymacs が LispWorks Personal Edition になにも行わない
+ように変更。
 (Thanks to Eduardo-san)
 
 2004/3/28 version 2.63
-- Microsoft Word 2002 ��ŁAC-x C-s �����Ғʂ�ɓ����Ȃ����������B
+- Microsoft Word 2002 上で、C-x C-s が期待通りに動かない問題を解消。
 
 2004/3/21 version 2.62
-- Caps Lock ��ǉ��B
-- Lotus Notes ��ŁAC-w, M-w, C-k ��� C-y ����ƃt�H���g���ς���Ă�
-�܂����������B
+- Caps Lock を追加。
+- Lotus Notes 上で、C-w, M-w, C-k 後に C-y するとフォントが変わってし
+まう問題を解消。
 (Thanks to BoB-san, rikuji-san)
 
 2004/3/16 version 2.61.1
-- Windows XP ��Ŋ��Ғʂ�ɓ����Ȃ��������߁Akbdacc �ƃR���t���N�g����
-���̉������������B
-- ��A�̏C���B
-(Thanks to ��������Arikuji-san�ABoB-san)
+- Windows XP 上で期待通りに動かなかったため、kbdacc とコンフリクトする
+問題の解消を取り消し。
+- 誤植の修正。
+(Thanks to 佐藤さん、rikuji-san、BoB-san)
 
 2004/3/12 version 2.61
-- TeraPad ��ŁAC-s, C-r �����Ғʂ�ɓ����Ȃ����������B
-- kbdacc �ƃR���t���N�g������������B
-(Thanks to �ΐ삳��Arikuji-san)
+- TeraPad 上で、C-s, C-r が期待通りに動かない問題を解消。
+- kbdacc とコンフリクトする問題を解消。
+(Thanks to 石川さん、rikuji-san)
 
 2004/3/7 version 2.60
-- C-x �� CUA-mode ���T�|�[�g�B
-- PHP �G�f�B�^�� C-s, C-r, M-%, C-M-% �����Ғʂ�ɓ����Ȃ����������B
-- �v���p�e�B�_�C�A���O�̏ڍ׃^�u�ɂ�����V�����V���[�g�J�b�g�L�[�̓���
-���@��ύX�B
-(Thanks to BoB-san�Akei-san�A���c����)
+- C-x の CUA-mode をサポート。
+- PHP エディタで C-s, C-r, M-%, C-M-% が期待通りに動かない問題を解消。
+- プロパティダイアログの詳細タブにおける新しいショートカットキーの入力
+方法を変更。
+(Thanks to BoB-san、kei-san、杉田さん)
 
 2004/3/2 version 2.59
-- Mozilla Firefox ��� M-v �����Ғʂ�ɓ����Ȃ����������B
+- Mozilla Firefox 上で M-v が期待通りに動かない問題を解消。
 (Thanks to rikuji-san)
 
 2004/2/14 version 2.58
-- �R�}���h�v�����v�g���� bash ���N�����Ă��A�E�B���h�E��J�ڂ���܂�
-XKeymacs �������ɂȂ�Ȃ����������B
-- �R�}���h�v�����v�g���� tcsh, zsh ���N�����Ă��AXKeymacs ��������
-�Ȃ�Ȃ����������B
-(Thanks to �L�ꂳ��)
+- コマンドプロンプトから bash を起動しても、ウィンドウを遷移するまで
+XKeymacs が無効にならない問題を解消。
+- コマンドプロンプトから tcsh, zsh を起動しても、XKeymacs が無効に
+ならない問題を解消。
+(Thanks to 有賀さん)
 
 2004/2/6 version 2.57
-- "XKeymacs ��L���ɂ���"�A����сA"XKeymacs �𖳌��ɂ���" �R�}���h��
-�T�|�[�g�B
-- ez-HTML ��� C-s �����Ғʂ�ɓ����Ȃ����������B
-- IP Messenger ��� C-s �����Ғʂ�ɓ����Ȃ����������B
-(Thanks to ed-san�AZenji-san�A���R����)
+- "XKeymacs を有効にする"、および、"XKeymacs を無効にする" コマンドを
+サポート。
+- ez-HTML 上で C-s が期待通りに動かない問題を解消。
+- IP Messenger 上で C-s が期待通りに動かない問題を解消。
+(Thanks to ed-san、Zenji-san、畠山さん)
 
 2004/2/3 version 2.56
-- Dana, JmEditor ��ŁAC-s �����Ғʂ�ɓ����Ȃ����������B
-(Thanks to ���R����)
+- Dana, JmEditor 上で、C-s が期待通りに動かない問題を解消。
+(Thanks to 畠山さん)
 
 2004/2/1 version 2.55.1
-- �v���p�e�B�_�C�A���O����{����ł͓��{��ŕ\������悤�ɕύX�B
+- プロパティダイアログを日本語環境では日本語で表示するように変更。
 
 2004/1/22 version 2.55
-- M-DEL (backward-kill-word) ��ǉ��B
+- M-DEL (backward-kill-word) を追加。
 (Thanks to Howie-san)
 
 2004/1/19 version 2.54.1
-- �ꕔ�̌v�Z�@�ŁAC-k, C-t ��� CD ���C�W�F�N�g���ꂽ��A
-XKeymacs ���n���O�����肷����������B
-(Thanks to ��������)
+- 一部の計算機で、C-k, C-t 後に CD がイジェクトされたり、
+XKeymacs がハングしたりする問題を解消。
+(Thanks to 笹部さん)
 
 2004/1/18 version 2.54
-- C-k, C-t �Ȃǂ������������Ƃ��ɁA���Ғʂ�ɓ����Ȃ����������B
-- Windows XP ��̃������ŁA�E�� Shift �L�[��p���� M-< �����s�������
-C-s �Ō����_�C�A���O���J���ƁA���� Shift �L�[���������ςȂ��ɂȂ���
-�������B
-- Cygwin ���N�������ہAXKeymacs �������ɂȂ�Ȃ����������B
-(Thanks to Sute-san�A�k������A�_�c����)
+- C-k, C-t などを押し続けたときに、期待通りに動かない問題を解消。
+- Windows XP 上のメモ帳で、右の Shift キーを用いて M-< を実行した後で
+C-s で検索ダイアログを開くと、左の Shift キーが押しっぱなしになる問題
+を解消。
+- Cygwin を起動した際、XKeymacs が無効にならない問題を解消。
+(Thanks to Sute-san、北尾さん、濱田さん)
 
 2003/12/30 version 2.53
-- �J�X�^�}�C�Y�_�C�A���O���v���p�e�B�֓����B
-- EdLeaf ��� M-%, C-M-% �����Ғʂ�ɓ����Ȃ����������B
-(Thanks to hop-san�A���c����AZenji-san)
+- カスタマイズダイアログをプロパティへ統合。
+- EdLeaf 上で M-%, C-M-% が期待通りに動かない問題を解消。
+(Thanks to hop-san、杉田さん、Zenji-san)
 
 2003/12/25 version 2.52
-- �v���p�e�B�������o��/�ǂݍ��ދ@�\��ǉ��B
-(Thanks to hop-san�A�㓡����A�l�c����A�ӂ邩�킳��)
+- プロパティを書き出す/読み込む機能を追加。
+(Thanks to hop-san、後藤さん、浜田さん、ふるかわさん)
 
 2003/12/24 version 2.51
-- C-Space ��ɖ��L�[�������ƁAShift+���L�[�ł͂Ȃ��A
-Ctrl+Shift+���L�[�Ƃ��ĐU�������������B
-- Excel ��� C-w ��� C-y ����ƁA�J�b�g�ł͂Ȃ��R�s�[�ɂȂ����
-�����B
-(Thanks to ���c����A��������A���c����)
+- C-Space 後に矢印キーを押すと、Shift+矢印キーではなく、
+Ctrl+Shift+矢印キーとして振舞う問題を解消。
+- Excel 上で C-w 後に C-y すると、カットではなくコピーになる問題を
+解消。
+(Thanks to 内田さん、笹部さん、杉田さん)
 
 2003/12/16 version 2.50
-- Macromedia Flash MX 2004 ��� C-x C-f, C-x C-s, C-x C-w �����Ғʂ��
-�����Ȃ����������B
-(Thanks to ���c����)
+- Macromedia Flash MX 2004 上で C-x C-f, C-x C-s, C-x C-w が期待通りに
+動かない問題を解消。
+(Thanks to 杉田さん)
 
 2003/12/14 version 2.49
-- Explorer ��� C-x C-c �����s����ƁA�S�Ẵt�H���_�̕\���ݒ肪
-�����t�H���_�̐ݒ�ɂȂ��Ă��܂����������B
-- �f�t�H���g�̐ݒ�ł́AMicrosoft Word �ȂǂŁAC-k �𑱂��čs������
-C-y �ōŌ�� kill �����f�[�^���� yank ����Ȃ����������B
-(Thanks to ���R����A���c����AZenji-san�A��e����A��������)
+- Explorer 上で C-x C-c を実行すると、全てのフォルダの表示設定が
+閉じたフォルダの設定になってしまう問題を解消。
+- デフォルトの設定では、Microsoft Word などで、C-k を続けて行った際
+C-y で最後に kill したデータしか yank されない問題を解消。
+(Thanks to 高山さん、杉田さん、Zenji-san、大脇さん、笹部さん)
 
 2003/12/7 version 2.48
-- Microsoft Outlook, Microsoft Word �ȂǂŁAC-k �̎��s�Ɏ��Ԃ�������
-���������B
-(Thanks to ��b�q����A��e����)
+- Microsoft Outlook, Microsoft Word などで、C-k の実行に時間がかかる
+問題を解消。
+(Thanks to 千恵子さん、大脇さん)
 
 2003/11/3 version 2.47
-- Microsoft Internet Explorer ��� Excel �̃f�[�^���J����
-Maximize Horizontally �y�� Maximize Vertically �����p�ł��Ȃ��Ȃ���
-�������B
-- Shuriken Pro3 �� C-Space C-f �����Ғʂ�ɓ����Ȃ����������B
-(Thanks to ��e����A���c����A�ߐ{����)
+- Microsoft Internet Explorer 上で Excel のデータを開くと
+Maximize Horizontally 及び Maximize Vertically が利用できなくなる問題
+を解消。
+- Shuriken Pro3 で C-Space C-f が期待通りに動かない問題を解消。
+(Thanks to 大脇さん、杉田さん、那須さん)
 
 2003/10/24 version 2.46
-- �^�X�N�o�[�� "�����I�ɉB��" �悤�ɂ��ĂȂ��ꍇ�ɁA
-Maximize Horizontally �� Maximize Vertically �����Ғʂ�ɓ����Ȃ����
-�������B
-(Thanks to ��e����)
+- タスクバーを "自動的に隠す" ようにしてない場合に、
+Maximize Horizontally と Maximize Vertically が期待通りに動かない問題
+を解消。
+(Thanks to 大脇さん)
 
 2003/10/22 version 2.45
-- �����Ƃ��� C-s, C-r �����Ғʂ�ɓ����Ȃ����������B
-- �����Ƃ��� M-%, C-M-% �����Ғʂ�ɓ����Ȃ����������B
+- あうとら上で C-s, C-r が期待通りに動かない問題を解消。
+- あうとら上で M-%, C-M-% が期待通りに動かない問題を解消。
 (Thanks to Zenji-san)
 
 2003/10/15 version 2.44
-- OpenOffice ��� C-k �����Ғʂ�ɓ����Ȃ����������B
-- OpenOffice ��� C-Space ��� C-Space �� C-g �����Ғʂ�ɓ����Ȃ����
-�������B
-- �E�N���b�N�ɂ��|�b�v�A�b�v���j���[�̕\���Ɏ��Ԃ������邱�Ƃ�����
-���������B
+- OpenOffice 上で C-k が期待通りに動かない問題を解消。
+- OpenOffice 上で C-Space 後に C-Space や C-g が期待通りに動かない問題
+を解消。
+- 右クリックによるポップアップメニューの表示に時間がかかることがある
+問題を解消。
 (Thanks to kanno-san)
 
 2003/10/13 version 2.43
-- OEdit ��� C-s, C-r �����Ғʂ�ɓ����Ȃ����������B
+- OEdit 上で C-s, C-r が期待通りに動かない問題を解消。
 (Thanks to Zenji-san)
 
 2003/9/17 version 2.42.2
-- eMemoPad ��� C-k �����Ғʂ�ɓ����Ȃ����������B
+- eMemoPad 上で C-k が期待通りに動かない問題を解消。
 (Thanks to Zenji-san)
 
 2003/9/16 version 2.42.1
-- �G�ہA�ߋT���[����� C-k �����Ғʂ�ɓ����Ȃ����������B
+- 秀丸、鶴亀メール上で C-k が期待通りに動かない問題を解消。
 (Thanks to Zenji-san)
 
 2003/9/15 version 2.42
-- Alt+Tab �ŃE�B���h�E��J�ڂ����ہAXKeymacs ���������ݒ�𗘗p���Ȃ�
-�Ȃ邱�Ƃ�������������B
-- Microsoft Word ���� C-k �𑱂��ē��͂����ہA������񂪎��������
-�����B
-- 2.40.1 �ȑO�̗l�ɁAC-c �ŃR�s�[�����f�[�^�� C-y �œ\��t������悤
-�ɕύX�B
-(Thanks to �R�肳��A�l�c����A���c����)
+- Alt+Tab でウィンドウを遷移した際、XKeymacs が正しい設定を利用しなく
+なることがある問題を解消。
+- Microsoft Word 等で C-k を続けて入力した際、書式情報が失われる問題を
+解消。
+- 2.40.1 以前の様に、C-c でコピーしたデータも C-y で貼り付けられるよう
+に変更。
+(Thanks to 山崎さん、浜田さん、杉田さん)
 
 2003/9/13 version 2.41
-- kill-line ���Ƀ��b�`�e�L�X�g�t�H�[�}�b�g�̏�񓙂����������Ȃ�
-Kill Line for All Format �R�}���h���T�|�[�g�B
-- Windows �L�[�ɃR�}���h�����蓖�Ă��Ȃ����������B
-- C-y, M-y �ł� kill ���ꂽ�f�[�^�݂̂� yank ����悤�ɕύX�B
-- Adobe Reader �� C-s, C-r �����Ғʂ�ɓ����Ȃ����������B
-(Thanks to �l�c����A���c����)
+- kill-line 時にリッチテキストフォーマットの情報等を欠落させない
+Kill Line for All Format コマンドをサポート。
+- Windows キーにコマンドを割り当てられない問題を解消。
+- C-y, M-y では kill されたデータのみを yank するように変更。
+- Adobe Reader で C-s, C-r が期待通りに動かない問題を解消。
+(Thanks to 浜田さん、杉田さん)
 
 2003/9/7 version 2.40.1
-- Microsoft Word ���� C-k ��A�������Ƃ��ɁA�Ō�� kill ���ꂽ RTF
-�f�[�^���N���b�v�{�[�h�ɕێ����Ă����̂��A��A�� kill ���ꂽ�e�L�X�g
-�f�[�^���N���b�v�{�[�h�ɕێ�����悤�ɕύX�B
-- �ꕔ�̃A�v���P�[�V������ C-k ���s�����łȂ����s���ꏏ�� kill ����
-���������B
-(Thanks to �l�c����A���c����)
+- Microsoft Word 等で C-k を連続したときに、最後に kill された RTF
+データをクリップボードに保持していたのを、一連の kill されたテキスト
+データをクリップボードに保持するように変更。
+- 一部のアプリケーションで C-k が行だけでなく改行も一緒に kill する
+問題を解消。
+(Thanks to 浜田さん、杉田さん)
 
 2003/8/27 version 2.40
-- �R�}���h�v�����v�g�� C-x C-p �� C-x h �� C-Space �̌�� XKeymacs ��
-���Ғʂ�ɓ����Ȃ��Ȃ���������B
-- �tⳎ�95�AOutlook Express, Outlook, Lotus WordPro �� C-k ���J�[�\��
-���s���ɂȂ��Ƃ������s�܂� kill ���Ă��܂����������B
-(Thanks to ��������A�l�c����)
+- コマンドプロンプトで C-x C-p や C-x h や C-Space の後で XKeymacs が
+期待通りに動かなくなる問題を解消。
+- 付箋紙95、Outlook Express, Outlook, Lotus WordPro で C-k がカーソル
+が行末にないときも改行まで kill してしまう問題を解消。
+(Thanks to 村松さん、浜田さん)
 
 2003/8/24 version 2.39
-- kill-ring �� C-k �Ń��b�`�e�L�X�g�̏�񂪎�������������B
-(Thanks to �l�c����)
+- kill-ring や C-k でリッチテキストの情報が失われる問題を解消。
+(Thanks to 浜田さん)
 
 2003/8/22 version 2.38.2
-- �R�}���h�v�����v�g�� C-r �� C-s �Ƃ��ċ@�\������������B
-- �R�}���h�v�����v�g�Ō����_�C�A���O���J�����Ƃ��� C-s, C-r �����Ғʂ�
-�ɓ����Ȃ����������B
-(Thanks to ��������)
+- コマンドプロンプトで C-r が C-s として機能する問題を解消。
+- コマンドプロンプトで検索ダイアログを開いたときに C-s, C-r が期待通り
+に動かない問題を解消。
+(Thanks to 村松さん)
 
 2003/8/21 version 2.38.1
-- Windows XP ��̃R�}���h�v�����v�g�� C-s, C-r, C-y, M-w, C-Space,
-C-x C-p, C-x h �����Ғʂ�ɓ����Ȃ����������B
-(Thanks to ��������)
+- Windows XP 上のコマンドプロンプトで C-s, C-r, C-y, M-w, C-Space,
+C-x C-p, C-x h が期待通りに動かない問題を解消。
+(Thanks to 村松さん)
 
 2003/8/17 version 2.38
-- C-x C-t ��ǉ��B
-- �R�}���h�v�����v�g�� C-x C-c, C-z, C-s, C-r, C-y, M-w, C-Space,
-C-x C-p, C-x h �����Ғʂ�ɓ����Ȃ����������B
-- TemporarilyDisableXKeymacs ���s��AXKeymacs �̃A�C�R���̌���
-��{������F�ɕ\������悤�ɕύX�B
-- TemporarilyDisableXKeymacs ���s��A�E�B���h�E��J�ڂ�����A
-TemporarilyDisableXKeymacs ���L�����Z������悤�ɕύX�B
-- �J�X�^�}�C�Y�_�C�A���O�Łu�V�����V���[�g�J�b�g�L�[�̓��́v��
-�`�F�b�N�{�b�N�X���`�F�b�N���Ă��G�f�B�b�g�{�b�N�X�̕\�����X�V����Ȃ�
-���������B
-(Thanks to Zenji-san�A��������A��c����A�l�c����A���c����)
+- C-x C-t を追加。
+- コマンドプロンプトで C-x C-c, C-z, C-s, C-r, C-y, M-w, C-Space,
+C-x C-p, C-x h が期待通りに動かない問題を解消。
+- TemporarilyDisableXKeymacs 実行後、XKeymacs のアイコンの鍵を
+一本だけ銀色に表示するように変更。
+- TemporarilyDisableXKeymacs 実行後、ウィンドウを遷移したら、
+TemporarilyDisableXKeymacs をキャンセルするように変更。
+- カスタマイズダイアログで「新しいショートカットキーの入力」の
+チェックボックスをチェックしてもエディットボックスの表示が更新されない
+問題を解消。
+(Thanks to Zenji-san、村松さん、野田さん、浜田さん、杉田さん)
 
 2003/8/6 version 2.37
-- Microsoft PowerPoint ��� M-w �����Ғʂ�ɓ����Ȃ����������B
-- �V�K�A����A�؂���A�R�s�[�A�\��t���A�����A�����������T�|�[�g�B
-- CorelDRAW �� Redo �����Ғʂ�ɓ����Ȃ����������B
-(Thanks to Kevin-san, �l�c����A���c����)
+- Microsoft PowerPoint 上で M-w が期待通りに動かない問題を解消。
+- 新規、印刷、切り取り、コピー、貼り付け、検索、次を検索をサポート。
+- CorelDRAW で Redo が期待通りに動かない問題を解消。
+(Thanks to Kevin-san, 浜田さん、杉田さん)
 
 2003/7/27 version 2.36
-- Redo �@�\��ǉ��B
-- ����̃R�}���h�����̂܂܃A�v���P�[�V�����֓n���@�\�A
-Temporarily Disable XKeymacs ��ǉ��B
-- IE �� Alt + <-, Alt + -> �����Ғʂ�ɓ����Ȃ����������B
-- Story Editor �� C-k, C-r, C-s, C-t, M-%, C-M-% �����Ғʂ�ɓ����Ȃ�
-���������B
-- Nami2000 �� C-r, C-s, M-%, C-M-% �����Ғʂ�ɓ����Ȃ����������B
-- �L�[���������ԂɈ˂炸��� Pass Through ����悤�ɋ�����ύX�B
-- C-s �� C-r �Ō����_�C�A���O���J���ۂɌ����������t�ɂȂ���������B
-(Thanks to �l�c����A�ɂ�������A���c����AZenji-san)
+- Redo 機能を追加。
+- 直後のコマンドをそのままアプリケーションへ渡す機能、
+Temporarily Disable XKeymacs を追加。
+- IE で Alt + <-, Alt + -> が期待通りに動かない問題を解消。
+- Story Editor で C-k, C-r, C-s, C-t, M-%, C-M-% が期待通りに動かない
+問題を解消。
+- Nami2000 で C-r, C-s, M-%, C-M-% が期待通りに動かない問題を解消。
+- キーを押す順番に依らず常に Pass Through するように挙動を変更。
+- C-s 後 C-r で検索ダイアログを開く際に検索方向が逆になる問題を解消。
+(Thanks to 浜田さん、にったさん、杉田さん、Zenji-san)
 
 2003/7/21 version 2.35
-- C-Space ��� M->, M-< �����Ғʂ�ɓ����Ȃ����������B
-- ����L�[��������Ă�Ƃ��ɁAXKeymacs ���S�Ă̓��͂����̂܂�
-�A�v���P�[�V�����֓n���@�\�APass Through ��ǉ��B
-(Thanks to �Ì�����A���c����)
+- C-Space 後に M->, M-< が期待通りに動かない問題を解消。
+- あるキーが押されてるときに、XKeymacs が全ての入力をそのまま
+アプリケーションへ渡す機能、Pass Through を追加。
+(Thanks to 古結さん、杉田さん)
 
 2003/7/19 version 2.34
-- eMemoPad �� C-k, C-t, C-s, C-r, M-%, C-M-% ��
-���Ғʂ�ɓ����Ȃ����������B
+- eMemoPad で C-k, C-t, C-s, C-r, M-%, C-M-% が
+期待通りに動かない問題を解消。
 (Thanks to Zenji-san)
 
 2003/7/15 version 2.33.1
-- �T�N���G�f�B�^�� M-w �����Ғʂ�ɓ����Ȃ����������B
-(Thanks to ��肳��)
+- サクラエディタで M-w が期待通りに動かない問題を解消。
+(Thanks to 川崎さん)
 
 2003/7/8 version 2.33
-- �T�N���G�f�B�^�� C-k, C-t, M-w �������Ғʂ�ɓ����Ȃ����������B
-- �J�X�^�}�C�Y�_�C�A���O�̍��ׂȃo�O���C���B
-(Thanks to ��a����A��肳��)
+- サクラエディタで C-k, C-t, M-w 等が期待通りに動かない問題を解消。
+- カスタマイズダイアログの些細なバグを修正。
+(Thanks to 大和さん、川崎さん)
 
 2003/7/3 version 2.32
-- ���łɍő剻���Ă�Ƃ��ɁA�E�B���h�E�̍ő剻�A�c�����ɍő剻�A
-�������ɍő剻�����s������E�B���h�E�T�C�Y�����ɖ߂��悤�ɕύX�B
-- C-s, C-r �� Opera ��Ŋ��Ғʂ�ɓ����Ȃ����������B
-- C-s, C-r �� Sleipnir ��Ŋ��Ғʂ�ɓ����Ȃ����������B
-- C-s, C-r �� Netscape ��Ŋ��Ғʂ�ɓ����Ȃ����������B
-- C-k, C-t �� Macromedia Flash MX ��Ŋ��Ғʂ�ɓ����Ȃ����������B
-- M-w �� Macromedia Flash MX ��Ŋ��Ғʂ�ɓ����Ȃ����������B
-(Thanks to Zenji-san�A��e����A��삳��A��肳��A������)
+- すでに最大化してるときに、ウィンドウの最大化、縦向きに最大化、
+横向きに最大化を実行したらウィンドウサイズを元に戻すように変更。
+- C-s, C-r が Opera 上で期待通りに動かない問題を解消。
+- C-s, C-r が Sleipnir 上で期待通りに動かない問題を解消。
+- C-s, C-r が Netscape 上で期待通りに動かない問題を解消。
+- C-k, C-t が Macromedia Flash MX 上で期待通りに動かない問題を解消。
+- M-w が Macromedia Flash MX 上で期待通りに動かない問題を解消。
+(Thanks to Zenji-san、大脇さん、上野さん、川崎さん、うつさん)
 
 2003/7/1 version 2.31
-- NT ��� Ctrl �� Alt �̍��E����ʂ���悤�ɕύX�B
-- C-s, C-r ���G�ۏ�Ŋ��Ғʂ�ɓ����Ȃ����������B
-- C-s, C-r, M-%, C-M-% �� Eclipse ��Ŋ��Ғʂ�ɓ����Ȃ����������B
-- C-s, C-r �� Macromedia Flash MX ��Ŋ��Ғʂ�ɓ����Ȃ����������B
-- C-s, C-r �� CodeWarrior ��Ŋ��Ғʂ�ɓ����Ȃ����������B
-- C-g ���G�N�X�v���[����Ŋ��Ғʂ�ɓ����Ȃ����������B
-- C-Space ��� C-i �����Ғʂ�ɓ����Ȃ����������B
-- �E�B���h�E�̍ő剻�A�c�����ɍő剻�A�������ɍő剻�A���̃T�C�Y�ɖ߂��A
-�ړ��A�T�C�Y�ύX���T�|�[�g�B
-(Thanks to ���c����A�c������A�F�Â���Ahop-san�A��e����A
-�ӂ邩�킳��A�q�삳��Arikuji-san�A��a����AKusayanagi-san)
+- NT 上で Ctrl と Alt の左右を区別するように変更。
+- C-s, C-r が秀丸上で期待通りに動かない問題を解消。
+- C-s, C-r, M-%, C-M-% が Eclipse 上で期待通りに動かない問題を解消。
+- C-s, C-r が Macromedia Flash MX 上で期待通りに動かない問題を解消。
+- C-s, C-r が CodeWarrior 上で期待通りに動かない問題を解消。
+- C-g がエクスプローラ上で期待通りに動かない問題を解消。
+- C-Space 後に C-i が期待通りに動かない問題を解消。
+- ウィンドウの最大化、縦向きに最大化、横向きに最大化、元のサイズに戻す、
+移動、サイズ変更をサポート。
+(Thanks to 杉田さん、田中さん、宇津さん、hop-san、大脇さん、
+ふるかわさん、牧野さん、rikuji-san、大和さん、Kusayanagi-san)
 
 2003/6/22 version 2.30
-- Explorer ��ŁAC-w �� M-w �����Ғʂ�ɓ����Ȃ����������B
-- Visual Basic Editor ��Ō��������Ғʂ�ɓ����Ȃ����������B
-- C-Space ��� C-d ���J�b�g�Ƃ��ċ@�\������������B
-- C-Space ��� C-i �����Ғʂ�ɓ����Ȃ����������B
-- Eudora ��� 1 �s�ڂ̍s���� C-k �����Ғʂ�ɓ����Ȃ����������B
-- XKeymacs �� Microsoft Visual Basic �̖��O���擾�ł��Ȃ����������B
-(Thanks to �F�Â���A��a����)
+- Explorer 上で、C-w と M-w が期待通りに動かない問題を解消。
+- Visual Basic Editor 上で検索が期待通りに動かない問題を解消。
+- C-Space 後に C-d がカットとして機能する問題を解消。
+- C-Space 後に C-i が期待通りに動かない問題を解消。
+- Eudora 上の 1 行目の行頭で C-k が期待通りに動かない問題を解消。
+- XKeymacs が Microsoft Visual Basic の名前を取得できない問題を解消。
+(Thanks to 宇津さん、大和さん)
 
 2003/6/18 version 2.29
-- C-t, C-k �� Eudora ��Ŋ��Ғʂ�ɓ����Ȃ����������B
-- �C���N�������^���T�[�`�� Internet Explorer�A���[�h�p�b�h���
-���Ғʂ�ɓ����Ȃ����������B
-(Thanks to ��a����A���c����A�ӂ邩�킳��)
+- C-t, C-k が Eudora 上で期待通りに動かない問題を解消。
+- インクリメンタルサーチが Internet Explorer、ワードパッド上で
+期待通りに動かない問題を解消。
+(Thanks to 大和さん、杉田さん、ふるかわさん)
 
 2003/6/8 version 2.28.1
-- �C���N�������^���T�[�`���̎�X�̕s����C���B
+- インクリメンタルサーチ回りの種々の不具合を修正。
 
 2003/5/25 version 2.28
-- C-s/C-r �̌������C���N�������^���T�[�`�ɕύX�B
-(Thanks to �ӂ邩�킳��)
+- C-s/C-r の検索をインクリメンタルサーチに変更。
+(Thanks to ふるかわさん)
 
 2003/5/27 version 2.27.2
-- C-t, C-k �� Eclipse ��Ŋ��Ғʂ�ɓ����Ȃ����������B
+- C-t, C-k が Eclipse 上で期待通りに動かない問題を解消。
 
 2003/5/17 version 2.27.1
-- Visual Basic 6.0 �� M-w ��ɑI������������Ȃ����������B
-- Access, FrontPage, Outlook, PowerPoint, Project, Word ����Ă�
-Visual Basic Editor �� M-w ��ɑI������������Ȃ����������B
-(Thanks to �c������A�֓�����)
+- Visual Basic 6.0 で M-w 後に選択が解除されない問題を解消。
+- Access, FrontPage, Outlook, PowerPoint, Project, Word から呼んだ
+Visual Basic Editor で M-w 後に選択が解除されない問題を解消。
+(Thanks to 田中さん、斎藤さん)
 
 2003/5/10 version 2.27
-- Visual Studio .NET ���ŁA�_�C�A���O�p�̐ݒ肪�K�p����Ă��܂����������B
-- Excel ����Ă� Visual Basic Editor �� M-w ��ɑI������������Ȃ����������B
-(Thanks to �c������A�֓�����)
+- Visual Studio .NET 等で、ダイアログ用の設定が適用されてしまう問題を解消。
+- Excel から呼んだ Visual Basic Editor で M-w 後に選択が解除されない問題を解消。
+(Thanks to 田中さん、斎藤さん)
 
 2003/4/9 version 2.26
-- Esc �܂��� C-[ �� Meta �Ƃ��ė��p����� M-w �����Ғʂ�ɓ����Ȃ����������B
-- M-w ��� region ���L�����Z������Ȃ����������B
-(Thanks to Steve-san�A�씨����A���c����)
+- Esc または C-[ を Meta として利用すると M-w が期待通りに動かない問題を解消。
+- M-w 後に region がキャンセルされない問題を解消。
+(Thanks to Steve-san、川畑さん、杉田さん)
 
 2003/4/8 version 2.25
-- Macromedia Director ��� C-Space ��� C-Space ���� C-g �����Ƃ���
-���[�W�������L�����Z������Ȃ����������B
-(Thanks to ���c����)
+- Macromedia Director 上で C-Space 後に C-Space 又は C-g したときに
+リージョンがキャンセルされない問題を解消。
+(Thanks to 杉田さん)
 
 2003/4/7 version 2.24.1
-- C-f ����͂����Ƃ��ɁA�܂�� Ctrl+�E��� ���A�v���P�[�V�����ɓn�������������B
-(Thanks to ���c����)
+- C-f を入力したときに、まれに Ctrl+右矢印 がアプリケーションに渡される問題を解消。
+(Thanks to 杉田さん)
 
 2003/4/5 version 2.24
-- �ꕔ�̃A�v���P�[�V������ C-Space ��� C-y �����Ғʂ�ɓ����Ȃ����������B
-- C-? ����͂����Ƃ��ɁA�܂�� Ctrl+Alt+? ���A�v���P�[�V�����ɓn�������������B
-(Thanks to ���c����)
+- 一部のアプリケーションで C-Space 後に C-y が期待通りに動かない問題を解消。
+- C-? を入力したときに、まれに Ctrl+Alt+? がアプリケーションに渡される問題を解消。
+(Thanks to 杉田さん)
 
 2003/3/30 version 2.23
-- C-? ������������� ? �����͂������������B(? �͔C�ӂ̃L�[)
-(Thanks to ���c����)
+- C-? を押し続けると ? が入力される問題を解消。(? は任意のキー)
+(Thanks to 杉田さん)
 
 2003/3/22 version 2.22
-- �v���p�e�B�_�C�A���O�� "Select All"/"Clear All" �{�^���𗘗p�����
-Ctrl �� C- �Ƃ��ċ@�\���Ȃ��Ȃ���������B
-- C-t �� Macromedia Director ��Ŋ��Ғʂ�ɓ����Ȃ����������B
-- XKeymacs ���N�����Ă�� MS-PinYin98 ���C�����C�����͎��Ɋ��Ғʂ�ɓ����Ȃ����������B
-- �v���p�e�B/�J�X�^���_�C�A���O�̋N�����Ԃ�Z�k�B
-(Thanks to ���R����A���c����ASera-san)
+- プロパティダイアログで "Select All"/"Clear All" ボタンを利用すると
+Ctrl が C- として機能しなくなる問題を解消。
+- C-t が Macromedia Director 上で期待通りに動かない問題を解消。
+- XKeymacs が起動してると MS-PinYin98 がインライン入力時に期待通りに動かない問題を解消。
+- プロパティ/カスタムダイアログの起動時間を短縮。
+(Thanks to 横山さん、杉田さん、Sera-san)
 
 2003/3/16 version 2.21
-- C-k �� Macromedia Director ��Ŋ��Ғʂ�ɓ����Ȃ����������B
-- XKeymacs ���N�����Ă�� MS-PinYin98 �����Ғʂ�ɓ����Ȃ����������B
-(Thanks to ���c����ASera-san)
+- C-k が Macromedia Director 上で期待通りに動かない問題を解消。
+- XKeymacs が起動してると MS-PinYin98 が期待通りに動かない問題を解消。
+(Thanks to 杉田さん、Sera-san)
 
 2003/3/9 version 2.20
-- ������I�����Ă�Ƃ��� C-t �����Ғʂ�ɓ����Ȃ����������B
-- ������I�����Ă�Ƃ��� C-k �����Ғʂ�ɓ����Ȃ����������B
-- Microsoft Visual Studio .NET �� C-x C-f �����Ғʂ�ɓ����Ȃ����������B
-- Microsoft Visual Studio .NET �� C-s/C-r �����Ғʂ�ɓ����Ȃ����������B
-- Netscape ��̍s���� C-k �����Ғʂ�ɓ����Ȃ����������B
-- �v���p�e�B�_�C�A���O�A�y�сA�J�X�^�}�C�Y�_�C�A���O��
-Microsoft Visual Source Safe �� Microsoft Visual Studio .NET �̖��O��
-�������\������Ȃ����������B
-- �L�[�{�[�h���C�A�E�g�_�C�A���O�� Power off, Sleep, Wake up ���T�|�[�g�B
-- �L�[�{�[�h���C�A�E�g�_�C�A���O�̃��������[�N�������B
+- 文字を選択してるときに C-t が期待通りに動かない問題を解消。
+- 文字を選択してるときに C-k が期待通りに動かない問題を解消。
+- Microsoft Visual Studio .NET で C-x C-f が期待通りに動かない問題を解消。
+- Microsoft Visual Studio .NET で C-s/C-r が期待通りに動かない問題を解消。
+- Netscape 上の行中で C-k が期待通りに動かない問題を解消。
+- プロパティダイアログ、及び、カスタマイズダイアログで
+Microsoft Visual Source Safe や Microsoft Visual Studio .NET の名前が
+正しく表示されない問題を解消。
+- キーボードレイアウトダイアログで Power off, Sleep, Wake up をサポート。
+- キーボードレイアウトダイアログのメモリリークを解消。
 
 2003/3/2 version 2.19
-- Netscape ��̍s���� C-k C-k C-k �����Ғʂ�ɓ����Ȃ����������B
-- �L�[�̓��ꊷ���@�\���I�v�V�����_�C�A���O����Ɨ��B
-(Thanks to Howie-san�AJames-san)
+- Netscape 上の行頭で C-k C-k C-k が期待通りに動かない問題を解消。
+- キーの入れ換え機能をオプションダイアログから独立。
+(Thanks to Howie-san、James-san)
 
 2003/2/23 version 2.18.1
-- �v���p�e�B�_�C�A���O���J���� XKeymacs �� ABEND ������������B
+- プロパティダイアログを開くと XKeymacs が ABEND する問題を解消。
 
 2003/2/23 version 2.18
-- �C�ӂ̃L�[�� C- �Ƃ��ė��p�ł���悤�ɂ���@�\��ǉ��B
-- �C�ӂ̃L�[�� Esc �Ƃ��ė��p�ł���悤�ɂ���@�\��ǉ��B
-- �C�ӂ̃L�[�� ` �Ƃ��ė��p�ł���悤�ɂ���@�\��ǉ��B
-- �C�ӂ̃L�[�� ~ �Ƃ��ė��p�ł���悤�ɂ���@�\��ǉ��B
-(Thanks to Howie-san�A���񂳂�A��c����A�֓�����)
+- 任意のキーを C- として利用できるようにする機能を追加。
+- 任意のキーを Esc として利用できるようにする機能を追加。
+- 任意のキーを ` として利用できるようにする機能を追加。
+- 任意のキーを ~ として利用できるようにする機能を追加。
+(Thanks to Howie-san、げんさん、野田さん、斎藤さん)
 
 2003/2/11 version 2.17
-- C-x b (switch-to-buffer) ���T�|�[�g�B
-- MSK Toolkit �� KornShell �y�� C Shell �ɂ�����
-�W���ݒ�g�p���� XKeymacs ���Ȃɂ��s��Ȃ��悤�ɕύX�B
-(Thanks to Steve-san�A���c����)
+- C-x b (switch-to-buffer) をサポート。
+- MSK Toolkit の KornShell 及び C Shell において
+標準設定使用時に XKeymacs がなにも行わないように変更。
+(Thanks to Steve-san、杉田さん)
 
 2003/2/3 version 2.16
-- �R���\�[���A�v���P�[�V�����̐ݒ肪���Ғʂ�ɓ����Ȃ����������B
-- IME ��ŃA���t�@�x�b�g����͂���ہAShift ����������Ă��܂����������B
-- �u���̓��P�[����؂�ւ���v�@�\���T�|�[�g�B
-(Thanks to James-san�ASteve-san�Arikuji-san�A���c����A�͓c����A���䂳��)
+- コンソールアプリケーションの設定が期待通りに動かない問題を解消。
+- IME 上でアルファベットを入力する際、Shift が解除されてしまう問題を解消。
+- 「入力ロケールを切り替える」機能をサポート。
+(Thanks to James-san、Steve-san、rikuji-san、杉田さん、河田さん、武井さん)
 
 2003/1/26 version 2.15
-- �J�X�^�}�C�Y�_�C�A���O�Łu�Ǝ��̐ݒ�𗘗p����v�ہA
-�W���̐ݒ肪�����p����Ȃ����������B
-- Mozilla ��� C-Space �� C-w �� C-y �����Ғʂ�ɓ����Ȃ����������B
-- �E�B���h�E�J�ڎ��� set-mark-command �����Z�b�g����Ȃ����������B
-- "Ignore undefined Meta Ctrl+?" ��L���ɂ����Ƃ���
-ESC, C-[ �����Ғʂ�ɓ����Ȃ����������B
-- Meadow.exe �� Meadow �Ƃ��ăT�|�[�g�B
-(Thanks to ���{����A��������A���c����)
+- カスタマイズダイアログで「独自の設定を利用する」際、
+標準の設定が引き継がれない問題を解消。
+- Mozilla 上で C-Space 後 C-w や C-y が期待通りに動かない問題を解消。
+- ウィンドウ遷移時に set-mark-command がリセットされない問題を解消。
+- "Ignore undefined Meta Ctrl+?" を有効にしたときに
+ESC, C-[ が期待通りに動かない問題を解消。
+- Meadow.exe を Meadow としてサポート。
+(Thanks to 西本さん、村松さん、杉田さん)
 
 2003/1/19 version 2.14
-- �E�B���h�E��J�ڂ����Ƃ��ɁA�܂�ɐ������ݒ肪�K�p����Ȃ����������B
-(Thanks to rikuji-san�A���c����)
+- ウィンドウを遷移したときに、まれに正しい設定が適用されない問題を解消。
+(Thanks to rikuji-san、杉田さん)
 
 2003/1/7 version 2.13
-- C-# C-k ���T�|�[�g�B(# �͔C�ӂ̐�)
-- C-- C-a �����Ғʂ�ɓ����Ȃ����������B
-- C-- C-e �����Ғʂ�ɓ����Ȃ����������B
-- �G�ۂŃ}�N���̒��ɉ��s������� call-last-kbd-macro �����Ғʂ�ɓ����Ȃ����������B
-(Thanks to ���c����)
+- C-# C-k をサポート。(# は任意の数)
+- C-- C-a が期待通りに動かない問題を解消。
+- C-- C-e が期待通りに動かない問題を解消。
+- 秀丸でマクロの中に改行があると call-last-kbd-macro が期待通りに動かない問題を解消。
+(Thanks to 杉田さん)
 
 2003/1/6 version 2.12.1
-- call-last-kbd-macro �� C-] �Ȃǂ����蓖�Ă��Ƃ��Ɋ��Ғʂ�ɓ��삵�Ȃ����������B
-(Thanks to ���c����)
+- call-last-kbd-macro に C-] などを割り当てたときに期待通りに動作しない問題を解消。
+(Thanks to 杉田さん)
 
 2003/1/5 version 2.12
-- C-x (, C-x ), C-x e, C-u C-x ( ���T�|�[�g�B
-- �A�N�e�B�u�ȃE�B���h�E��ؑւ����Ƃ��ɁAkill-ring �̓��e���N���A����Ă��܂����������B
-- 106/109 �L�[�{�[�h�g�p���ɁA
-�J�X�^�}�C�Y�_�C�A���O�́u�V�����V���[�g�J�b�g�L�[�̓��́v�̗���
-^, @, ;, : ������ɕ\������Ȃ����������B
-(Thanks to ��������)
+- C-x (, C-x ), C-x e, C-u C-x ( をサポート。
+- アクティブなウィンドウを切替えたときに、kill-ring の内容がクリアされてしまう問題を解消。
+- 106/109 キーボード使用時に、
+カスタマイズダイアログの「新しいショートカットキーの入力」の欄で
+^, @, ;, : が正常に表示されない問題を解消。
+(Thanks to 藤原さん)
 
 2002/12/25 version 2.11
-- Internet Explorer �y�сASleipnir �� C-Space ��� C-Space �����Ғʂ�ɓ����Ȃ����������B
-- Sleipnir �� C-x C-f, C-x C-s, C-x C-w, C-M-%, M-% �����Ғʂ�ɓ����Ȃ����������B
-- C-Space �̌�� ESC �� Meta �Ƃ��ċ@�\���Ȃ����������B
-- �R�}���h�v�����v�g�� C-x C-c �����Ғʂ�ɓ����Ȃ����������B
+- Internet Explorer 及び、Sleipnir で C-Space 後の C-Space が期待通りに動かない問題を解消。
+- Sleipnir で C-x C-f, C-x C-s, C-x C-w, C-M-%, M-% が期待通りに動かない問題を解消。
+- C-Space の後で ESC が Meta として機能しない問題を解消。
+- コマンドプロンプトで C-x C-c が期待通りに動かない問題を解消。
 (Thanks to rikuji-san)
 
 2002/12/23 version 2.10
-- �R���\�[���� IME �g�p��A��Ƀf�t�H���g�ݒ肪�K�p�������������B
-- �R���\�[���� IME �̐ؑւ������Ғʂ�ɓ����Ȃ����������B
-- Sleipnir �� C-s �����Ғʂ�ɓ����Ȃ����������B
-(Thanks to ���{����Arikuji-san)
+- コンソールで IME 使用後、常にデフォルト設定が適用される問題を解消。
+- コンソールで IME の切替えが期待通りに動かない問題を解消。
+- Sleipnir で C-s が期待通りに動かない問題を解消。
+(Thanks to 西本さん、rikuji-san)
 
 2002/12/19 version 2.9
-- �R�}���h�v�����v�g�œK�؂Ȑݒ肪�K�p����Ȃ����������B
-- C-/ �� C-. �����K�؂ɋ@�\���Ȃ��Ȃ���������B
-- �v���p�e�B�_�C�A���O�Ńy�C���g�V���b�v��
-�A�v���P�[�V�������𐳂����\���ł��Ȃ����������B
-(Thanks to ���{����A�F�Â���A���R����Azenji-san)
+- コマンドプロンプトで適切な設定が適用されない問題を解消。
+- C-/ や C-. 等が適切に機能しなくなる問題を解消。
+- プロパティダイアログでペイントショップの
+アプリケーション名を正しく表示できない問題を解消。
+(Thanks to 西本さん、宇津さん、小山さん、zenji-san)
 
 2002/12/10 version 2.8
-- C-# C-a/C-e ���T�|�[�g�B(# �͔C�ӂ̐�)
-- Excel, Becky! ���� C-Space C-f M-w �����Ғʂ�ɓ����Ȃ����������B
-(Thanks to �F�Â���)
+- C-# C-a/C-e をサポート。(# は任意の数)
+- Excel, Becky! 等で C-Space C-f M-w が期待通りに動かない問題を解消。
+(Thanks to 宇津さん)
 
 2002/12/9 version 2.7
-- Ignore �� Enable/Disable XKeymacs �Ƃ��ē������������B
-(Thanks to ���R����)
+- Ignore が Enable/Disable XKeymacs として働く問題を解消。
+(Thanks to 小山さん)
 
 2002/12/8 version 2.6
-- C-# C-v/M-v ���T�|�[�g�B(# �͔C�ӂ̐�)
-- Lotus Notes ��ŁA�s���� C-k �����Ғʂ�ɓ����Ȃ����Ƃ�������������B
-- �J�X�^�}�C�Y�_�C�A���O�Ŋe�R�}���h�̐�����\������@�\��ǉ��B
-- �J�X�^�}�C�Y�_�C�A���O�̓��{��ł��쐬�B
-- C-2 C-z �ŃE�B���h�E���ŏ������Ă��܂����������B
-- C-Space C-f C-h/C-d �̌�� Shift �L�[����������ςȂ��ɂȂ���������B
-- Becky!�A�G�ۏ�ɂ����� C-s/C-r �̐U������ύX�B
-- �v���p�e�B�_�C�A���O�ŁAC-o �̃`�F�b�N�{�b�N�X�̃`�F�b�N�������ł��Ȃ����������B
-(Thanks to �v�ۂ���)
+- C-# C-v/M-v をサポート。(# は任意の数)
+- Lotus Notes 上で、行末で C-k が期待通りに動かないことがある問題を解消。
+- カスタマイズダイアログで各コマンドの説明を表示する機能を追加。
+- カスタマイズダイアログの日本語版を作成。
+- C-2 C-z でウィンドウが最小化してしまう問題を解消。
+- C-Space C-f C-h/C-d の後で Shift キーが押されっぱなしになる問題を解消。
+- Becky!、秀丸上における C-s/C-r の振舞いを変更。
+- プロパティダイアログで、C-o のチェックボックスのチェックを解除できない問題を解消。
+(Thanks to 久保さん)
 
 2002/11/25 version 2.5.2
-- �����_�C�A���O���J���Ă�Ƃ��� C-s/C-r �����Ғʂ�ɓ����Ȃ����������B
+- 検索ダイアログが開いてるときに C-s/C-r が期待通りに動かない問題を解消。
 
 2002/11/20 version 2.5.1
-- C-Space C-y �����Ғʂ�ɓ����Ȃ����������B
-- C-x h �� C-x C-p ���y�C���g���Ŋ��Ғʂ�ɓ����Ȃ����������B
-(Thanks to ���c����)
+- C-Space C-y が期待通りに動かない問題を解消。
+- C-x h や C-x C-p がペイント等で期待通りに動かない問題を解消。
+(Thanks to 杉田さん)
 
 2002/11/17 version 2.5
-- "���ׂđI��" ���T�|�[�g�B
-- C-x h ��ǉ��B
-- C-x C-p �� Explorer ��Ŋ��Ғʂ�ɓ��삵�Ȃ����������B
-- C-x C-p ��� mark-set ����������Ă��܂����������B
-- �_�C�A���O�ɑ΂��ẮA�f�t�H���g�Ń_�C�A���O�p�ݒ�𗘗p����悤�ɕύX�B
-- XKeymacs ��(C-q ���܂�)�����ȍۂ̃^�X�N�o�[�̃X�e�[�^�X�̈�ɕ\�������
-XKeymacs �̃A�C�R�������F���瓺�F�ɕύX�B
-(Thanks to ����������A���c����Asantarou-san)
+- "すべて選択" をサポート。
+- C-x h を追加。
+- C-x C-p が Explorer 上で期待通りに動作しない問題を解消。
+- C-x C-p 後に mark-set が解除されてしまう問題を解消。
+- ダイアログに対しては、デフォルトでダイアログ用設定を利用するように変更。
+- XKeymacs が(C-q も含め)無効な際のタスクバーのステータス領域に表示される
+XKeymacs のアイコンを金色から銅色に変更。
+(Thanks to かおくさん、杉田さん、santarou-san)
 
 2002/11/13 version 2.4.5
-- K2Editor �� C-k, C-t �����Ғʂ�ɓ��삵�Ȃ����������B
-- Dreamweaver �̃T�C�g�E�B���h�E�� C-s/C-r �����Ғʂ�ɓ����Ȃ����������B
-- PowerPoint �� C-s/C-r �����Ғʂ�ɓ����Ȃ����Ƃ�������������B
-(Thanks to ���삳��A���c����Azenji-san)
+- K2Editor で C-k, C-t が期待通りに動作しない問題を解消。
+- Dreamweaver のサイトウィンドウで C-s/C-r が期待通りに動かない問題を解消。
+- PowerPoint で C-s/C-r が期待通りに動かないことがある問題を解消。
+(Thanks to 中野さん、杉田さん、zenji-san)
 
 2002/11/12 version 2.4.4
-- Microsoft Word �� C-k ��A�����ė��p�����Ƃ��Ɋ��Ғʂ�ɓ����Ȃ����������B
-- Photoshop �� C-s/C-r �𖳌��ɂ���B
-(Thanks to ���c����A�܂��Ƃ���)
+- Microsoft Word で C-k を連続して利用したときに期待通りに動かない問題を解消。
+- Photoshop で C-s/C-r を無効にする。
+(Thanks to 杉田さん、まことさん)
 
 2002/11/10 version 2.4.3
-- C-s/C-r ��ɁAAlt �������ꂽ�܂܂̏�ԂɂȂ���������B
-(Thanks to ���c����Azenji-san)
+- C-s/C-r 後に、Alt が落されたままの状態になる問題を解消。
+(Thanks to 杉田さん、zenji-san)
 
 2002/11/8 version 2.4.2
-- Windows 2000 ��ŁA�v���p�e�B�_�C�A���O�A�y�сA�J�X�^�}�C�Y�_�C�A���O��
-�A�v���P�[�V�������̃��X�g���������\������Ȃ����Ƃ�������������B
-- Excel �� C-s ����ƁAAlt �������ꂽ�܂܂̏�ԂɂȂ���������B
-(Thanks to �H�R����A���c����)
+- Windows 2000 上で、プロパティダイアログ、及び、カスタマイズダイアログの
+アプリケーション名のリストが正しく表示されないことがある問題を解消。
+- Excel で C-s すると、Alt が落されたままの状態になる問題を解消。
+(Thanks to 秋山さん、杉田さん)
 
 2002/10/27 version 2.4.1
-- kill-word �� kill �����f�[�^�� kill-ring �ɓ���Ȃ����������B
-- kill-word �����������Ŋ��Ғʂ�ɓ��삵�Ȃ����������B
+- kill-word で kill したデータが kill-ring に入らない問題を解消。
+- kill-word がメモ帳等で期待通りに動作しない問題を解消。
 
 2002/10/26 version 2.4
-- kill-word (M-d) ���T�|�[�g�B
+- kill-word (M-d) をサポート。
 (Thanks to Scott-san)
 
 2002/10/20 version 2.3
-- kill-buffer (C-x k) ���T�|�[�g�B
-- kill-line (C-k) ��A�����Ď��s�����ۂɁA�Ō�� kill �����s����
-�N���b�v�{�[�h�ɓ���Ȃ����������B
-- Microsoft Word �ɂ����āA�s���� kill-line �����Ғʂ�ɓ��삵�Ȃ����������B
-(Thanks to �܂��Ƃ���A���c����)
+- kill-buffer (C-x k) をサポート。
+- kill-line (C-k) を連続して実行した際に、最後に kill した行しか
+クリップボードに入らない問題を解消。
+- Microsoft Word において、行末で kill-line が期待通りに動作しない問題を解消。
+(Thanks to まことさん、杉田さん)
 
 2002/10/14 version 2.2.2
-- �v���p�e�B�_�C�A���O�Őݒ肷��ƁA�J�X�^�}�C�Y�_�C�A���O�ōs�����ݒ���󂵂Ă��܂����������B
-- C-Space ��� M->, M-< �����Ғʂ�ɓ����Ȃ����������B
-(Thanks to ���c����A��������)
+- プロパティダイアログで設定すると、カスタマイズダイアログで行った設定を壊してしまう問題を解消。
+- C-Space 後に M->, M-< が期待通りに動かない問題を解消。
+(Thanks to 杉田さん、村松さん)
 
 2002/10/7 version 2.2.1
-- Customize �_�C�A���O�� Current Keys ����̂Ƃ��ɁA���Ғʂ�ɐݒ�ł��Ȃ����������B
-- Microsoft Word �� C-x C-s �����Ғʂ�ɓ��삵�Ȃ����������B
-- Macromedia Director �� C-s, C-r �����Ғʂ�ɓ��삵�Ȃ����������B
-- C-g �Œu���_�C�A���O�����Ȃ����������B
-- C-g �� mark-page �ōs�����I���������ł��Ȃ����������B
-(Thanks to �ӂ邩�킳��A��������A���c����)
+- Customize ダイアログで Current Keys が空のときに、期待通りに設定できない問題を解消。
+- Microsoft Word で C-x C-s が期待通りに動作しない問題を解消。
+- Macromedia Director で C-s, C-r が期待通りに動作しない問題を解消。
+- C-g で置換ダイアログが閉じない問題を解消。
+- C-g で mark-page で行った選択を解除できない問題を解消。
+(Thanks to ふるかわさん、村松さん、杉田さん)
 
 2002/10/6 version 2.2
-- Microsoft Word �� C-s/C-r �����Ғʂ�ɓ����Ȃ����������B
-- Explorer �� C-s/C-r �����Ғʂ�ɓ����Ȃ����������B
-- DWFM �� C-s/C-r �����Ғʂ�ɓ����Ȃ����������B
-- K2Editor �� C-s/C-r �����Ғʂ�ɓ����Ȃ����������B
-- Egg Explorer �� C-s/C-r �����Ғʂ�ɓ����Ȃ����������B
-- �J�X�^�}�C�Y�_�C�A���O�� "�Ђ炪��"�A"���p/�S�p"�A"Caps Lock" ���T�|�[�g�B
-- C-M-? (? �͔C�ӂ̃L�[) ����`����ĂȂ��Ƃ��� Meta Ctrl+? �𖳎����邱�Ƃ��ł���悤�ɂ���B
-- C-x ? ����`����ĂȂ��Ƃ��ɁAC-x ? �𖳎����邱�Ƃ��ł���悤�ɂ���B
-- Meta LED �A�C�R����ǉ��B
-- LED �̃A�C�R�����E�N���b�N�����Ƃ��� "�J�X�^�}�C�Y(C)..." ���\���������������B
-(Thanks to ��������Azenji-san, ���c����A���삳��A�ӂ邩�킳��)
+- Microsoft Word で C-s/C-r が期待通りに動かない問題を解消。
+- Explorer で C-s/C-r が期待通りに動かない問題を解消。
+- DWFM で C-s/C-r が期待通りに動かない問題を解消。
+- K2Editor で C-s/C-r が期待通りに動かない問題を解消。
+- Egg Explorer で C-s/C-r が期待通りに動かない問題を解消。
+- カスタマイズダイアログで "ひらがな"、"半角/全角"、"Caps Lock" をサポート。
+- C-M-? (? は任意のキー) が定義されてないときに Meta Ctrl+? を無視することができるようにする。
+- C-x ? が定義されてないときに、C-x ? を無視することができるようにする。
+- Meta LED アイコンを追加。
+- LED のアイコンを右クリックしたときに "カスタマイズ(C)..." が表示される問題を解消。
+(Thanks to 村松さん、zenji-san, 杉田さん、中野さん、ふるかわさん)
 
 2002/10/5 version 2.1
-- �J�X�^�}�C�Y�_�C�A���O��ǉ��B
-- �v���p�e�B�_�C�A���O�ɁA�e�A�v���P�[�V�������� XKeymacs �𖳌��ɂł��郉�W�I�{�^����ǉ��B
-- C-M-? ����`����ĂȂ��Ƃ��� Meta Ctrl+? �� Ctrl+? �Ƃ��ċ@�\����悤�ɕύX�B
-- �_�C�A���O�\������ Alt+Tab �� XKeymacs �̃A�C�R�����\������Ȃ����������B
+- カスタマイズダイアログを追加。
+- プロパティダイアログに、各アプリケーション毎に XKeymacs を無効にできるラジオボタンを追加。
+- C-M-? が定義されてないときに Meta Ctrl+? が Ctrl+? として機能するように変更。
+- ダイアログ表示時に Alt+Tab で XKeymacs のアイコンが表示されない問題を解消。
 
 2002/9/26 version 2.0
-- �C�ӂ̃L�[�o�C���h�ɔC�ӂ̃R�}���h�����蓖�Ă邱�Ƃ��ł���悤�ɕύX�B
-- C--, M-- ���T�|�[�g�B
-- M-0, M-1, ..., M-9 ���T�|�[�g�B
-- ���͂𖳎�����R�}���h (Ignore) ��ǉ��B
-- IME ���J����������肷��R�}���h (Open Input Method, Close Input Method) ��ǉ��B
+- 任意のキーバインドに任意のコマンドを割り当てることができるように変更。
+- C--, M-- をサポート。
+- M-0, M-1, ..., M-9 をサポート。
+- 入力を無視するコマンド (Ignore) を追加。
+- IME を開いたり閉じたりするコマンド (Open Input Method, Close Input Method) を追加。
 
 2002/9/22 version 1.29.2
-- C-x u �� Becky! ��Ŋ��Ғʂ�ɓ����Ȃ����������B
-- C-_ �� Becky! ���n�߂Ƃ���ꕔ�̃A�v���P�[�V������Ŋ��Ғʂ�ɓ����Ȃ����������B
-- M-% �� Internet Explorer, Lotus Notes, Becky! ��Ŋ��Ғʂ�ɓ����Ȃ����������B
-- C-M-% �� Internet Explorer, Lotus Notes, Becky! ��Ŋ��Ғʂ�ɓ����Ȃ����������B
-(Thanks to ��������)
+- C-x u が Becky! 上で期待通りに動かない問題を解消。
+- C-_ が Becky! を始めとする一部のアプリケーション上で期待通りに動かない問題を解消。
+- M-% が Internet Explorer, Lotus Notes, Becky! 上で期待通りに動かない問題を解消。
+- C-M-% が Internet Explorer, Lotus Notes, Becky! 上で期待通りに動かない問題を解消。
+(Thanks to 村松さん)
 
 2002/9/21 version 1.29.1
-- C-[ ���L���ȂƂ��ACtrl + Shift + [ �� Meta �Ƃ��ċ@�\����悤�ɕύX�B
-- C-Space ��� M-% �� Backspace �Ƃ��ċ@�\������������B
-- C-o (open-line) �� numeric argument �𖳎�������������B
-- C-o (open-line) �� Microsoft Visual C++ ��Ŋ��Ғʂ蓮���Ȃ����������B
-- XWin.exe �� Emacs.exe ���W���Ŗ�������悤�ɕύX�B
-- version 1.28 �Œǉ������L�[�̓��ꊷ�������ɖ߂��Ȃ����������B
-(Thanks to �F����A��������)
+- C-[ が有効なとき、Ctrl + Shift + [ も Meta として機能するように変更。
+- C-Space 後に M-% が Backspace として機能する問題を解消。
+- C-o (open-line) が numeric argument を無視する問題を解消。
+- C-o (open-line) が Microsoft Visual C++ 上で期待通り動かない問題を解消。
+- XWin.exe と Emacs.exe も標準で無視するように変更。
+- version 1.28 で追加したキーの入れ換えを元に戻せない問題を解消。
+(Thanks to 巽さん、村松さん)
 
 2002/9/17 version 1.29
-- M-i �� Tab ����͂���@�\��ǉ��B
-(Thanks to ��������)
+- M-i に Tab を入力する機能を追加。
+(Thanks to 藤原さん)
 
 2002/9/6 version 1.28.2
-- �v���p�e�B�_�C�A���O�ɐ�������񂪕\������Ȃ����������B
-- Lotus Notes �� Ctrl+Shift+Enter ����������Ȃ����������B
-(Thanks to �t������)
+- プロパティダイアログに正しい情報が表示されない問題を解消。
+- Lotus Notes で Ctrl+Shift+Enter が無視されない問題を解消。
+(Thanks to 春原さん)
 
 2002/9/3 version 1.28.1
-- C-k, C-w ���� Xkeymacs �� ABEND ������������B(kill-ring �̃T�C�h�G�t�F�N�g)
+- C-k, C-w 等で Xkeymacs が ABEND する問題を解消。(kill-ring のサイドエフェクト)
 
 2002/9/1 version 1.28
-- kill-ring (C-u # C-y, M-y) ��ǉ��B
-- �W���ݒ�� Xkeymacs �����L�A�v���P�[�V�����ɂȂɂ��s��Ȃ��悤�ɕύX�B
+- kill-ring (C-u # C-y, M-y) を追加。
+- 標準設定で Xkeymacs が下記アプリケーションになにも行わないように変更。
 Meadow (Meadow95.exe, MeadowNT.exe)
 Mule for Win32 (mule.exe, mulent.exe, mulecd.exe)
 xyzzy (xyzzy.exe)
 Tera Term Pro (ttermpro.exe)
 ASTEC-X (astecx.exe)
-- ���L�A�v���P�[�V������ Ctrl+Enter �𖳎�����悤�ɕύX�B
+- 下記アプリケーションで Ctrl+Enter を無視するように変更。
 Lotus Notes (nlnotes.exe)
 Microsoft Outlook (outlook.exe)
 Microsoft Outlook Express (msimn.exe)
-- C-_ �� undo �@�\��ǉ��B
-- C-o �� open-line �@�\��ǉ��B
-- �ȉ��̃L�[���ꊷ���@�\��ǉ�
-�� Windows -> �� Alt
-�� Alt -> �� Windows
-�E Windows -> �E Alt
-�E Alt -> �E Windows
-���ϊ� -> �� Alt
-�ϊ� -> �� Alt
-�E Ctrl -> �� Alt
-(Thanks to Jonathan-san�A�m��������AShirasaki-san�A����̂ӂ���A
-��c����A��������A���c����A���B����A��������)
+- C-_ に undo 機能を追加。
+- C-o に open-line 機能を追加。
+- 以下のキー入れ換え機能を追加
+左 Windows -> 左 Alt
+左 Alt -> 左 Windows
+右 Windows -> 右 Alt
+右 Alt -> 右 Windows
+無変換 -> 左 Alt
+変換 -> 左 Alt
+右 Ctrl -> 左 Alt
+(Thanks to Jonathan-san、知欠きさん、Shirasaki-san、うらのふさん、
+野田さん、村松さん、原田さん、遠州さん、藤原さん)
 
 2002/8/24 version 1.27
-- C-u # (# �͐���)�ň�������͂���@�\��ǉ��B
-- C-M-%, M-% �Ɍ����̋@�\��ǉ��B
+- C-u # (# は数字)で引数を入力する機能を追加。
+- C-M-%, M-% に検索の機能を追加。
 (Thanks to Jonathan-san)
 
 2002/6/23 version 1.26.1
-- Microsoft Word ��� C-g �y�� 2 �x�ڈڍs�� C-Space ���u���ׂđI���v�̐U����������������B
-- Windows 9x ��ŁA�R���\�[���A�v���P�[�V��������Ɂu�W���v�̐ݒ�𗘗p���Ă��̂�
-MS-DOS �v�����v�g�p�̐ݒ肪���݂���΂�����𗘗p����悤�ɕύX�B
-- Microsoft Word ��� C-k �����s����ƁA��Ɍ�������N���b�v�{�[�h�̃f�[�^��
-�V���Ɂu�؂���v���ꂽ�f�[�^���i�[�������������B
-(Thanks to ��������A�t������)
+- Microsoft Word 上で C-g 及び 2 度目移行の C-Space が「すべて選択」の振舞をする問題を解消。
+- Windows 9x 上で、コンソールアプリケーションが常に「標準」の設定を利用してたのを
+MS-DOS プロンプト用の設定が存在すればそちらを利用するように変更。
+- Microsoft Word 上で C-k を実行すると、常に現存するクリップボードのデータに
+新たに「切り取り」されたデータが格納される問題を解消。
+(Thanks to 村松さん、春原さん)
 
 2002/6/15 version 1.26
-- �R�}���h�v�����v�g�ɑ΂��A��̕W���̐ݒ肪�p��������������B
-- �������I�𒆂� C-t �����Ғʂ�ɓ����Ȃ����Ƃ�������������B
-- �t�@�C���̖����� C-Space �����Ғʂ�ɓ����Ȃ����������B
-- �t�@�C���̖����� C-g �����Ғʂ�ɓ����Ȃ����������B
+- コマンドプロンプトに対し、常の標準の設定が用いられる問題を解消。
+- 文字列を選択中に C-t が期待通りに動かないことがある問題を解消。
+- ファイルの末尾で C-Space が期待通りに動かない問題を解消。
+- ファイルの末尾で C-g が期待通りに動かない問題を解消。
 (Thanks to Steve-san)
 
 2002/6/1 version 1.25
-- �ꕔ�̃A�v���P�[�V������ IME �p�̐ݒ肪�K�p����Ȃ����������B
-- C-k ��A�ł����Ƃ��ɍŌ�� C-k �̕������N���b�v�{�[�h�Ƀf�[�^������Ȃ����������B
-- �������� C-v, M-v �� scroll-up/down �Ƃ��ċ@�\����悤�ɕύX�B
-(Thanks to ��e����A��������A��������A���₳��A����������)
+- 一部のアプリケーションで IME 用の設定が適用されない問題を解消。
+- C-k を連打したときに最後の C-k の分しかクリップボードにデータが入らない問題を解消。
+- メモ帳で C-v, M-v が scroll-up/down として機能するように変更。
+(Thanks to 大脇さん、藤原さん、村松さん、黒岩さん、すずきさん)
 
 2002/5/14 version 1.24
-- C-g �Ɍ����_�C�A���O�����@�\��ǉ��B
-- Lotus Notes �� C-s/C-r �̃t�H�[�J�X���������ړ����Ȃ����������B
-- C-Space ����� set-mark-command �Ƃ��ē����悤�Ɏ�����ύX�B
-- C-g �� C-Space �̌��ʂ��������@�\��ǉ��B
-- C-Space �̂��� M->/M-< �����s���Ă��̈悪�I������Ȃ����������B
-(Thanks to ��������A��������)
+- C-g に検索ダイアログを閉じる機能を追加。
+- Lotus Notes で C-s/C-r のフォーカスが正しく移動しない問題を解消。
+- C-Space が常に set-mark-command として働くように実装を変更。
+- C-g に C-Space の効果を取り消す機能を追加。
+- C-Space のあと M->/M-< を実行しても領域が選択されない問題を解消。
+(Thanks to 藤原さん、村松さん)
 
 2002/5/1 version 1.23
-- �^�X�N�o�[�̃X�e�[�^�X�̈�ɕ\������� Xkeymacs �̃A�C�R���̔�\�����T�|�[�g�B
-- Shift key �̏�Ԃ�\������A�C�R�����^�X�N�o�[�̃X�e�[�^�X�̈�ɒǉ��B
-- Alt key �̏�Ԃ�\������A�C�R�����^�X�N�o�[�̃X�e�[�^�X�̈�ɒǉ��B
-- �^�X�N�o�[�̃X�e�[�^�X�̈�ɕ\�������S�ẴA�C�R���ɂ����āA
-�_�u���N���b�N�A�y�сA�E�N���b�N���T�|�[�g�B
-(Thanks to ���R����)
+- タスクバーのステータス領域に表示される Xkeymacs のアイコンの非表示をサポート。
+- Shift key の状態を表示するアイコンをタスクバーのステータス領域に追加。
+- Alt key の状態を表示するアイコンをタスクバーのステータス領域に追加。
+- タスクバーのステータス領域に表示される全てのアイコンにおいて、
+ダブルクリック、及び、右クリックをサポート。
+(Thanks to 小山さん)
 
 2002/4/21 version 1.22.4
-- Mozilla 1.0 Release Candidate 1 �� C-s, C-r �����s���Ă������_�C�A���O���J���Ȃ����������B
-- �A�o�E�g�_�C�A���O�̃����N��ŁA�J�[�\������̌`�ɂ���@�\��ǉ��B
-- Windows NT/9x ��ŃR���p�C�����ʂ�Ȃ������C���B
-- ��A�̏C���B
-(Thanks to �H�R����)
+- Mozilla 1.0 Release Candidate 1 で C-s, C-r を実行しても検索ダイアログが開かない問題を解消。
+- アバウトダイアログのリンク上で、カーソルを手の形にする機能を追加。
+- Windows NT/9x 上でコンパイルが通らない問題を修正。
+- 誤植の修正。
+(Thanks to 秋山さん)
 
 2002/4/20 version 1.22.3
-- Netscape �� Mozilla �� C-s, C-r �𗘗p����ƌx����������������B
-(Thanks to �H�R����)
+- Netscape や Mozilla で C-s, C-r を利用すると警告音が鳴る問題を解消。
+(Thanks to 秋山さん)
 
 2002/4/17 version 1.22.2
-- Mozilla (�p���) �ŁAC-s, C-r �����Ғʂ�ɓ��삵�Ȃ����������B
-(Thanks to �H�R����)
+- Mozilla (英語版) で、C-s, C-r が期待通りに動作しない問題を解消。
+(Thanks to 秋山さん)
 
 2002/4/16 version 1.22.1
-- Mozilla �ŁAC-s, C-r �������Ȃ����������B
-(Thanks to �H�R����)
+- Mozilla で、C-s, C-r が働かない問題を解消。
+(Thanks to 秋山さん)
 
 2002/4/14 version 1.22
-- VC++.NET �ŃR���p�C���ł��Ȃ����������B
-- Ctrl key �̏�Ԃ�\������A�C�R�����^�X�N�o�[�̃X�e�[�^�X�̈�ɒǉ��B
-- C-x �̏�Ԃ�\������A�C�R�����^�X�N�o�[�̃X�e�[�^�X�̈�ɒǉ��B
-- Netscape 6 �ŁAC-s, C-r �������Ȃ����������B
-(Thanks to ����������A���R����Aknd-san�A�T�g����)
+- VC++.NET でコンパイルできない問題を解消。
+- Ctrl key の状態を表示するアイコンをタスクバーのステータス領域に追加。
+- C-x の状態を表示するアイコンをタスクバーのステータス領域に追加。
+- Netscape 6 で、C-s, C-r が働かない問題を解消。
+(Thanks to すずきさん、小山さん、knd-san、サトさん)
 
 2002/4/9 version 1.21.2
-- Microsoft IME2002 �� IME �̐ؑւ������܂������Ȃ����������B
-- Microsoft IME2002 �� IME �p�̐ݒ肪���p����Ȃ����������B
+- Microsoft IME2002 で IME の切替えがうまくいかない問題を解消。
+- Microsoft IME2002 で IME 用の設定が活用されない問題を解消。
 (Thanks to mets-san)
 
 2002/4/8 version 1.21.1
-- ��A�̏C��
+- 誤植の修正
 (Thanks to mets-san)
 
 2002/4/6 version 1.21
-- Windows XP �� IME �̐ؑւ������܂������Ȃ����������B
+- Windows XP で IME の切替えがうまくいかない問題を解消。
 (Thanks to mets-san)
 
 2002/1/31 version 1.20.1
-- C-q �Ń^�X�N�o�[�̃A�C�R���̐F���ω����Ȃ����������B
+- C-q でタスクバーのアイコンの色が変化しない問題を解消。
 (Thanks to Timothy-san)
 
 2002/1/18 version 1.20
-- C-q �� Xkeymacs �̋@�\���I��/�I�t�ł���悤�ɂ����B
+- C-q で Xkeymacs の機能をオン/オフできるようにした。
 (Thanks to Timothy-san)
 
 2001/12/17 version 1.19
-- Microsoft Word ��� C-k �����܂������Ȃ����������B
-(Thanks to ��������)
+- Microsoft Word 上で C-k がうまく動かない問題を解消。
+(Thanks to 村松さん)
 
 2001/12/11 version 1.18
-- Windows XP �� IE �ŃT�C�g�̃G�f�B�b�g�{�b�N�X�𗘗p����ہA
-C-o �� IME �̐؂�ւ��������Ȃ����������B
-(Thanks to SATO-san�A��؂���)
+- Windows XP 上 IE でサイトのエディットボックスを利用する際、
+C-o 等 IME の切り替えが働かない問題を解消。
+(Thanks to SATO-san、鈴木さん)
 
 2001/12/8 version 1.17
-- Explorer ��������� Xkeymacs �̃A�C�R������������������B
-- �o�[�W�������� Xkeymacs �̃T�C�g�� URL ��ǉ��B
-- �I�v�V�����_�C�A���O�̌�A���C���B
-(Thanks to ��؂���A��������)
+- Explorer が落ちると Xkeymacs のアイコンが消える問題を解消。
+- バージョン情報に Xkeymacs のサイトの URL を追加。
+- オプションダイアログの誤植を修正。
+(Thanks to 鈴木さん、村松さん)
 
 2001/12/5 version 1.16.2
-- �v���p�e�B�_�C�A���O�� "�E Alt" �� "�� Alt" �̕\�����t�ɂȂ��Ă����������B
-(Thanks to ��������)
+- プロパティダイアログの "右 Alt" と "左 Alt" の表示が逆になってた問題を解消。
+(Thanks to 村松さん)
 
 2001/12/4 version 1.16.1
-- Microsoft IME 2000 (Japanese) �p�̐ݒ���g�p���悤�Ƃ���ƕW���̐ݒ肪�p��������������B
+- Microsoft IME 2000 (Japanese) 用の設定を使用しようとすると標準の設定が用いられる問題を解消。
 
 2001/12/2 version 1.16
-- IME �p�ɓƎ��̐ݒ��ۑ��A�g�p�ł���悤�ɂ����B
-- Alt �� Meta �Ƃ��ė��p���邩�ǂ����I���ł���悤�ɂ����B
-- �R�}���h�v�����v�g�̖��O�����ϐ� COMSPEC ���擾����悤�ɂ����B
-- �|�b�v�A�b�v���j���[���E�{�^�����������Ƃ��łȂ��������Ƃ��ɕ\�������悤�ɂ����B
-(Thanks to ��c����)
+- IME 用に独自の設定を保存、使用できるようにした。
+- Alt を Meta として利用するかどうか選択できるようにした。
+- コマンドプロンプトの名前を環境変数 COMSPEC より取得するようにした。
+- ポップアップメニューが右ボタンを押したときでなく離したときに表示されるようにした。
+(Thanks to 野田さん)
 
 2001/11/25 version 1.15
-- ���� Ctrl �� CapsLock�AEsc �Ɣ��p/�S�p�L�[����ꊷ����@�\��ǉ��B
-- �R�}���h�v�����v�g�� Tab ���������ہA�t�@�C�����������⊮����@�\��ǉ��B
-- NT ��Ń������𗘗p����ہAC-s/C-r �Ńt�H���g�_�C�A���O���J�����������B
-- �E�� Ctrl, Alt, Shift ���T�|�[�g�B
-- C-s/C-r �Ō����������ύX���ꂽ�ۂ� "��������" ���Ȃ��悤�ɕύX�B
-- �t�@�C���̍Ō�� C-t �����s�����ہA�s��ȃ��������Q�Ƃ�����������B
-- Becky!, Outlook Express �Ń��[���쐬���ɃA�v���P�[�V��������\���ł��Ȃ����������B
-- Windows ���O�I������ Xkeymacs ���N������@�\���A���[�U���Ƃɐݒ�ł��Ȃ����������B
-- ���[�U�C���^�[�t�F�[�X�̉��P�B
-(Thanks to �Ζ삳��)
+- 左の Ctrl と CapsLock、Esc と半角/全角キーを入れ換える機能を追加。
+- コマンドプロンプトで Tab を押した際、ファイル名を自動補完する機能を追加。
+- NT 上でメモ帳を利用する際、C-s/C-r でフォントダイアログが開く問題を解消。
+- 右の Ctrl, Alt, Shift をサポート。
+- C-s/C-r で検索方向が変更された際は "次を検索" しないように変更。
+- ファイルの最後で C-t を実行した際、不定なメモリを参照する問題を解消。
+- Becky!, Outlook Express でメール作成時にアプリケーション名を表示できない問題を解消。
+- Windows ログオン時に Xkeymacs を起動する機能を、ユーザごとに設定できない問題を解消。
+- ユーザインターフェースの改善。
+(Thanks to 石野さん)
 
 2001/11/6 version 1.14
-stop ���Ƀ^�X�N�o�[�̃A�C�R������F�ɂȂ�悤�ɂ����B
-�ݒ�_�C�A���O�̊J�������V���O���N���b�N����_�u���N���b�N�ɕύX�B
-�^�X�N�o�[�̃A�C�R�����E�N���b�N�����Ƃ��̃��j���[�𑽏��ύX�B
+stop 時にタスクバーのアイコンが銀色になるようにした。
+設定ダイアログの開き方をシングルクリックからダブルクリックに変更。
+タスクバーのアイコンを右クリックしたときのメニューを多少変更。
 (Thanks to santarou-san)
 
 2001/11/5 version 1.131
-�G�ہA�y�сA�T�N���G�f�B�^�� C-s/C-r ������ɓ��삵�Ȃ����������B
-(Thanks to �Ζ삳��)
+秀丸、及び、サクラエディタで C-s/C-r が正常に動作しない問題を解消。
+(Thanks to 石野さん)
 
 2001/11/3 version 1.13
-�EM-b, M-f �@�\�̒ǉ��B
-�ELotus Notes �� C-s/C-r ������ɓ��삵�Ȃ����������B
-(Thanks to ��؂���)
+・M-b, M-f 機能の追加。
+・Lotus Notes で C-s/C-r が正常に動作しない問題を解消。
+(Thanks to 鈴木さん)
 
 2001/11/1 version 1.12
-���������������̂� C-s, C-r �̂݁B
-Outlook, Outlook Express, Opera, Visual C++ �ł������_�C�A���O���\������Ă�Ƃ��ɁAC-s, C-r �����p�ł���悤�ɂȂ�B
-C-s/C-r ��A���g�p����ہA�J�[�\����������������ɍs���悤�ɕύX�B
-������������̐ݒ������ƌ����������ς�����Ƃ��̂ݍs���悤�ɕύX�B
-Microsoft Word ���p���̂� C-x C-s �� Ctrl+S �ɕύX�B
+今回も手を加えたのは C-s, C-r のみ。
+Outlook, Outlook Express, Opera, Visual C++ でも検索ダイアログが表示されてるときに、C-s, C-r が利用できるようになる。
+C-s/C-r を連続使用する際、カーソルが検索文字直後に行くように変更。
+検索する方向の設定を初回と検索方向が変わったときのみ行うように変更。
+Microsoft Word 利用時のみ C-x C-s を Ctrl+S に変更。
 (Thanks to Johann-san)
 
 2001/10/28 version 1.11
-C-s, C-r �𔲖{�I�ɕύX�B
-����ɂ�莟�̖��������B
-�EWindows 9x ��̃������Ō����_�C�A���O���\������Ă���Ƃ���
-C-s �����s����ƁA[��������(F)] �{�^���� 2 �񕪉�����Ă��܂��B
-�EMicrosoft Word2000 �Ō�������������w��ł��Ȃ��B
-�EMicrosoft Word2000 �Ō������镶����̃��X�g���J�����ςȂ��ɂȂ�B
-�EMicrosoft Word2000 �� C-s ���������ςȂ��ɂ���Ɨ����� s �Ŗ��܂�B
-�ELotus Notes �� C-s ���s����ƁA[��������(F)] �{�^���� 2 �񕪉�����Ă��܂��B
-�ELotus Notes �Ō�������������w��ł��Ȃ��B
-�EC-s/C-r �����s����ƌx��������B(�ꕔ�̃A�v���P�[�V�����ł͖������B��񋁂ށB)
-(Thanks to ��������)
+C-s, C-r を抜本的に変更。
+これにより次の問題を解消。
+・Windows 9x 上のメモ帳で検索ダイアログが表示されているときに
+C-s を実行すると、[次を検索(F)] ボタンが 2 回分押されてしまう。
+・Microsoft Word2000 で検索する方向を指定できない。
+・Microsoft Word2000 で検索する文字列のリストが開きっぱなしになる。
+・Microsoft Word2000 で C-s を押しっぱなしにすると履歴が s で埋まる。
+・Lotus Notes で C-s 実行すると、[次を検索(F)] ボタンが 2 回分押されてしまう。
+・Lotus Notes で検索する方向を指定できない。
+・C-s/C-r を実行すると警告音が鳴る。(一部のアプリケーションでは未解決。情報求む。)
+(Thanks to 村松さん)
 
 2001/10/26 version 1.101
-�O�o�[�W�����̉��L�̕ύX���폜�B
-�EC-s, C-r �� Alt+F Alt �̕����� Esc Esc Esc �ɕύX�B
-(Thanks to �������� �A�Ζ삳��)
+前バージョンの下記の変更を削除。
+・C-s, C-r で Alt+F Alt の部分を Esc Esc Esc に変更。
+(Thanks to 村松さん 、石野さん)
 
 2001/10/25 version 1.10
-�EC-Y �� C-y �Ƃ��ē����悤�ɕύX�B
-�EC-s, C-r �� Alt+F Alt �̕����� Esc Esc Esc �ɕύX�B
-(������ VC++ �ł� Alt+F Alt ���폜)
-�E�T�N���G�f�B�^��� C-s, C-r �����҂���Ȃ��_�C�A���O��\��������������B
-�EC-x C-s �� Ctrl+S ���� Alt+F Alt+S �ɖ߂��B
-(Thanks to �Ζ삳��)
+・C-Y が C-y として働くように変更。
+・C-s, C-r で Alt+F Alt の部分を Esc Esc Esc に変更。
+(ただし VC++ では Alt+F Alt を削除)
+・サクラエディタ上で C-s, C-r が期待されないダイアログを表示する問題を解消。
+・C-x C-s を Ctrl+S から Alt+F Alt+S に戻す。
+(Thanks to 石野さん)
 
 2001/10/14 version 1.09
-�EM-<, M-> �@�\�̒ǉ��B
-�EC-x C-p �@�\�̒ǉ��B
-�EC-x C-s �� Alt+F Alt+S ���� Ctrl+S �ɕύX�B
-(������Windows 95, 98, Me �̃������ł͏]���ʂ� Alt+F Alt+S)
-(Thanks to �Ζ삳��A��������)
+・M-<, M-> 機能の追加。
+・C-x C-p 機能の追加。
+・C-x C-s を Alt+F Alt+S から Ctrl+S に変更。
+(ただしWindows 95, 98, Me のメモ帳では従来通り Alt+F Alt+S)
+(Thanks to 石野さん、村松さん)
 
 2001/10/5 version 1.08
-M-? �� C-[ �y�сAEsc �����p�ł���悤�ɂ����B
-(Thanks to ��������A��������)
+M-? で C-[ 及び、Esc が利用できるようにした。
+(Thanks to 加藤さん、村松さん)
 
 2001/9/30 version 1.072
-Windows 98 ��� Excel 2000 �Ƌ��ɗ��p�����ۂɁA
-C-o ���n�߂Ƃ��� IME �̐ؑւ�������ɓ��삵�Ȃ����������B
-�Ȃ� 1.071 ���Ȃ����́c�c�AXkeymacs ML �̉ߋ����O���Q�Ƃ��Ă��������B
-(Thanks to �Ζ삳��)
+Windows 98 上で Excel 2000 と共に利用した際に、
+C-o を始めとする IME の切替えが正常に動作しない問題を解消。
+なぜ 1.071 がないかは……、Xkeymacs ML の過去ログを参照してください。
+(Thanks to 石野さん)
 
 2001/9/21 version 1.07
-�������� C-s, C-r �� "��������" �Ƃ��ē����悤�ɉ��ǁB
-(Thanks to ��������)
+検索中に C-s, C-r が "次を検索" として働くように改良。
+(Thanks to 加藤さん)
 
 2001/9/16 version 1.06
-�EC-l �ŃL�����b�g������s��
-�E�B���h�E�̒����ɂ���悤�ɃX�N���[������@�\��ǉ��B
-�EM-! �� Windows 95, 98, Me ��ł� MS-DOS �v�����v�g���A
-Windows NT, 2000 ��ł̓R�}���h�v�����v�g���N������@�\��ǉ��B
-�EC-r �ŏ�֌�������@�\��ǉ��B
-�E�������� C-s �Ō������������ւ���@�\��ǉ��B
+・C-l でキャレットがある行が
+ウィンドウの中央にくるようにスクロールする機能を追加。
+・M-! で Windows 95, 98, Me 上では MS-DOS プロンプトを、
+Windows NT, 2000 上ではコマンドプロンプトを起動する機能を追加。
+・C-r で上へ検索する機能を追加。
+・検索中に C-s で検索方向を下へする機能を追加。
 
 2001/9/10 version 1.051
-version 1.05 �ōs����
-�EC-m, C-h ���� Microsoft Word ���n��
-�ꕔ�̃A�v���P�[�V�����Ő���ɓ��삵�Ȃ����������B
-�̏C���̃T�C�h�C�t�F�N�g��
-Windows 2000 �� NumLock �� on �̂Ƃ� Xkeymacs ������ɓ��삵�Ȃ��Ȃ����B
-���̖���������邽�߂ɁA�ꎞ�I�� NumLick �� on �̂Ƃ���
-��q�̏C������荞�܂Ȃ��悤�ɂ����B
+version 1.05 で行った
+・C-m, C-h 等が Microsoft Word を始め
+一部のアプリケーションで正常に動作しない問題を解消。
+の修正のサイドイフェクトで
+Windows 2000 で NumLock が on のとき Xkeymacs が正常に動作しなくなった。
+この問題を回避するために、一時的に NumLick が on のときは
+上述の修正を取り込まないようにした。
 
 2001/9/9 version 1.05
-�EC-k �̋�������� emacs like �ɕύX�B
-�EC-t �̋�������� emacs like �ɕύX�B
-�EC-t ���s���� Clipboard �̓��e���j�󂳂�Ă��܂����������B
-�EC-m, C-h ���� Microsoft Word ���n��
-�ꕔ�̃A�v���P�[�V�����Ő���ɓ��삵�Ȃ����������B
-�EC-/ �� Becky! �Ő���ɓ��삵�Ȃ����������B
-�E�Ȃɂ��I������ĂȂ��Ƃ��� C-w ���s���� Delete �����������������B
-�EC-Space �� Space ���������ςȂ��ɂ�����Ԃ� C-w, M-w �����삵�Ȃ����������B
+・C-k の挙動をより emacs like に変更。
+・C-t の挙動をより emacs like に変更。
+・C-t を行うと Clipboard の内容が破壊されてしまう問題を解消。
+・C-m, C-h 等が Microsoft Word を始め
+一部のアプリケーションで正常に動作しない問題を解消。
+・C-/ が Becky! で正常に動作しない問題を解消。
+・なにも選択されてないときに C-w を行うと Delete 扱いされる問題を解消。
+・C-Space で Space を押しっぱなしにした状態で C-w, M-w が動作しない問題を解消。
 
 2001/8/14 version 1.04
-Windows 2000 �� NumLock �� on �̂Ƃ��Ɉȉ��̋@�\�����삵�Ȃ����������B
+Windows 2000 で NumLock が on のときに以下の機能が動作しない問題を解消。
 C-s, C-x u, C-/, M-v, M-w
 
 2001/8/13 version 1.03
-Windows 2000 �� NumLock �� on �̂Ƃ��ɋ����s�R�ɂȂ���������B
+Windows 2000 で NumLock が on のときに挙動不審になる問題を解消。
 
 2001/7/22 version 1.02
-�E�_�C�A���O����{��ɑΉ��B
-OS �����{��łł���΁A�_�C�A���O�����{��ŕ\������܂��B
-�E�_�C�A���O�̃��C�A�E�g�� 
-GNU Emacs Reference Card (for version 19) ���Q�l�ɕύX�B
-�E�ꕔ�̃A�v���P�[�V�����ɂ����āA�t�@�C������ foo - bar �̂Ƃ���
-�_�C�A���O�ŃA�v���P�[�V�������𐳂����\���ł��Ȃ����������B
-�E�_�C�A���O���\������Ă�Ƃ��� C-x C-c C-x C-c ��
-Xkeymacs �� abend ������������B
-�E���C���̃_�C�A���O���\������Ă�Ƃ��ɁA�A�o�E�g�_�C�A���O������
-���C���̃_�C�A���O�Ƀt�H�[�J�X���ڂ�悤�ɕύX�B
+・ダイアログを日本語に対応。
+OS が日本語版であれば、ダイアログも日本語で表示されます。
+・ダイアログのレイアウトを 
+GNU Emacs Reference Card (for version 19) を参考に変更。
+・一部のアプリケーションにおいて、ファイル名が foo - bar のときに
+ダイアログでアプリケーション名を正しく表示できない問題を解消。
+・ダイアログが表示されてるときに C-x C-c C-x C-c で
+Xkeymacs が abend する問題を解消。
+・メインのダイアログが表示されてるときに、アバウトダイアログを閉じると
+メインのダイアログにフォーカスが移るように変更。
 
 2001/7/15 version 1.01
-�_�C�A���O�㕔�̃��X�g�ɃA�v���P�[�V��������\������悤�ɕύX�B
+ダイアログ上部のリストにアプリケーション名を表示するように変更。
 
 2001/6/6 version 1.00
 
 
-- ---
+-- 
 oishi@cam.hi-ho.ne.jp
+fujieda@users.osdn.me

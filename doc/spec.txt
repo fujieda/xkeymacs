@@ -235,29 +235,8 @@ Shift: LED become green when the Shift key is depressed logically.
 Ctrl: LED become green when the Ctrl key is depressed logically.
 Alt: LED become green when the Alt key is depressed logically.
 
-Keyboard Layout
---- Windows NT, 2000, XP ---
-Create "Scancode Map" in the next places.
-For the user who is currently logged on:
-HKEY_CURRENT_USER\Keyboard Layout
-For any user:
-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout
-See:
-http://www.microsoft.com/HWDEV/input/W2kscan-map.htm
+Keyboard Layout feature doesn't work
 
---- Windows 95, 98, Me ---
-XKeymacs does not support keyboard remapping for Windows 95, 98 or Me.
-"Windows 95 Keyboard Remap" of "The Windows 95 Kernel PowerToys"
-is required to remap keyboard on Windows 95, 98 or Me.
-You can get "The Windows 95 Kernel PowerToys" from the site.
-http://www.microsoft.com/windows95/downloads/contents/WUToys/W95KernelToy/Default.asp
-Use "The Windows 95 Kernel PowerToys" at your own risk.
-In my case, "Windows 95 Keyboard Remap" works well on Windows 98 Japanese Edition,
-but the above site said:
----
-NOTE: This download is not intended for use on computers running Microsoft Windows 98.
----
-
-
-- ---
+-- 
 oishi@cam.hi-ho.ne.jp
+fujieda@users.osdn.me

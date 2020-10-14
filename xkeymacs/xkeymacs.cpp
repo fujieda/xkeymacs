@@ -153,9 +153,11 @@ int CXkeymacsApp::ExitInstance()
 		ReleaseMutex(m_hMutex);
 		CloseHandle(m_hMutex);
 
-		m_pMainWnd->DestroyWindow();
-		delete m_pMainWnd;
-		m_pMainWnd = NULL;
+		if(m_pMainWnd != NULL) {
+			m_pMainWnd->DestroyWindow();
+			delete m_pMainWnd;
+			m_pMainWnd = NULL;
+		}
 	}
 
 	return CWinApp::ExitInstance();

@@ -243,7 +243,6 @@ void CXkeymacsDll::ShowHookState()
 LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	SetKeyboardHook();
-	TSFHandler::InitSink();
 	if (nCode >= 0) {
 		const CWPSTRUCT *cwps = reinterpret_cast<CWPSTRUCT *>(lParam);
 		switch (cwps->message) {
@@ -260,8 +259,10 @@ LRESULT CALLBACK CXkeymacsDll::CallWndProc(int nCode, WPARAM wParam, LPARAM lPar
 			SetIMEState(false);
 			break;
 		case WM_SETFOCUS:
-			SetIMEState(false);
-			ShowHookState();
+			if (cwps->hwnd == GetForegroundWindow() || GetWindowLong(cwps->hwnd, GWL_STYLE) == 0x56000000) {
+				SetIMEState(false);
+				ShowHookState();
+			}
 			break;
 		case WM_NCACTIVATE:
 			if (cwps->wParam && cwps->hwnd == GetForegroundWindow()) {
@@ -339,6 +340,7 @@ LRESULT CALLBACK CXkeymacsDll::ShellProc(int nCode, WPARAM wParam, LPARAM lParam
 void CXkeymacsDll::InitKeyboardProc()
 {
 	AppName::Init();
+	TSFHandler::InitSink();
 	if (m_CurrentConfig == NULL ||
 			_tcsnicmp(m_CurrentConfig->AppName, AppName::GetAppName(), 0xF) || 	// PROCESSENTRY32 has only 0xF bytes of Name
 			!CUtils::IsMatchWindowText(m_CurrentConfig->WindowText)) {
@@ -396,7 +398,7 @@ LRESULT CALLBACK CXkeymacsDll::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPa
 	BYTE nKey = nOrigKey;
 
 	static BOOL bLocked = FALSE;
-	static const BYTE RECURSIVE_KEY = 0x07;
+	static const BYTE RECURSIVE_KEY = 14;
 	static int (*fLastCommand)() = NULL;
 	static BYTE nOneShotModifier[MAX_KEY] = {'\0'};
 	static BOOL bCherryOneShotModifier = FALSE;
@@ -691,27 +693,37 @@ HOOK_RECURSIVE_KEY:
 	return TRUE;
 }
 
-void CXkeymacsDll::CancelMarkWithShift(BYTE nKey, bool bRelease)
+void CXkeymacsDll::CancelMarkWithShift(byte nKey, bool bRelease)
 {
 	static bool bShift;
-	if (nKey != VK_SHIFT)
-		goto exit;
-	BYTE bVk = 0;
-	do {
-		if (bVk == VK_SHIFT || VK_LSHIFT || VK_RSHIFT)
-			continue;
-		if (IsDown(bVk, FALSE))
-			goto exit;
-	} while (++bVk);
-	if (!bRelease) {
-		bShift = true;
+	if (IsDepressedShiftKeyOnly(nKey)) 	{
+		if (bRelease) {
+			if (bShift)
+				CCommands::SetMark(false);
+		} else 	{
+			bShift = true;
+		}
 		return;
 	}
-	if (bShift)
-		CCommands::SetMark(FALSE);
-exit:
 	bShift = false;
-	return;
+}
+
+static bool IsShift(byte bVk)
+{
+	return bVk == VK_SHIFT || bVk == VK_LSHIFT || bVk == VK_RSHIFT;
+}
+
+bool CXkeymacsDll::IsDepressedShiftKeyOnly(byte nKey)
+{
+	if (!IsShift(nKey))
+		return false;
+	for (byte bVk = 1; bVk < 255; bVk++) {
+		if (IsShift(bVk))
+			continue;
+		if (IsDown(bVk))
+			return false;
+	}
+	return true;
 }
 
 int CXkeymacsDll::IsPassThrough(BYTE nKey)

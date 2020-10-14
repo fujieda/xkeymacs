@@ -1,143 +1,144 @@
- XKeymacs - Windows�p�L�[�{�[�h���[�e�B���e�B
+ XKeymacs - Windows用キーボードユーティリティ
 =============================================
 
-�T�v
+概要
 ----
-XKeymacs��Emacs�̂悤�ȃL�[���蓖�Ă��AWindows��̃A�v���P�[�V������
-�������܂��B�A�v���P�[�V�������ƂɃL�[���蓖�Ă�ύX���邱�Ƃ��ł��܂��B
+XKeymacsはEmacsのようなキー割り当てを、Windows上のアプリケーションで
+実現します。アプリケーションごとにキー割り当てを変更することもできます。
 
-�C���X�g�[��
+インストール
 ------------
-1. �ȉ��̃����^�C�����C�u�������C���X�g�[�����܂��B��҂�64bit�ł�
-   Windows�̏ꍇ�̂ݕK�v�ł��B
-   - Microsoft Visual C++ 2010 �ĔЕz�\�p�b�P�[�W (x86)
-     <http://tinyurl.com/vc2010x86ja>
-   - Microsoft Visual C++ 2010 �ĔЕz�\�p�b�P�[�W (x64)
-     <http://tinyurl.com/vc2010x64ja>
-2. zip�t�@�C�������̃T�C�g����擾���܂��B
-   <http://sourceforge.jp/projects/xkeymacs/releases/>
-3. zip�t�@�C����W�J����XKeymacs�̓������f�B���N�g�������o���܂��B
-4. ���̃f�B���N�g����K���ȃf�B���N�g���Ɉړ����܂��B
-5. �f�B���N�g���̒���xkeymacs.exe���N�����܂��B
+1. 以下のランタイムライブラリをインストールします。後者は64bit版の
+   Windowsの場合のみ必要です。
+   - Visual Studio 2015 の Visual C++ 再頒布可能パッケージ (x86)
+     <https://tinyurl.com/vc2015x86>
+   - Visual Studio 2015 の Visual C++ 再頒布可能パッケージ (x64)
+     <hhttps://tinyurl.com/vc2015x64>
+2. zipファイルを適切なフォルダに展開します。
 
-�A�b�v�O���[�h�ƃA���C���X�g�[��
+アップグレードとアンインストール
 --------------------------------
-1. "���O�I�����Ɏ��s"�I�v�V�������O���܂��B
-2. XKeymacs���I�����܂�(��q)�B
-3. Windows�����O�I�t���邩�ċN�����܂��B
+1. "ログオン時に実行"オプションを外します。
+2. Windowsを再起動します。
 
-   �A�b�v�O���[�h�̏ꍇ�ɂ̓C���X�g�[���̎菇�ɏ]���Ă��������B 
+アップグレードの場合
 
-4. XKeymacs���i�[���Ă���f�B���N�g�����폜���܂��B
-3. ���W�X�g���G�f�B�^�Ŏ��̒l���폜���܂��B
+3. 既存のファイルを新しいバージョンのzipファイルの中のファイルで上書きします。
+
+アンインストールの場合
+
+3. XKeymacsを格納しているディレクトリを削除します。
+4. レジストリエディタで次の値を削除します。
 
         HKEY_CURRENT_USER\Software\oishi\XKeymacs
         HKEY_CURRENT_USER\Software\oishi\XKeymacs2
         HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run\XKeymacs
 
-�g�p���@
+使用方法
 --------
-### �N���ƏI��
 
-xkeymacs.exe�����s���܂��B64bit�ł�Windows�ł�xkeymacs64.exe�������I
-�Ɏ��s����܂��BXKeymacs���N������ƁA�^�X�N�o�[�ɋ��̌����\������܂��B
+### 起動と終了
 
-�I������ɂ́A�^�X�N�o�[�̋�(�܂��͋�)�̌��̃A�C�R�����E�N���b�N���A
-�J�������j���[����"�I��(X)"��I�����܂��B
+xkeymacs.exeを実行します。64bit版のWindowsではxkeymacs64.exeが自動的
+に実行されます。XKeymacsが起動すると、タスクバーに金の鍵が表示されます。
 
-### �v���p�e�B
+終了するには、タスクバーの金(または銀)の鍵のアイコンを右クリックし、
+開いたメニューから"終了(X)"を選択します。
 
-���̌��̃A�C�R�����E�N���b�N���āu�v���p�e�B...�v��I������ƁA
-�A�v���P�[�V�������Ƃ�XKeymacs�̃L�[���蓖�Ă�ݒ�ł��܂��B���ɐݒ�
-���Ȃ���ΕW���̐ݒ肪���p����܂��B�_�C�A���O�ɂ̓_�C�A���O�p�̐ݒ�
-�𗘗p�ł��܂��B
+### プロパティ
 
-�v���p�e�B�_�C�A���O�ɂ́ABasic�AAdvanced�AList��3�̃^�u������܂��B
-�����͓����ݒ���قȂ�`���ŕ\�����܂��BBasic�^�u�ł̓L�[�̑g�ݍ��킹��
-Emacs�̂悤�ɋ@�\���邩�ǂ������A�`�F�b�N�{�b�N�X�ɂ��ȒP�ɐݒ�ł��܂��B
-Advanced�^�u�ł̓R�}���h���ƂɃL�[���蓖�Ă�ݒ�ł��܂��BList�^�u�ł�
-�s�����ݒ���ꗗ�ł��܂��B
+金の鍵のアイコンを右クリックして「プロパティ...」を選択すると、
+アプリケーションごとにXKeymacsのキー割り当てを設定できます。特に設定
+しなければ標準の設定が利用されます。ダイアログにはダイアログ用の設定
+を利用できます。
 
-### �ݒ�̎�荞�݂Ə����o��
+プロパティダイアログには、Basic、Advanced、Listの3つのタブがあります。
+これらは同じ設定を異なる形式で表示します。Basicタブではキーの組み合わせが
+Emacsのように機能するかどうかを、チェックボックスにより簡単に設定できます。
+Advancedタブではコマンドごとにキー割り当てを設定できます。Listタブでは
+行った設定を一覧できます。
 
-�u�ݒ�̎�荞��...�v��I������ƁA�u�ݒ�̏����o���v�ɂ���ď����o���ꂽ
-�t�@�C����ǂݍ��߂܂��B�u�ݒ�̏����o��...�v��I������Ǝ��̃��W�X�g���L�[
-�ȉ��̃f�[�^���t�@�C���ɏ����o���܂��B
-**�����̋@�\�͍��̂Ƃ���Windows 7�ł͋@�\���܂���B**
+### 設定の取り込みと書き出し
+
+「設定の取り込み...」を選択すると、「設定の書き出し」によって書き出された
+ファイルを読み込めます。「設定の書き出し...」を選択すると次のレジストリキー
+以下のデータをファイルに書き出します。
+**この機能は今のところ機能しません。**
 
     HKEY_CURRENT_USER\Software\Oishi\XKeymacs2
 
-### �I�v�V����
+### オプション
 
-�u�I�v�V����...�v��I������ƁAWindows�Ƀ��O�I�������Ƃ��Ɏ����I��
-XKeymacs���N�����邩�A�R�}���h�v�����v�g�ɂ�����t�@�C�����⊮��L����
-���邩�A�^�X�N�o�[�̃X�e�[�^�X�̈��C-x, Meta, Shift, Ctrl, Alt��
-�e��Ԃ�\�������邩��ݒ�ł��܂��B
+「オプション...」を選択すると、Windowsにログオンしたときに自動的に
+XKeymacsを起動するか、コマンドプロンプトにおけるファイル名補完を有効に
+するか、タスクバーのステータス領域にC-x, Meta, Shift, Ctrl, Altの
+各状態を表示させるかを設定できます。
 
-### �L�[�{�[�h���C�A�E�g
+### キーボードレイアウト
 
-�u�L�[�{�[�h���C�A�E�g...�v��I������ƃL�[�{�[�h�̃��C�A�E�g��ύX
-�ł��܂��B��̃x�[�X�L�[�{�[�h�̃L�[�����̃��}�b�v�L�[�{�[�h��
-�h���b�O���h���b�v����ƁA���̃��}�b�v���ꂽ�L�[���Ԃ��Ȃ�܂��B
-�ύX���������Ƃ��́A���}�b�v�L�[�{�[�h�̐Ԃ��L�[���N���b�N���܂��B
-**���̋@�\�͍��̂Ƃ���Windows 7�ł͋@�\���܂���B**
+「キーボードレイアウト...」を選択するとキーボードのレイアウトを変更
+できます。上のベースキーボードのキーを下のリマップキーボードに
+ドラッグ＆ドロップすると、下のリマップされたキーが赤くなります。
+変更を取り消すときは、リマップキーボードの赤いキーをクリックします。
+**この機能は今のところ機能しません。**
 
-XKeymacs��Windows�̃X�L�����R�[�h�̍Ċ��蓖�ċ@�\�𗘗p���邾���Ȃ̂ŁA
-XKeymacs�𖳌��܂��̓A���C���X�g�[�����Ă��ݒ�͉�������܂���B
-XKeymacs��p�����ɐݒ����������ɂ́A���W�X�g���G�f�B�^�ňȉ��̒l��
-�����܂��B
-HKEY_CURRENT_USER\Keyboard Layout\Scancode Map
-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\Scancode Map
+XKeymacsはWindowsのスキャンコードの再割り当て機能を利用するだけなので、
+XKeymacsを無効またはアンインストールしても設定は解除されません。
+XKeymacsを用いずに設定を解除するには、レジストリエディタで以下の値を
+消します。
 
-### ���̑�
+    HKEY_CURRENT_USER\Keyboard Layout\Scancode Map
+    HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout\Scancode Map
 
-�u�����ɂ���v�Ɓu�L���ɂ���v��XKeymacs�̖���/�L����؂�ւ����܂��B
-C-q�ŗL��/������؂�ւ��邱�Ƃ��ł��܂��B�u���Z�b�g�v�͂Ȃɂ��̂͂��݂�
-XKeymacs�������Ȃ��Ȃ����Ƃ��Ɏg���܂��B
+### その他
 
-�T�|�[�g
+「無効にする」と「有効にする」でXKeymacsの無効/有効を切り替えられます。
+C-qで切り替えることもできます。「リセット」はなにかのはずみで
+XKeymacsが効かなくなったときに使います。
+
+サポート
 --------
-�E�F�u�T�C�g
-<http://xkeymacs.sourceforge.jp/>
+ウェブサイト
+<http://xkeymacs.osdn.jp/>
 
-���[�����O���X�g
-<http://lists.sourceforge.jp/mailman/listinfo/xkeymacs-users-ja>
+メーリングリスト
+<https://lists.osdn.me/mailman/listinfo/xkeymacs-users-ja>
 
-���쌠
+著作権
 ------
-XKeymacs 3.48�ɗR������R�[�h�̒��쌠��
-��΂���<oishi@cam.hi-ho.ne.jp>
-�ɂ���܂��B�e�����v�����������̒��쌠���ȉ��̊J���҂������܂��B
+XKeymacs 3.48に由来するコードの著作権は
+大石さん<oishi@cam.hi-ho.ne.jp>
+にあります。各自が貢献した部分の著作権を以下の開発者が持ちます。
 
-* Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+* Kazuhiro Fujieda <fujieda@users.osdn.me>
 * Tomohiro Kashiwada <kikairoya@gmail.com>
 * Harold Bamford <hbamford@users.sourceforge.net>
 * co <cogood@gmail.com>
 
-���C�Z���X
+ライセンス
 ----------
-���̃v���O�����̓t���[�\�t�g�E�F�A�ł��B���Ȃ��͂�����A�t���[�\�t�g
-�E�F�A���c�ɂ���Ĕ��s���ꂽGNU��ʌ��O���p�����_��(�o�[�W����2���A
-��]�ɂ���Ă͂���ȍ~�̃o�[�W�����̂����ǂꂩ)�̒�߂�����̉���
-�ĔЕz�܂��͉��ς��邱�Ƃ��ł��܂��B
+このプログラムはフリーソフトウェアです。あなたはこれを、フリーソフト
+ウェア財団によって発行されたGNU一般公衆利用許諾契約書(バージョン2か、
+希望によってはそれ以降のバージョンのうちどれか)の定める条件の下で
+再頒布または改変することができます。
 
-���̃v���O�����͗L�p�ł��邱�Ƃ�����ĔЕz����܂����A*�S���̖��ۏ�*
-�ł��B���Ɖ\���̕ۏ؂����̖ړI�ւ̓K�����́A���O�Ɏ����ꂽ���̂�
-�܂ߑS�����݂��܂���B�ڂ����͈ȉ���URL��GNU��ʌ��O���p�����_�񏑂�
-�������������B
+このプログラムは有用であることを願って頒布されますが、*全くの無保証*
+です。商業可能性の保証や特定の目的への適合性は、言外に示されたものも
+含め全く存在しません。詳しくは以下のURLのGNU一般公衆利用許諾契約書を
+ご覧ください。
 <hhttp://www.opensource.jp/gpl/gpl.ja.html>
 
-�ӎ�
+謝辞
 ----
-�{�v���O�����̐��^�ƂȂ���Keymacs�̍�҂ł���������A�p���h�L�������g
-�̍쐬�݂̂Ȃ炸�A�h�L�������g�̍\�������܂��܂ȃA�h�o�C�X�����Ă��ꂽ
-Timothy-san�Akill-ring�Ƀ��b�`�e�L�X�g���n�߂Ƃ���C�ӂ̃f�[�^��ێ�
-���邽�߂̃N���X���쐬���Ă��ꂽ�l�c����AXKeymacs�ɑ΂��V�@�\�̒�āA
-�o�O�̕񍐁A�����ăp�b�`�̍쐬�����Ă���������XKeymacs���[�����O���X�g��
-�F�l�Ɋ��ӂ��܂��B
+本プログラムの雛型となったKeymacsの作者である野口さん、英文ドキュメント
+の作成のみならず、ドキュメントの構成等さまざまなアドバイスをしてくれた
+Timothy-san、kill-ringにリッチテキストを始めとする任意のデータを保持
+するためのクラスを作成してくれた浜田さん、XKeymacsに対し新機能の提案、
+バグの報告、そしてパッチの作成をしていただいたXKeymacsメーリングリストの
+皆様に感謝します。
 
-XKeymacs���쐬���A���N�ɂ킽���ĊJ���𑱂��Ă�����������΂���Ɋ���
-���܂��B
+XKeymacsを作成し、長年にわたって開発を続けてくださった大石さんに感謝
+します。
 
 ---
-Kazuhiro Fujieda <fujieda@users.sourceforge.jp>
+Kazuhiro Fujieda <fujieda@users.osdn.me>
