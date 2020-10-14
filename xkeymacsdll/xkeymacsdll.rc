@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// âpåÍ (±“ÿ∂) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -27,18 +25,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"
@@ -59,15 +57,14 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,0
- PRODUCTVERSION 4,0,0,0
+ FILEVERSION 4,0,1,0
+ PRODUCTVERSION 4,0,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -82,18 +79,13 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "\0"
-            VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "XKeymacs DLL\0"
-            VALUE "FileVersion", "4, 0, 0, 0\0"
-            VALUE "InternalName", "xkeymacsdll\0"
-            VALUE "LegalCopyright", "Copyright (C) 2001-2011\0"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "xkeymacs.dll\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "XKeymacs Dynamic Link Library\0"
-            VALUE "ProductVersion", "4, 0, 0, 0\0"
-            VALUE "SpecialBuild", "\0"
+            VALUE "FileDescription", "XKeymacs DLL"
+            VALUE "FileVersion", "4.0.1.0"
+            VALUE "InternalName", "xkeymacsdll"
+            VALUE "LegalCopyright", "Copyright (C) 2001-2011,2017"
+            VALUE "OriginalFilename", "xkeymacs.dll"
+            VALUE "ProductName", "XKeymacs Dynamic Link Library"
+            VALUE "ProductVersion", "4.0.1.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -102,9 +94,7 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
-
-#endif    // âpåÍ (±“ÿ∂) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
